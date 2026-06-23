@@ -18,20 +18,20 @@
 
 ### 0.1 Repository & Dev Environment
 
-- [ ] Create GitHub repo `lk-gloss-detail`
-- [ ] Init Next.js 15 app with `--turbopack` flag
-- [ ] Configure TypeScript strict mode (`tsconfig.json`)
-- [ ] Add `.nvmrc` (Node 22 LTS)
-- [ ] Setup `pnpm` as package manager
-- [ ] Add `.env.example` with all required keys (no real values)
-- [ ] Add `.gitignore` (Next.js + secrets)
+- [x] Create GitHub repo `lk-gloss-detail`
+- [x] Init Next.js 16 app with `--turbopack` flag
+- [x] Configure TypeScript strict mode (`tsconfig.json`)
+- [x] Add `.nvmrc` (Node 22 LTS)
+- [x] Setup `pnpm` as package manager
+- [x] Add `.env.example` with all required keys (no real values)
+- [x] Add `.gitignore` (Next.js + secrets)
 
 ### 0.2 VS Code Workspace
 
-- [ ] Add `.vscode/settings.json` (Copilot, formatting, path aliases)
-- [ ] Add `.vscode/extensions.json` (recommended extensions)
-- [ ] Add VS Code Copilot Skills (see `COPILOT_SKILLS/` folder)
-- [ ] Configure `@workspace` instructions for Copilot
+- [x] Add `.vscode/settings.json` (Copilot, formatting, path aliases)
+- [x] Add `.vscode/extensions.json` (recommended extensions)
+- [x] Add VS Code Copilot Skills (see `COPILOT_SKILLS/` folder)
+- [x] Configure `@workspace` instructions for Copilot
 
 ### 0.3 Code Quality
 
@@ -43,11 +43,11 @@
 
 ### 0.4 Design System Bootstrap
 
-- [ ] Install shadcn/ui (`pnpm dlx shadcn@latest init`)
-- [ ] Configure Tailwind with LK brand tokens (purple palette, black bg)
-- [ ] Install Framer Motion (`motion`)
-- [ ] Add global CSS variables from brand color kit
-- [ ] Generate Stitch design prompts (see `STITCH_PROMPTS.md`)
+- [x] Install shadcn/ui (`pnpm dlx shadcn@latest init`)
+- [x] Configure Tailwind with LK brand tokens (purple palette, black bg)
+- [x] Install Framer Motion (`motion`)
+- [x] Add global CSS variables from brand color kit
+- [x] Generate Stitch design prompts (see `STITCH_PROMPTS.md`)
 
 ---
 

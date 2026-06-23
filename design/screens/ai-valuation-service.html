@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="de"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Service Selection | LK Gloss &amp; Detail</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700;800&amp;family=Inter:wght@400;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "on-secondary-container": "#fff0ff",
+                    "primary-fixed-dim": "#d1bcff",
+                    "on-tertiary-fixed": "#29074a",
+                    "on-error": "#690005",
+                    "on-tertiary": "#3f2160",
+                    "on-primary-fixed-variant": "#5800c8",
+                    "error": "#ffb4ab",
+                    "inverse-primary": "#731ef7",
+                    "secondary-fixed": "#f8d8ff",
+                    "tertiary": "#dbb8ff",
+                    "background": "#131313",
+                    "on-background": "#e5e2e1",
+                    "tertiary-container": "#78589b",
+                    "primary-container": "#7b2dff",
+                    "on-surface": "#e5e2e1",
+                    "outline-variant": "#4a4456",
+                    "secondary-container": "#b303f2",
+                    "on-primary-container": "#ece0ff",
+                    "surface-variant": "#353534",
+                    "primary-fixed": "#eaddff",
+                    "surface": "#131313",
+                    "surface-container-high": "#2a2a2a",
+                    "secondary-fixed-dim": "#ebb2ff",
+                    "inverse-surface": "#e5e2e1",
+                    "surface-container-lowest": "#0e0e0e",
+                    "secondary": "#ebb2ff",
+                    "surface-dim": "#131313",
+                    "surface-bright": "#393939",
+                    "inverse-on-surface": "#313030",
+                    "surface-tint": "#d1bcff",
+                    "outline": "#958da2",
+                    "surface-container-low": "#1c1b1b",
+                    "on-error-container": "#ffdad6",
+                    "tertiary-fixed": "#efdbff",
+                    "error-container": "#93000a",
+                    "on-secondary-fixed": "#320047",
+                    "on-primary": "#3d008f",
+                    "surface-container-highest": "#353534",
+                    "on-secondary": "#520071",
+                    "on-surface-variant": "#ccc3d9",
+                    "on-tertiary-fixed-variant": "#573878",
+                    "primary": "#d1bcff",
+                    "on-secondary-fixed-variant": "#74009f",
+                    "on-tertiary-container": "#f1dfff",
+                    "surface-container": "#201f1f",
+                    "tertiary-fixed-dim": "#dbb8ff",
+                    "on-primary-fixed": "#24005b"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.125rem",
+                    "lg": "0.25rem",
+                    "xl": "0.5rem",
+                    "full": "1.5rem"
+            },
+            "spacing": {
+                    "section-gap": "120px",
+                    "base": "8px",
+                    "gutter": "24px",
+                    "margin-mobile": "16px",
+                    "margin-desktop": "64px",
+                    "container-max": "1280px"
+            },
+            "fontFamily": {
+                    "headline-lg": ["Montserrat"],
+                    "headline-md": ["Montserrat"],
+                    "body-lg": ["Inter"],
+                    "display-lg": ["Montserrat"],
+                    "body-md": ["Inter"],
+                    "headline-lg-mobile": ["Montserrat"],
+                    "label-caps": ["Inter"]
+            },
+            "fontSize": {
+                    "headline-lg": ["40px", {"lineHeight": "1.2", "letterSpacing": "-0.01em", "fontWeight": "700"}],
+                    "headline-md": ["24px", {"lineHeight": "1.3", "fontWeight": "600"}],
+                    "body-lg": ["18px", {"lineHeight": "1.6", "fontWeight": "400"}],
+                    "display-lg": ["64px", {"lineHeight": "1.1", "letterSpacing": "-0.02em", "fontWeight": "800"}],
+                    "body-md": ["16px", {"lineHeight": "1.6", "fontWeight": "400"}],
+                    "headline-lg-mobile": ["32px", {"lineHeight": "1.2", "fontWeight": "700"}],
+                    "label-caps": ["12px", {"lineHeight": "1.0", "letterSpacing": "0.1em", "fontWeight": "700"}]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        body {
+            background-color: #000000;
+            color: #e5e2e1;
+            overflow-x: hidden;
+        }
+
+        .carbon-pattern {
+            background-image: radial-gradient(circle at 2px 2px, rgba(255,255,255,0.05) 1px, transparent 0);
+            background-size: 4px 4px;
+        }
+
+        .neon-glow {
+            box-shadow: 0 0 15px rgba(123, 45, 255, 0.3);
+        }
+
+        .card-stack {
+            position: relative;
+            perspective: 1000px;
+        }
+
+        .service-card {
+            transition: transform 0.6s cubic-bezier(0.23, 1, 0.32, 1), opacity 0.4s ease;
+            transform-origin: bottom center;
+        }
+
+        .service-card.swiped-right {
+            transform: translate(150%, -20%) rotate(30deg) !important;
+            opacity: 0;
+        }
+
+        .service-card.swiped-left {
+            transform: translate(-150%, -20%) rotate(-30deg) !important;
+            opacity: 0;
+        }
+
+        .glass-panel {
+            background: rgba(26, 26, 26, 0.6);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .atmospheric-glow {
+            background: radial-gradient(circle at center, rgba(123, 45, 255, 0.15) 0%, transparent 70%);
+            pointer-events: none;
+        }
+    </style>
+</head>
+<body class="flex flex-col min-h-screen">
+<!-- TopNavBar -->
+<header class="fixed top-0 w-full z-50 bg-background/60 backdrop-blur-xl border-b border-white/10 shadow-[0px_0px_15px_rgba(123,45,255,0.2)]">
+<div class="flex justify-between items-center h-20 px-margin-mobile md:px-margin-desktop max-w-container-max mx-auto">
+<div class="font-headline-md text-headline-md font-bold tracking-tighter text-on-surface uppercase">
+                LK Gloss <span class="text-primary-fixed-dim">&amp;</span> Detail
+            </div>
+<div class="hidden md:flex gap-8 items-center">
+<a class="font-body-md text-body-md text-on-surface-variant hover:text-primary transition-colors" href="#">Services</a>
+<a class="font-body-md text-body-md text-on-surface-variant hover:text-primary transition-colors" href="#">Gallery</a>
+<a class="font-body-md text-body-md text-primary font-bold border-b-2 border-primary pb-1" href="#">Valuation</a>
+<a class="font-body-md text-body-md text-on-surface-variant hover:text-primary transition-colors" href="#">Contact</a>
+<button class="bg-primary-container text-on-primary-container px-6 py-2 rounded-full font-bold active:scale-95 transition-transform">
+                    Book Now
+                </button>
+</div>
+<div class="md:hidden">
+<span class="material-symbols-outlined text-primary text-3xl">menu</span>
+</div>
+</div>
+</header>
+<main class="flex-grow pt-32 pb-20 relative flex flex-col items-center justify-center overflow-hidden">
+<!-- Background Lighting -->
+<div class="absolute inset-0 atmospheric-glow"></div>
+<div class="absolute -left-1/4 top-1/4 w-1/2 h-1/2 bg-primary/10 blur-[120px] rounded-full"></div>
+<div class="absolute -right-1/4 bottom-1/4 w-1/2 h-1/2 bg-secondary/10 blur-[120px] rounded-full"></div>
+<!-- Heading Section -->
+<div class="text-center mb-12 px-margin-mobile relative z-10">
+<span class="font-label-caps text-label-caps text-primary tracking-widest mb-4 block uppercase">Konfigurator</span>
+<h1 class="font-headline-lg-mobile md:font-headline-lg text-headline-lg-mobile md:text-headline-lg text-white mb-2">Wähle deine Services</h1>
+<p class="font-body-md text-body-md text-on-surface-variant max-w-md mx-auto">Entscheide, welche Behandlungen dein Fahrzeug verdient. Swype nach rechts für Bestätigung.</p>
+</div>
+<!-- Tinder Style Card Container -->
+<div class="card-stack w-full max-w-[380px] h-[520px] px-margin-mobile relative z-20">
+<!-- Card 3 (Bottom) -->
+<div class="service-card absolute inset-0 glass-panel rounded-full carbon-pattern p-1 translate-y-4 scale-90 opacity-40" id="card-3">
+<div class="h-full w-full rounded-[1.25rem] overflow-hidden relative">
+<div class="absolute inset-0 bg-gradient-to-t from-black via-black/20 to-transparent z-10"></div>
+<div class="absolute inset-0 bg-cover bg-center" data-alt="A high-performance luxury sports car parked in a high-tech detailing studio with neon purple LED lighting. The car's metallic finish is being meticulously cleaned, showing extreme reflections and atmospheric depth in an obsidian neon style." style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuBMVgDW4TNSmTWkmx0TdUOczpGT1VDwhbULJd1NuXSrubnj0YfLbibo80wdmuHYl5r5lgQ7SrSETJ7pkDRKNqVWydE_swTNwRwVdQ6kS8T9d6G5g9XSGkFXxhzho4ljuZdqwHmH7rkh8GTqZzdS10syZyNWCPHeIYL5HMIiTtubwhdyWquQI7es5JxzTJv4_ETZsjwY6WnqrDgdYStrjPbECOSqTuct9e_cTzdOvqxuvAKdI2tslgayEpeKsxWH9vqt9Lj9HdFHmLMa')"></div>
+</div>
+</div>
+<!-- Card 2 (Middle) -->
+<div class="service-card absolute inset-0 glass-panel rounded-full carbon-pattern p-1 translate-y-2 scale-95 opacity-70" id="card-2">
+<div class="h-full w-full rounded-[1.25rem] overflow-hidden relative">
+<div class="absolute inset-0 bg-gradient-to-t from-black via-black/20 to-transparent z-10"></div>
+<div class="absolute inset-0 bg-cover bg-center" data-alt="Close-up of a high-end luxury car interior with premium leather seats and a carbon fiber dashboard. The lighting is moody with violet accents, highlighting the pristine cleanliness and high-tech instrumentation of a German luxury vehicle." style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuC5f2xPUR9uZHsSVkM-gCxhj8yGd9K3pCMUqwLS7U6dSsUEH_fzeRctA8gpZSajLoovDIaH8z2QSFP4MDAGNLYuID0vWpez1bHwFuVhMl_iulwWL2fNvp4UmvQk590K4cJGIIiuQ7dUAbHACsXMt9jw1sLQBC3_JIA_r9GxnV8yo1K3yr4-haU8AynE3eXBCCzFoDAGIUnrh7jq1UKAxsLe8H2N8y97PQZ8v98Mo9V0FrMZN94d8y7bcdbL4JIwuIP2Fq_66L1FzTHj')"></div>
+</div>
+</div>
+<!-- Card 1 (Top/Active) -->
+<div class="service-card absolute inset-0 glass-panel rounded-full carbon-pattern p-1 shadow-2xl" id="card-1">
+<div class="h-full w-full rounded-[1.25rem] overflow-hidden relative">
+<div class="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent z-10"></div>
+<div class="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-black/80 z-10"></div>
+<!-- Image -->
+<div class="absolute inset-0 bg-cover bg-center" data-alt="A professional detailer applying a ceramic coating to a sleek black Porsche. Water beads perfectly on the surface, reflecting a sunset in a high-contrast cinematic style. The atmosphere is elite and precise, featuring deep blacks and vibrant neon purple highlights." style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuBnKV-u89M-MUkNsh47U2inzxEyKZpFrhhsGhx8WaSUDKa38Sbu3qsop9srCojP9g-P5BRyH0O_XGpEp-a-NMvgVlI5IrUBlCbETJ-rS_tyJWRzA2gxCzcoFUgfxbNAp00yGyWkL-33gJROf92xBVkITyN-xaiambP6BtRAFAcuhItrD2AI7_mT5ldf0waosDAi7Z4WYqPbIaoUjJzlY05B6oQR7djKjpCv6tqivvRvi3meUjZgb8hsSPIs-z0vcffZf9KRn0blPjJo')"></div>
+<!-- Content -->
+<div class="absolute bottom-0 left-0 right-0 p-8 z-20">
+<div class="flex justify-between items-end mb-2">
+<div>
+<span class="bg-primary-container/30 text-primary-fixed-dim text-[10px] font-bold px-2 py-1 rounded-full border border-primary/30 uppercase tracking-tighter mb-2 inline-block">Premium Schutz</span>
+<h2 class="font-headline-md text-headline-md text-white">Ceramic Coating</h2>
+</div>
+<div class="text-right">
+<p class="text-primary-fixed-dim font-bold text-xl">ab 499€</p>
+</div>
+</div>
+<p class="font-body-md text-body-md text-on-surface-variant mb-4">7-Jahre Standzeit. Extremes Beading &amp; Lackschutz gegen Umwelteinflüsse.</p>
+<div class="flex gap-2">
+<div class="flex items-center gap-1 text-[12px] text-on-surface-variant bg-white/5 px-2 py-1 rounded-full">
+<span class="material-symbols-outlined text-[14px]">schedule</span>
+<span>2-3 Tage</span>
+</div>
+<div class="flex items-center gap-1 text-[12px] text-on-surface-variant bg-white/5 px-2 py-1 rounded-full">
+<span class="material-symbols-outlined text-[14px]">verified</span>
+<span>Garantie</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Action Buttons -->
+<div class="flex items-center gap-8 mt-12 relative z-30">
+<!-- Decline Button -->
+<button class="group flex flex-col items-center gap-2" onclick="swipe('left')">
+<div class="w-16 h-16 rounded-full border-2 border-outline-variant flex items-center justify-center group-hover:border-error group-hover:bg-error/10 transition-all duration-300">
+<span class="material-symbols-outlined text-on-surface-variant group-hover:text-error text-3xl">close</span>
+</div>
+<span class="font-label-caps text-label-caps text-on-surface-variant uppercase opacity-60 group-hover:opacity-100">Decline</span>
+</button>
+<!-- Accept Button -->
+<button class="group flex flex-col items-center gap-2" onclick="swipe('right')">
+<div class="w-20 h-20 rounded-full bg-gradient-to-br from-primary-container to-secondary-container flex items-center justify-center shadow-[0_0_20px_rgba(123,45,255,0.4)] group-hover:shadow-[0_0_35px_rgba(123,45,255,0.6)] active:scale-90 transition-all duration-300">
+<span class="material-symbols-outlined text-white text-4xl" style="font-variation-settings: 'FILL' 1;">check</span>
+</div>
+<span class="font-label-caps text-label-caps text-primary uppercase tracking-widest font-bold">Accept</span>
+</button>
+</div>
+</main>
+<!-- Footer -->
+<footer class="w-full py-12 bg-surface-container-lowest border-t border-outline-variant">
+<div class="grid grid-cols-1 md:grid-cols-4 gap- gutter px-margin-mobile md:px-margin-desktop max-w-container-max mx-auto">
+<div class="col-span-1 md:col-span-1">
+<div class="font-headline-md text-headline-md text-primary-fixed-dim font-bold mb-4 uppercase">
+                    LK Gloss
+                </div>
+<p class="font-body-md text-body-md text-on-surface-variant mb-6">
+                    High-Performance Aesthetics for the German luxury market.
+                </p>
+</div>
+<div class="flex flex-col gap-3">
+<span class="font-label-caps text-label-caps text-primary mb-2 uppercase">Menu</span>
+<a class="font-body-md text-body-md text-on-surface-variant hover:text-primary-fixed-dim hover:underline transition-all" href="#">Leistungen</a>
+<a class="font-body-md text-body-md text-on-surface-variant hover:text-primary-fixed-dim hover:underline transition-all" href="#">Referenzen</a>
+<a class="font-body-md text-body-md text-on-surface-variant hover:text-primary-fixed-dim hover:underline transition-all" href="#">Über Uns</a>
+</div>
+<div class="flex flex-col gap-3">
+<span class="font-label-caps text-label-caps text-primary mb-2 uppercase">Legal</span>
+<a class="font-label-caps text-label-caps text-on-surface-variant hover:text-primary transition-all" href="#">Impressum</a>
+<a class="font-label-caps text-label-caps text-on-surface-variant hover:text-primary transition-all" href="#">Datenschutz</a>
+<a class="font-label-caps text-label-caps text-on-surface-variant hover:text-primary transition-all" href="#">AGB</a>
+<a class="font-label-caps text-label-caps text-on-surface-variant hover:text-primary transition-all" href="#">Cookies</a>
+</div>
+<div class="flex flex-col gap-3">
+<span class="font-label-caps text-label-caps text-primary mb-2 uppercase">Kontakt</span>
+<p class="font-body-md text-body-md text-on-surface-variant">München, Germany</p>
+<p class="font-body-md text-body-md text-on-surface-variant">info@lkgloss.de</p>
+</div>
+</div>
+<div class="mt-12 text-center border-t border-outline-variant/30 pt-8 px-margin-mobile">
+<p class="font-body-md text-body-md text-on-surface-variant opacity-50">© 2024 LK Gloss &amp; Detail. High-Performance Aesthetics.</p>
+</div>
+</footer>
+<script>
+        let currentCard = 1;
+        const totalCards = 3;
+
+        function swipe(direction) {
+            const card = document.getElementById(`card-${currentCard}`);
+            if (!card) return;
+
+            if (direction === 'right') {
+                card.classList.add('swiped-right');
+            } else {
+                card.classList.add('swiped-left');
+            }
+
+            currentCard++;
+
+            // Update remaining cards visually
+            if (currentCard <= totalCards) {
+                const nextCard = document.getElementById(`card-${currentCard}`);
+                if (nextCard) {
+                    nextCard.classList.remove('scale-95', 'translate-y-2', 'opacity-70', 'scale-90', 'translate-y-4', 'opacity-40');
+                    nextCard.classList.add('scale-100', 'translate-y-0', 'opacity-100', 'shadow-2xl');
+                    
+                    const subsequentCard = document.getElementById(`card-${currentCard + 1}`);
+                    if (subsequentCard) {
+                        subsequentCard.classList.remove('scale-90', 'translate-y-4', 'opacity-40');
+                        subsequentCard.classList.add('scale-95', 'translate-y-2', 'opacity-70');
+                    }
+                }
+            } else {
+                // All cards swiped
+                setTimeout(() => {
+                    alert("Alle Services konfiguriert! Weiter zum nächsten Schritt...");
+                    window.location.reload();
+                }, 600);
+            }
+        }
+
+        // Add some mouse/touch interactive drag feel (Simple)
+        let startX = 0;
+        const mainCard = document.getElementById('card-1');
+        
+        mainCard.addEventListener('touchstart', e => {
+            startX = e.touches[0].clientX;
+        });
+
+        mainCard.addEventListener('touchmove', e => {
+            const moveX = e.touches[0].clientX - startX;
+            const rotation = moveX / 20;
+            mainCard.style.transform = `translateX(${moveX}px) rotate(${rotation}deg)`;
+        });
+
+        mainCard.addEventListener('touchend', e => {
+            const moveX = e.changedTouches[0].clientX - startX;
+            if (Math.abs(moveX) > 100) {
+                swipe(moveX > 0 ? 'right' : 'left');
+            } else {
+                mainCard.style.transform = '';
+            }
+        });
+    </script>
+</body></html>

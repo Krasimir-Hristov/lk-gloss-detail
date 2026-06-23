@@ -1,0 +1,480 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="de"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Admin Dashboard | LK Gloss & Detail</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800&family=Inter:wght@400;700&family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&family=Montserrat:wght@100..900&display=swap" rel="stylesheet"/>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .glass-panel {
+            background: rgba(18, 18, 18, 0.8);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+        .neon-border-purple {
+            box-shadow: 0 0 10px rgba(123, 45, 255, 0.2);
+            border: 1px solid rgba(192, 38, 255, 0.3);
+        }
+        .carbon-pattern {
+            background-image: linear-gradient(45deg, #121212 25%, transparent 25%), 
+                              linear-gradient(-45deg, #121212 25%, transparent 25%), 
+                              linear-gradient(45deg, transparent 75%, #121212 75%), 
+                              linear-gradient(-45deg, transparent 75%, #121212 75%);
+            background-size: 4px 4px;
+            background-color: #0e0e0e;
+        }
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: #0e0e0e; }
+        ::-webkit-scrollbar-thumb { background: #353534; border-radius: 10px; }
+        ::-webkit-scrollbar-thumb:hover { background: #7B2DFF; }
+    </style>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "surface-container-lowest": "#0e0e0e",
+                        "on-surface": "#e5e2e1",
+                        "on-primary-container": "#ece0ff",
+                        "tertiary-fixed-dim": "#dbb8ff",
+                        "primary-fixed-dim": "#d1bcff",
+                        "tertiary-container": "#78589b",
+                        "surface-container-high": "#2a2a2a",
+                        "on-error": "#690005",
+                        "on-background": "#e5e2e1",
+                        "inverse-primary": "#731ef7",
+                        "secondary-container": "#b303f2",
+                        "error": "#ffb4ab",
+                        "on-secondary-container": "#fff0ff",
+                        "inverse-surface": "#e5e2e1",
+                        "on-primary-fixed-variant": "#5800c8",
+                        "secondary-fixed-dim": "#ebb2ff",
+                        "on-surface-variant": "#ccc3d9",
+                        "background": "#131313",
+                        "on-primary-fixed": "#24005b",
+                        "surface-bright": "#393939",
+                        "surface-variant": "#353534",
+                        "surface-tint": "#d1bcff",
+                        "error-container": "#93000a",
+                        "surface-dim": "#131313",
+                        "outline-variant": "#4a4456",
+                        "secondary": "#ebb2ff",
+                        "on-tertiary": "#3f2160",
+                        "inverse-on-surface": "#313030",
+                        "on-secondary": "#520071",
+                        "on-primary": "#3d008f",
+                        "secondary-fixed": "#f8d8ff",
+                        "primary-container": "#7b2dff",
+                        "primary": "#d1bcff",
+                        "surface-container": "#201f1f",
+                        "surface": "#131313",
+                        "outline": "#958da2",
+                        "tertiary-fixed": "#efdbff",
+                        "primary-fixed": "#eaddff",
+                        "on-secondary-fixed-variant": "#74009f",
+                        "on-tertiary-fixed-variant": "#573878",
+                        "on-secondary-fixed": "#320047",
+                        "surface-container-highest": "#353534",
+                        "tertiary": "#dbb8ff",
+                        "surface-container-low": "#1c1b1b",
+                        "on-tertiary-container": "#f1dfff",
+                        "on-error-container": "#ffdad6"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    "spacing": {
+                        "margin-desktop": "64px",
+                        "gutter": "24px",
+                        "margin-mobile": "16px",
+                        "section-gap": "120px",
+                        "container-max": "1280px",
+                        "base": "8px"
+                    },
+                    "fontFamily": {
+                        "headline-lg-mobile": ["Montserrat"],
+                        "label-caps": ["Inter"],
+                        "headline-md": ["Montserrat"],
+                        "display-lg": ["Montserrat"],
+                        "headline-lg": ["Montserrat"],
+                        "body-md": ["Inter"],
+                        "body-lg": ["Inter"]
+                    },
+                    "fontSize": {
+                        "headline-lg-mobile": ["32px", {"lineHeight": "1.2", "fontWeight": "700"}],
+                        "label-caps": ["12px", {"lineHeight": "1.0", "letterSpacing": "0.1em", "fontWeight": "700"}],
+                        "headline-md": ["24px", {"lineHeight": "1.3", "fontWeight": "600"}],
+                        "display-lg": ["64px", {"lineHeight": "1.1", "letterSpacing": "-0.02em", "fontWeight": "800"}],
+                        "headline-lg": ["40px", {"lineHeight": "1.2", "letterSpacing": "-0.01em", "fontWeight": "700"}],
+                        "body-md": ["16px", {"lineHeight": "1.6", "fontWeight": "400"}],
+                        "body-lg": ["18px", {"lineHeight": "1.6", "fontWeight": "400"}]
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-background text-on-background font-body-md selection:bg-primary-container selection:text-on-primary-container">
+<div class="flex min-h-screen">
+<!-- SIDEBAR -->
+<aside class="hidden md:flex w-72 flex-col fixed inset-y-0 left-0 bg-surface-container-lowest border-r border-outline-variant/30 z-50">
+<div class="p-8">
+<span class="font-headline-md text-headline-md font-extrabold tracking-tighter text-on-surface uppercase block mb-12">
+                    LK <span class="text-primary-container">Gloss</span>
+</span>
+<nav class="space-y-2">
+<a class="flex items-center gap-4 px-4 py-3 rounded-lg bg-primary-container text-on-primary-container font-bold transition-all duration-300" href="#">
+<span class="material-symbols-outlined">dashboard</span>
+<span class="font-label-caps text-label-caps uppercase tracking-wider">Dashboard</span>
+</a>
+<a class="flex items-center gap-4 px-4 py-3 rounded-lg text-on-surface-variant hover:bg-white/5 hover:text-primary transition-all duration-300" href="#">
+<span class="material-symbols-outlined">calendar_month</span>
+<span class="font-label-caps text-label-caps uppercase tracking-wider">Appointments</span>
+</a>
+<a class="flex items-center gap-4 px-4 py-3 rounded-lg text-on-surface-variant hover:bg-white/5 hover:text-primary transition-all duration-300" href="#">
+<span class="material-symbols-outlined">analytics</span>
+<span class="font-label-caps text-label-caps uppercase tracking-wider">Analytics</span>
+</a>
+<a class="flex items-center gap-4 px-4 py-3 rounded-lg text-on-surface-variant hover:bg-white/5 hover:text-primary transition-all duration-300" href="#">
+<span class="material-symbols-outlined">group</span>
+<span class="font-label-caps text-label-caps uppercase tracking-wider">Customers</span>
+</a>
+<a class="flex items-center gap-4 px-4 py-3 rounded-lg text-on-surface-variant hover:bg-white/5 hover:text-primary transition-all duration-300" href="#">
+<span class="material-symbols-outlined">settings</span>
+<span class="font-label-caps text-label-caps uppercase tracking-wider">Settings</span>
+</a>
+</nav>
+</div>
+<div class="mt-auto p-8 border-t border-outline-variant/20">
+<div class="flex items-center gap-3 bg-white/5 p-3 rounded-xl">
+<div class="w-10 h-10 rounded-full bg-primary-container flex items-center justify-center font-bold text-on-primary">LK</div>
+<div>
+<p class="text-on-surface font-bold text-sm">Lukas K.</p>
+<p class="text-on-surface-variant text-xs">Admin Access</p>
+</div>
+<button class="ml-auto text-on-surface-variant hover:text-primary">
+<span class="material-symbols-outlined">logout</span>
+</button>
+</div>
+</div>
+</aside>
+<!-- MAIN CONTENT AREA -->
+<main class="flex-1 md:ml-72 min-h-screen flex flex-col relative">
+<!-- Header Bar -->
+<header class="h-20 px-8 flex items-center justify-between sticky top-0 bg-background/60 backdrop-blur-xl border-b border-white/10 z-40">
+<div class="flex items-center gap-4">
+<button class="md:hidden text-on-surface">
+<span class="material-symbols-outlined">menu</span>
+</button>
+<h1 class="font-headline-md text-headline-md text-on-surface tracking-tight">Performance <span class="text-primary-container font-extrabold italic">Overview</span></h1>
+</div>
+<div class="flex items-center gap-6">
+<div class="relative hidden lg:block">
+<input class="bg-surface-container-high border-none rounded-full py-2 pl-12 pr-6 text-sm focus:ring-2 focus:ring-primary-container w-64 text-on-surface" placeholder="Search data..." type="text"/>
+<span class="material-symbols-outlined absolute left-4 top-2 text-on-surface-variant">search</span>
+</div>
+<div class="flex gap-3">
+<button class="w-10 h-10 flex items-center justify-center rounded-full bg-white/5 text-on-surface hover:text-primary transition-colors relative">
+<span class="material-symbols-outlined">notifications</span>
+<span class="absolute top-2 right-2 w-2 h-2 bg-secondary-container rounded-full shadow-[0_0_8px_#b303f2]"></span>
+</button>
+</div>
+</div>
+</header>
+<!-- Scrollable Content -->
+<div class="p-8 space-y-8 max-w-[1600px] mx-auto w-full">
+<!-- 1. Statistics Overview Bar -->
+<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+<div class="glass-panel p-6 rounded-xl flex flex-col justify-between group hover:neon-border-purple transition-all duration-300">
+<div class="flex justify-between items-start mb-4">
+<span class="text-on-surface-variant font-label-caps text-label-caps uppercase">Total Bookings</span>
+<span class="material-symbols-outlined text-primary-container group-hover:scale-110 transition-transform">event_available</span>
+</div>
+<div>
+<p class="font-headline-lg text-headline-lg text-on-surface">1,284</p>
+<p class="text-secondary-fixed-dim text-xs mt-1 flex items-center gap-1">
+<span class="material-symbols-outlined text-xs">trending_up</span> +12% from last month
+                            </p>
+</div>
+</div>
+<div class="glass-panel p-6 rounded-xl flex flex-col justify-between group hover:neon-border-purple transition-all duration-300">
+<div class="flex justify-between items-start mb-4">
+<span class="text-on-surface-variant font-label-caps text-label-caps uppercase">Revenue</span>
+<span class="material-symbols-outlined text-primary-container group-hover:scale-110 transition-transform">payments</span>
+</div>
+<div>
+<p class="font-headline-lg text-headline-lg text-on-surface">€42,900</p>
+<p class="text-secondary-fixed-dim text-xs mt-1 flex items-center gap-1">
+<span class="material-symbols-outlined text-xs">trending_up</span> +8.4% month-over-month
+                            </p>
+</div>
+</div>
+<div class="glass-panel p-6 rounded-xl flex flex-col justify-between group hover:neon-border-purple transition-all duration-300 border-l-4 border-l-secondary-container">
+<div class="flex justify-between items-start mb-4">
+<span class="text-on-surface-variant font-label-caps text-label-caps uppercase">AI Analysis Queue</span>
+<span class="material-symbols-outlined text-secondary-container group-hover:scale-110 transition-transform" style="font-variation-settings: 'FILL' 1;">auto_awesome</span>
+</div>
+<div>
+<p class="font-headline-lg text-headline-lg text-on-surface">24</p>
+<p class="text-on-surface-variant text-xs mt-1">Require manual approval</p>
+</div>
+</div>
+<div class="glass-panel p-6 rounded-xl flex flex-col justify-between group hover:neon-border-purple transition-all duration-300">
+<div class="flex justify-between items-start mb-4">
+<span class="text-on-surface-variant font-label-caps text-label-caps uppercase">New Customers</span>
+<span class="material-symbols-outlined text-primary-container group-hover:scale-110 transition-transform">person_add</span>
+</div>
+<div>
+<p class="font-headline-lg text-headline-lg text-on-surface">58</p>
+<p class="text-on-surface-variant text-xs mt-1">Last 30 days</p>
+</div>
+</div>
+</div>
+<!-- Main Layout Grid -->
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+<!-- 2. Upcoming Appointments Table -->
+<div class="lg:col-span-8 space-y-6">
+<div class="glass-panel rounded-2xl overflow-hidden">
+<div class="px-8 py-6 border-b border-white/5 flex justify-between items-center">
+<h2 class="font-headline-md text-headline-md text-on-surface">Upcoming <span class="text-primary-fixed-dim">Appointments</span></h2>
+<button class="px-4 py-2 bg-white/5 hover:bg-white/10 rounded-lg text-xs font-label-caps uppercase tracking-wider transition-all">View All</button>
+</div>
+<div class="overflow-x-auto">
+<table class="w-full text-left">
+<thead class="bg-surface-container-low/50">
+<tr class="text-on-surface-variant font-label-caps text-label-caps uppercase">
+<th class="px-8 py-4">Customer</th>
+<th class="px-4 py-4">Vehicle</th>
+<th class="px-4 py-4">Service</th>
+<th class="px-4 py-4">Status</th>
+<th class="px-8 py-4 text-right">Actions</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-white/5">
+<tr class="hover:bg-white/[0.02] transition-colors">
+<td class="px-8 py-5">
+<div class="flex items-center gap-3">
+<div class="w-8 h-8 rounded-full bg-surface-container-high flex items-center justify-center text-xs font-bold text-primary">MS</div>
+<span class="text-on-surface font-semibold">Max Schmidt</span>
+</div>
+</td>
+<td class="px-4 py-5 text-on-surface-variant">Porsche 911 GT3</td>
+<td class="px-4 py-5 text-on-surface-variant">Ceramic Pro Gold</td>
+<td class="px-4 py-5">
+<span class="px-2 py-1 rounded bg-success/20 text-emerald-400 text-[10px] font-bold uppercase tracking-widest border border-emerald-400/30">Confirmed</span>
+</td>
+<td class="px-8 py-5 text-right">
+<button class="material-symbols-outlined text-on-surface-variant hover:text-primary transition-colors">more_vert</button>
+</td>
+</tr>
+<tr class="hover:bg-white/[0.02] transition-colors">
+<td class="px-8 py-5">
+<div class="flex items-center gap-3">
+<div class="w-8 h-8 rounded-full bg-surface-container-high flex items-center justify-center text-xs font-bold text-primary">LM</div>
+<span class="text-on-surface font-semibold">Lena Müller</span>
+</div>
+</td>
+<td class="px-4 py-5 text-on-surface-variant">Mercedes AMG G63</td>
+<td class="px-4 py-5 text-on-surface-variant">Full Paint Correction</td>
+<td class="px-4 py-5">
+<span class="px-2 py-1 rounded bg-amber-500/10 text-amber-400 text-[10px] font-bold uppercase tracking-widest border border-amber-400/30 shadow-[0_0_8px_rgba(251,191,36,0.2)]">Pending</span>
+</td>
+<td class="px-8 py-5 text-right">
+<button class="material-symbols-outlined text-on-surface-variant hover:text-primary transition-colors">more_vert</button>
+</td>
+</tr>
+<tr class="hover:bg-white/[0.02] transition-colors">
+<td class="px-8 py-5">
+<div class="flex items-center gap-3">
+<div class="w-8 h-8 rounded-full bg-surface-container-high flex items-center justify-center text-xs font-bold text-primary">KB</div>
+<span class="text-on-surface font-semibold">Karl Bauer</span>
+</div>
+</td>
+<td class="px-4 py-5 text-on-surface-variant">Audi RS6 Avant</td>
+<td class="px-4 py-5 text-on-surface-variant">Interior Restoration</td>
+<td class="px-4 py-5">
+<span class="px-2 py-1 rounded bg-primary-container/20 text-primary-fixed-dim text-[10px] font-bold uppercase tracking-widest border border-primary-container/30">Completed</span>
+</td>
+<td class="px-8 py-5 text-right">
+<button class="material-symbols-outlined text-on-surface-variant hover:text-primary transition-colors">more_vert</button>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<!-- 3. AI Analysis Queue Section -->
+<div class="space-y-4">
+<h2 class="font-headline-md text-headline-md text-on-surface flex items-center gap-3">
+                                AI Analysis <span class="text-secondary-container">Queue</span>
+<span class="px-2 py-1 rounded bg-secondary-container text-on-secondary-container text-[10px] font-bold">LIVE</span>
+</h2>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+<!-- AI Item 1 -->
+<div class="glass-panel p-4 rounded-xl flex gap-4 group transition-all">
+<div class="w-24 h-24 rounded-lg overflow-hidden bg-surface-container-highest shrink-0 relative">
+<div class="w-full h-full bg-cover bg-center grayscale group-hover:grayscale-0 transition-all duration-500" data-alt="A macro close-up photo of a black sports car's hood showing swirl marks and light scratches under industrial white LED lighting. Professional detailing inspection style." style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuAUgauyPuorilTl8QHFynMl97ivtOdq5gi-BogcKB4I0Sq4kpTja0Ohojp-i1RxMFSOabXSN_dpGwgdYXJB3oXnf9OcgBZUe9XhGlvqY_Z9g3F77r9GcXjB33sGFngqbPM6qWWoqO3kqnTWi45akVgZeZ4Tj6zbh_hMRoJxhnBN7K_8XP7SvAZ4KUUWNvC1GbQgJNthTrI66Y3N1Ep3QyN4HPFEOrpzHaBf_qTiBbgn6BBc8h9fq0Sivg2ujkBYgpnklbic12vKJvD9')"></div>
+<div class="absolute bottom-1 right-1 bg-black/80 px-1.5 py-0.5 rounded text-[8px] font-bold text-primary">98% CONF</div>
+</div>
+<div class="flex flex-col justify-between py-1 flex-1">
+<div>
+<h4 class="text-on-surface font-bold text-sm uppercase">Surface Scan #402</h4>
+<p class="text-on-surface-variant text-xs italic">Heavy Swirl Marks Detected</p>
+</div>
+<div class="flex items-center justify-between">
+<div class="flex gap-2">
+<button class="px-3 py-1 bg-primary-container text-on-primary-container text-[10px] font-bold uppercase rounded hover:brightness-110">Approve</button>
+<button class="px-3 py-1 bg-white/5 text-on-surface-variant text-[10px] font-bold uppercase rounded hover:bg-white/10">Deny</button>
+</div>
+</div>
+</div>
+</div>
+<!-- AI Item 2 -->
+<div class="glass-panel p-4 rounded-xl flex gap-4 group transition-all">
+<div class="w-24 h-24 rounded-lg overflow-hidden bg-surface-container-highest shrink-0 relative">
+<div class="w-full h-full bg-cover bg-center grayscale group-hover:grayscale-0 transition-all duration-500" data-alt="Close-up of a silver car's leather seat showing a small crack and discoloration. Studio lighting highlights the texture of the grain. Inspection photography." style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuAdsSdW4TJsLN8NW33tci1DVLCEnJd8Bbh7DEvSNiCySKhFNlejprEYfU76ruRD0BbKJFdM7HIoh8YbfS7SV22pYb2CrewMOwPu0xuOxML4c26CVFGQv_tx_IJ1S236fjpqRdYe6Lnz10K5hptjAL8h4E9273RSHgWKaiBGINx2rMcPZsS7pO-ViKq0ZOBUtvIrMw4Hub8Ckf9n4UySzqYz6KxzF0uFOchfENAzpuVbvBSu4KJTkZqex1DCVH_VlTF1S3AT5BWOJWwa')"></div>
+<div class="absolute bottom-1 right-1 bg-black/80 px-1.5 py-0.5 rounded text-[8px] font-bold text-primary">92% CONF</div>
+</div>
+<div class="flex flex-col justify-between py-1 flex-1">
+<div>
+<h4 class="text-on-surface font-bold text-sm uppercase">Interior Scan #403</h4>
+<p class="text-on-surface-variant text-xs italic">Leather Abrasion (L2)</p>
+</div>
+<div class="flex items-center justify-between">
+<div class="flex gap-2">
+<button class="px-3 py-1 bg-primary-container text-on-primary-container text-[10px] font-bold uppercase rounded hover:brightness-110">Approve</button>
+<button class="px-3 py-1 bg-white/5 text-on-surface-variant text-[10px] font-bold uppercase rounded hover:bg-white/10">Deny</button>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- 4. Schedule Sidebar Widget -->
+<div class="lg:col-span-4 space-y-8">
+<div class="glass-panel rounded-2xl p-6 carbon-pattern relative overflow-hidden">
+<!-- Overlay to make text readable over pattern -->
+<div class="absolute inset-0 bg-background/80"></div>
+<div class="relative z-10">
+<div class="flex justify-between items-center mb-8">
+<h3 class="font-headline-md text-headline-md text-on-surface">Schedule <span class="text-primary">Snap</span></h3>
+<button class="text-primary-container hover:scale-110 transition-transform">
+<span class="material-symbols-outlined">chevron_right</span>
+</button>
+</div>
+<div class="space-y-6">
+<!-- Date Item 1 -->
+<div class="flex gap-4">
+<div class="w-14 h-14 rounded-xl bg-surface-container-highest flex flex-col items-center justify-center border border-white/5">
+<span class="text-[10px] font-label-caps uppercase text-on-surface-variant">May</span>
+<span class="text-lg font-extrabold text-primary">12</span>
+</div>
+<div class="flex flex-col justify-center">
+<h4 class="text-on-surface font-bold text-sm">Ceramic Coating Prep</h4>
+<p class="text-on-surface-variant text-xs">09:00 AM - Workshop A</p>
+</div>
+</div>
+<!-- Date Item 2 -->
+<div class="flex gap-4">
+<div class="w-14 h-14 rounded-xl bg-surface-container-highest flex flex-col items-center justify-center border border-white/5">
+<span class="text-[10px] font-label-caps uppercase text-on-surface-variant">May</span>
+<span class="text-lg font-extrabold text-primary">14</span>
+</div>
+<div class="flex flex-col justify-center">
+<h4 class="text-on-surface font-bold text-sm">Customer Pickup</h4>
+<p class="text-on-surface-variant text-xs">04:30 PM - Showroom</p>
+</div>
+</div>
+<!-- Date Item 3 -->
+<div class="flex gap-4">
+<div class="w-14 h-14 rounded-xl bg-surface-container-highest flex flex-col items-center justify-center border border-white/5">
+<span class="text-[10px] font-label-caps uppercase text-on-surface-variant">May</span>
+<span class="text-lg font-extrabold text-primary">15</span>
+</div>
+<div class="flex flex-col justify-center">
+<h4 class="text-on-surface font-bold text-sm">Team Review Session</h4>
+<p class="text-on-surface-variant text-xs">11:00 AM - Office</p>
+</div>
+</div>
+</div>
+<div class="mt-10 p-4 rounded-xl bg-primary-container/10 border border-primary-container/20">
+<div class="flex justify-between items-center mb-2">
+<span class="text-[10px] font-label-caps uppercase text-primary tracking-widest font-bold">Workshop Capacity</span>
+<span class="text-[10px] font-bold text-on-surface">82%</span>
+</div>
+<div class="h-1.5 w-full bg-white/5 rounded-full overflow-hidden">
+<div class="h-full bg-primary-container shadow-[0_0_8px_#7B2DFF]" style="width: 82%"></div>
+</div>
+</div>
+</div>
+</div>
+<!-- System Alerts -->
+<div class="glass-panel rounded-2xl p-6 border-l-4 border-l-secondary-container">
+<h3 class="font-label-caps text-label-caps text-secondary-container uppercase tracking-widest font-bold mb-4">System Alerts</h3>
+<div class="space-y-4">
+<div class="flex gap-3">
+<span class="material-symbols-outlined text-secondary-fixed-dim">warning</span>
+<p class="text-xs text-on-surface-variant leading-relaxed">Ceramic Pro stock running low in Warehouse B. Reorder required within 48h.</p>
+</div>
+<div class="flex gap-3">
+<span class="material-symbols-outlined text-secondary-fixed-dim">check_circle</span>
+<p class="text-xs text-on-surface-variant leading-relaxed">Weekly analytics report successfully generated and sent to CEO.</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Footer -->
+<footer class="mt-auto border-t border-outline-variant/20 py-8 px-8 bg-surface-container-lowest">
+<div class="max-w-[1600px] mx-auto flex flex-col md:flex-row justify-between items-center gap-4">
+<p class="text-on-surface-variant text-xs font-label-caps uppercase tracking-wider">© 2024 LK Gloss & Detail. High-Performance Aesthetics.</p>
+<div class="flex gap-8">
+<a class="text-on-surface-variant text-[10px] font-label-caps uppercase hover:text-primary transition-all" href="#">Impressum</a>
+<a class="text-on-surface-variant text-[10px] font-label-caps uppercase hover:text-primary transition-all" href="#">Datenschutz</a>
+<a class="text-on-surface-variant text-[10px] font-label-caps uppercase hover:text-primary transition-all" href="#">AGB</a>
+</div>
+</div>
+</footer>
+</main>
+</div>
+<!-- Mobile Navigation Overlay (Placeholder for JS activation) -->
+<div class="fixed inset-0 bg-background/90 backdrop-blur-md z-[100] translate-x-full transition-transform duration-500 md:hidden" id="mobile-nav">
+<div class="p-8">
+<div class="flex justify-between items-center mb-12">
+<span class="font-headline-md text-headline-md font-extrabold tracking-tighter text-on-surface uppercase">LK Gloss</span>
+<button class="text-on-surface"><span class="material-symbols-outlined text-4xl">close</span></button>
+</div>
+<nav class="space-y-6">
+<a class="block font-headline-lg text-headline-lg-mobile text-on-surface" href="#">Dashboard</a>
+<a class="block font-headline-lg text-headline-lg-mobile text-on-surface-variant" href="#">Appointments</a>
+<a class="block font-headline-lg text-headline-lg-mobile text-on-surface-variant" href="#">Analytics</a>
+<a class="block font-headline-lg text-headline-lg-mobile text-on-surface-variant" href="#">Customers</a>
+<a class="block font-headline-lg text-headline-lg-mobile text-on-surface-variant" href="#">Settings</a>
+</nav>
+</div>
+</div>
+<script>
+        // Simple micro-interaction for rows
+        document.querySelectorAll('tr').forEach(row => {
+            row.addEventListener('mouseenter', () => {
+                row.style.transform = 'translateX(4px)';
+                row.style.transition = 'transform 0.3s ease';
+            });
+            row.addEventListener('mouseleave', () => {
+                row.style.transform = 'translateX(0)';
+            });
+        });
+    </script>
+</body></html>

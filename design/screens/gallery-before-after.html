@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="de"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Gallery | LK Gloss &amp; Detail</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700;800&amp;family=Inter:wght@400;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                "on-secondary-container": "#fff0ff",
+                "primary-fixed-dim": "#d1bcff",
+                "on-tertiary-fixed": "#29074a",
+                "on-error": "#690005",
+                "on-tertiary": "#3f2160",
+                "on-primary-fixed-variant": "#5800c8",
+                "error": "#ffb4ab",
+                "inverse-primary": "#731ef7",
+                "secondary-fixed": "#f8d8ff",
+                "tertiary": "#dbb8ff",
+                "background": "#131313",
+                "on-background": "#e5e2e1",
+                "tertiary-container": "#78589b",
+                "primary-container": "#7b2dff",
+                "on-surface": "#e5e2e1",
+                "outline-variant": "#4a4456",
+                "secondary-container": "#b303f2",
+                "on-primary-container": "#ece0ff",
+                "surface-variant": "#353534",
+                "primary-fixed": "#eaddff",
+                "surface": "#131313",
+                "surface-container-high": "#2a2a2a",
+                "secondary-fixed-dim": "#ebb2ff",
+                "inverse-surface": "#e5e2e1",
+                "surface-container-lowest": "#0e0e0e",
+                "secondary": "#ebb2ff",
+                "surface-dim": "#131313",
+                "surface-bright": "#393939",
+                "inverse-on-surface": "#313030",
+                "surface-tint": "#d1bcff",
+                "outline": "#958da2",
+                "surface-container-low": "#1c1b1b",
+                "on-error-container": "#ffdad6",
+                "tertiary-fixed": "#efdbff",
+                "error-container": "#93000a",
+                "on-secondary-fixed": "#320047",
+                "on-primary": "#3d008f",
+                "surface-container-highest": "#353534",
+                "on-secondary": "#520071",
+                "on-surface-variant": "#ccc3d9",
+                "on-tertiary-fixed-variant": "#573878",
+                "primary": "#d1bcff",
+                "on-secondary-fixed-variant": "#74009f",
+                "on-tertiary-container": "#f1dfff",
+                "surface-container": "#201f1f",
+                "tertiary-fixed-dim": "#dbb8ff",
+                "on-primary-fixed": "#24005b"
+            },
+            "borderRadius": {
+                "DEFAULT": "0.125rem",
+                "lg": "0.25rem",
+                "xl": "0.5rem",
+                "full": "0.75rem"
+            },
+            "spacing": {
+                "section-gap": "120px",
+                "base": "8px",
+                "gutter": "24px",
+                "margin-mobile": "16px",
+                "margin-desktop": "64px",
+                "container-max": "1280px"
+            },
+            "fontFamily": {
+                "headline-lg": ["Montserrat"],
+                "headline-md": ["Montserrat"],
+                "body-lg": ["Inter"],
+                "display-lg": ["Montserrat"],
+                "body-md": ["Inter"],
+                "headline-lg-mobile": ["Montserrat"],
+                "label-caps": ["Inter"]
+            },
+            "fontSize": {
+                "headline-lg": ["40px", {"lineHeight": "1.2", "letterSpacing": "-0.01em", "fontWeight": "700"}],
+                "headline-md": ["24px", {"lineHeight": "1.3", "fontWeight": "600"}],
+                "body-lg": ["18px", {"lineHeight": "1.6", "fontWeight": "400"}],
+                "display-lg": ["64px", {"lineHeight": "1.1", "letterSpacing": "-0.02em", "fontWeight": "800"}],
+                "body-md": ["16px", {"lineHeight": "1.6", "fontWeight": "400"}],
+                "headline-lg-mobile": ["32px", {"lineHeight": "1.2", "fontWeight": "700"}],
+                "label-caps": ["12px", {"lineHeight": "1.0", "letterSpacing": "0.1em", "fontWeight": "700"}]
+            }
+          }
+        }
+      }
+    </script>
+<style>
+        .carbon-pattern {
+            background-image: linear-gradient(45deg, #1a1a1a 25%, transparent 25%), linear-gradient(-45deg, #1a1a1a 25%, transparent 25%), linear-gradient(45deg, transparent 75%, #1a1a1a 75%), linear-gradient(-45deg, transparent 75%, #1a1a1a 75%);
+            background-size: 4px 4px;
+            background-position: 0 0, 0 2px, 2px -2px, -2px 0px;
+            opacity: 0.05;
+        }
+        .neon-glow {
+            box-shadow: 0 0 15px rgba(192, 38, 255, 0.2);
+        }
+        .comparison-slider {
+            position: relative;
+            overflow: hidden;
+            cursor: ew-resize;
+        }
+        .comparison-slider img {
+            display: block;
+            width: 100%;
+            pointer-events: none;
+        }
+        .comparison-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 50%;
+            height: 100%;
+            overflow: hidden;
+        }
+        .comparison-handle {
+            position: absolute;
+            top: 0;
+            left: 50%;
+            width: 2px;
+            height: 100%;
+            background: #d1bcff;
+            box-shadow: 0 0 10px #7b2dff;
+            pointer-events: none;
+            z-index: 10;
+        }
+        .handle-circle {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 40px;
+            height: 40px;
+            background: #7b2dff;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 0 15px #c026ff;
+        }
+    </style>
+</head>
+<body class="bg-background text-on-background selection:bg-primary/30 selection:text-primary">
+<!-- TopNavBar -->
+<header class="fixed top-0 w-full z-50 bg-background/60 backdrop-blur-xl border-b border-white/10 shadow-[0px_0px_15px_rgba(123,45,255,0.2)]">
+<div class="flex justify-between items-center h-20 px-margin-mobile md:px-margin-desktop max-w-container-max mx-auto">
+<div class="font-headline-md text-headline-md font-bold tracking-tighter text-on-surface uppercase">
+                LK Gloss &amp; Detail
+            </div>
+<nav class="hidden md:flex items-center gap-8">
+<a class="font-body-md text-body-md text-on-surface-variant hover:text-primary transition-colors active:scale-95" href="#">Services</a>
+<a class="font-body-md text-body-md text-primary font-bold border-b-2 border-primary pb-1 active:scale-95" href="#">Gallery</a>
+<a class="font-body-md text-body-md text-on-surface-variant hover:text-primary transition-colors active:scale-95" href="#">Valuation</a>
+<a class="font-body-md text-body-md text-on-surface-variant hover:text-primary transition-colors active:scale-95" href="#">Contact</a>
+</nav>
+<div class="flex items-center gap-4">
+<button class="text-on-surface-variant hover:bg-white/5 p-2 rounded-full transition-all">
+<span class="material-symbols-outlined">language</span>
+</button>
+<button class="bg-gradient-to-r from-[#7B2DFF] to-[#C026FF] text-white px-6 py-2.5 rounded-lg font-bold hover:shadow-[0_0_20px_rgba(192,38,255,0.5)] transition-all active:scale-95">
+                    Book Now
+                </button>
+</div>
+</div>
+</header>
+<main class="pt-32 pb-section-gap">
+<!-- Hero Section -->
+<section class="max-w-container-max mx-auto px-margin-mobile md:px-margin-desktop mb-16">
+<div class="flex flex-col gap-4 max-w-2xl">
+<span class="font-label-caps text-label-caps text-primary tracking-[0.2em] uppercase">Visual Excellence</span>
+<h1 class="font-display-lg text-display-lg text-transparent bg-clip-text bg-gradient-to-b from-white to-white/60">Portfolio.</h1>
+<p class="font-body-lg text-body-lg text-on-surface-variant">Witness the transformation of luxury vehicles through our meticulous Obsidian detailing process. Precision in every pixel, perfection in every reflection.</p>
+</div>
+</section>
+<!-- Filters -->
+<section class="max-w-container-max mx-auto px-margin-mobile md:px-margin-desktop mb-12">
+<div class="flex flex-wrap gap-4 items-center">
+<button class="px-6 py-2 rounded-full border border-primary bg-primary/10 text-primary font-bold font-body-md transition-all">All Projects</button>
+<button class="px-6 py-2 rounded-full border border-white/10 hover:border-primary/50 text-on-surface-variant hover:text-primary font-body-md transition-all">Interior</button>
+<button class="px-6 py-2 rounded-full border border-white/10 hover:border-primary/50 text-on-surface-variant hover:text-primary font-body-md transition-all">Paint Correction</button>
+<button class="px-6 py-2 rounded-full border border-white/10 hover:border-primary/50 text-on-surface-variant hover:text-primary font-body-md transition-all">Ceramic Coating</button>
+</div>
+</section>
+<!-- Gallery Grid -->
+<section class="max-w-container-max mx-auto px-margin-mobile md:px-margin-desktop">
+<div class="grid grid-cols-1 md:grid-cols-2 gap-gutter">
+<!-- Main Featured Comparison (Image from Prompt) -->
+<div class="md:col-span-2 group relative overflow-hidden rounded-xl border border-white/10 bg-surface-container-low p-2">
+<div class="absolute inset-0 carbon-pattern pointer-events-none"></div>
+<div class="comparison-slider rounded-lg h-[600px] w-full" id="main-slider">
+<!-- Before (The base image) -->
+<div class="h-full w-full bg-center bg-cover" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuBtpbFdx7upy0qG-4gSq1_l4CfdnxlecRThaQEQUfFa8cHeBhf9h3T1Fr7yq8Cbl9xp4BmrhMC_hCvr50goIarMOjQRtNTtHsamjgCvq_EV0X_uhqpUj60LAj0wb6dhR1SOGXDlm2Xz6XYY8E4xZkjinQgMQAKvZ4kE79QoJGZEhxfBqJSafMt33Ysd9KkKv8Ru_RbHixUuVJne2F9uKQoHrqcj8PLfMOzT6FbYpuPcb2qfnPyys3JYVkgOn6ZMNahorJTy2uVLcTzz')"></div>
+<!-- After Overlay (Simulated via clipping or separate img) -->
+<div class="comparison-overlay">
+<div class="h-full w-full bg-center bg-cover grayscale-[0.2]" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuBtpbFdx7upy0qG-4gSq1_l4CfdnxlecRThaQEQUfFa8cHeBhf9h3T1Fr7yq8Cbl9xp4BmrhMC_hCvr50goIarMOjQRtNTtHsamjgCvq_EV0X_uhqpUj60LAj0wb6dhR1SOGXDlm2Xz6XYY8E4xZkjinQgMQAKvZ4kE79QoJGZEhxfBqJSafMt33Ysd9KkKv8Ru_RbHixUuVJne2F9uKQoHrqcj8PLfMOzT6FbYpuPcb2qfnPyys3JYVkgOn6ZMNahorJTy2uVLcTzz'); width: 200%;"></div>
+</div>
+<!-- UI Elements -->
+<div class="comparison-handle">
+<div class="handle-circle">
+<span class="material-symbols-outlined text-white">unfold_more</span>
+</div>
+</div>
+<div class="absolute bottom-6 left-6 z-20 px-3 py-1 bg-black/80 backdrop-blur-md rounded border border-white/10 font-label-caps text-label-caps text-white">BEFORE</div>
+<div class="absolute bottom-6 right-6 z-20 px-3 py-1 bg-primary/80 backdrop-blur-md rounded border border-primary/50 font-label-caps text-label-caps text-white">AFTER</div>
+</div>
+<div class="mt-4 px-4 pb-4">
+<div class="flex justify-between items-end">
+<div>
+<h3 class="font-headline-md text-headline-md text-white mb-1">Executive SUV Deep Clean</h3>
+<p class="font-body-md text-body-md text-on-surface-variant">Full interior restoration, leather conditioning, and microbial sanitization.</p>
+</div>
+<div class="flex gap-2">
+<span class="px-3 py-1 bg-secondary-container/20 text-secondary border border-secondary/30 rounded-full font-label-caps text-[10px]">PREMIUM</span>
+<span class="px-3 py-1 bg-primary-container/20 text-primary border border-primary/30 rounded-full font-label-caps text-[10px]">INTERIOR</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Secondary Comparison 1 -->
+<div class="group relative overflow-hidden rounded-xl border border-white/10 bg-surface-container-low p-2 hover:border-primary/50 transition-colors">
+<div class="aspect-video relative rounded-lg overflow-hidden bg-surface-container-high">
+<img class="w-full h-full object-cover" data-alt="A high-contrast side-by-side comparison of a luxury black Porsche 911 door panel. The left side shows heavy swirl marks and scratches under a bright neon purple inspection light, while the right side is perfectly polished to a mirror-like obsidian finish reflecting the studio lights. The aesthetic is dark and high-tech." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAyFb-JuiPpDjIwxcQcgxW0JKqOiqqEG1qqUQaLmpRol0uziXxZqqtQrQkGLJubQYYstCivvIU5gLP-gHd2J5VeCZnVPxCHcNaXbjbhGRZ8naYDm3O8o7VyiZ-ll92xRebynIo5iZQCgQiQ5AlSEplIFIjGm8yG4sdy8Ybl2xSJwNqtI1Aa_JhnB0G8PjDESaScCcRzVxMBzRVayNViWRhW9r6i5Palj0CRkvXreuawnt49w9oqdRfdRrt1R276kn1CD8pt_bzRiCfU"/>
+<div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
+<div class="absolute bottom-4 left-4 font-label-caps text-[10px] text-white bg-black/50 px-2 py-1 rounded">PAINT CORRECTION</div>
+</div>
+<div class="mt-4 px-2 pb-2">
+<h4 class="font-headline-md text-white text-[18px]">Porsche 911 Obsidian Restoration</h4>
+<p class="font-body-md text-body-md text-on-surface-variant text-sm">3-Stage correction removing 95% of defects.</p>
+</div>
+</div>
+<!-- Secondary Comparison 2 -->
+<div class="group relative overflow-hidden rounded-xl border border-white/10 bg-surface-container-low p-2 hover:border-primary/50 transition-colors">
+<div class="aspect-video relative rounded-lg overflow-hidden bg-surface-container-high">
+<img class="w-full h-full object-cover" data-alt="A macro shot of water beading on a ceramic coated Audi RS6 hood. The water droplets are perfectly spherical and glistening like diamonds against a deep metallic gray paint. Soft neon purple light glows from the background, highlighting the sleek automotive curves. Ultra-modern luxury automotive photography style." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDDl8YaXurMVXRJiKpxgwGG-h1BNYImjU1WyPWMTT5FD7a8ew9nnHlH6uomFYq2zMwdHyyH8xa8t05I-WjcFf8jdZ-YONUu_9e3ekgZQTvqBU0aVZqhSFzlJRx-tHb7PtKBaD6DKRuJ9nCArjPftGRzOf7RwsLH1acKLYWrAHDsvkTiQ-efYX7mutsNSXDWHFGOKpLSGO3hyAw3mu6ZOKc-YLQerZQkinKZzKPuYEg9B0GhRMkI9cgx6PSvLYkhsyI-qwibKdd_rZmi"/>
+<div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
+<div class="absolute bottom-4 left-4 font-label-caps text-[10px] text-white bg-black/50 px-2 py-1 rounded">CERAMIC COATING</div>
+</div>
+<div class="mt-4 px-2 pb-2">
+<h4 class="font-headline-md text-white text-[18px]">Audi RS6 Graphene Shield</h4>
+<p class="font-body-md text-body-md text-on-surface-variant text-sm">5-Year protection with extreme hydrophobic properties.</p>
+</div>
+</div>
+<!-- Secondary Comparison 3 -->
+<div class="group relative overflow-hidden rounded-xl border border-white/10 bg-surface-container-low p-2 hover:border-primary/50 transition-colors">
+<div class="aspect-video relative rounded-lg overflow-hidden bg-surface-container-high">
+<img class="w-full h-full object-cover" data-alt="The interior dashboard of a vintage Mercedes-Benz, shown in a before and after split. The before side is dusty and faded by UV rays. The after side is deep black, rejuvenated, and perfectly matte with silver accents gleaming. The lighting is sophisticated, mimicking a high-end showroom at night." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCf7H3IsIKI40bIo5n4PKxUbcPr7ehUfDiDtW2Zyqnl1L5dw2O99n-fKU80LcvtkoYA7YPqqvfNKhE3PO6oTMsM2dxTdwd5fr6O7WN85GI4zvCIBzRFgfRK6KkW65p7FIp2yUPwAShI7r3j6nv-9Geh8fFtWB_fK-L1pVzfAG_NgO4mUXy1cDsYkR_wxaOHF4bbOLDQjOFANqgRbM6SbR71ZfzNguy8NsDROoZZmr1BQ1xwBP991sQvT02JT1oyzcjIIFaFHAo4_xqq"/>
+<div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
+<div class="absolute bottom-4 left-4 font-label-caps text-[10px] text-white bg-black/50 px-2 py-1 rounded">INTERIOR</div>
+</div>
+<div class="mt-4 px-2 pb-2">
+<h4 class="font-headline-md text-white text-[18px]">Classic Mercedes UV Recovery</h4>
+<p class="font-body-md text-body-md text-on-surface-variant text-sm">Full trim restoration and plastic rejuvenation.</p>
+</div>
+</div>
+<!-- Secondary Comparison 4 -->
+<div class="group relative overflow-hidden rounded-xl border border-white/10 bg-surface-container-low p-2 hover:border-primary/50 transition-colors">
+<div class="aspect-video relative rounded-lg overflow-hidden bg-surface-container-high">
+<img class="w-full h-full object-cover" data-alt="A wheel well and rim of a Ferrari Roma being cleaned. The left side is covered in heavy brown brake dust. The right side is pristine, with the silver alloy shimmering and the red brake caliper popping in contrast. The background is a clean, dark detailing studio with purple ambient lighting." src="https://lh3.googleusercontent.com/aida-public/AB6AXuB8-aOUAn3r7_vKJcd-xm-_N1gOpATePTtClwH2ujVWG9h7yIxz-76Ik4OobSZDY0eFujX_9arUPAmtWsFL9FuOik5HEeKJt2ddrcLDs9b_dtDQ7_Eo2yWZwBTcLt74lUkzteMcTC8CRwR8912bAe4zyq3ti4WwOtg6Y-C8VD7DEGp5rshMA21UKMkQe4czkVs9OogwrAB0zcy9hgGgAuU39l_xgUmcqUgpAc_giMJTtY3wfDx6N7N77YCQzZvXLL2Cnbr_rR4xcBmA"/>
+<div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
+<div class="absolute bottom-4 left-4 font-label-caps text-[10px] text-white bg-black/50 px-2 py-1 rounded">WHEELS &amp; CHASSIS</div>
+</div>
+<div class="mt-4 px-2 pb-2">
+<h4 class="font-headline-md text-white text-[18px]">Ferrari Brake Dust Removal</h4>
+<p class="font-body-md text-body-md text-on-surface-variant text-sm">Precision steam cleaning and rim coating.</p>
+</div>
+</div>
+</div>
+</section>
+<!-- CTA Section -->
+<section class="mt-section-gap max-w-container-max mx-auto px-margin-mobile md:px-margin-desktop">
+<div class="relative overflow-hidden rounded-2xl bg-surface-container-low border border-white/5 p-12 text-center">
+<div class="absolute inset-0 carbon-pattern"></div>
+<div class="absolute -top-24 -left-24 w-96 h-96 bg-primary/20 blur-[120px] rounded-full"></div>
+<div class="absolute -bottom-24 -right-24 w-96 h-96 bg-secondary/20 blur-[120px] rounded-full"></div>
+<div class="relative z-10">
+<h2 class="font-headline-lg text-headline-lg mb-6">Ready for your Transformation?</h2>
+<p class="font-body-lg text-body-lg text-on-surface-variant max-w-xl mx-auto mb-10">Don't let your investment fade. Get a personalized quote for your vehicle today.</p>
+<div class="flex flex-col sm:flex-row gap-4 justify-center">
+<button class="bg-gradient-to-r from-[#7B2DFF] to-[#C026FF] text-white px-10 py-4 rounded-lg font-bold hover:shadow-[0_0_30px_rgba(192,38,255,0.6)] transition-all active:scale-95">Get a Valuation</button>
+<button class="border border-outline-variant hover:border-primary text-on-surface-variant hover:text-primary px-10 py-4 rounded-lg font-bold transition-all active:scale-95">Contact Workshop</button>
+</div>
+</div>
+</div>
+</section>
+</main>
+<!-- Footer -->
+<footer class="bg-surface-container-lowest w-full py-section-gap border-t border-outline-variant">
+<div class="grid grid-cols-1 md:grid-cols-4 gap-gutter px-margin-mobile md:px-margin-desktop max-w-container-max mx-auto">
+<div class="flex flex-col gap-4">
+<div class="font-headline-md text-headline-md text-primary-fixed-dim font-bold tracking-tighter uppercase">LK Gloss &amp; Detail</div>
+<p class="font-body-md text-body-md text-on-surface-variant max-w-xs">
+                    © 2024 LK Gloss &amp; Detail. <br/>High-Performance Aesthetics.
+                </p>
+</div>
+<div class="flex flex-col gap-4">
+<span class="font-label-caps text-label-caps text-primary uppercase">Quick Links</span>
+<nav class="flex flex-col gap-2">
+<a class="font-body-md text-body-md text-on-surface-variant hover:text-primary-fixed-dim hover:underline transition-all" href="#">Home</a>
+<a class="font-body-md text-body-md text-primary underline transition-all" href="#">Gallery</a>
+<a class="font-body-md text-body-md text-on-surface-variant hover:text-primary-fixed-dim hover:underline transition-all" href="#">Services</a>
+<a class="font-body-md text-body-md text-on-surface-variant hover:text-primary-fixed-dim hover:underline transition-all" href="#">Valuation</a>
+</nav>
+</div>
+<div class="flex flex-col gap-4">
+<span class="font-label-caps text-label-caps text-primary uppercase">Workshop</span>
+<p class="font-body-md text-body-md text-on-surface-variant">
+                    Gewerbepark Nord 12<br/>
+                    80333 München, Germany<br/>
+                    Mon - Sat: 08:00 - 18:00
+                </p>
+</div>
+<div class="flex flex-col gap-4">
+<span class="font-label-caps text-label-caps text-primary uppercase">Legal</span>
+<nav class="flex flex-col gap-2">
+<a class="font-label-caps text-label-caps text-on-surface-variant hover:text-primary transition-all" href="#">Impressum</a>
+<a class="font-label-caps text-label-caps text-on-surface-variant hover:text-primary transition-all" href="#">Datenschutz</a>
+<a class="font-label-caps text-label-caps text-on-surface-variant hover:text-primary transition-all" href="#">AGB</a>
+<a class="font-label-caps text-label-caps text-on-surface-variant hover:text-primary transition-all" href="#">Cookies</a>
+</nav>
+</div>
+</div>
+</footer>
+<script>
+        // Simple Comparison Slider Logic
+        const slider = document.getElementById('main-slider');
+        const handle = slider.querySelector('.comparison-handle');
+        const overlay = slider.querySelector('.comparison-overlay');
+
+        function moveSlider(e) {
+            const rect = slider.getBoundingClientRect();
+            let x = (e.clientX || e.touches[0].clientX) - rect.left;
+            
+            if (x < 0) x = 0;
+            if (x > rect.width) x = rect.width;
+
+            const percentage = (x / rect.width) * 100;
+            handle.style.left = percentage + '%';
+            overlay.style.width = percentage + '%';
+        }
+
+        slider.addEventListener('mousemove', moveSlider);
+        slider.addEventListener('touchmove', moveSlider);
+
+        // Interaction scale effect for buttons
+        document.querySelectorAll('button').forEach(btn => {
+            btn.addEventListener('mousedown', () => btn.classList.add('scale-95'));
+            btn.addEventListener('mouseup', () => btn.classList.remove('scale-95'));
+        });
+    </script>
+</body></html>

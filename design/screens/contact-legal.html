@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="de"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Contact & Impressum | LK Gloss & Detail</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800&family=Inter:wght@400;600;700&family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&family=Montserrat:wght@100..900&display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "on-secondary-container": "#fff0ff",
+                    "primary-fixed-dim": "#d1bcff",
+                    "on-tertiary-fixed": "#29074a",
+                    "on-error": "#690005",
+                    "on-tertiary": "#3f2160",
+                    "on-primary-fixed-variant": "#5800c8",
+                    "error": "#ffb4ab",
+                    "inverse-primary": "#731ef7",
+                    "secondary-fixed": "#f8d8ff",
+                    "tertiary": "#dbb8ff",
+                    "background": "#131313",
+                    "on-background": "#e5e2e1",
+                    "tertiary-container": "#78589b",
+                    "primary-container": "#7b2dff",
+                    "on-surface": "#e5e2e1",
+                    "outline-variant": "#4a4456",
+                    "secondary-container": "#b303f2",
+                    "on-primary-container": "#ece0ff",
+                    "surface-variant": "#353534",
+                    "primary-fixed": "#eaddff",
+                    "surface": "#131313",
+                    "surface-container-high": "#2a2a2a",
+                    "secondary-fixed-dim": "#ebb2ff",
+                    "inverse-surface": "#e5e2e1",
+                    "surface-container-lowest": "#0e0e0e",
+                    "secondary": "#ebb2ff",
+                    "surface-dim": "#131313",
+                    "surface-bright": "#393939",
+                    "inverse-on-surface": "#313030",
+                    "surface-tint": "#d1bcff",
+                    "outline": "#958da2",
+                    "surface-container-low": "#1c1b1b",
+                    "on-error-container": "#ffdad6",
+                    "tertiary-fixed": "#efdbff",
+                    "error-container": "#93000a",
+                    "on-secondary-fixed": "#320047",
+                    "on-primary": "#3d008f",
+                    "surface-container-highest": "#353534",
+                    "on-secondary": "#520071",
+                    "on-surface-variant": "#ccc3d9",
+                    "on-tertiary-fixed-variant": "#573878",
+                    "primary": "#d1bcff",
+                    "on-secondary-fixed-variant": "#74009f",
+                    "on-tertiary-container": "#f1dfff",
+                    "surface-container": "#201f1f",
+                    "tertiary-fixed-dim": "#dbb8ff",
+                    "on-primary-fixed": "#24005b"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.125rem",
+                    "lg": "0.25rem",
+                    "xl": "0.5rem",
+                    "full": "0.75rem"
+            },
+            "spacing": {
+                    "section-gap": "120px",
+                    "base": "8px",
+                    "gutter": "24px",
+                    "margin-mobile": "16px",
+                    "margin-desktop": "64px",
+                    "container-max": "1280px"
+            },
+            "fontFamily": {
+                    "headline-lg": ["Montserrat"],
+                    "headline-md": ["Montserrat"],
+                    "body-lg": ["Inter"],
+                    "display-lg": ["Montserrat"],
+                    "body-md": ["Inter"],
+                    "headline-lg-mobile": ["Montserrat"],
+                    "label-caps": ["Inter"]
+            },
+            "fontSize": {
+                    "headline-lg": ["40px", {"lineHeight": "1.2", "letterSpacing": "-0.01em", "fontWeight": "700"}],
+                    "headline-md": ["24px", {"lineHeight": "1.3", "fontWeight": "600"}],
+                    "body-lg": ["18px", {"lineHeight": "1.6", "fontWeight": "400"}],
+                    "display-lg": ["64px", {"lineHeight": "1.1", "letterSpacing": "-0.02em", "fontWeight": "800"}],
+                    "body-md": ["16px", {"lineHeight": "1.6", "fontWeight": "400"}],
+                    "headline-lg-mobile": ["32px", {"lineHeight": "1.2", "fontWeight": "700"}],
+                    "label-caps": ["12px", {"lineHeight": "1.0", "letterSpacing": "0.1em", "fontWeight": "700"}]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+      .glass-card {
+        background: rgba(18, 18, 18, 0.8);
+        backdrop-filter: blur(20px);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+      }
+      .neon-border-hover:hover {
+        border-color: #C026FF;
+        box-shadow: 0px 0px 12px rgba(192, 38, 255, 0.3);
+      }
+      .input-glow:focus {
+        outline: none;
+        border-color: #C026FF;
+        box-shadow: 0px 0px 8px rgba(192, 38, 255, 0.5);
+      }
+      .carbon-pattern {
+        background-image: radial-gradient(#222 1px, transparent 0);
+        background-size: 4px 4px;
+        opacity: 0.05;
+      }
+      .material-symbols-outlined {
+        font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+      }
+    </style>
+</head>
+<body class="bg-background text-on-background font-body-md overflow-x-hidden selection:bg-primary-container selection:text-white">
+<!-- TopNavBar -->
+<header class="fixed top-0 w-full z-50 bg-background/60 backdrop-blur-xl border-b border-white/10 shadow-[0px_0px_15px_rgba(123,45,255,0.2)]">
+<nav class="flex justify-between items-center h-20 px-margin-mobile md:px-margin-desktop max-w-container-max mx-auto">
+<div class="font-headline-md text-headline-md font-bold tracking-tighter text-on-surface uppercase">
+                LK Gloss & Detail
+            </div>
+<div class="hidden md:flex items-center gap-8">
+<a class="font-body-md text-body-md text-on-surface-variant hover:text-primary transition-colors" href="#">Services</a>
+<a class="font-body-md text-body-md text-on-surface-variant hover:text-primary transition-colors" href="#">Gallery</a>
+<a class="font-body-md text-body-md text-on-surface-variant hover:text-primary transition-colors" href="#">Valuation</a>
+<a class="font-body-md text-body-md text-primary font-bold border-b-2 border-primary pb-1" href="#">Contact</a>
+</div>
+<div class="flex items-center gap-4">
+<button class="flex items-center gap-1 text-on-surface-variant hover:text-primary transition-all p-2 rounded-lg hover:bg-white/5">
+<span class="material-symbols-outlined">language</span>
+<span class="font-label-caps text-label-caps">DE</span>
+</button>
+<button class="bg-gradient-to-r from-[#7B2DFF] to-[#C026FF] text-white px-6 py-2 rounded-lg font-bold hover:shadow-[0px_0px_15px_rgba(192,38,255,0.6)] active:scale-95 transition-all hidden md:block">
+                    Book Now
+                </button>
+</div>
+</nav>
+</header>
+<main class="pt-32 pb-section-gap px-margin-mobile md:px-margin-desktop max-w-container-max mx-auto">
+<!-- Hero Section -->
+<section class="mb-20 text-center md:text-left">
+<h1 class="font-display-lg text-headline-lg-mobile md:text-display-lg text-white mb-4">
+                Let's Perfect <span class="text-transparent bg-clip-text bg-gradient-to-r from-primary to-secondary">Your Drive.</span>
+</h1>
+<p class="font-body-lg text-body-lg text-on-surface-variant max-w-2xl">
+                Ready for the Obsidian finish? Reach out for custom quotes, high-performance ceramic coating consultations, or simple detailing inquiries.
+            </p>
+</section>
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-gutter">
+<!-- Contact Form Section -->
+<div class="lg:col-span-7">
+<div class="glass-card p-8 rounded-xl relative overflow-hidden">
+<div class="absolute inset-0 carbon-pattern pointer-events-none"></div>
+<form class="relative z-10 space-y-6">
+<div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+<div class="space-y-2">
+<label class="font-label-caps text-label-caps text-primary uppercase">Full Name</label>
+<input class="w-full bg-surface-container-low border border-outline-variant p-4 rounded-lg input-glow text-on-surface placeholder:text-outline" placeholder="John Doe" type="text"/>
+</div>
+<div class="space-y-2">
+<label class="font-label-caps text-label-caps text-primary uppercase">Email Address</label>
+<input class="w-full bg-surface-container-low border border-outline-variant p-4 rounded-lg input-glow text-on-surface placeholder:text-outline" placeholder="john@automotive.de" type="email"/>
+</div>
+</div>
+<div class="space-y-2">
+<label class="font-label-caps text-label-caps text-primary uppercase">Service Interest</label>
+<select class="w-full bg-surface-container-low border border-outline-variant p-4 rounded-lg input-glow text-on-surface appearance-none">
+<option>Ceramic Coating (Obsidian Bundle)</option>
+<option>Paint Correction & Polish</option>
+<option>Interior Deep Clean</option>
+<option>Showroom Maintenance</option>
+</select>
+</div>
+<div class="space-y-2">
+<label class="font-label-caps text-label-caps text-primary uppercase">Message</label>
+<textarea class="w-full bg-surface-container-low border border-outline-variant p-4 rounded-lg input-glow text-on-surface placeholder:text-outline" placeholder="Tell us about your vehicle and specific requirements..." rows="5"></textarea>
+</div>
+<button class="w-full bg-gradient-to-r from-[#7B2DFF] to-[#C026FF] text-white py-4 rounded-lg font-bold text-lg hover:shadow-[0px_0px_20px_rgba(192,38,255,0.4)] transition-all transform active:scale-[0.98]" type="submit">
+                            Send Inquiry
+                        </button>
+</form>
+</div>
+</div>
+<!-- Sidebar Info Section -->
+<div class="lg:col-span-5 space-y-gutter">
+<!-- Quick Contact -->
+<div class="glass-card p-8 rounded-xl flex flex-col justify-between">
+<h3 class="font-headline-md text-headline-md text-white mb-6">Direct Access</h3>
+<div class="space-y-6">
+<a class="flex items-center gap-4 group" href="tel:+491234567890">
+<div class="w-12 h-12 rounded-full bg-surface-container-high flex items-center justify-center border border-outline-variant group-hover:border-primary transition-colors">
+<span class="material-symbols-outlined text-primary">call</span>
+</div>
+<div>
+<p class="font-label-caps text-label-caps text-on-surface-variant">Phone</p>
+<p class="text-body-lg text-white font-bold">+49 (0) 123 456 7890</p>
+</div>
+</a>
+<a class="flex items-center gap-4 group" href="https://wa.me/491234567890">
+<div class="w-12 h-12 rounded-full bg-surface-container-high flex items-center justify-center border border-outline-variant group-hover:border-[#25D366] transition-colors">
+<span class="material-symbols-outlined text-[#25D366]">chat</span>
+</div>
+<div>
+<p class="font-label-caps text-label-caps text-on-surface-variant">WhatsApp</p>
+<p class="text-body-lg text-white font-bold">Message our Detailers</p>
+</div>
+</a>
+<div class="flex items-center gap-4">
+<div class="w-12 h-12 rounded-full bg-surface-container-high flex items-center justify-center border border-outline-variant">
+<span class="material-symbols-outlined text-primary">schedule</span>
+</div>
+<div>
+<p class="font-label-caps text-label-caps text-on-surface-variant">Availability</p>
+<p class="text-body-lg text-white font-bold">Mon - Sat: 08:00 - 19:00</p>
+</div>
+</div>
+</div>
+</div>
+<!-- Dark Map -->
+<div class="glass-card h-[300px] rounded-xl overflow-hidden relative border border-outline-variant">
+<div class="absolute inset-0 bg-black/40 z-10 pointer-events-none"></div>
+<div class="w-full h-full grayscale invert-[0.9] contrast-[1.2]" data-location="Munich, Germany" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuC5fmW0yGmH90luZ57W1ACI7rizYEC_8DgE0vhPC3hBtQe9YuXtDQk30M5TiaDNvuvHZLRfEt41xETXWFfkJS0z5do2lz3H6mP5UWII30s5OGzYKrLb7FibnnpDlAFtOKS_GezUqAmJXIEa-_HK38IT2UpfGGgsc_tOk4qPVfvV4Yz4IkIZJkEwsCZxTXEm8-ibx8i9uhyM0OQI2lLsTRByMJN7UtxwPbUApGZYeQjYJynrDIenoPoV_ezuw3qNu9nNsXfnGhIrDNe0')"></div>
+<div class="absolute bottom-4 left-4 z-20 bg-background/80 backdrop-blur-md p-3 rounded-lg border border-white/10">
+<p class="font-label-caps text-[10px] text-primary">HEADQUARTERS</p>
+<p class="text-sm font-bold text-white">Gewerbegebiet Nord 12, München</p>
+</div>
+</div>
+</div>
+</div>
+<!-- Impressum Section -->
+<section class="mt-section-gap border-t border-outline-variant pt-20">
+<h2 class="font-headline-lg text-headline-lg-mobile md:text-headline-lg text-white mb-12">Impressum</h2>
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-12 text-on-surface-variant">
+<div class="space-y-4">
+<h4 class="font-label-caps text-label-caps text-primary">Angaben gemäß § 5 TMG</h4>
+<p class="font-body-md">
+                        LK Gloss & Detail GmbH<br/>
+                        Gewerbegebiet Nord 12<br/>
+                        80331 München, Deutschland
+                    </p>
+</div>
+<div class="space-y-4">
+<h4 class="font-label-caps text-label-caps text-primary">Kontakt</h4>
+<p class="font-body-md">
+                        Telefon: +49 (0) 123 456 7890<br/>
+                        E-Mail: info@lk-gloss.de
+                    </p>
+</div>
+<div class="space-y-4">
+<h4 class="font-label-caps text-label-caps text-primary">Vertreten durch</h4>
+<p class="font-body-md">
+                        Geschäftsführer: Lukas K. Schmidt
+                    </p>
+</div>
+<div class="space-y-4">
+<h4 class="font-label-caps text-label-caps text-primary">Registereintrag</h4>
+<p class="font-body-md">
+                        Eintragung im Handelsregister.<br/>
+                        Registergericht: Amtsgericht München<br/>
+                        Registernummer: HRB 123456
+                    </p>
+</div>
+<div class="space-y-4">
+<h4 class="font-label-caps text-label-caps text-primary">Umsatzsteuer-ID</h4>
+<p class="font-body-md">
+                        Umsatzsteuer-Identifikationsnummer gemäß §27 a Umsatzsteuergesetz:<br/>
+                        DE 987 654 321
+                    </p>
+</div>
+<div class="space-y-4">
+<h4 class="font-label-caps text-label-caps text-primary">EU-Streitschlichtung</h4>
+<p class="font-body-md text-sm leading-relaxed">
+                        Die Europäische Kommission stellt eine Plattform zur Online-Streitbeilegung (OS) bereit: 
+                        <a class="text-primary underline" href="https://ec.europa.eu/consumers/odr/">https://ec.europa.eu/consumers/odr/</a>.<br/>
+                        Unsere E-Mail-Adresse finden Sie oben im Impressum.
+                    </p>
+</div>
+</div>
+</section>
+</main>
+<!-- Footer -->
+<footer class="bg-surface-container-lowest border-t border-outline-variant w-full py-section-gap">
+<div class="grid grid-cols-1 md:grid-cols-4 gap-gutter px-margin-mobile md:px-margin-desktop max-w-container-max mx-auto">
+<div class="col-span-1 md:col-span-2">
+<div class="font-headline-md text-headline-md text-primary-fixed-dim mb-4">LK Gloss & Detail</div>
+<p class="font-body-md text-on-surface-variant max-w-sm mb-6">
+                    © 2024 LK Gloss & Detail. High-Performance Aesthetics. Precise engineering for the ultimate finish.
+                </p>
+<div class="flex gap-4">
+<button class="w-10 h-10 rounded-full border border-outline-variant flex items-center justify-center hover:bg-primary-container hover:text-white transition-all">
+<span class="material-symbols-outlined text-sm">language</span>
+</button>
+<!-- Language Selection Pills -->
+<div class="flex bg-surface-container-high rounded-full p-1 border border-outline-variant">
+<button class="px-3 py-1 rounded-full text-xs font-bold bg-primary text-on-primary">DE</button>
+<button class="px-3 py-1 rounded-full text-xs font-bold text-on-surface-variant hover:text-primary">EN</button>
+<button class="px-3 py-1 rounded-full text-xs font-bold text-on-surface-variant hover:text-primary">RU</button>
+</div>
+</div>
+</div>
+<div class="space-y-4">
+<h5 class="font-label-caps text-label-caps text-primary uppercase">Navigation</h5>
+<ul class="space-y-2">
+<li><a class="font-body-md text-on-surface-variant hover:text-primary-fixed-dim hover:underline transition-all" href="#">Services</a></li>
+<li><a class="font-body-md text-on-surface-variant hover:text-primary-fixed-dim hover:underline transition-all" href="#">Gallery</a></li>
+<li><a class="font-body-md text-on-surface-variant hover:text-primary-fixed-dim hover:underline transition-all" href="#">Valuation</a></li>
+<li><a class="font-body-md text-primary underline" href="#">Contact</a></li>
+</ul>
+</div>
+<div class="space-y-4">
+<h5 class="font-label-caps text-label-caps text-primary uppercase">Legal</h5>
+<ul class="space-y-2">
+<li><a class="font-label-caps text-label-caps text-on-surface-variant hover:text-primary-fixed-dim hover:underline transition-all" href="#">Impressum</a></li>
+<li><a class="font-label-caps text-label-caps text-on-surface-variant hover:text-primary-fixed-dim hover:underline transition-all" href="#">Datenschutz</a></li>
+<li><a class="font-label-caps text-label-caps text-on-surface-variant hover:text-primary-fixed-dim hover:underline transition-all" href="#">AGB</a></li>
+<li><a class="font-label-caps text-label-caps text-on-surface-variant hover:text-primary-fixed-dim hover:underline transition-all" href="#">Cookies</a></li>
+</ul>
+</div>
+</div>
+</footer>
+<script>
+        // Micro-interaction for form focus
+        const inputs = document.querySelectorAll('input, textarea, select');
+        inputs.forEach(input => {
+            input.addEventListener('focus', () => {
+                input.parentElement.querySelector('label').style.color = '#C026FF';
+                input.parentElement.querySelector('label').style.letterSpacing = '0.15em';
+            });
+            input.addEventListener('blur', () => {
+                input.parentElement.querySelector('label').style.color = '';
+                input.parentElement.querySelector('label').style.letterSpacing = '';
+            });
+        });
+    </script>
+</body></html>
