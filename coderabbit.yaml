@@ -1,0 +1,132 @@
+# CodeRabbit AI Code Review Configuration
+# https://docs.coderabbit.ai
+# Project: LK Gloss & Detail — Mobile Autopflege & Detailing
+
+language: "en"
+early_access: false
+
+# ─────────────────────────────────────────────
+# Review Settings
+# ─────────────────────────────────────────────
+reviews:
+  profile: "chill"
+  request_changes_workflow: false
+  high_level_summary: true
+  poem: false
+  review_status: true
+  collapse_walkthrough: false
+  auto_review:
+    enabled: true
+    drafts: false
+    base_branches: ["main"]
+  path_filters:
+    - "!**/*.lock"
+    - "!**/generated/**"
+    - "!**/*.d.ts"
+    - "!**/node_modules/**"
+    - "!**/.next/**"
+    - "!**/public/screenshots/**"
+
+  # ─────────────────────────────────────────────
+  # Tone & Language
+  # ─────────────────────────────────────────────
+  tone_instructions: >
+    Use a professional but friendly tone. Write in English.
+    When suggesting changes, explain WHY it matters for this project specifically.
+    Reference the project's copilot-instructions.md when applicable.
+
+  # ─────────────────────────────────────────────
+  # Project-Specific Review Instructions
+  # ─────────────────────────────────────────────
+  summary_instructions: >
+    ## LK Gloss & Detail — Code Review Guidelines
+
+    This is a **German mobile car detailing service** website built with:
+    - **Next.js 16** (App Router, Turbopack, React Server Components)
+    - **TypeScript** (strict mode)
+    - **Tailwind CSS v4** + **shadcn/ui** (dark theme only)
+    - **Supabase** (PostgreSQL + pgvector for AI/RAG)
+    - **LangChain.js + LangGraph.js** (AI assessment & chatbot)
+    - **next-intl** (3 locales: de/en/el)
+    - **Framer Motion** (animations)
+
+    ### 🔴 CRITICAL — Must Flag
+
+    1. **`any` type usage** — TypeScript strict mode. Every `any` must be justified or replaced.
+    2. **Hardcoded strings in UI** — All user-facing text MUST use `next-intl` translation keys (`t("key")`).
+    3. **Missing RLS policies** — Any new Supabase table MUST have Row Level Security policies.
+    4. **API routes for mutations** — Use Server Actions (`"use server"`), NOT `POST/PUT/DELETE` API routes.
+    5. **Blocking AI calls** — All LLM responses MUST be streamed via Server-Sent Events, never blocking.
+    6. **`use client` without reason** — Components should be Server Components by default. Only add `"use client"` when truly needed (state, effects, event handlers, browser APIs).
+    7. **Missing Zod validation** — All form inputs and API parameters MUST have Zod schemas.
+    8. **Pages Router usage** — Only App Router allowed (`/app` directory, never `/pages`).
+
+    ### 🟡 IMPORTANT — Should Flag
+
+    9. **Missing loading states** — Async components need Suspense boundaries or loading skeletons.
+    10. **Missing error boundaries** — Client components with async operations need error handling.
+    11. **No `next/image`** — All images must use `next/image` with `priority` for above-fold images.
+    12. **Missing `hreflang` tags** — i18n pages need proper hreflang annotations.
+    13. **Non-semantic HTML** — Use `<main>`, `<nav>`, `<article>`, `<section>` instead of generic `<div>`.
+    14. **Missing structured data** — Pages should include JSON-LD schema markup where applicable.
+    15. **Direct `fetch` to Supabase** — Use the Supabase client (`@supabase/ssr`), never raw `fetch`.
+    16. **Missing TypeScript prop types** — All component props must be explicitly typed (no `any`, no implicit).
+
+    ### 🟢 NICE TO HAVE — Suggest
+
+    17. **Import order** — External imports → internal (`@/`) imports → relative imports, alphabetized.
+    18. **Named exports** — Prefer named exports over default exports for utilities and hooks.
+    19. **File naming** — `kebab-case` for component files, `camelCase` for utilities.
+    20. **Feature-based organization** — New code should go under `src/features/<feature-name>/`.
+    21. **Mobile-first responsive** — Components should work at 320px, 768px, 1280px.
+    22. **Console.log in production code** — Only `console.warn` and `console.error` allowed.
+
+    ### 🎨 Design System Checks
+
+    23. **Brand colors** — Use CSS variables from the design system, not hardcoded hex values.
+        - Primary: `#d1bcff`, Primary Container: `#7b2dff`
+        - Surface: `#131313`, On-Surface: `#e5e2e1`
+    24. **Typography** — Montserrat for headlines (600-800), Inter for body (400).
+    25. **Dark mode only** — No light mode toggle needed. All styles should be dark-themed.
+    26. **Spacing** — Use 8px base grid. Container max-width: 1280px.
+
+    ### 🤖 AI/LLM Code Checks
+
+    27. **LangChain streaming** — Use `for await...of` for streaming, never `.invoke()` for user-facing responses.
+    28. **Zod tool schemas** — All LangChain tools must have Zod schemas with descriptions.
+    29. **LangGraph state** — StateGraph states must use Zod for validation.
+    30. **Checkpointing** — Production LangGraph workflows need PostgreSQL checkpointing via Supabase.
+
+    ### 🗄️ Database Checks
+
+    31. **RLS policies** — Every new table needs RLS policies in the migration.
+    32. **Migrations** — Schema changes go through Supabase migrations, never manual SQL.
+    33. **pgvector indexes** — Vector columns need `ivfflat` indexes for performance.
+
+    ### 📦 Dependency Checks
+
+    34. **New dependencies** — Flag any new npm package and ask: is it really needed? Can we use existing?
+    35. **Bundle size** — Warn about large dependencies that could impact Core Web Vitals.
+
+# ─────────────────────────────────────────────
+# Chat Settings
+# ─────────────────────────────────────────────
+chat:
+  auto_reply: true
+
+# ─────────────────────────────────────────────
+# Knowledge Base
+# ─────────────────────────────────────────────
+knowledge_base:
+  # Project documentation that CodeRabbit should reference
+  learnings:
+    - ".github/copilot-instructions.md"
+    - "projectPlan.MD"
+    - "design/DESIGN_SYSTEM.md"
+  # Agent skills for deep context
+  agent_skills:
+    - ".agents/skills/nextjs-best-practices/SKILL.md"
+    - ".agents/skills/langchain-best-practices/SKILL.md"
+    - ".agents/skills/langgraph-best-practices/SKILL.md"
+    - ".agents/skills/supabase/SKILL.md"
+    - ".agents/skills/supabase-postgres-best-practices/SKILL.md"

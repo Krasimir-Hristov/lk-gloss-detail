@@ -35,11 +35,11 @@
 
 ### 0.3 Code Quality
 
-- [ ] Add `coderabbit.yaml` (AI code review config)
-- [ ] Add ESLint flat config (`eslint.config.mjs`) — Next.js + TS rules
-- [ ] Add Prettier (`.prettierrc`) — tabs 2, single quotes, trailing commas
-- [ ] Add Husky + lint-staged (pre-commit hooks)
-- [ ] Add `commitlint` (conventional commits)
+- [x] Add `coderabbit.yaml` (AI code review config)
+- [x] Add ESLint flat config (`eslint.config.mjs`) — Next.js + TS rules
+- [x] Add Prettier (`.prettierrc`) — tabs 2, single quotes, trailing commas
+- [x] Add Husky + lint-staged (pre-commit hooks)
+- [x] Add `commitlint` (conventional commits)
 
 ### 0.4 Design System Bootstrap
 
@@ -55,7 +55,7 @@
 
 ### 1.1 Supabase Project Setup
 
-- [ ] Create Supabase project (`lk-gloss-detail`)
+- [x] Create Supabase project (`lk-gloss-detail`)
 - [ ] Enable `pgvector` extension (`CREATE EXTENSION vector;`)
 - [ ] Configure Row Level Security (RLS) policies
 - [ ] Add service role key to `.env.local`
