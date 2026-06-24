@@ -3,6 +3,9 @@ import { notFound } from "next/navigation";
 import { NextIntlClientProvider, hasLocale } from "next-intl";
 import { getMessages, getTranslations, setRequestLocale } from "next-intl/server";
 
+import Footer from "@/components/layout/Footer";
+import Navbar from "@/components/layout/Navbar";
+import ScrollToTop from "@/components/shared/ScrollToTop";
 import { routing } from "@/i18n/routing";
 
 import type { Metadata } from "next";
@@ -65,7 +68,12 @@ const LocaleLayout = async ({ children, params }: Props) => {
 			className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
 		>
 			<body className="flex min-h-full flex-col bg-[#131313] font-sans text-[#e5e2e1]">
-				<NextIntlClientProvider messages={messages}>{children}</NextIntlClientProvider>
+				<NextIntlClientProvider messages={messages}>
+					<Navbar />
+					<main className="flex-1 pt-20">{children}</main>
+					<Footer />
+					<ScrollToTop />
+				</NextIntlClientProvider>
 			</body>
 		</html>
 	);
