@@ -1,9 +1,14 @@
 {
+	"Metadata": {
+		"title": "LK Gloss & Detail | Κινητή Περιποίηση Αυτοκινήτου",
+		"description": "Κινητή περιποίηση αυτοκινήτου με ανάλυση AI. Επαγγελματική υπηρεσία detailing στην Γερμανία.",
+		"template": "%s | LK Gloss & Detail"
+	},
 	"Navigation": {
 		"home": "Αρχική",
 		"services": "Υπηρεσίες",
 		"assessment": "Αξιολόγηση AI",
-		"gallery": "Gallery",
+		"gallery": "Γκαλερί",
 		"contact": "Επικοινωνία",
 		"bookNow": "Κλείσε Ραντεβού"
 	},
@@ -92,7 +97,7 @@
 		}
 	},
 	"Gallery": {
-		"title": "Gallery – Πριν & Μετά",
+		"title": "Γκαλερί – Πριν & Μετά",
 		"filterAll": "Όλα",
 		"filterInterior": "Εσωτερικό",
 		"filterExterior": "Εξωτερικό",
@@ -122,7 +127,12 @@
 		"contact": "Επικοινωνία"
 	},
 	"LanguageSwitcher": {
-		"label": "Επιλέξτε γλώσσα"
+		"label": "Επιλέξτε γλώσσα",
+		"locales": {
+			"de": { "short": "DE", "full": "Deutsch" },
+			"en": { "short": "EN", "full": "English" },
+			"el": { "short": "ΕΛ", "full": "Ελληνικά" }
+		}
 	},
 	"Common": {
 		"loading": "Φόρτωση...",

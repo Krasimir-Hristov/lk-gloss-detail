@@ -1,39 +1,32 @@
 "use client";
 
-import { useLocale } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import { useTransition } from "react";
 
 import { usePathname, useRouter } from "@/i18n/routing";
 import { routing } from "@/i18n/routing";
 
-const localeNames: Record<string, string> = {
-	de: "DE",
-	en: "EN",
-	el: "ΕΛ",
-};
-
-const localeFullNames: Record<string, string> = {
-	de: "Deutsch",
-	en: "English",
-	el: "Ελληνικά",
-};
-
-export function LanguageSwitcher() {
+export const LanguageSwitcher = () => {
+	const t = useTranslations("LanguageSwitcher");
 	const locale = useLocale();
 	const pathname = usePathname();
 	const router = useRouter();
 	const [isPending, startTransition] = useTransition();
 
-	function handleChange(nextLocale: string) {
+	const handleChange = (nextLocale: string) => {
 		startTransition(() => {
 			router.replace(pathname, { locale: nextLocale });
 		});
-	}
+	};
 
 	return (
-		<div className="relative inline-flex min-w-[8rem] items-center gap-1 rounded-lg border border-[#353534] bg-[#201f1f] p-0.5">
+		<nav
+			aria-label={t("label")}
+			className="relative inline-flex min-w-[8rem] items-center gap-1 rounded-lg border border-[#353534] bg-[#201f1f] p-0.5"
+		>
 			{routing.locales.map((loc) => {
 				const isActive = loc === locale;
+				const name = t(`locales.${loc}.full`);
 				return (
 					<button
 						key={loc}
@@ -44,13 +37,13 @@ export function LanguageSwitcher() {
 								? "bg-[#7b2dff] text-white shadow-sm"
 								: "text-[#ccc3d9] hover:bg-[#2a2a2a] hover:text-[#e5e2e1] active:bg-[#353534]"
 						} disabled:cursor-not-allowed disabled:opacity-60 sm:min-h-0 sm:min-w-0 sm:px-2.5 sm:py-1`}
-						title={localeFullNames[loc]}
-						aria-label={localeFullNames[loc]}
+						title={name}
+						aria-label={name}
 					>
-						{localeNames[loc]}
+						{t(`locales.${loc}.short`)}
 					</button>
 				);
 			})}
-		</div>
+		</nav>
 	);
-}
+};

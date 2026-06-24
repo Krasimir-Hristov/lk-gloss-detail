@@ -1,4 +1,9 @@
 {
+	"Metadata": {
+		"title": "LK Gloss & Detail | Mobile Autopflege",
+		"description": "Mobile Autopflege & Fahrzeugaufbereitung mit KI-gestützter Analyse. Professionelles Car Detailing in Deutschland.",
+		"template": "%s | LK Gloss & Detail"
+	},
 	"Navigation": {
 		"home": "Startseite",
 		"services": "Leistungen",
@@ -122,7 +127,12 @@
 		"contact": "Kontakt"
 	},
 	"LanguageSwitcher": {
-		"label": "Sprache wählen"
+		"label": "Sprache wählen",
+		"locales": {
+			"de": { "short": "DE", "full": "Deutsch" },
+			"en": { "short": "EN", "full": "English" },
+			"el": { "short": "ΕΛ", "full": "Ελληνικά" }
+		}
 	},
 	"Common": {
 		"loading": "Wird geladen...",

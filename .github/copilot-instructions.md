@@ -41,8 +41,10 @@
 - **Imports**: Use `@/` path alias for all internal imports
 - **Components**: `kebab-case` for files, `PascalCase` for component names
 - **Functions**: `camelCase` for utilities, `PascalCase` for components/classes
+- **Component syntax**: Arrow functions (`const Foo = () => {}`) for all React components — never `function Foo() {}`
 - **File structure**: Feature-based organization under `src/features/`
 - **Exports**: Named exports preferred over default exports for utilities
+- **Internal Links**: Always use `<Link>` from `next/link` — never raw `<a>` tags for internal routes
 
 ---
 

@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { useTranslations } from "next-intl";
 import { setRequestLocale } from "next-intl/server";
 
@@ -5,14 +6,16 @@ type Props = {
 	params: Promise<{ locale: string }>;
 };
 
-export default async function HomePage({ params }: Props) {
+const HomePage = async ({ params }: Props) => {
 	const { locale } = await params;
 	setRequestLocale(locale);
 
 	return <HomePageContent locale={locale} />;
-}
+};
 
-function HomePageContent({ locale }: { locale: string }) {
+export default HomePage;
+
+const HomePageContent = ({ locale }: { locale: string }) => {
 	const t = useTranslations("HomePage");
 
 	return (
@@ -24,21 +27,21 @@ function HomePageContent({ locale }: { locale: string }) {
 					</h1>
 					<p className="max-w-md text-lg leading-8 text-[#ccc3d9]">{t("hero.subtitle")}</p>
 					<div className="flex gap-4">
-						<a
+						<Link
 							href={`/${locale}/assessment`}
 							className="inline-flex items-center justify-center rounded-lg bg-[#7b2dff] px-6 py-3 text-sm font-medium text-white transition-colors hover:bg-[#7b2dff]/80"
 						>
 							{t("hero.ctaPrimary")}
-						</a>
-						<a
+						</Link>
+						<Link
 							href={`/${locale}/services`}
 							className="inline-flex items-center justify-center rounded-lg border border-[#353534] bg-transparent px-6 py-3 text-sm font-medium text-[#e5e2e1] transition-colors hover:bg-[#201f1f]"
 						>
 							{t("hero.ctaSecondary")}
-						</a>
+						</Link>
 					</div>
 				</div>
 			</main>
 		</div>
 	);
-}
+};
