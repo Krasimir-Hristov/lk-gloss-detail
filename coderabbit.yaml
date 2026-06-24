@@ -47,6 +47,9 @@ reviews:
     - **Tailwind CSS v4** + **shadcn/ui** (dark theme only)
     - **Supabase** (PostgreSQL + pgvector for AI/RAG)
     - **LangChain.js + LangGraph.js** (AI assessment & chatbot)
+    - **Zustand** (client-side state management)
+    - **TanStack Query** (server state / data fetching)
+    - **Zod** (runtime validation everywhere)
     - **next-intl** (3 locales: de/en/el)
     - **Framer Motion** (animations)
 
@@ -58,7 +61,7 @@ reviews:
     4. **API routes for mutations** — Use Server Actions (`"use server"`), NOT `POST/PUT/DELETE` API routes.
     5. **Blocking AI calls** — All LLM responses MUST be streamed via Server-Sent Events, never blocking.
     6. **`use client` without reason** — Components should be Server Components by default. Only add `"use client"` when truly needed (state, effects, event handlers, browser APIs).
-    7. **Missing Zod validation** — All form inputs and API parameters MUST have Zod schemas.
+    7. **Missing Zod validation** — All form inputs, API parameters, and store actions MUST have Zod schemas.
     8. **Pages Router usage** — Only App Router allowed (`/app` directory, never `/pages`).
 
     ### 🟡 IMPORTANT — Should Flag
@@ -97,16 +100,24 @@ reviews:
     29. **LangGraph state** — StateGraph states must use Zod for validation.
     30. **Checkpointing** — Production LangGraph workflows need PostgreSQL checkpointing via Supabase.
 
+    ### 🏛️ State Management Checks
+
+    31. **Context API for global state** — Don't use React Context for global app state. Use Zustand instead.
+    32. **TanStack Query for server data** — All server/API data fetching should use `@tanstack/react-query`, not `useEffect` + `fetch`.
+    33. **Zustand store typing** — Every Zustand store must have typed state + typed actions with Zod schema validation.
+    34. **No fetch in client components** — If data can be fetched in Server Components, do it there with TanStack Query as hydrator.
+    35. **Store isolation** — Keep Zustand stores focused: one store per feature/domain (assessment store, booking store, UI store).
+
     ### 🗄️ Database Checks
 
-    31. **RLS policies** — Every new table needs RLS policies in the migration.
-    32. **Migrations** — Schema changes go through Supabase migrations, never manual SQL.
-    33. **pgvector indexes** — Vector columns need `ivfflat` indexes for performance.
+    36. **RLS policies** — Every new table needs RLS policies in the migration.
+    37. **Migrations** — Schema changes go through Supabase migrations, never manual SQL.
+    38. **pgvector indexes** — Vector columns need `ivfflat` indexes for performance.
 
     ### 📦 Dependency Checks
 
-    34. **New dependencies** — Flag any new npm package and ask: is it really needed? Can we use existing?
-    35. **Bundle size** — Warn about large dependencies that could impact Core Web Vitals.
+    39. **New dependencies** — Flag any new npm package and ask: is it really needed? Can we use existing?
+    40. **Bundle size** — Warn about large dependencies that could impact Core Web Vitals.
 
 # ─────────────────────────────────────────────
 # Chat Settings

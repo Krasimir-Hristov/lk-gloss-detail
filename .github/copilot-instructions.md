@@ -29,6 +29,13 @@
 7. **No API routes for mutations** — Use Server Actions (`"use server"`) for form submissions and data mutations.
 8. **Stream AI responses** — All LLM responses must be streamed via Server-Sent Events, never blocking.
 
+### State Management
+
+- **Server state (TanStack Query)** — All server data fetching uses `@tanstack/react-query` with Server Components as the data layer
+- **Client state (Zustand)** — All client-side/UI state (wizard state, UI toggles, assessment flow state) uses `zustand` with typed stores
+- **Zod everywhere** — All runtime validation uses Zod schemas; every form, API input, and store action has a Zod schema
+- No Redux, no Context for state — Zustand stores + TanStack Query cache replace all global state needs
+
 ### Code Style
 
 - **Imports**: Use `@/` path alias for all internal imports
@@ -193,21 +200,23 @@ src/
 
 ```json
 {
-  "next": "16.x",
-  "react": "19.x",
-  "typescript": "5.x",
-  "tailwindcss": "4.x",
-  "framer-motion": "latest",
-  "next-intl": "latest",
-  "@supabase/supabase-js": "latest",
-  "@supabase/ssr": "latest",
-  "@langchain/core": "latest",
-  "@langchain/langgraph": "latest",
-  "@langchain/openai": "latest",
-  "zod": "latest",
-  "react-hook-form": "latest",
-  "resend": "latest",
-  "@react-email/components": "latest"
+	"next": "16.x",
+	"react": "19.x",
+	"typescript": "5.x",
+	"tailwindcss": "4.x",
+	"framer-motion": "latest",
+	"next-intl": "latest",
+	"@supabase/supabase-js": "latest",
+	"@supabase/ssr": "latest",
+	"@tanstack/react-query": "latest",
+	"zustand": "latest",
+	"@langchain/core": "latest",
+	"@langchain/langgraph": "latest",
+	"@langchain/openai": "latest",
+	"zod": "latest",
+	"react-hook-form": "latest",
+	"resend": "latest",
+	"@react-email/components": "latest"
 }
 ```
 
@@ -238,6 +247,8 @@ When working with specific technologies, read the corresponding skill:
 - ❌ Import `use client` unnecessarily — Server Components first
 - ❌ Forget to handle loading/error states
 - ❌ Use `fetch` directly for Supabase — use the Supabase client
+- ❌ Use Context API for global state — use Zustand or TanStack Query instead
+- ❌ Fetch data in client components if it can be done in a Server Component
 
 ---
 

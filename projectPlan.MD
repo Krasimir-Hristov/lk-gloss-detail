@@ -156,8 +156,9 @@
 - [ ] Create assessment wizard component (`AssessmentWizard`)
 - [ ] Step 1: Front photo upload (drag & drop + mobile camera)
 - [ ] Step 2: Rear photo upload
-- [ ] Step 3: Side photo upload (left or right)
-- [ ] Step 4: Interior photo upload
+- [ ] Step 3: Left side photo upload 
+- [ ] Step 4: Right side photo upload 
+- [ ] Step 5: Interior photo upload
 - [ ] Between each step: AI photo validation call
 - [ ] Photo validation API route (`/api/assessment/validate-photo`)
   - [ ] Send image to vision model (GPT-4o via OpenRouter)
@@ -168,7 +169,7 @@
 
 ### 6.2 Tinder-style Service Cards
 
-- [ ] After all 4 photos pass: show service swipe cards
+- [ ] After all 5 photos pass: show service swipe cards
 - [ ] `ServiceSwipeCard` component (service name, description, icon, price hint)
 - [ ] Swipe right = accept, swipe left = reject (Framer Motion drag)
 - [ ] Also show ✓ / ✗ buttons for mobile non-swipe fallback
@@ -417,10 +418,12 @@ Phase 0 → Phase 1 → Phase 2 → Phase 3
 
 | Layer               | Technology                             |
 | ------------------- | -------------------------------------- |
-| Frontend            | Next.js 15 (App Router, Turbopack)     |
-| UI Components       | shadcn/ui + Tailwind CSS               |
+| Frontend            | Next.js 16 (App Router, Turbopack)     |
+| UI Components       | shadcn/ui + Tailwind CSS v4            |
 | Animations          | Framer Motion (motion)                 |
 | Forms               | React Hook Form + Zod                  |
+| Client State        | Zustand (typed stores, Zod schemas)    |
+| Server State        | TanStack Query (fetch/cache/refetch)   |
 | i18n                | next-intl                              |
 | Backend / DB        | Supabase (PostgreSQL + pgvector)       |
 | Auth                | Supabase Auth                          |

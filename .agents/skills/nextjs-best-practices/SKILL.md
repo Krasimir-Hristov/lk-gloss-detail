@@ -4,7 +4,7 @@ description: Next.js 16+ App Router best practices and performance optimization.
 license: MIT
 metadata:
   author: lk-gloss-detail
-  version: '1.0.0'
+  version: "1.0.0"
   date: June 2026
   abstract: Comprehensive Next.js 16+ best practices guide covering App Router patterns, React Server Components, Server Actions, streaming/PPR, caching strategies, routing, performance optimization, and TypeScript conventions. Each rule includes detailed explanations, incorrect vs. correct code examples, and specific guidance for automated code generation.
 ---
@@ -80,7 +80,14 @@ Next.js 16 uses streaming by default. Use `<Suspense>` boundaries to control loa
 **5. Cache strategically, revalidate precisely.**
 Use `cache: 'force-cache'` for static data, `next: { revalidate }` for time-based revalidation, and `revalidateTag()` / `revalidatePath()` for on-demand invalidation after mutations.
 
-**6. Next.js 16 Breaking Changes Awareness.**
+**6. State Management — Zustand for client state, TanStack Query for server state.**
+
+- **Zustand** manages all client-side/UI state: wizard state, UI toggles, assessment flow, booking step state.
+- **TanStack Query** manages all server data: fetching, caching, revalidation of API/DB data.
+- **Zod** validates all data — every Zustand store action and every API response gets a Zod schema.
+- NEVER use React Context for global state — Zustand + TanStack Query replace it fully.
+
+**7. Next.js 16 Breaking Changes Awareness.**
 
 - `params` and `searchParams` are now Promises — always `await` them.
 - `cookies()`, `headers()`, and `draftMode()` are now async — must be awaited.
