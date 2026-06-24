@@ -56,11 +56,11 @@
 ### 1.1 Supabase Project Setup
 
 - [x] Create Supabase project (`lk-gloss-detail`)
-- [ ] Enable `pgvector` extension (`CREATE EXTENSION vector;`)
-- [ ] Configure Row Level Security (RLS) policies
-- [ ] Add service role key to `.env.local`
-- [ ] Setup Supabase CLI (`supabase init`)
-- [ ] Add `supabase/migrations/` folder for version control
+- [x] Enable `pgvector` extension (`CREATE EXTENSION vector;`)
+- [-] Configure Row Level Security (RLS) policies _(per-table, done in Phase 1.2)_
+- [x] Add publishable & secret keys to `.env`
+- [x] Setup Supabase CLI (`supabase init`)
+- [x] Add `supabase/migrations/` folder for version control
 
 ### 1.2 Database Schema — Core Tables
 
@@ -156,8 +156,8 @@
 - [ ] Create assessment wizard component (`AssessmentWizard`)
 - [ ] Step 1: Front photo upload (drag & drop + mobile camera)
 - [ ] Step 2: Rear photo upload
-- [ ] Step 3: Left side photo upload 
-- [ ] Step 4: Right side photo upload 
+- [ ] Step 3: Left side photo upload
+- [ ] Step 4: Right side photo upload
 - [ ] Step 5: Interior photo upload
 - [ ] Between each step: AI photo validation call
 - [ ] Photo validation API route (`/api/assessment/validate-photo`)
