@@ -268,15 +268,18 @@ When working with specific technologies, read the corresponding skill:
 
 ## 📋 Current Phase
 
-**Phase 0 — Setup & Tooling** (in progress)
+**Phase 2 — i18n (Internationalization)** ✅ (in progress)
 
 - ✅ GitHub repo created
 - ✅ Dependencies installed
 - ✅ VS Code Copilot Skills created
 - ✅ Stitch design exported
-- 🔄 `@workspace` instructions (this file)
-- ⬜ ESLint, Prettier, Husky
-- ⬜ shadcn/ui init with brand tokens
+- ✅ `@workspace` instructions (this file)
+- ✅ ESLint, Prettier, Husky
+- ✅ shadcn/ui init with brand tokens
+- ✅ Supabase project setup & migrations
+- ✅ i18n setup — next-intl with de/en/el locales
+- ⬜ Phase 3 — Layout & Navigation
 
 ---
 

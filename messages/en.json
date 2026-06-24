@@ -1,0 +1,142 @@
+{
+	"Navigation": {
+		"home": "Home",
+		"services": "Services",
+		"assessment": "AI Assessment",
+		"gallery": "Gallery",
+		"contact": "Contact",
+		"bookNow": "Book Now"
+	},
+	"HomePage": {
+		"hero": {
+			"title": "Professional Car Detailing",
+			"subtitle": "Gloss & Detail – Mobile Car Care with AI-Powered Analysis",
+			"ctaPrimary": "Start AI Assessment",
+			"ctaSecondary": "Explore Services"
+		},
+		"servicesPreview": {
+			"title": "Our Services",
+			"description": "From interior cleaning to ceramic coating"
+		},
+		"whyLK": {
+			"title": "Why LK Gloss & Detail?",
+			"mobile": "Mobile Service at Your Location",
+			"mobileDesc": "We come to your home or workplace",
+			"professional": "Professional Quality",
+			"professionalDesc": "Premium products and modern techniques",
+			"aiPowered": "AI-Powered Analysis",
+			"aiPoweredDesc": "Precise assessment using artificial intelligence"
+		},
+		"howItWorks": {
+			"title": "How It Works",
+			"step1": "Upload Photos",
+			"step1Desc": "Take photos of your vehicle",
+			"step2": "AI Analysis",
+			"step2Desc": "Our AI assesses the condition",
+			"step3": "Book Appointment",
+			"step3Desc": "Choose date and time"
+		},
+		"cta": {
+			"title": "Ready for Professional Detailing?",
+			"subtitle": "Book your appointment today"
+		}
+	},
+	"Services": {
+		"title": "Our Services",
+		"description": "Comprehensive car care for your vehicle"
+	},
+	"Assessment": {
+		"title": "AI Vehicle Assessment",
+		"steps": {
+			"front": "Front Photo",
+			"rear": "Rear Photo",
+			"left": "Left Side",
+			"right": "Right Side",
+			"interior": "Interior"
+		},
+		"upload": {
+			"dragDrop": "Drag image here or click to upload",
+			"validating": "Validating photo...",
+			"error": "This photo does not match the expected angle. Please try again."
+		},
+		"swipe": {
+			"title": "Choose Your Services",
+			"accept": "Accept",
+			"reject": "Reject"
+		},
+		"result": {
+			"title": "Your Assessment Result",
+			"priceRange": "Price Range",
+			"duration": "Estimated Duration",
+			"summary": "Summary",
+			"bookNow": "Book Appointment"
+		}
+	},
+	"Booking": {
+		"title": "Book Appointment",
+		"steps": {
+			"info": "Your Details",
+			"date": "Choose Date",
+			"time": "Choose Time",
+			"confirm": "Confirmation"
+		},
+		"form": {
+			"name": "Name",
+			"email": "Email",
+			"phone": "Phone",
+			"submit": "Confirm Booking"
+		},
+		"confirmation": {
+			"title": "Booking Confirmed!",
+			"message": "We have received your booking. You will receive a confirmation email shortly."
+		}
+	},
+	"Gallery": {
+		"title": "Gallery – Before & After",
+		"filterAll": "All",
+		"filterInterior": "Interior",
+		"filterExterior": "Exterior",
+		"filterPaint": "Paint Correction"
+	},
+	"Contact": {
+		"title": "Contact",
+		"form": {
+			"name": "Name",
+			"email": "Email",
+			"phone": "Phone",
+			"service": "Service",
+			"message": "Message",
+			"submit": "Send Message"
+		},
+		"details": {
+			"phone": "Phone",
+			"email": "Email",
+			"whatsapp": "WhatsApp"
+		}
+	},
+	"Footer": {
+		"copyright": "© {year} LK Gloss & Detail. All rights reserved.",
+		"impressum": "Impressum",
+		"privacy": "Privacy Policy",
+		"services": "Services",
+		"contact": "Contact"
+	},
+	"LanguageSwitcher": {
+		"label": "Choose language"
+	},
+	"Common": {
+		"loading": "Loading...",
+		"error": "An error occurred",
+		"retry": "Retry",
+		"close": "Close",
+		"back": "Back",
+		"next": "Next"
+	},
+	"Chatbot": {
+		"placeholder": "Type a message...",
+		"greeting": "Hello! How can I help you?"
+	},
+	"Impressum": {
+		"title": "Impressum"
+	}
+}

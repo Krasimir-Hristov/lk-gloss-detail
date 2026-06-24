@@ -92,14 +92,14 @@
 
 ## PHASE 2## PHASE 2 — Feature: i18n (Internationalization)
 
-- [ ] Install `next-intl`
-- [ ] Create `messages/de.json` — all German strings
-- [ ] Create `messages/en.json` — all English strings
-- [ ] Create `messages/el.json` — all Greek strings
-- [ ] Configure `i18n.ts` routing (default: `de`, locales: `de/en/el`)
-- [ ] Add locale switcher component (`LanguageSwitcher`)
-- [ ] Add `hreflang` meta tags for SEO
-- [ ] Test all 3 locales on all pages
+- [x] Install `next-intl`
+- [x] Create `messages/de.json` — all German strings
+- [x] Create `messages/en.json` — all English strings
+- [x] Create `messages/el.json` — all Greek strings
+- [x] Configure `i18n.ts` routing (default: `de`, locales: `de/en/el`)
+- [x] Add locale switcher component (`LanguageSwitcher`)
+- [x] Add `hreflang` meta tags for SEO
+- [x] Test all 3 locales on all pages
 
 ---
 
@@ -107,7 +107,7 @@
 
 ### 3.1 Layout Shell
 
-- [ ] Create root layout (`app/[locale]/layout.tsx`)
+- [x] Create root layout (`app/[locale]/layout.tsx`)
 - [ ] Create `Navbar` component (logo, nav links, language switcher, CTA button)
 - [ ] Create `Footer` component (links, Impressum link, social, copyright)
 - [ ] Add mobile hamburger menu (animated with Framer Motion)

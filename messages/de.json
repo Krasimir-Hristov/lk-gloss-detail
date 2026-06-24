@@ -1,0 +1,142 @@
+{
+	"Navigation": {
+		"home": "Startseite",
+		"services": "Leistungen",
+		"assessment": "KI-Bewertung",
+		"gallery": "Galerie",
+		"contact": "Kontakt",
+		"bookNow": "Termin buchen"
+	},
+	"HomePage": {
+		"hero": {
+			"title": "Professionelle Fahrzeugaufbereitung",
+			"subtitle": "Glanz & Detail – Mobile Autopflege mit KI-gestützter Analyse",
+			"ctaPrimary": "KI-Bewertung starten",
+			"ctaSecondary": "Leistungen entdecken"
+		},
+		"servicesPreview": {
+			"title": "Unsere Leistungen",
+			"description": "Von der Innenreinigung bis zur Keramikversiegelung"
+		},
+		"whyLK": {
+			"title": "Warum LK Gloss & Detail?",
+			"mobile": "Mobil zu Ihnen vor Ort",
+			"mobileDesc": "Wir kommen zu Ihnen nach Hause oder an Ihren Arbeitsplatz",
+			"professional": "Professionelle Qualität",
+			"professionalDesc": "Hochwertige Produkte und moderne Techniken",
+			"aiPowered": "KI-gestützte Analyse",
+			"aiPoweredDesc": "Präzise Bewertung durch künstliche Intelligenz"
+		},
+		"howItWorks": {
+			"title": "So einfach funktioniert es",
+			"step1": "Fotos hochladen",
+			"step1Desc": "Machen Sie Fotos von Ihrem Fahrzeug",
+			"step2": "KI-Analyse",
+			"step2Desc": "Unsere KI bewertet den Zustand",
+			"step3": "Termin buchen",
+			"step3Desc": "Wählen Sie Datum und Uhrzeit"
+		},
+		"cta": {
+			"title": "Bereit für eine professionelle Aufbereitung?",
+			"subtitle": "Vereinbaren Sie noch heute Ihren Termin"
+		}
+	},
+	"Services": {
+		"title": "Unsere Leistungen",
+		"description": "Umfassende Autopflege für Ihr Fahrzeug"
+	},
+	"Assessment": {
+		"title": "KI-Fahrzeugbewertung",
+		"steps": {
+			"front": "Frontfoto",
+			"rear": "Heckfoto",
+			"left": "Linke Seite",
+			"right": "Rechte Seite",
+			"interior": "Innenraum"
+		},
+		"upload": {
+			"dragDrop": "Bild hierher ziehen oder klicken zum Hochladen",
+			"validating": "Foto wird überprüft...",
+			"error": "Dieses Foto entspricht nicht dem erwarteten Winkel. Bitte versuchen Sie es erneut."
+		},
+		"swipe": {
+			"title": "Wählen Sie Ihre Leistungen",
+			"accept": "Annehmen",
+			"reject": "Ablehnen"
+		},
+		"result": {
+			"title": "Ihr Bewertungsergebnis",
+			"priceRange": "Preisspanne",
+			"duration": "Geschätzte Dauer",
+			"summary": "Zusammenfassung",
+			"bookNow": "Termin buchen"
+		}
+	},
+	"Booking": {
+		"title": "Termin buchen",
+		"steps": {
+			"info": "Ihre Daten",
+			"date": "Datum wählen",
+			"time": "Uhrzeit wählen",
+			"confirm": "Bestätigung"
+		},
+		"form": {
+			"name": "Name",
+			"email": "E-Mail",
+			"phone": "Telefon",
+			"submit": "Termin bestätigen"
+		},
+		"confirmation": {
+			"title": "Termin bestätigt!",
+			"message": "Wir haben Ihre Buchung erhalten. Sie erhalten in Kürze eine Bestätigungs-E-Mail."
+		}
+	},
+	"Gallery": {
+		"title": "Galerie – Vorher & Nachher",
+		"filterAll": "Alle",
+		"filterInterior": "Innenraum",
+		"filterExterior": "Exterieur",
+		"filterPaint": "Lackkorrektur"
+	},
+	"Contact": {
+		"title": "Kontakt",
+		"form": {
+			"name": "Name",
+			"email": "E-Mail",
+			"phone": "Telefon",
+			"service": "Leistung",
+			"message": "Nachricht",
+			"submit": "Nachricht senden"
+		},
+		"details": {
+			"phone": "Telefon",
+			"email": "E-Mail",
+			"whatsapp": "WhatsApp"
+		}
+	},
+	"Footer": {
+		"copyright": "© {year} LK Gloss & Detail. Alle Rechte vorbehalten.",
+		"impressum": "Impressum",
+		"privacy": "Datenschutz",
+		"services": "Leistungen",
+		"contact": "Kontakt"
+	},
+	"LanguageSwitcher": {
+		"label": "Sprache wählen"
+	},
+	"Common": {
+		"loading": "Wird geladen...",
+		"error": "Ein Fehler ist aufgetreten",
+		"retry": "Erneut versuchen",
+		"close": "Schließen",
+		"back": "Zurück",
+		"next": "Weiter"
+	},
+	"Chatbot": {
+		"placeholder": "Schreiben Sie eine Nachricht...",
+		"greeting": "Hallo! Wie kann ich Ihnen helfen?"
+	},
+	"Impressum": {
+		"title": "Impressum"
+	}
+}
