@@ -108,15 +108,15 @@
 ### 3.1 Layout Shell
 
 - [x] Create root layout (`app/[locale]/layout.tsx`)
-- [ ] Create `Navbar` component (logo, nav links, language switcher, CTA button)
-- [ ] Create `Footer` component (links, Impressum link, social, copyright)
-- [ ] Add mobile hamburger menu (animated with Framer Motion)
-- [ ] Implement sticky navbar with scroll behavior
-- [ ] Add `ScrollToTop` button
+- [x] Create `Navbar` component (logo, nav links, language switcher, CTA button)
+- [x] Create `Footer` component (links, Impressum link, social, copyright)
+- [x] Add mobile hamburger menu (animated with Framer Motion)
+- [x] Implement sticky navbar with scroll behavior
+- [x] Add `ScrollToTop` button
 
 ### 3.2 SEO Global Config
 
-- [ ] Add `metadata` export in root layout (title template, description per locale)
+- [x] Add `metadata` export in root layout (title template, description per locale)
 - [ ] Add `opengraph-image.tsx` (dynamic OG image generation)
 - [ ] Add `robots.ts` (allow all, sitemap URL)
 - [ ] Add `sitemap.ts` (all pages × 3 locales)
