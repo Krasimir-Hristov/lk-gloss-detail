@@ -84,10 +84,6 @@
 	--sidebar-ring: #7b2dff;
 }
 
-.dark {
-	/* Dark mode uses same tokens — dark only */
-}
-
 @layer base {
 	* {
 		@apply border-border outline-ring/50;
