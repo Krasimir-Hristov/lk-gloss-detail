@@ -79,7 +79,7 @@ reviews:
 
     17. **Import order** — External imports → internal (`@/`) imports → relative imports, alphabetized.
     18. **Named exports** — Prefer named exports over default exports for utilities and hooks.
-    19. **File naming** — `kebab-case` for component files, `camelCase` for utilities.
+    19. **File naming** — `PascalCase` for component files (e.g., `Navbar.tsx`, `Footer.tsx`), `camelCase` for utilities (e.g., `utils.ts`).
     20. **Feature-based organization** — New code should go under `src/features/<feature-name>/`.
     21. **Mobile-first responsive** — Components should work at 320px, 768px, 1280px.
     22. **Console.log in production code** — Only `console.warn` and `console.error` allowed.

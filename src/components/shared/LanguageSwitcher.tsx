@@ -29,6 +29,7 @@ export const LanguageSwitcher = () => {
 	return (
 		<div className="relative">
 			<button
+				type="button"
 				onClick={() => setIsOpen(!isOpen)}
 				className="flex items-center gap-2 rounded-lg border border-white/10 bg-[#201f1f] px-3 py-2 text-sm font-medium text-[#ccc3d9] transition-colors hover:text-[#e5e2e1]"
 				aria-label={t("label")}
@@ -53,6 +54,7 @@ export const LanguageSwitcher = () => {
 							const name = t(`locales.${loc}.full`);
 							return (
 								<button
+									type="button"
 									key={loc}
 									onClick={() => handleChange(loc)}
 									disabled={isPending || isActive}

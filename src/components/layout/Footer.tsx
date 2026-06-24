@@ -17,7 +17,7 @@ const Footer = () => {
 
 	const legalLinks = [
 		{ href: "/impressum", label: t("impressum") },
-		{ href: "/impressum", label: t("privacy") },
+		{ href: "/privacy", label: t("privacy") },
 	];
 
 	return (
@@ -33,7 +33,9 @@ const Footer = () => {
 
 				{/* --- Column 2: Navigation --- */}
 				<div className="space-y-3">
-					<h5 className="tracking- text-xs font-bold text-[#d1bcff] uppercase">{t("services")}</h5>
+					<h5 className="text-xs font-bold tracking-widest text-[#d1bcff] uppercase">
+						{t("services")}
+					</h5>
 					<ul className="space-y-2">
 						{navLinks.map((l) => (
 							<li key={l.href}>
@@ -50,7 +52,9 @@ const Footer = () => {
 
 				{/* --- Column 3: Legal --- */}
 				<div className="space-y-3">
-					<h5 className="tracking- text-xs font-bold text-[#d1bcff] uppercase">{t("impressum")}</h5>
+					<h5 className="text-xs font-bold tracking-widest text-[#d1bcff] uppercase">
+						{t("impressum")}
+					</h5>
 					<ul className="space-y-2">
 						{legalLinks.map((l) => (
 							<li key={l.href + l.label}>
