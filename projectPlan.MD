@@ -64,32 +64,33 @@
 
 ### 1.2 Database Schema — Core Tables
 
-- [ ] Create `profiles` table (admin user only for now)
-- [ ] Create `appointments` table (date, time, client_name, client_email, client_phone, status, notes, car_assessment_id)
-- [ ] Create `blocked_slots` table (date, time, reason) — admin blocks manually
-- [ ] Create `services` table (structured JSON objects — pricing, duration, multipliers)
-- [ ] Create `car_assessments` table (images_urls[], ai_result JSON, selected_services[], final_price_range, created_at, appointment_id)
-- [ ] Create `gallery_images` table (url, title_de/en/el, category, created_at)
-- [ ] Create `contact_submissions` table (name, email, phone, message, created_at)
+- [x] Create `profiles` table (admin user only)
+- [x] Create `appointments` table (date, time, client_name, client_email, client_phone, vehicle, status, notes, car_assessment_id)
+- [x] Create `blocked_slots` table (date, time, reason) — admin blocks manually
+- [x] Create `services` table (JSONB name/description, pricing, duration, multipliers)
+- [x] Create `car_assessments` table (images_urls[], ai_result JSONB, selected_services[], final_price_range, vehicle_size, dirt_level)
+- [x] Create `gallery_images` table (url, title JSONB, category, before_url, after_url, sort_order)
+- [x] Create `contact_submissions` table (name, email, phone, service_interest, message)
 
 ### 1.3 Database Schema — RAG Tables
 
-- [ ] Create `chatbot_knowledge` table (id, content, embedding vector(1536), metadata JSONB, language)
-- [ ] Create `service_vectors` table (id, service_id FK, content, embedding vector(1536), metadata JSONB)
-- [ ] Add `match_chatbot_docs` PostgreSQL function (cosine similarity search)
-- [ ] Add `match_service_vectors` PostgreSQL function (cosine similarity search)
-- [ ] Add indexes: `ivfflat` on both vector columns
+- [x] Create `chatbot_knowledge` table (id, content, embedding vector(1536), metadata JSONB, language)
+- [x] Create `service_vectors` table (id, service_id FK, content, embedding vector(1536), metadata JSONB)
+- [x] Add `match_chatbot_docs` PostgreSQL function (cosine similarity search)
+- [x] Add `match_service_vectors` PostgreSQL function (cosine similarity search)
+- [x] Add indexes: `hnsw` on both vector columns (preferred over ivfflat)
 
 ### 1.4 Supabase Storage Buckets
 
-- [ ] Create `car-assessment-images` bucket (public: false, max 10MB per file)
-- [ ] Create `gallery` bucket (public: true)
-- [ ] Configure CORS for both buckets
-- [ ] Add RLS policies for storage (assessment images only uploader can read)
+- [x] Create `car-assessment-images` bucket (public: false, max 10MB per file)
+- [x] Create `gallery` bucket (public: true)
+- [x] Configure RLS policies for storage (assessment: admin only, gallery: public read + admin write)
 
 ---
 
-## PHASE 2 — Feature: i18n (Internationalization)
+---
+
+## PHASE 2## PHASE 2 — Feature: i18n (Internationalization)
 
 - [ ] Install `next-intl`
 - [ ] Create `messages/de.json` — all German strings
