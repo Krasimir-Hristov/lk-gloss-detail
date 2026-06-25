@@ -114,15 +114,6 @@
 - [x] Implement sticky navbar with scroll behavior
 - [x] Add `ScrollToTop` button
 
-### 3.2 SEO Global Config
-
-- [x] Add `metadata` export in root layout (title template, description per locale)
-- [ ] Add `opengraph-image.tsx` (dynamic OG image generation)
-- [ ] Add `robots.ts` (allow all, sitemap URL)
-- [ ] Add `sitemap.ts` (all pages × 3 locales)
-- [ ] Add `manifest.ts` (PWA manifest with LK favicon/icons)
-- [ ] Add `<JsonLd>` component for LocalBusiness schema markup
-
 ---
 
 ## PHASE 4 — Feature: Homepage (`/`)
@@ -359,6 +350,16 @@
 ---
 
 ## PHASE 13 — Feature: SEO & Performance
+
+### 13.1 SEO Global Config
+
+- [ ] Add `opengraph-image.tsx` (dynamic OG image generation)
+- [ ] Add `robots.ts` (allow all, sitemap URL)
+- [ ] Add `sitemap.ts` (all pages × 3 locales)
+- [ ] Add `manifest.ts` (PWA manifest with LK favicon/icons)
+- [ ] Add `<JsonLd>` component for LocalBusiness schema markup
+
+### 13.2 Performance & Audits
 
 - [ ] Audit Lighthouse score (target: 95+ all categories)
 - [ ] Add `loading="lazy"` + `sizes` to all images

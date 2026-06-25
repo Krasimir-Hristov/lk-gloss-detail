@@ -14,14 +14,96 @@
 	},
 	"HomePage": {
 		"hero": {
-			"title": "Professional Car Detailing",
-			"subtitle": "Gloss & Detail – Mobile Car Care with AI-Powered Analysis",
+			"title": "Premium Car Care & Detailing in Perfection.",
+			"subtitle": "Professional mobile car detailing with AI-powered analysis. We bring your car to shine right at your doorstep.",
 			"ctaPrimary": "Start AI Assessment",
-			"ctaSecondary": "Explore Services"
+			"ctaSecondary": "Explore Services",
+			"badgeTitle": "Certified",
+			"badgeSubtitle": "Detailing Studio",
+			"imageAlt": "Professional car detailing — black Porsche being polished"
 		},
 		"servicesPreview": {
 			"title": "Our Services",
-			"description": "From interior cleaning to ceramic coating"
+			"description": "From interior cleaning to ceramic coating",
+			"more": "More"
+		},
+		"services": {
+			"interior": {
+				"title": "Interior Detailing",
+				"features": [
+					"Thorough cleaning of all surfaces",
+					"Leather conditioning & protection",
+					"Odor neutralization"
+				]
+			},
+			"paintCorrection": {
+				"title": "3-Stage Paint Correction",
+				"features": [
+					"Removal of scratches & swirls",
+					"Polishing to high gloss",
+					"Sealant for long-lasting protection"
+				]
+			},
+			"ceramic": {
+				"title": "Ceramic Coating",
+				"features": [
+					"Professional nano-coating",
+					"Hydrophobic effect & UV protection",
+					"Up to 5 years durability"
+				]
+			}
+		},
+		"mobileService": {
+			"title": "Mobile Service",
+			"description": "We come directly to your home or workplace. No need for a shuttle service — professional car care at your doorstep.",
+			"features": {
+				"onSite": {
+					"title": "On-Site Service",
+					"desc": "We come directly to you"
+				},
+				"valueIncrease": {
+					"title": "Increase Value",
+					"desc": "Professional detailing"
+				},
+				"noAppointment": {
+					"title": "No Appointment",
+					"desc": "Flexible scheduling"
+				},
+				"noStress": {
+					"title": "No Stress",
+					"desc": "Everything at your doorstep"
+				}
+			}
+		},
+		"aiValuation": {
+			"title": "Increase Your Resale Value.",
+			"description": "Our AI analyzes your vehicle's condition and creates a personalized detailing plan. Professional care pays off.",
+			"formTitle": "AI Vehicle Assessment",
+			"labels": {
+				"model": "Vehicle Model",
+				"year": "Year",
+				"condition": "Condition"
+			},
+			"mockValues": {
+				"model": "Porsche 911 Carrera S",
+				"year": "2022",
+				"condition": "Good — light signs of use"
+			},
+			"ctaButton": "Start Assessment",
+			"stats": {
+				"valueIncrease": {
+					"value": "+15%",
+					"label": "Value Increase"
+				},
+				"fastAnalysis": {
+					"value": "48h",
+					"label": "Fast Analysis"
+				},
+				"happyCustomers": {
+					"value": "250+",
+					"label": "Happy Customers"
+				}
+			}
 		},
 		"whyLK": {
 			"title": "Why LK Gloss & Detail?",
