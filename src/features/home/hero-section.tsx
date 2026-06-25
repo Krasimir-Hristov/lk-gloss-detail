@@ -47,13 +47,14 @@ export const HeroSection = ({ locale }: HeroSectionProps) => {
 							width={800}
 							height={600}
 							priority
+							sizes="(max-width: 768px) 100vw, (max-width: 1280px) 50vw, 800px"
 							className="h-auto w-full object-cover"
 						/>
 						{/* Gradient overlay */}
 						<div className="pointer-events-none absolute inset-0 bg-linear-to-t from-[#131313]/60 via-transparent to-transparent" />
 					</div>
 					{/* Floating badge */}
-					<div className="absolute -bottom-4 -left-4 flex items-center gap-3 rounded-xl border border-[#353534] bg-[#201f1f] px-5 py-3 shadow-xl md:-left-8">
+					<div className="absolute -bottom-4 left-1/2 flex w-max -translate-x-1/2 items-center gap-3 rounded-xl border border-[#353534] bg-[#201f1f] px-5 py-3 shadow-xl md:-left-8 md:left-auto md:translate-x-0">
 						<div className="flex h-10 w-10 items-center justify-center rounded-full bg-[#7b2dff]/20">
 							<ShieldCheck className="h-5 w-5 text-[#d1bcff]" />
 						</div>
