@@ -14,7 +14,12 @@ import { useTranslations } from "next-intl";
 import { setRequestLocale } from "next-intl/server";
 import { z } from "zod";
 
+import { LocalBusinessJsonLd } from "@/components/shared/json-ld";
 import { HeroSection } from "@/features/home";
+import { B2BSection } from "@/features/home/b2b-section";
+import { CtaBanner } from "@/features/home/cta-banner";
+import { HowItWorksSection } from "@/features/home/how-it-works-section";
+import { WhyLKSection } from "@/features/home/why-lk-section";
 
 // ── Zod schemas for i18n payload validation ──────────────────────────────
 
@@ -238,6 +243,21 @@ const HomePageContent = ({ locale }: { locale: string }) => {
 					</div>
 				</div>
 			</section>
+
+			{/* ── Why LK Section ── */}
+			<WhyLKSection />
+
+			{/* ── How It Works Section ── */}
+			<HowItWorksSection />
+
+			{/* ── B2B & Fleet Section ── */}
+			<B2BSection locale={locale} />
+
+			{/* ── CTA Banner ── */}
+			<CtaBanner locale={locale} />
+
+			{/* ── Structured Data ── */}
+			<LocalBusinessJsonLd locale={locale} />
 		</div>
 	);
 };

@@ -126,6 +126,26 @@
 		"cta": {
 			"title": "Ready for Professional Detailing?",
 			"subtitle": "Book your appointment today"
+		},
+		"b2b": {
+			"title": "B2B & Fleet Management",
+			"subtitle": "Professional car care for businesses and fleets",
+			"description": "Offer your employees or customers premium vehicle care. We work with companies, dealerships, leasing companies, car rental agencies, and fleet managers.",
+			"features": {
+				"fleet": {
+					"title": "Fleet Discounts",
+					"desc": "Special pricing for multiple vehicles"
+				},
+				"contracts": {
+					"title": "Long-term Contracts",
+					"desc": "Flexible agreements tailored to your needs"
+				},
+				"priority": {
+					"title": "Priority Service",
+					"desc": "Fast scheduling and priority treatment"
+				}
+			},
+			"ctaButton": "Contact us for a quote"
 		}
 	},
 	"Services": {

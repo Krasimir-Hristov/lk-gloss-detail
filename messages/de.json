@@ -126,6 +126,26 @@
 		"cta": {
 			"title": "Bereit für eine professionelle Aufbereitung?",
 			"subtitle": "Vereinbaren Sie noch heute Ihren Termin"
+		},
+		"b2b": {
+			"title": "B2B & Flottenmanagement",
+			"subtitle": "Professionelle Autopflege für Unternehmen und Fuhrparks",
+			"description": "Bieten Sie Ihren Mitarbeitern oder Kunden erstklassige Fahrzeugpflege. Wir arbeiten mit Unternehmen, Autohäusern, Leasinggesellschaften, Autovermietungen und Fuhrparkmanagern zusammen.",
+			"features": {
+				"fleet": {
+					"title": "Flottenrabatte",
+					"desc": "Spezielle Preise für mehrere Fahrzeuge"
+				},
+				"contracts": {
+					"title": "Langzeitverträge",
+					"desc": "Flexible Vereinbarungen nach Ihren Bedürfnissen"
+				},
+				"priority": {
+					"title": "Prioritätsservice",
+					"desc": "Schnelle Termine und bevorzugte Behandlung"
+				}
+			},
+			"ctaButton": "Kontaktieren Sie uns für ein Angebot"
 		}
 	},
 	"Services": {

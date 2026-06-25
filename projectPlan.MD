@@ -118,15 +118,15 @@
 
 ## PHASE 4 — Feature: Homepage (`/`)
 
-- [ ] Hero section (headline, subheadline, CTA buttons, animated car graphic)
-- [ ] Services preview section (4 cards, icons, brief descriptions — from `services` index)
-- [ ] "Why LK?" section (3 USPs with icons — mobile, professional, quality)
-- [ ] How it works section (3 steps: upload photos → AI analysis → book appointment)
-- [ ] Testimonials / Reviews section (static for now, placeholder)
-- [ ] CTA section (book appointment banner)
-- [ ] Structured data: LocalBusiness JSON-LD
-- [ ] Mobile responsive review
-- [ ] Performance: lazy load images, next/image for all photos
+- [x] Hero section (headline, subheadline, CTA buttons, animated car graphic)
+- [x] Services preview section (3 cards, icons, brief descriptions — from `services` index)
+- [x] "Why LK?" section (3 USPs with icons — mobile, professional, AI-powered)
+- [x] How it works section (3 steps: upload photos → AI analysis → book appointment)
+- [x] B2B & Fleet Management section (fleet discounts, contracts, priority service + contact CTA)
+- [x] CTA section (book appointment banner)
+- [x] Structured data: LocalBusiness JSON-LD
+- [x] Mobile responsive review
+- [x] Performance: lazy load images, next/image for all photos
 
 ---
 

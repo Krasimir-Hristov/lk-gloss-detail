@@ -5,7 +5,7 @@ import { Menu, X } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useTranslations, useLocale } from "next-intl";
-import { useState, useCallback, type ReactNode } from "react";
+import { useState, useCallback, useEffect, useRef, type ReactNode } from "react";
 
 import { LanguageSwitcher } from "@/components/shared/LanguageSwitcher";
 import { cn } from "@/lib/utils";
@@ -73,6 +73,35 @@ const Navbar = () => {
 	const t = useTranslations("Navigation");
 	const locale = useLocale();
 	const [mobileOpen, setMobileOpen] = useState(false);
+	const [hidden, setHidden] = useState(false);
+	const lastScrollY = useRef(0);
+	const isInitial = useRef(true);
+
+	useEffect(() => {
+		lastScrollY.current = window.scrollY;
+
+		const onScroll = () => {
+			const currentY = window.scrollY;
+
+			if (isInitial.current) {
+				isInitial.current = false;
+				lastScrollY.current = currentY;
+				return;
+			}
+
+			if (mobileOpen) return;
+
+			const scrollingDown = currentY > lastScrollY.current;
+			if (scrollingDown && currentY > 80) {
+				setHidden(true);
+			} else {
+				setHidden(false);
+			}
+			lastScrollY.current = currentY;
+		};
+		window.addEventListener("scroll", onScroll, { passive: true });
+		return () => window.removeEventListener("scroll", onScroll);
+	}, [mobileOpen]);
 
 	const closeMobile = useCallback(() => setMobileOpen(false), []);
 
@@ -85,7 +114,12 @@ const Navbar = () => {
 	];
 
 	return (
-		<header className="fixed top-0 z-50 w-full border-b border-white/10 bg-black/80 shadow-[0px_0px_15px_rgba(123,45,255,0.15)] backdrop-blur-xl">
+		<header
+			className={cn(
+				"fixed top-0 z-50 w-full border-b border-white/10 bg-black/80 shadow-[0px_0px_15px_rgba(123,45,255,0.15)] backdrop-blur-xl transition-transform duration-300",
+				hidden ? "-translate-y-full" : "translate-y-0",
+			)}
+		>
 			<nav className="mx-auto flex h-20 max-w-7xl items-center justify-between px-4 md:px-16">
 				{/* ----- Logo ----- */}
 				<Link href={`/${locale}`} className="flex items-center">
