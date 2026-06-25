@@ -43,7 +43,7 @@ export const HeroSection = ({ locale }: HeroSectionProps) => {
 					<div className="relative overflow-hidden rounded-2xl border border-[#353534]">
 						<Image
 							src="/screenshots/hero-car-detailing.jpg"
-							alt="Professionelle Autopflege — schwarzer Porsche wird poliert"
+							alt={t("hero.imageAlt")}
 							width={800}
 							height={600}
 							priority

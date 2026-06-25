@@ -12,8 +12,26 @@ import {
 import Link from "next/link";
 import { useTranslations } from "next-intl";
 import { setRequestLocale } from "next-intl/server";
+import { z } from "zod";
 
 import { HeroSection } from "@/features/home";
+
+// ── Zod schemas for i18n payload validation ──────────────────────────────
+
+const ServiceSchema = z.object({
+	title: z.string(),
+	features: z.array(z.string()),
+});
+
+const MobileFeatureSchema = z.object({
+	title: z.string(),
+	desc: z.string(),
+});
+
+const ValuationStatSchema = z.object({
+	value: z.string(),
+	label: z.string(),
+});
 
 // ── Icon mapping for services (structure only, text comes from i18n) ────────
 
@@ -69,10 +87,8 @@ const HomePageContent = ({ locale }: { locale: string }) => {
 					{/* Service cards grid */}
 					<div className="grid gap-6 md:grid-cols-3">
 						{SERVICE_ICONS.map(({ key, icon: Icon }) => {
-							const service = t.raw(`services.${key}`) as {
-								title: string;
-								features: string[];
-							};
+							const rawService = t.raw(`services.${key}`);
+							const service = ServiceSchema.parse(rawService);
 							return (
 								<div
 									key={key}
@@ -127,10 +143,8 @@ const HomePageContent = ({ locale }: { locale: string }) => {
 						{/* Right: Feature cards 2x2 */}
 						<div className="grid grid-cols-2 gap-4">
 							{MOBILE_FEATURE_ICONS.map(({ key, icon: Icon }) => {
-								const feature = t.raw(`mobileService.features.${key}`) as {
-									title: string;
-									desc: string;
-								};
+								const rawFeature = t.raw(`mobileService.features.${key}`);
+								const feature = MobileFeatureSchema.parse(rawFeature);
 								return (
 									<div
 										key={key}
@@ -205,10 +219,8 @@ const HomePageContent = ({ locale }: { locale: string }) => {
 							{/* Stats grid */}
 							<div className="grid grid-cols-3 gap-4 pt-4">
 								{STAT_KEYS.map((key) => {
-									const stat = t.raw(`aiValuation.stats.${key}`) as {
-										value: string;
-										label: string;
-									};
+									const rawStat = t.raw(`aiValuation.stats.${key}`);
+									const stat = ValuationStatSchema.parse(rawStat);
 									return (
 										<div
 											key={key}
