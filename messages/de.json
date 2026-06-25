@@ -14,14 +14,95 @@
 	},
 	"HomePage": {
 		"hero": {
-			"title": "Professionelle Fahrzeugaufbereitung",
-			"subtitle": "Glanz & Detail – Mobile Autopflege mit KI-gestützter Analyse",
+			"title": "Premium Autopflege & Detailing in Perfektion.",
+			"subtitle": "Professionelle mobile Fahrzeugaufbereitung mit KI-gestützter Analyse. Wir bringen Ihren Wagen zum Strahlen direkt vor Ihrer Haustür.",
 			"ctaPrimary": "KI-Bewertung starten",
-			"ctaSecondary": "Leistungen entdecken"
+			"ctaSecondary": "Leistungen entdecken",
+			"badgeTitle": "Zertifiziertes",
+			"badgeSubtitle": "Detailing Studio"
 		},
 		"servicesPreview": {
 			"title": "Unsere Leistungen",
-			"description": "Von der Innenreinigung bis zur Keramikversiegelung"
+			"description": "Von der Innenreinigung bis zur Keramikversiegelung",
+			"more": "Mehr"
+		},
+		"services": {
+			"interior": {
+				"title": "Innenaufbereitung",
+				"features": [
+					"Gründliche Reinigung aller Oberflächen",
+					"Lederaufbereitung & Imprägnierung",
+					"Geruchsneutralisation"
+				]
+			},
+			"paintCorrection": {
+				"title": "3-Stufen Lackkorrektur",
+				"features": [
+					"Entfernung von Kratzern & Swirls",
+					"Politur bis zum Hochglanz",
+					"Versiegelung für langanhaltenden Schutz"
+				]
+			},
+			"ceramic": {
+				"title": "Keramikversiegelung",
+				"features": [
+					"Professionelle Nano-Beschichtung",
+					"Hydrophober Effekt & UV-Schutz",
+					"Bis zu 5 Jahre Haltbarkeit"
+				]
+			}
+		},
+		"mobileService": {
+			"title": "Mobile Service",
+			"description": "Wir kommen direkt zu Ihnen nach Hause oder an Ihren Arbeitsplatz. Kein Fahrdienst nötig — professionelle Autopflege vor Ihrer Haustür.",
+			"features": {
+				"onSite": {
+					"title": "Vor-Ort Service",
+					"desc": "Wir kommen direkt zu Ihnen"
+				},
+				"valueIncrease": {
+					"title": "Wert Steigern",
+					"desc": "Professionelle Aufbereitung"
+				},
+				"noAppointment": {
+					"title": "Kein Termin",
+					"desc": "Flexible Zeitplanung"
+				},
+				"noStress": {
+					"title": "Kein Stress",
+					"desc": "Alles vor Ihrer Haustür"
+				}
+			}
+		},
+		"aiValuation": {
+			"title": "Steigern Sie den Wiederverkaufswert.",
+			"description": "Unsere KI analysiert den Zustand Ihres Fahrzeugs und erstellt einen individuellen Aufbereitungsplan. Professionelle Pflege zahlt sich aus.",
+			"formTitle": "KI-Fahrzeugbewertung",
+			"labels": {
+				"model": "Fahrzeugmodell",
+				"year": "Baujahr",
+				"condition": "Zustand"
+			},
+			"mockValues": {
+				"model": "Porsche 911 Carrera S",
+				"year": "2022",
+				"condition": "Gut — leichte Gebrauchsspuren"
+			},
+			"ctaButton": "Bewertung starten",
+			"stats": {
+				"valueIncrease": {
+					"value": "+15%",
+					"label": "Wertsteigerung"
+				},
+				"fastAnalysis": {
+					"value": "48h",
+					"label": "Schnelle Analyse"
+				},
+				"happyCustomers": {
+					"value": "250+",
+					"label": "Zufriedene Kunden"
+				}
+			}
 		},
 		"whyLK": {
 			"title": "Warum LK Gloss & Detail?",
