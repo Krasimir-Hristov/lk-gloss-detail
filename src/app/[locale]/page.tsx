@@ -257,7 +257,7 @@ const HomePageContent = ({ locale }: { locale: string }) => {
 			<CtaBanner locale={locale} />
 
 			{/* ── Structured Data ── */}
-			<LocalBusinessJsonLd />
+			<LocalBusinessJsonLd locale={locale} />
 		</div>
 	);
 };

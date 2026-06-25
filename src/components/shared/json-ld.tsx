@@ -1,18 +1,43 @@
+const safeJsonLd = (data: Record<string, unknown>): string => {
+	return JSON.stringify(data).replace(/<\/script>/gi, "<\\/script>");
+};
+
 type JsonLdProps = {
 	data: Record<string, unknown>;
 };
 
 export const JsonLd = ({ data }: JsonLdProps) => (
-	<script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(data) }} />
+	<script type="application/ld+json" dangerouslySetInnerHTML={{ __html: safeJsonLd(data) }} />
 );
 
-export const LocalBusinessJsonLd = () => {
+type LocalBusinessJsonLdProps = {
+	locale: string;
+};
+
+export const LocalBusinessJsonLd = ({ locale }: LocalBusinessJsonLdProps) => {
+	const names: Record<string, string> = {
+		de: "LK Gloss & Detail",
+		en: "LK Gloss & Detail",
+		el: "LK Gloss & Detail",
+	};
+
+	const descriptions: Record<string, string> = {
+		de: "Mobile Autopflege & Fahrzeugaufbereitung mit KI-gestützter Analyse. Professionelles Car Detailing in Deutschland.",
+		en: "Mobile car care & vehicle detailing with AI-powered analysis. Professional car detailing service in Germany.",
+		el: "Κινητή περιποίηση αυτοκινήτου με ανάλυση AI. Επαγγελματική υπηρεσία detailing στην Γερμανία.",
+	};
+
+	const serviceTypes: Record<string, string[]> = {
+		de: ["Innenaufbereitung", "Lackkorrektur", "Keramikversiegelung", "Mobile Autopflege"],
+		en: ["Interior Detailing", "Paint Correction", "Ceramic Coating", "Mobile Service"],
+		el: ["Εσωτερική Περιποίηση", "Διόρθωση Βαφής", "Κεραμική Επικάλυψη", "Κινητή Υπηρεσία"],
+	};
+
 	const jsonLd = {
 		"@context": "https://schema.org",
 		"@type": "AutomotiveBusiness",
-		name: "LK Gloss & Detail",
-		description:
-			"Mobile Autopflege & Fahrzeugaufbereitung mit KI-gestützter Analyse. Professionelles Car Detailing in Deutschland.",
+		name: names[locale] ?? names.de,
+		description: descriptions[locale] ?? descriptions.de,
 		url: "https://lkglossanddetail.de",
 		telephone: "+49",
 		address: {
@@ -30,9 +55,10 @@ export const LocalBusinessJsonLd = () => {
 			"@type": "Country",
 			name: "Germany",
 		},
-		serviceType: ["Innenaufbereitung", "Lackkorrektur", "Keramikversiegelung", "Mobile Autopflege"],
+		serviceType: serviceTypes[locale] ?? serviceTypes.de,
 		priceRange: "€€",
 		openingHours: "Mo-Sa 08:00-18:00",
+		inLanguage: locale,
 	};
 
 	return <JsonLd data={jsonLd} />;

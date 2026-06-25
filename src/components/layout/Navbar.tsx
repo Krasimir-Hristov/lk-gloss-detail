@@ -75,11 +75,24 @@ const Navbar = () => {
 	const [mobileOpen, setMobileOpen] = useState(false);
 	const [hidden, setHidden] = useState(false);
 	const lastScrollY = useRef(0);
+	const isInitial = useRef(true);
 
 	useEffect(() => {
+		lastScrollY.current = window.scrollY;
+
 		const onScroll = () => {
 			const currentY = window.scrollY;
-			if (currentY > lastScrollY.current && currentY > 80) {
+
+			if (isInitial.current) {
+				isInitial.current = false;
+				lastScrollY.current = currentY;
+				return;
+			}
+
+			if (mobileOpen) return;
+
+			const scrollingDown = currentY > lastScrollY.current;
+			if (scrollingDown && currentY > 80) {
 				setHidden(true);
 			} else {
 				setHidden(false);
@@ -88,7 +101,7 @@ const Navbar = () => {
 		};
 		window.addEventListener("scroll", onScroll, { passive: true });
 		return () => window.removeEventListener("scroll", onScroll);
-	}, []);
+	}, [mobileOpen]);
 
 	const closeMobile = useCallback(() => setMobileOpen(false), []);
 
