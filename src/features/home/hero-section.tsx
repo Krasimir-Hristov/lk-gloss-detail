@@ -42,7 +42,7 @@ export const HeroSection = ({ locale }: HeroSectionProps) => {
 				<div className="relative mx-auto w-full max-w-lg lg:mx-0 lg:max-w-none">
 					<div className="relative overflow-hidden rounded-2xl border border-[#353534]">
 						<Image
-							src="/screenshots/hero-car-detailing.jpg"
+							src="/assets/hero-car-detailing.jpg"
 							alt={t("hero.imageAlt")}
 							width={800}
 							height={600}

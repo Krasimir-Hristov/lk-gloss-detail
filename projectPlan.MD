@@ -133,7 +133,7 @@
 ## PHASE 5 — Feature: Services Page (`/services`)
 
 - [ ] Create `src/features/services/data/services.index.ts` (array of service objects)
-- [ ] Service card component (`ServiceCard`) — icon, title (i18n), description, price range
+- [ ] Service card component (`ServiceCard`) — icon, title (i18n), description
 - [ ] Services grid page layout
 - [ ] Individual service detail expandable section (accordion)
 - [ ] CTA per service → goes to AI Assessment flow
