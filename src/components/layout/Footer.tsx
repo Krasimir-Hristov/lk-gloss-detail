@@ -1,6 +1,8 @@
 import Link from "next/link";
 import { useTranslations, useLocale } from "next-intl";
 
+import { NAV_LINKS, LEGAL_LINKS } from "@/constants/navigation";
+
 const Footer = () => {
 	const t = useTranslations("Footer");
 	const tNav = useTranslations("Navigation");
@@ -8,17 +10,15 @@ const Footer = () => {
 
 	const year = new Date().getFullYear();
 
-	const navLinks = [
-		{ href: "/services", label: tNav("services") },
-		{ href: "/assessment", label: tNav("assessment") },
-		{ href: "/gallery", label: tNav("gallery") },
-		{ href: "/contact", label: tNav("contact") },
-	];
+	const navLinks = NAV_LINKS.filter((l) => l.href !== "/").map((l) => ({
+		href: l.href,
+		label: tNav(l.i18nKey),
+	}));
 
-	const legalLinks = [
-		{ href: "/impressum", label: t("impressum") },
-		{ href: "/privacy", label: t("privacy") },
-	];
+	const legalLinks = LEGAL_LINKS.map((l) => ({
+		href: l.href,
+		label: t(l.i18nKey),
+	}));
 
 	return (
 		<footer className="w-full border-t border-[#4a4456] bg-black py-16 md:py-28">

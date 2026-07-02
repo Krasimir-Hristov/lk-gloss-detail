@@ -8,6 +8,7 @@ import { useTranslations, useLocale } from "next-intl";
 import { useState, useCallback, useEffect, useRef, type ReactNode } from "react";
 
 import { LanguageSwitcher } from "@/components/shared/LanguageSwitcher";
+import { NAV_LINKS } from "@/constants/navigation";
 import { cn } from "@/lib/utils";
 
 // ---------- Inline sub-components ----------
@@ -22,7 +23,12 @@ const DesktopNavLink = ({ href, children }: { href: string; children: ReactNode 
 	const pathname = usePathname();
 	const locale = useLocale();
 	const stripped = pathname.replace(`/${locale}`, "") || "/";
-	const isActive = href === "/" ? stripped === "/" : stripped.startsWith(href);
+	// Anchor links (starting with #) scroll to sections on homepage — never "active"
+	const isActive = href.startsWith("#")
+		? false
+		: href === "/"
+			? stripped === "/"
+			: stripped.startsWith(href);
 
 	return (
 		<Link
@@ -51,7 +57,11 @@ const MobileNavLink = ({
 	const pathname = usePathname();
 	const locale = useLocale();
 	const stripped = pathname.replace(`/${locale}`, "") || "/";
-	const isActive = href === "/" ? stripped === "/" : stripped.startsWith(href);
+	const isActive = href.startsWith("#")
+		? false
+		: href === "/"
+			? stripped === "/"
+			: stripped.startsWith(href);
 
 	return (
 		<Link
@@ -105,13 +115,10 @@ const Navbar = () => {
 
 	const closeMobile = useCallback(() => setMobileOpen(false), []);
 
-	const navLinks = [
-		{ href: "/", label: t("home") },
-		{ href: "/services", label: t("services") },
-		{ href: "/assessment", label: t("assessment") },
-		{ href: "/gallery", label: t("gallery") },
-		{ href: "/contact", label: t("contact") },
-	];
+	const navLinks = NAV_LINKS.map((l) => ({
+		href: l.href,
+		label: t(l.i18nKey),
+	}));
 
 	return (
 		<header

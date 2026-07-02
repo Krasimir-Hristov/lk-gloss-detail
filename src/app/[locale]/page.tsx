@@ -6,6 +6,7 @@ import { z } from "zod";
 import { LocalBusinessJsonLd } from "@/components/shared/json-ld";
 import {
 	B2BSection,
+	ContactSection,
 	CtaBanner,
 	HeroSection,
 	HowItWorksSection,
@@ -192,6 +193,9 @@ const HomePageContent = ({ locale }: { locale: string }) => {
 
 			{/* ── CTA Banner ── */}
 			<CtaBanner locale={locale} />
+
+			{/* ── Contact Section ── */}
+			<ContactSection />
 
 			{/* ── Structured Data ── */}
 			<LocalBusinessJsonLd locale={locale} />
