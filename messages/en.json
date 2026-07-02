@@ -24,32 +24,34 @@
 		},
 		"servicesPreview": {
 			"title": "Our Services",
-			"description": "From interior cleaning to ceramic coating",
-			"more": "More"
+			"description": "Professional car care right at your doorstep"
 		},
 		"services": {
 			"interior": {
-				"title": "Interior Detailing",
+				"title": "Professional Interior Cleaning",
+				"subtitle": "Deep cleaning & care",
 				"features": [
 					"Thorough cleaning of all surfaces",
 					"Leather conditioning & protection",
 					"Odor neutralization"
 				]
 			},
+			"headlights": {
+				"title": "Headlight Restoration",
+				"subtitle": "Clear vision & safety",
+				"features": [
+					"Removal of yellowing & haze",
+					"Polishing of lenses",
+					"Long-lasting UV protection"
+				]
+			},
 			"paintCorrection": {
-				"title": "3-Stage Paint Correction",
+				"title": "Paint Correction, Polishing & Sealing",
+				"subtitle": "3-Stage high gloss & protection",
 				"features": [
 					"Removal of scratches & swirls",
 					"Polishing to high gloss",
 					"Sealant for long-lasting protection"
-				]
-			},
-			"ceramic": {
-				"title": "Ceramic Coating",
-				"features": [
-					"Professional nano-coating",
-					"Hydrophobic effect & UV protection",
-					"Up to 5 years durability"
 				]
 			}
 		},
