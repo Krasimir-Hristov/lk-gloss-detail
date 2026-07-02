@@ -24,32 +24,35 @@
 		},
 		"servicesPreview": {
 			"title": "Unsere Leistungen",
-			"description": "Von der Innenreinigung bis zur Keramikversiegelung",
+			"description": "Professionelle Autopflege direkt bei Ihnen",
 			"more": "Mehr"
 		},
 		"services": {
 			"interior": {
-				"title": "Innenaufbereitung",
+				"title": "Professionelle Innenreinigung",
+				"subtitle": "Tiefenreinigung & Pflege",
 				"features": [
 					"Gründliche Reinigung aller Oberflächen",
 					"Lederaufbereitung & Imprägnierung",
 					"Geruchsneutralisation"
 				]
 			},
+			"headlights": {
+				"title": "Scheinwerferaufbereitung",
+				"subtitle": "Klare Sicht & Sicherheit",
+				"features": [
+					"Entfernung von Vergilbung & Trübung",
+					"Politur der Streuscheiben",
+					"Langlebiger UV-Schutz"
+				]
+			},
 			"paintCorrection": {
-				"title": "3-Stufen Lackkorrektur",
+				"title": "Lackkorrektur, Politur & Versiegelung",
+				"subtitle": "3-Stufen Hochglanz & Schutz",
 				"features": [
 					"Entfernung von Kratzern & Swirls",
 					"Politur bis zum Hochglanz",
 					"Versiegelung für langanhaltenden Schutz"
-				]
-			},
-			"ceramic": {
-				"title": "Keramikversiegelung",
-				"features": [
-					"Professionelle Nano-Beschichtung",
-					"Hydrophober Effekt & UV-Schutz",
-					"Bis zu 5 Jahre Haltbarkeit"
 				]
 			}
 		},

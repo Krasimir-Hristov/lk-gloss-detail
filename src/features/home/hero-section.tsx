@@ -3,6 +3,8 @@ import Image from "next/image";
 import Link from "next/link";
 import { useTranslations } from "next-intl";
 
+import { heroCarDetailing } from "@/assets";
+
 type HeroSectionProps = {
 	locale: string;
 };
@@ -42,10 +44,8 @@ export const HeroSection = ({ locale }: HeroSectionProps) => {
 				<div className="relative mx-auto w-full max-w-lg lg:mx-0 lg:max-w-none">
 					<div className="relative overflow-hidden rounded-2xl border border-[#353534]">
 						<Image
-							src="/assets/hero-car-detailing.jpg"
+							src={heroCarDetailing}
 							alt={t("hero.imageAlt")}
-							width={800}
-							height={600}
 							priority
 							sizes="(max-width: 768px) 100vw, (max-width: 1280px) 50vw, 800px"
 							className="h-auto w-full object-cover"

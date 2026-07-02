@@ -1,32 +1,19 @@
-import {
-	Sparkles,
-	ShieldCheck,
-	Star,
-	Truck,
-	MapPin,
-	Clock,
-	ThumbsUp,
-	ArrowRight,
-	CheckCircle2,
-} from "lucide-react";
-import Link from "next/link";
+import { Sparkles, Truck, MapPin, Clock, ThumbsUp } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { setRequestLocale } from "next-intl/server";
 import { z } from "zod";
 
 import { LocalBusinessJsonLd } from "@/components/shared/json-ld";
-import { HeroSection } from "@/features/home";
-import { B2BSection } from "@/features/home/b2b-section";
-import { CtaBanner } from "@/features/home/cta-banner";
-import { HowItWorksSection } from "@/features/home/how-it-works-section";
-import { WhyLKSection } from "@/features/home/why-lk-section";
+import {
+	B2BSection,
+	CtaBanner,
+	HeroSection,
+	HowItWorksSection,
+	ServicesSection,
+	WhyLKSection,
+} from "@/features/home";
 
 // ── Zod schemas for i18n payload validation ──────────────────────────────
-
-const ServiceSchema = z.object({
-	title: z.string(),
-	features: z.array(z.string()),
-});
 
 const MobileFeatureSchema = z.object({
 	title: z.string(),
@@ -38,13 +25,7 @@ const ValuationStatSchema = z.object({
 	label: z.string(),
 });
 
-// ── Icon mapping for services (structure only, text comes from i18n) ────────
-
-const SERVICE_ICONS = [
-	{ key: "interior", icon: Sparkles },
-	{ key: "paintCorrection", icon: ShieldCheck },
-	{ key: "ceramic", icon: Star },
-] as const;
+// ── Icon mapping for mobile features (structure only, text comes from i18n) ──
 
 const MOBILE_FEATURE_ICONS = [
 	{ key: "onSite", icon: MapPin },
@@ -78,51 +59,7 @@ const HomePageContent = ({ locale }: { locale: string }) => {
 			<HeroSection locale={locale} />
 
 			{/* ── Services Section ── */}
-			<section className="px-4 py-20 md:px-16 md:py-28">
-				<div className="mx-auto max-w-7xl">
-					{/* Section header */}
-					<div className="mb-16 text-center">
-						<div className="mx-auto mb-4 h-1 w-16 rounded-full bg-linear-to-r from-[#7b2dff] to-[#d8b4fe]" />
-						<h2 className="text-3xl font-bold text-[#e5e2e1] md:text-4xl">
-							{t("servicesPreview.title")}
-						</h2>
-						<p className="mt-3 text-lg text-[#ccc3d9]">{t("servicesPreview.description")}</p>
-					</div>
-
-					{/* Service cards grid */}
-					<div className="grid gap-6 md:grid-cols-3">
-						{SERVICE_ICONS.map(({ key, icon: Icon }) => {
-							const rawService = t.raw(`services.${key}`);
-							const service = ServiceSchema.parse(rawService);
-							return (
-								<div
-									key={key}
-									className="group rounded-xl border border-[#353534] bg-[#201f1f] p-8 transition-all hover:border-[#7b2dff]/40 hover:shadow-lg hover:shadow-[#7b2dff]/5"
-								>
-									<div className="mb-6 flex h-14 w-14 items-center justify-center rounded-xl bg-[#7b2dff]/15">
-										<Icon className="h-7 w-7 text-[#d1bcff]" />
-									</div>
-									<h3 className="mb-4 text-xl font-bold text-[#e5e2e1]">{service.title}</h3>
-									<ul className="mb-8 space-y-3">
-										{service.features.map((feature) => (
-											<li key={feature} className="flex items-start gap-3 text-sm text-[#ccc3d9]">
-												<CheckCircle2 className="mt-0.5 h-4 w-4 shrink-0 text-[#7b2dff]" />
-												{feature}
-											</li>
-										))}
-									</ul>
-									<Link
-										href={`/${locale}/services`}
-										className="inline-flex items-center gap-1 text-sm font-semibold text-[#d1bcff] transition-colors hover:text-[#7b2dff]"
-									>
-										{t("servicesPreview.more")} <ArrowRight className="h-3.5 w-3.5" />
-									</Link>
-								</div>
-							);
-						})}
-					</div>
-				</div>
-			</section>
+			<ServicesSection />
 
 			{/* ── Mobile Service Section ── */}
 			<section className="relative overflow-hidden px-4 py-20 md:px-16 md:py-28">
