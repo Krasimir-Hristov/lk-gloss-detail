@@ -132,12 +132,12 @@
 
 ## PHASE 5 — Feature: Services Page (`/services`)
 
-- [ ] Create `src/features/services/data/services.index.ts` (array of service objects)
-- [ ] Service card component (`ServiceCard`) — icon, title (i18n), description
-- [ ] Services grid page layout
-- [ ] Individual service detail expandable section (accordion)
-- [ ] CTA per service → goes to AI Assessment flow
-- [ ] Add service-specific JSON-LD schema
+- [x] Create `src/features/services/data/services.index.ts` (array of service objects)
+- [x] Service card component (`ServiceCard`) — icon, title (i18n), description
+- [x] Services grid page layout
+- [x] Individual service detail expandable section (accordion)
+- [x] CTA per service → goes to AI Assessment flow
+- [x] Add service-specific JSON-LD schema
 
 ---
 
