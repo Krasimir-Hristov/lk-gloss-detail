@@ -25,7 +25,7 @@ export const ServicesSection = () => {
 	const t = useTranslations("HomePage");
 
 	return (
-		<section className="px-4 py-20 md:px-16 md:py-28">
+		<section id="services" className="px-4 py-20 md:px-16 md:py-28">
 			<div className="mx-auto max-w-7xl">
 				{/* Section header */}
 				<div className="mb-16 text-center">
