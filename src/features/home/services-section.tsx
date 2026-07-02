@@ -42,7 +42,7 @@ export const ServicesSection = () => {
 						const rawService = t.raw(`services.${key}`);
 						const service = ServiceSchema.parse(rawService);
 						return (
-							<div
+							<article
 								key={key}
 								className="group flex flex-col overflow-hidden rounded-xl border border-[#353534] bg-[#201f1f] transition-all hover:border-[#7b2dff]/40 hover:shadow-lg hover:shadow-[#7b2dff]/10"
 							>
@@ -75,7 +75,7 @@ export const ServicesSection = () => {
 										))}
 									</ul>
 								</div>
-							</div>
+							</article>
 						);
 					})}
 				</div>
