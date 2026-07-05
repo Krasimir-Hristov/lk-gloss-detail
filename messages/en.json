@@ -154,33 +154,6 @@
 		"title": "Our Services",
 		"description": "Comprehensive car care for your vehicle"
 	},
-	"Assessment": {
-		"title": "AI Vehicle Assessment",
-		"steps": {
-			"front": "Front Photo",
-			"rear": "Rear Photo",
-			"left": "Left Side",
-			"right": "Right Side",
-			"interior": "Interior"
-		},
-		"upload": {
-			"dragDrop": "Drag image here or click to upload",
-			"validating": "Validating photo...",
-			"error": "This photo does not match the expected angle. Please try again."
-		},
-		"swipe": {
-			"title": "Choose Your Services",
-			"accept": "Accept",
-			"reject": "Reject"
-		},
-		"result": {
-			"title": "Your Assessment Result",
-			"priceRange": "Price Range",
-			"duration": "Estimated Duration",
-			"summary": "Summary",
-			"bookNow": "Book Appointment"
-		}
-	},
 	"Booking": {
 		"title": "Book Appointment",
 		"steps": {
@@ -252,5 +225,91 @@
 	},
 	"Impressum": {
 		"title": "Impressum"
+	},
+	"Assessment": {
+		"title": "AI Photo Analysis",
+		"steps": {
+			"front": "Front view",
+			"rear": "Rear view",
+			"side": "Side view",
+			"left": "Left Side",
+			"right": "Right Side",
+			"interior": "Interior"
+		},
+		"upload": {
+			"dragDrop": "Drag & drop your photo",
+			"orClick": "or click to browse",
+			"chooseFile": "Choose File",
+			"takePhoto": "Take Photo",
+			"validating": "Validating photo...",
+			"error": "This photo does not match the expected angle. Please try again."
+		},
+		"validation": {
+			"validating": "Validating photo...",
+			"valid": "Photo valid!",
+			"invalid": "Invalid photo",
+			"tryAgain": "Try Again",
+			"uploadDifferent": "Upload Different Photo"
+		},
+		"navigation": {
+			"back": "Back",
+			"skip": "Skip (for testing)"
+		},
+		"progress": {
+			"step": "Step",
+			"of": "of"
+		},
+		"swipe": {
+			"title": "Choose Your Services",
+			"accept": "Accept",
+			"reject": "Reject"
+		},
+		"services": {
+			"headingTag": "Configurator",
+			"headingTitle": "Choose Your Services",
+			"headingDescription": "Decide which treatments your vehicle deserves. Swipe right to confirm.",
+			"interior": {
+				"title": "Professional Interior Cleaning",
+				"subtitle": "Deep cleaning & care",
+				"features": [
+					"Thorough cleaning of all surfaces",
+					"Leather conditioning & protection",
+					"Odor neutralization"
+				],
+				"tag": "Premium Care",
+				"duration": "2-3 hours"
+			},
+			"headlights": {
+				"title": "Headlight Restoration",
+				"subtitle": "Clear vision & safety",
+				"features": [
+					"Removal of yellowing & haze",
+					"Polishing of lenses",
+					"Long-lasting UV protection"
+				],
+				"tag": "Safety",
+				"duration": "1 hour"
+			},
+			"paintCorrection": {
+				"title": "Paint Correction, Polishing & Sealing",
+				"subtitle": "3-Stage high gloss & protection",
+				"features": [
+					"Removal of scratches & swirls",
+					"Polishing to high gloss",
+					"Sealant for long-lasting protection"
+				],
+				"tag": "Premium Protection",
+				"duration": "4-6 hours"
+			},
+			"completeTitle": "Services configured!",
+			"completeDescription": "Your selection has been saved. Proceeding to AI analysis..."
+		},
+		"result": {
+			"title": "Your Assessment Result",
+			"priceRange": "Price Range",
+			"duration": "Estimated Duration",
+			"summary": "Summary",
+			"bookNow": "Book Appointment"
+		}
 	}
 }

@@ -154,33 +154,6 @@
 		"title": "Unsere Leistungen",
 		"description": "Umfassende Autopflege für Ihr Fahrzeug"
 	},
-	"Assessment": {
-		"title": "KI-Fahrzeugbewertung",
-		"steps": {
-			"front": "Frontfoto",
-			"rear": "Heckfoto",
-			"left": "Linke Seite",
-			"right": "Rechte Seite",
-			"interior": "Innenraum"
-		},
-		"upload": {
-			"dragDrop": "Bild hierher ziehen oder klicken zum Hochladen",
-			"validating": "Foto wird überprüft...",
-			"error": "Dieses Foto entspricht nicht dem erwarteten Winkel. Bitte versuchen Sie es erneut."
-		},
-		"swipe": {
-			"title": "Wählen Sie Ihre Leistungen",
-			"accept": "Annehmen",
-			"reject": "Ablehnen"
-		},
-		"result": {
-			"title": "Ihr Bewertungsergebnis",
-			"priceRange": "Preisspanne",
-			"duration": "Geschätzte Dauer",
-			"summary": "Zusammenfassung",
-			"bookNow": "Termin buchen"
-		}
-	},
 	"Booking": {
 		"title": "Termin buchen",
 		"steps": {
@@ -252,5 +225,91 @@
 	},
 	"Impressum": {
 		"title": "Impressum"
+	},
+	"Assessment": {
+		"title": "KI-Fotoanalyse",
+		"steps": {
+			"front": "Frontansicht",
+			"rear": "Rückansicht",
+			"side": "Seitenansicht",
+			"left": "Linke Seite",
+			"right": "Rechte Seite",
+			"interior": "Innenraum"
+		},
+		"upload": {
+			"dragDrop": "Foto hierher ziehen",
+			"orClick": "oder klicken zum Durchsuchen",
+			"chooseFile": "Datei wählen",
+			"takePhoto": "Foto aufnehmen",
+			"validating": "Foto wird überprüft...",
+			"error": "Dieses Foto entspricht nicht dem erwarteten Winkel. Bitte versuchen Sie es erneut."
+		},
+		"validation": {
+			"validating": "Foto wird überprüft...",
+			"valid": "Foto gültig!",
+			"invalid": "Ungültiges Foto",
+			"tryAgain": "Erneut versuchen",
+			"uploadDifferent": "Anderes Foto hochladen"
+		},
+		"navigation": {
+			"back": "Zurück",
+			"skip": "Überspringen (zum Testen)"
+		},
+		"progress": {
+			"step": "Schritt",
+			"of": "von"
+		},
+		"swipe": {
+			"title": "Wählen Sie Ihre Leistungen",
+			"accept": "Annehmen",
+			"reject": "Ablehnen"
+		},
+		"services": {
+			"headingTag": "Konfigurator",
+			"headingTitle": "Wähle deine Services",
+			"headingDescription": "Entscheide, welche Behandlungen dein Fahrzeug verdient. Swipe nach rechts für Bestätigung.",
+			"interior": {
+				"title": "Professionelle Innenreinigung",
+				"subtitle": "Tiefenreinigung & Pflege",
+				"features": [
+					"Gründliche Reinigung aller Oberflächen",
+					"Lederaufbereitung & Imprägnierung",
+					"Geruchsneutralisation"
+				],
+				"tag": "Premium Pflege",
+				"duration": "2-3 Stunden"
+			},
+			"headlights": {
+				"title": "Scheinwerferaufbereitung",
+				"subtitle": "Klare Sicht & Sicherheit",
+				"features": [
+					"Entfernung von Vergilbung & Trübung",
+					"Politur der Streuscheiben",
+					"Langlebiger UV-Schutz"
+				],
+				"tag": "Sicherheit",
+				"duration": "1 Stunde"
+			},
+			"paintCorrection": {
+				"title": "Lackkorrektur, Politur & Versiegelung",
+				"subtitle": "3-Stufen Hochglanz & Schutz",
+				"features": [
+					"Entfernung von Kratzern & Swirls",
+					"Politur bis zum Hochglanz",
+					"Versiegelung für langanhaltenden Schutz"
+				],
+				"tag": "Premium Schutz",
+				"duration": "4-6 Stunden"
+			},
+			"completeTitle": "Services konfiguriert!",
+			"completeDescription": "Deine Auswahl wurde gespeichert. Weiter zur KI-Analyse..."
+		},
+		"result": {
+			"title": "Ihr Bewertungsergebnis",
+			"priceRange": "Preisspanne",
+			"duration": "Geschätzte Dauer",
+			"summary": "Zusammenfassung",
+			"bookNow": "Termin buchen"
+		}
 	}
 }
