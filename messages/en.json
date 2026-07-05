@@ -252,5 +252,35 @@
 	},
 	"Impressum": {
 		"title": "Impressum"
+	},
+	"Assessment": {
+		"title": "AI Photo Analysis",
+		"steps": {
+			"front": "Front view",
+			"rear": "Rear view",
+			"side": "Side view",
+			"interior": "Interior"
+		},
+		"upload": {
+			"dragDrop": "Drag & drop your photo",
+			"orClick": "or click to browse",
+			"chooseFile": "Choose File",
+			"takePhoto": "Take Photo"
+		},
+		"validation": {
+			"validating": "Validating photo...",
+			"valid": "Photo valid!",
+			"invalid": "Invalid photo",
+			"tryAgain": "Try Again",
+			"uploadDifferent": "Upload Different Photo"
+		},
+		"navigation": {
+			"back": "Back",
+			"skip": "Skip (for testing)"
+		},
+		"progress": {
+			"step": "Step",
+			"of": "of"
+		}
 	}
 }

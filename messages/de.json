@@ -252,5 +252,35 @@
 	},
 	"Impressum": {
 		"title": "Impressum"
+	},
+	"Assessment": {
+		"title": "KI-Fotoanalyse",
+		"steps": {
+			"front": "Frontansicht",
+			"rear": "Rückansicht",
+			"side": "Seitenansicht",
+			"interior": "Innenraum"
+		},
+		"upload": {
+			"dragDrop": "Foto hierher ziehen",
+			"orClick": "oder klicken zum Durchsuchen",
+			"chooseFile": "Datei wählen",
+			"takePhoto": "Foto aufnehmen"
+		},
+		"validation": {
+			"validating": "Foto wird überprüft...",
+			"valid": "Foto gültig!",
+			"invalid": "Ungültiges Foto",
+			"tryAgain": "Erneut versuchen",
+			"uploadDifferent": "Anderes Foto hochladen"
+		},
+		"navigation": {
+			"back": "Zurück",
+			"skip": "Überspringen (zum Testen)"
+		},
+		"progress": {
+			"step": "Schritt",
+			"of": "von"
+		}
 	}
 }
