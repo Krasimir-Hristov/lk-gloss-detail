@@ -4,13 +4,12 @@ import { motion } from "framer-motion";
 import { Check } from "lucide-react";
 
 import type { WizardStep } from "@/features/assessment/schemas/assessment.schema";
+import { PHOTO_STEPS } from "@/features/assessment/schemas/assessment.schema";
 
 type ProgressIndicatorProps = {
 	currentStep: WizardStep;
 	completedSteps: WizardStep[];
 };
-
-const PHOTO_STEPS: WizardStep[] = ["front", "rear", "side", "interior"];
 
 export const ProgressIndicator = ({ currentStep, completedSteps }: ProgressIndicatorProps) => {
 	return (

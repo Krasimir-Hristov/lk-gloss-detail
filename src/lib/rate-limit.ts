@@ -20,6 +20,8 @@ export const rateLimit = (
 	const entry = rateLimitMap.get(key);
 
 	if (!entry || now > entry.resetTime) {
+		// Clean up expired entry before setting new one
+		if (entry) rateLimitMap.delete(key);
 		rateLimitMap.set(key, { count: 1, resetTime: now + options.interval });
 		return { success: true, remaining: options.maxRequests - 1 };
 	}

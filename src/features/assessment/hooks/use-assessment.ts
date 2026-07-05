@@ -2,7 +2,7 @@
 
 import { useMutation, useQuery } from "@tanstack/react-query";
 
-import {
+import type {
 	PhotoValidationRequest,
 	PhotoValidationResponse,
 } from "@/features/assessment/schemas/photo-validation.schema";

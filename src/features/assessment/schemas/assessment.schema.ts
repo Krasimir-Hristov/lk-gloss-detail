@@ -5,11 +5,6 @@ import { z } from "zod";
 export const PhotoAngleSchema = z.enum(["front", "rear", "side", "interior"]);
 export type PhotoAngle = z.infer<typeof PhotoAngleSchema>;
 
-// ── Photo Validation Status Enum ───────────────────────────────────────────
-
-export const PhotoValidationStatusSchema = z.enum(["idle", "uploading", "valid", "invalid"]);
-export type PhotoValidationStatus = z.infer<typeof PhotoValidationStatusSchema>;
-
 // ── Assessment Photo ───────────────────────────────────────────────────────
 
 export const AssessmentPhotoSchema = z.object({
@@ -87,6 +82,10 @@ export const WIZARD_STEPS = [
 
 export const WizardStep = z.enum(WIZARD_STEPS);
 export type WizardStep = z.infer<typeof WizardStep>;
+
+// ── Shared photo step list ─────────────────────────────────────────────────
+
+export const PHOTO_STEPS: WizardStep[] = ["front", "rear", "side", "interior"];
 
 // ── Assessment State (Zustand store shape) ─────────────────────────────────
 

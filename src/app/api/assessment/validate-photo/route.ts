@@ -1,7 +1,6 @@
-import { NextRequest, NextResponse } from "next/server";
-
 import { ChatOpenAI } from "@langchain/openai";
 import { HumanMessage, SystemMessage } from "@langchain/core/messages";
+import { type NextRequest, NextResponse } from "next/server";
 
 import {
 	PhotoValidationRequestSchema,
@@ -11,7 +10,7 @@ import {
 // Initialize Gemini model via OpenRouter - using PRO for maximum accuracy
 const model = new ChatOpenAI({
 	apiKey: process.env.OPENROUTER_API_KEY,
-	modelName: "google/gemini-2.5-pro", // Най-мощният модел за строга валидация
+	modelName: "google/gemini-2.5-pro", // Most powerful model for strict validation
 	temperature: 0,
 	configuration: {
 		baseURL: "https://openrouter.ai/api/v1",
@@ -84,12 +83,13 @@ export async function POST(request: NextRequest) {
 
 		const parsedResponse = JSON.parse(jsonMatch[0]);
 		return NextResponse.json(PhotoValidationResponseSchema.parse(parsedResponse));
-	} catch (error: any) {
-		console.error("[validate-photo] Error:", error);
+	} catch (err: unknown) {
+		const message = err instanceof Error ? err.message : "Internal Server Error";
+		console.error("[validate-photo] Error:", message);
 		return NextResponse.json(
 			{
 				valid: false,
-				reason: error.message || "Internal Server Error",
+				reason: "Internal Server Error",
 				userMessage: "An error occurred during validation.",
 			},
 			{ status: 500 },

@@ -1,5 +1,7 @@
 import { AssessmentWizard } from "@/features/assessment";
 
-export default function AssessmentPage() {
+const AssessmentPage = () => {
 	return <AssessmentWizard />;
-}
+};
+
+export default AssessmentPage;

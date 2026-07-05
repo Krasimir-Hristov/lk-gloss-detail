@@ -1,17 +1,20 @@
 "use client";
 
 import { useCallback } from "react";
+import { ArrowLeft } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
+import { useTranslations } from "next-intl";
 
 import { useAssessmentStore } from "@/features/assessment/stores/assessment-store";
 import { PhotoUploadStep } from "@/features/assessment/components/photo-upload-step";
 import { ProgressIndicator } from "@/features/assessment/components/progress-indicator";
 import type { PhotoAngle, WizardStep } from "@/features/assessment/schemas/assessment.schema";
+import { PHOTO_STEPS } from "@/features/assessment/schemas/assessment.schema";
 
 export const AssessmentWizard = () => {
+	const t = useTranslations("Assessment");
 	const { currentStep, photos, nextStep, prevStep, setPhotoValidation } = useAssessmentStore();
 
-	const photoSteps: WizardStep[] = ["front", "rear", "side", "interior"];
 	const completedSteps = photos
 		.filter((p) => p.validationStatus === "valid")
 		.map((p) => p.angle as WizardStep);
@@ -33,7 +36,7 @@ export const AssessmentWizard = () => {
 			setPhotoValidation(
 				photoId,
 				"valid",
-				"Photo validated successfully",
+				t("validation.valid"),
 				carSize,
 				dirtLevel,
 				carDescription,
@@ -43,15 +46,14 @@ export const AssessmentWizard = () => {
 				nextStep();
 			}, 1000);
 		},
-		[setPhotoValidation, nextStep],
+		[setPhotoValidation, nextStep, t],
 	);
 
 	const handlePhotoInvalidAction = useCallback((reason: string, userMessage?: string) => {
 		console.log("[AssessmentWizard] Photo invalid:", { reason, userMessage });
-		// User can retry - no auto-advance
 	}, []);
 
-	const isPhotoStep = photoSteps.includes(currentStep);
+	const isPhotoStep = PHOTO_STEPS.includes(currentStep);
 
 	const previousCarDescriptions = photos
 		.filter((p) => p.validationStatus === "valid" && p.carDescription)
@@ -92,11 +94,29 @@ export const AssessmentWizard = () => {
 							exit={{ opacity: 0, x: -20 }}
 							className="bg-surface-container rounded-2xl p-8 text-center"
 						>
-							<h2 className="mb-4 text-2xl font-bold text-white">Изберете услуги</h2>
-							<p className="text-on-surface-variant">Тук ще бъдат Tinder картите за услуги.</p>
+							<h2 className="mb-4 text-2xl font-bold text-white">
+								{t("swipe.title")}
+							</h2>
+							<p className="text-on-surface-variant">
+								{/* TODO: Phase 6.2 — Tinder-style service cards */}
+								{t("swipe.title")}
+							</p>
 						</motion.div>
 					)}
 				</AnimatePresence>
+
+				{/* Back button for photo steps (not on first step) */}
+				{isPhotoStep && currentStep !== "front" && (
+					<div className="mt-8 text-center">
+						<button
+							onClick={prevStep}
+							className="text-on-surface-variant hover:text-white inline-flex items-center gap-2 transition-colors"
+						>
+							<ArrowLeft className="h-4 w-4" />
+							{t("navigation.back")}
+						</button>
+					</div>
+				)}
 			</div>
 		</div>
 	);

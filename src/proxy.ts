@@ -34,9 +34,6 @@ export default function proxy(request: NextRequest) {
 
 		// Let API routes pass through to their handlers (don't send to next-intl)
 		return NextResponse.next();
-
-		// Let API routes pass through to their handlers (don't send to next-intl)
-		return NextResponse.next();
 	}
 
 	// ── Delegate to next-intl for all other routes ────────────────────

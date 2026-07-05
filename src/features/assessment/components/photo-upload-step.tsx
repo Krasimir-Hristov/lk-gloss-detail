@@ -4,6 +4,7 @@ import { useCallback, useRef, useState, useEffect } from "react";
 import { Upload, Camera, Loader2, CheckCircle, XCircle } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useTranslations, useLocale } from "next-intl";
+import { v4 as uuidv4 } from "uuid";
 
 import type { PhotoAngle } from "@/features/assessment/schemas/assessment.schema";
 import { useValidatePhoto } from "@/features/assessment/hooks/use-assessment";
@@ -52,19 +53,20 @@ export const PhotoUploadStep = ({
 	const handleFileSelect = useCallback(
 		async (file: File) => {
 			if (!file.type.startsWith("image/")) {
-				onPhotoInvalidAction("Please select an image file");
+				setStatus("invalid");
+				setValidationReason(t("upload.error"));
+				onPhotoInvalidAction("Not an image file", t("upload.error"));
 				return;
 			}
 
-			const reader = new FileReader();
-			reader.onload = (e) => {
-				setPreview(e.target?.result as string);
-			};
-			reader.readAsDataURL(file);
+			// Generate photo ID upfront so it matches the store
+			const photoId = uuidv4();
 
-			const base64Reader = new FileReader();
-			base64Reader.onload = async (e) => {
+			// Single FileReader for both preview and API
+			const reader = new FileReader();
+			reader.onload = async (e) => {
 				const base64 = e.target?.result as string;
+				setPreview(base64);
 				setStatus("uploading");
 
 				try {
@@ -79,7 +81,7 @@ export const PhotoUploadStep = ({
 						setStatus("valid");
 						setValidationReason(result.userMessage || result.reason || "");
 						onPhotoValidatedAction(
-							base64,
+							photoId,
 							base64,
 							result.carSize ?? undefined,
 							result.dirtLevel ?? undefined,
@@ -90,23 +92,16 @@ export const PhotoUploadStep = ({
 						setValidationReason(result.userMessage || result.reason || "");
 						onPhotoInvalidAction(result.reason || "", result.userMessage ?? undefined);
 					}
-				} catch (error) {
-					const errorMessage = error instanceof Error ? error.message : "Validation failed";
+				} catch (err: unknown) {
+					const errorMessage = err instanceof Error ? err.message : "Validation failed";
 					setStatus("invalid");
 					setValidationReason(errorMessage);
 					onPhotoInvalidAction(errorMessage);
 				}
 			};
-			base64Reader.readAsDataURL(file);
+			reader.readAsDataURL(file);
 		},
-		[
-			angle,
-			onPhotoValidatedAction,
-			onPhotoInvalidAction,
-			validatePhoto,
-			previousCarDescriptions,
-			locale,
-		],
+		[angle, onPhotoValidatedAction, onPhotoInvalidAction, validatePhoto, previousCarDescriptions, locale, t],
 	);
 
 	const handleDrop = useCallback(

@@ -154,33 +154,6 @@
 		"title": "Our Services",
 		"description": "Comprehensive car care for your vehicle"
 	},
-	"Assessment": {
-		"title": "AI Vehicle Assessment",
-		"steps": {
-			"front": "Front Photo",
-			"rear": "Rear Photo",
-			"left": "Left Side",
-			"right": "Right Side",
-			"interior": "Interior"
-		},
-		"upload": {
-			"dragDrop": "Drag image here or click to upload",
-			"validating": "Validating photo...",
-			"error": "This photo does not match the expected angle. Please try again."
-		},
-		"swipe": {
-			"title": "Choose Your Services",
-			"accept": "Accept",
-			"reject": "Reject"
-		},
-		"result": {
-			"title": "Your Assessment Result",
-			"priceRange": "Price Range",
-			"duration": "Estimated Duration",
-			"summary": "Summary",
-			"bookNow": "Book Appointment"
-		}
-	},
 	"Booking": {
 		"title": "Book Appointment",
 		"steps": {
@@ -259,13 +232,17 @@
 			"front": "Front view",
 			"rear": "Rear view",
 			"side": "Side view",
+			"left": "Left Side",
+			"right": "Right Side",
 			"interior": "Interior"
 		},
 		"upload": {
 			"dragDrop": "Drag & drop your photo",
 			"orClick": "or click to browse",
 			"chooseFile": "Choose File",
-			"takePhoto": "Take Photo"
+			"takePhoto": "Take Photo",
+			"validating": "Validating photo...",
+			"error": "This photo does not match the expected angle. Please try again."
 		},
 		"validation": {
 			"validating": "Validating photo...",
@@ -281,6 +258,18 @@
 		"progress": {
 			"step": "Step",
 			"of": "of"
+		},
+		"swipe": {
+			"title": "Choose Your Services",
+			"accept": "Accept",
+			"reject": "Reject"
+		},
+		"result": {
+			"title": "Your Assessment Result",
+			"priceRange": "Price Range",
+			"duration": "Estimated Duration",
+			"summary": "Summary",
+			"bookNow": "Book Appointment"
 		}
 	}
 }
