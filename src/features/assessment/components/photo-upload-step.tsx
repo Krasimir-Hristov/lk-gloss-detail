@@ -101,7 +101,15 @@ export const PhotoUploadStep = ({
 			};
 			reader.readAsDataURL(file);
 		},
-		[angle, onPhotoValidatedAction, onPhotoInvalidAction, validatePhoto, previousCarDescriptions, locale, t],
+		[
+			angle,
+			onPhotoValidatedAction,
+			onPhotoInvalidAction,
+			validatePhoto,
+			previousCarDescriptions,
+			locale,
+			t,
+		],
 	);
 
 	const handleDrop = useCallback(

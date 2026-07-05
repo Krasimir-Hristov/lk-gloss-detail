@@ -94,9 +94,7 @@ export const AssessmentWizard = () => {
 							exit={{ opacity: 0, x: -20 }}
 							className="bg-surface-container rounded-2xl p-8 text-center"
 						>
-							<h2 className="mb-4 text-2xl font-bold text-white">
-								{t("swipe.title")}
-							</h2>
+							<h2 className="mb-4 text-2xl font-bold text-white">{t("swipe.title")}</h2>
 							<p className="text-on-surface-variant">
 								{/* TODO: Phase 6.2 — Tinder-style service cards */}
 								{t("swipe.title")}
@@ -110,7 +108,7 @@ export const AssessmentWizard = () => {
 					<div className="mt-8 text-center">
 						<button
 							onClick={prevStep}
-							className="text-on-surface-variant hover:text-white inline-flex items-center gap-2 transition-colors"
+							className="text-on-surface-variant inline-flex items-center gap-2 transition-colors hover:text-white"
 						>
 							<ArrowLeft className="h-4 w-4" />
 							{t("navigation.back")}
