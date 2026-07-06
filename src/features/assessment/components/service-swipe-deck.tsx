@@ -3,6 +3,7 @@
 import { motion } from "framer-motion";
 import { useTranslations } from "next-intl";
 import { useCallback, useEffect, useRef, useState } from "react";
+import { z } from "zod";
 
 import { ServiceSwipeCard } from "@/features/assessment/components/service-swipe-card";
 import { ASSESSMENT_SERVICES } from "@/features/assessment/data/assessment-services";
@@ -10,9 +11,34 @@ import { useAssessmentStore } from "@/features/assessment/stores/assessment-stor
 
 import type { ServiceSelection } from "@/features/assessment/schemas/assessment.schema";
 
+// ── Dev-only logger (silent in production) ────────────────────────────────
+
+const isDev = process.env.NODE_ENV === "development";
+const devLog = (...args: unknown[]) => {
+	if (isDev) console.log(...args);
+};
+
+// ── Zod schema for i18n service translation payload ───────────────────────
+
+const ServiceI18nSchema = z.object({
+	title: z.string(),
+	subtitle: z.string(),
+	features: z.array(z.string()),
+	tag: z.string(),
+	duration: z.string(),
+});
+
+type ServiceI18nData = z.infer<typeof ServiceI18nSchema>;
+
+// ── Component ──────────────────────────────────────────────────────────────
+
 export const ServiceSwipeDeck = () => {
 	const t = useTranslations("Assessment.services");
-	const { acceptService, rejectService, setServices } = useAssessmentStore();
+
+	// Selector-based store access — avoids re-renders on unrelated state
+	const acceptService = useAssessmentStore((s) => s.acceptService);
+	const rejectService = useAssessmentStore((s) => s.rejectService);
+	const setServices = useAssessmentStore((s) => s.setServices);
 
 	const [currentIndex, setCurrentIndex] = useState(0);
 	const [isComplete, setIsComplete] = useState(false);
@@ -40,11 +66,7 @@ export const ServiceSwipeDeck = () => {
 			accepted: false,
 		}));
 		setServices(services);
-		console.log(
-			"[ServiceSwipeDeck] ✅ Initialized services in store:",
-			services.length,
-			"services",
-		);
+		devLog("[ServiceSwipeDeck] ✅ Initialized services in store:", services.length, "services");
 	}, [setServices]);
 
 	// ── Log final assessment state ──────────────────────────────────────────
@@ -52,22 +74,22 @@ export const ServiceSwipeDeck = () => {
 	const logFinalState = useCallback(() => {
 		const state = useAssessmentStore.getState();
 
-		console.log(
+		devLog(
 			"\n%c══════════════════════════════════════════════",
 			"color: #d1bcff; font-weight: bold;",
 		);
-		console.log(
+		devLog(
 			"%c🚗 LK Gloss & Detail — Final Assessment State",
 			"color: #7b2dff; font-size: 16px; font-weight: bold;",
 		);
-		console.log(
+		devLog(
 			"%c══════════════════════════════════════════════",
 			"color: #d1bcff; font-weight: bold;",
 		);
 
-		console.log("\n%c📸 PHOTOS (%d):", "color: #ebb2ff; font-weight: bold;", state.photos.length);
+		devLog("\n%c📸 PHOTOS (%d):", "color: #ebb2ff; font-weight: bold;", state.photos.length);
 		if (state.photos.length === 0) {
-			console.log("  ⚠️ No photos uploaded");
+			devLog("  ⚠️ No photos uploaded");
 		} else {
 			console.table(
 				state.photos.map((p) => ({
@@ -84,7 +106,7 @@ export const ServiceSwipeDeck = () => {
 		const accepted = state.services.filter((s) => s.accepted);
 		const rejected = state.services.filter((s) => !s.accepted);
 
-		console.log(
+		devLog(
 			"\n%c🛠️ SERVICES (%d total, %d accepted, %d rejected):",
 			"color: #ebb2ff; font-weight: bold;",
 			state.services.length,
@@ -93,28 +115,24 @@ export const ServiceSwipeDeck = () => {
 		);
 
 		if (accepted.length > 0) {
-			console.log("%c  ✅ Accepted:", "color: #4ade80; font-weight: bold;");
-			accepted.forEach((s) => console.log(`     • ${s.serviceId}`));
+			devLog("%c  ✅ Accepted:", "color: #4ade80; font-weight: bold;");
+			accepted.forEach((s) => devLog(`     • ${s.serviceId}`));
 		}
 
 		if (rejected.length > 0) {
-			console.log("%c  ❌ Rejected:", "color: #f87171; font-weight: bold;");
-			rejected.forEach((s) => console.log(`     • ${s.serviceId}`));
-		}
-
-		if (accepted.length === 0 && rejected.length === 0) {
-			console.log("  ⚠️ No services in store");
+			devLog("%c  ❌ Rejected:", "color: #f87171; font-weight: bold;");
+			rejected.forEach((s) => devLog(`     • ${s.serviceId}`));
 		}
 
 		// Edge case: client rejects all services
 		if (accepted.length === 0) {
-			console.log(
+			devLog(
 				"\n%c⚠️ EDGE CASE: Client selected ZERO services — app should handle gracefully",
 				"color: #fbbf24; font-weight: bold;",
 			);
 		}
 
-		console.log(
+		devLog(
 			"\n%c══════════════════════════════════════════════\n",
 			"color: #d1bcff; font-weight: bold;",
 		);
@@ -126,8 +144,7 @@ export const ServiceSwipeDeck = () => {
 		const nextIndex = currentIndexRef.current + 1;
 		if (nextIndex >= totalCards) {
 			setIsComplete(true);
-			console.log("[ServiceSwipeDeck] 🏁 All cards swiped. Logging final state...");
-			// Small delay to let Zustand finish updating
+			devLog("[ServiceSwipeDeck] 🏁 All cards swiped. Logging final state...");
 			setTimeout(() => {
 				logFinalState();
 			}, 150);
@@ -138,7 +155,7 @@ export const ServiceSwipeDeck = () => {
 
 	const handleAccept = useCallback(
 		(serviceId: string) => {
-			console.log("[ServiceSwipeDeck] ✅ Swipe RIGHT — accepted:", serviceId);
+			devLog("[ServiceSwipeDeck] ✅ Swipe RIGHT — accepted:", serviceId);
 			acceptService(serviceId);
 			advanceCard();
 		},
@@ -147,23 +164,35 @@ export const ServiceSwipeDeck = () => {
 
 	const handleReject = useCallback(
 		(serviceId: string) => {
-			console.log("[ServiceSwipeDeck] ❌ Swipe LEFT — rejected:", serviceId);
+			devLog("[ServiceSwipeDeck] ❌ Swipe LEFT — rejected:", serviceId);
 			rejectService(serviceId);
 			advanceCard();
 		},
 		[rejectService, advanceCard],
 	);
 
-	// Get services data from i18n
-	const getServiceData = (serviceKey: string) => {
-		const rawData = t.raw(serviceKey) as {
-			title: string;
-			subtitle: string;
-			features: string[];
-			tag: string;
-			duration: string;
-		};
-		return rawData;
+	// ── Get services data from i18n (Zod-validated) ─────────────────────────
+
+	const getServiceData = (serviceKey: string): ServiceI18nData => {
+		const rawData = t.raw(serviceKey);
+		const result = ServiceI18nSchema.safeParse(rawData);
+
+		if (!result.success) {
+			console.error(
+				`[ServiceSwipeDeck] Invalid i18n payload for key "${serviceKey}":`,
+				result.error.flatten(),
+			);
+			// Return a safe fallback so the card doesn't crash
+			return {
+				title: `[Missing: ${serviceKey}]`,
+				subtitle: "",
+				features: [],
+				tag: "",
+				duration: "",
+			};
+		}
+
+		return result.data;
 	};
 
 	return (

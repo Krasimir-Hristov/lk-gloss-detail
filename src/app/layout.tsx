@@ -21,11 +21,7 @@ export const metadata: Metadata = {
 	description: "Mobile Car Detailing",
 };
 
-export default function RootLayout({
-	children,
-}: Readonly<{
-	children: React.ReactNode;
-}>) {
+const RootLayout = ({ children }: Readonly<{ children: React.ReactNode }>) => {
 	return (
 		<html lang="de" className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}>
 			<head>
@@ -39,4 +35,6 @@ export default function RootLayout({
 			</body>
 		</html>
 	);
-}
+};
+
+export default RootLayout;

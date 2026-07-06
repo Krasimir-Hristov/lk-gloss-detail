@@ -1,6 +1,6 @@
 "use client";
 
-import { motion, useMotionValue, useTransform } from "framer-motion";
+import { motion, useMotionValue, useTransform, type PanInfo } from "framer-motion";
 import { CheckCircle2, Clock, Sparkles, type LucideIcon } from "lucide-react";
 import Image, { type StaticImageData } from "next/image";
 import { useRef, useState } from "react";
@@ -49,7 +49,7 @@ export const ServiceSwipeCard = ({
 
 	const Icon = service.icon;
 
-	const handleDragEnd = (_: unknown, info: { offset: { x: number } }) => {
+	const handleDragEnd = (_: unknown, info: PanInfo) => {
 		const threshold = 120;
 		if (info.offset.x > threshold) {
 			setIsExiting("right");
