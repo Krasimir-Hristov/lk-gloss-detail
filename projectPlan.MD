@@ -145,28 +145,28 @@
 
 ### 6.1 Multi-step Photo Upload Flow
 
-- [ ] Create assessment wizard component (`AssessmentWizard`)
-- [ ] Step 1: Front photo upload (drag & drop + mobile camera)
-- [ ] Step 2: Rear photo upload
-- [ ] Step 3: Left side photo upload
-- [ ] Step 4: Right side photo upload
-- [ ] Step 5: Interior photo upload
-- [ ] Between each step: AI photo validation call
-- [ ] Photo validation API route (`/api/assessment/validate-photo`)
-  - [ ] Send image to vision model (GPT-4o via OpenRouter)
-  - [ ] Prompt: classify if image matches expected angle (front/rear/side/interior)
-  - [ ] Return: `{ valid: boolean, reason: string }`
-- [ ] Error state: show message if wrong photo, allow retry
-- [ ] Progress indicator (step 1/4, 2/4, etc.) with animations
+- [x] Create assessment wizard component (`AssessmentWizard`)
+- [x] Step 1: Front photo upload (drag & drop + mobile camera)
+- [x] Step 2: Rear photo upload
+- [x] Step 3: Left side photo upload
+- [x] Step 4: Right side photo upload
+- [x] Step 5: Interior photo upload
+- [x] Between each step: AI photo validation call
+- [x] Photo validation API route (`/api/assessment/validate-photo`)
+  - [x] Send image to vision model (GPT-4o via OpenRouter)
+  - [x] Prompt: classify if image matches expected angle (front/rear/side/interior)
+  - [x] Return: `{ valid: boolean, reason: string }`
+- [x] Error state: show message if wrong photo, allow retry
+- [x] Progress indicator (step 1/4, 2/4, etc.) with animations
 
 ### 6.2 Tinder-style Service Cards
 
-- [ ] After all 5 photos pass: show service swipe cards
-- [ ] `ServiceSwipeCard` component (service name, description, icon, price hint)
-- [ ] Swipe right = accept, swipe left = reject (Framer Motion drag)
-- [ ] Also show ✓ / ✗ buttons for mobile non-swipe fallback
-- [ ] Track accepted/rejected services in state
-- [ ] After last card: trigger AI Agent analysis
+- [x] After all 5 photos pass: show service swipe cards
+- [x] `ServiceSwipeCard` component (service name, description, icon, price hint)
+- [x] Swipe right = accept, swipe left = reject (Framer Motion drag)
+- [x] Also show ✓ / ✗ buttons for mobile non-swipe fallback
+- [x] Track accepted/rejected services in state
+- [x] After last card: trigger AI Agent analysis
 
 ### 6.3 AI Agent — Price Estimation
 

@@ -1,4 +1,3 @@
-import { Geist, Geist_Mono } from "next/font/google";
 import { notFound } from "next/navigation";
 import { NextIntlClientProvider, hasLocale } from "next-intl";
 import { getMessages, getTranslations, setRequestLocale } from "next-intl/server";
@@ -6,22 +5,9 @@ import { getMessages, getTranslations, setRequestLocale } from "next-intl/server
 import Footer from "@/components/layout/Footer";
 import Navbar from "@/components/layout/Navbar";
 import ScrollToTop from "@/components/shared/ScrollToTop";
-import { Providers } from "@/components/providers";
 import { routing } from "@/i18n/routing";
 
 import type { Metadata } from "next";
-
-import "../globals.css";
-
-const geistSans = Geist({
-	variable: "--font-geist-sans",
-	subsets: ["latin"],
-});
-
-const geistMono = Geist_Mono({
-	variable: "--font-geist-mono",
-	subsets: ["latin"],
-});
 
 type Props = {
 	children: React.ReactNode;
@@ -64,21 +50,12 @@ const LocaleLayout = async ({ children, params }: Props) => {
 	const messages = await getMessages();
 
 	return (
-		<html
-			lang={locale}
-			className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
-		>
-			<body className="flex min-h-full flex-col bg-[#131313] font-sans text-[#e5e2e1]">
-				<Providers>
-					<NextIntlClientProvider messages={messages}>
-						<Navbar />
-						<main className="flex-1 pt-20">{children}</main>
-						<Footer />
-						<ScrollToTop />
-					</NextIntlClientProvider>
-				</Providers>
-			</body>
-		</html>
+		<NextIntlClientProvider messages={messages}>
+			<Navbar />
+			<main className="flex-1 pt-20">{children}</main>
+			<Footer />
+			<ScrollToTop />
+		</NextIntlClientProvider>
 	);
 };
 

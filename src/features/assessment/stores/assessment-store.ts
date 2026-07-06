@@ -55,12 +55,20 @@ export const useAssessmentStore = create<AssessmentState & AssessmentActions>()(
 			previewUrl,
 			validationStatus: "pending",
 		};
+		console.log("[AssessmentStore] setPhoto:", { angle, photoId: photo.id });
 		set((state) => ({
 			photos: [...state.photos.filter((p) => p.angle !== angle), photo],
 		}));
 	},
 
 	setPhotoValidation: (photoId, status, reason, carSize, dirtLevel, carDescription) => {
+		console.log("[AssessmentStore] setPhotoValidation:", {
+			photoId,
+			status,
+			carSize,
+			dirtLevel,
+			carDescription,
+		});
 		set((state) => ({
 			photos: state.photos.map((p) =>
 				p.id === photoId
@@ -78,6 +86,7 @@ export const useAssessmentStore = create<AssessmentState & AssessmentActions>()(
 	},
 
 	setPhotoUploadedUrl: (photoId, url) => {
+		console.log("[AssessmentStore] setPhotoUploadedUrl:", { photoId, url });
 		set((state) => ({
 			photos: state.photos.map((p) => (p.id === photoId ? { ...p, uploadedUrl: url } : p)),
 		}));
@@ -87,7 +96,9 @@ export const useAssessmentStore = create<AssessmentState & AssessmentActions>()(
 		const { currentStep } = get();
 		const idx = WIZARD_STEPS.indexOf(currentStep);
 		if (idx < WIZARD_STEPS.length - 1) {
-			set({ currentStep: WIZARD_STEPS[idx + 1] });
+			const next = WIZARD_STEPS[idx + 1];
+			console.log("[AssessmentStore] nextStep:", { from: currentStep, to: next });
+			set({ currentStep: next });
 		}
 	},
 
@@ -95,35 +106,72 @@ export const useAssessmentStore = create<AssessmentState & AssessmentActions>()(
 		const { currentStep } = get();
 		const idx = WIZARD_STEPS.indexOf(currentStep);
 		if (idx > 0) {
-			set({ currentStep: WIZARD_STEPS[idx - 1] });
+			const prev = WIZARD_STEPS[idx - 1];
+			console.log("[AssessmentStore] prevStep:", { from: currentStep, to: prev });
+			set({ currentStep: prev });
 		}
 	},
 
-	goToStep: (step) => set({ currentStep: step }),
+	goToStep: (step) => {
+		console.log("[AssessmentStore] goToStep:", step);
+		set({ currentStep: step });
+	},
 
-	setServices: (services) => set({ services }),
+	setServices: (services) => {
+		console.log("[AssessmentStore] setServices called with", services.length, "services:", {
+			ids: services.map((s) => s.serviceId),
+		});
+		set({ services });
+	},
 
 	acceptService: (serviceId) => {
-		set((state) => ({
-			services: state.services.map((s) =>
+		console.log("[AssessmentStore] Service accepted:", serviceId);
+		set((state) => {
+			const updated = state.services.map((s) =>
 				s.serviceId === serviceId ? { ...s, accepted: true } : s,
-			),
-		}));
+			);
+			console.log("[AssessmentStore] Current services state:", {
+				accepted: updated.filter((s) => s.accepted).map((s) => s.serviceId),
+				rejected: updated.filter((s) => !s.accepted).map((s) => s.serviceId),
+			});
+			return { services: updated };
+		});
 	},
 
 	rejectService: (serviceId) => {
-		set((state) => ({
-			services: state.services.map((s) =>
+		console.log("[AssessmentStore] Service rejected:", serviceId);
+		set((state) => {
+			const updated = state.services.map((s) =>
 				s.serviceId === serviceId ? { ...s, accepted: false } : s,
-			),
-		}));
+			);
+			console.log("[AssessmentStore] Current services state:", {
+				accepted: updated.filter((s) => s.accepted).map((s) => s.serviceId),
+				rejected: updated.filter((s) => !s.accepted).map((s) => s.serviceId),
+			});
+			return { services: updated };
+		});
 	},
 
-	setResult: (result) => set({ result, isAnalyzing: false }),
+	setResult: (result) => {
+		console.log("[AssessmentStore] setResult:", {
+			id: result.id,
+			priceRange: result.priceEstimate,
+		});
+		set({ result, isAnalyzing: false });
+	},
 
-	setIsAnalyzing: (isAnalyzing) => set({ isAnalyzing }),
+	setIsAnalyzing: (isAnalyzing) => {
+		console.log("[AssessmentStore] setIsAnalyzing:", isAnalyzing);
+		set({ isAnalyzing });
+	},
 
-	setError: (error) => set({ error, isAnalyzing: false }),
+	setError: (error) => {
+		console.log("[AssessmentStore] setError:", error);
+		set({ error, isAnalyzing: false });
+	},
 
-	reset: () => set(initialState),
+	reset: () => {
+		console.log("[AssessmentStore] reset");
+		set(initialState);
+	},
 }));

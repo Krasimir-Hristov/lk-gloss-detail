@@ -1,15 +1,17 @@
 "use client";
 
-import { useCallback } from "react";
-import { ArrowLeft } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
+import { ArrowLeft } from "lucide-react";
 import { useTranslations } from "next-intl";
+import { useCallback } from "react";
 
-import { useAssessmentStore } from "@/features/assessment/stores/assessment-store";
 import { PhotoUploadStep } from "@/features/assessment/components/photo-upload-step";
 import { ProgressIndicator } from "@/features/assessment/components/progress-indicator";
-import type { PhotoAngle, WizardStep } from "@/features/assessment/schemas/assessment.schema";
+import { ServiceSwipeDeck } from "@/features/assessment/components/service-swipe-deck";
 import { PHOTO_STEPS } from "@/features/assessment/schemas/assessment.schema";
+import { useAssessmentStore } from "@/features/assessment/stores/assessment-store";
+
+import type { PhotoAngle, WizardStep } from "@/features/assessment/schemas/assessment.schema";
 
 export const AssessmentWizard = () => {
 	const t = useTranslations("Assessment");
@@ -62,14 +64,14 @@ export const AssessmentWizard = () => {
 	return (
 		<div className="bg-surface flex min-h-screen flex-col items-center justify-center px-4 py-12">
 			<div className="w-full max-w-2xl">
-				{isPhotoStep && (
+				{isPhotoStep ? (
 					<div className="mb-8">
 						<ProgressIndicator currentStep={currentStep} completedSteps={completedSteps} />
 					</div>
-				)}
+				) : null}
 
 				<AnimatePresence mode="wait">
-					{isPhotoStep && (
+					{isPhotoStep ? (
 						<motion.div
 							key={currentStep}
 							initial={{ opacity: 0, x: 20 }}
@@ -84,27 +86,24 @@ export const AssessmentWizard = () => {
 								onPhotoInvalidAction={handlePhotoInvalidAction}
 							/>
 						</motion.div>
-					)}
+					) : null}
 
-					{currentStep === "services" && (
+					{currentStep === "services" ? (
 						<motion.div
 							key="services"
-							initial={{ opacity: 0, x: 20 }}
-							animate={{ opacity: 1, x: 0 }}
-							exit={{ opacity: 0, x: -20 }}
-							className="bg-surface-container rounded-2xl p-8 text-center"
+							initial={{ opacity: 0, y: 10 }}
+							animate={{ opacity: 1, y: 0 }}
+							exit={{ opacity: 0, y: -10 }}
+							transition={{ duration: 0.3 }}
+							className="w-full"
 						>
-							<h2 className="mb-4 text-2xl font-bold text-white">{t("swipe.title")}</h2>
-							<p className="text-on-surface-variant">
-								{/* TODO: Phase 6.2 — Tinder-style service cards */}
-								{t("swipe.title")}
-							</p>
+							<ServiceSwipeDeck />
 						</motion.div>
-					)}
+					) : null}
 				</AnimatePresence>
 
 				{/* Back button for photo steps (not on first step) */}
-				{isPhotoStep && currentStep !== "front" && (
+				{isPhotoStep && currentStep !== "front" ? (
 					<div className="mt-8 text-center">
 						<button
 							onClick={prevStep}
@@ -114,7 +113,7 @@ export const AssessmentWizard = () => {
 							{t("navigation.back")}
 						</button>
 					</div>
-				)}
+				) : null}
 			</div>
 		</div>
 	);
