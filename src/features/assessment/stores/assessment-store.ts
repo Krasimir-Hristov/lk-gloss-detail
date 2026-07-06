@@ -14,7 +14,7 @@ import type {
 } from "@/features/assessment/schemas/assessment.schema";
 
 type AssessmentActions = {
-	setPhoto: (angle: AssessmentPhoto["angle"], previewUrl: string) => void;
+	setPhoto: (angle: AssessmentPhoto["angle"], previewUrl: string, existingId?: string) => void;
 	setPhotoValidation: (
 		photoId: string,
 		status: AssessmentPhoto["validationStatus"],
@@ -48,9 +48,9 @@ const initialState: AssessmentState = {
 export const useAssessmentStore = create<AssessmentState & AssessmentActions>()((set, get) => ({
 	...initialState,
 
-	setPhoto: (angle, previewUrl) => {
+	setPhoto: (angle, previewUrl, existingId) => {
 		const photo: AssessmentPhoto = {
-			id: uuidv4(),
+			id: existingId ?? uuidv4(),
 			angle,
 			previewUrl,
 			validationStatus: "pending",

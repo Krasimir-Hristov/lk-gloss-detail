@@ -57,10 +57,10 @@ export const ServiceSwipeCard = ({
 		const threshold = 120;
 		if (info.offset.x > threshold) {
 			setIsExiting("right");
-			onAcceptAction(service.id);
+			setTimeout(() => onAcceptAction(service.id), 300);
 		} else if (info.offset.x < -threshold) {
 			setIsExiting("left");
-			onRejectAction(service.id);
+			setTimeout(() => onRejectAction(service.id), 300);
 		}
 	};
 

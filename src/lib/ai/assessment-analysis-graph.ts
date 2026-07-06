@@ -85,6 +85,16 @@ const fetchDbPricing = async (state: AnalysisStateType): Promise<Partial<Analysi
 
 		if (error) throw new Error(`DB query failed: ${error.message}`);
 
+		// Validate that every requested service ID was found
+		const foundIds = (data ?? []).map((s) => s.id);
+		const missingIds = state.acceptedServiceIds.filter((id) => !foundIds.includes(id));
+
+		if (missingIds.length > 0) {
+			throw new Error(
+				`Missing or inactive services: ${missingIds.join(", ")}. Cannot calculate pricing from incomplete data.`,
+			);
+		}
+
 		console.log(
 			"[analysis-graph] Fetched pricing for",
 			data?.length ?? 0,

@@ -32,18 +32,22 @@ export const useValidatePhoto = () => {
 export const useAnalyzeAssessment = () => {
 	return useMutation({
 		mutationFn: async ({
-			base64Images,
 			acceptedServiceIds,
+			carSize,
+			dirtLevel,
+			brand,
 			locale,
 		}: {
-			base64Images: string[];
 			acceptedServiceIds: string[];
+			carSize: string;
+			dirtLevel: string;
+			brand: string | null;
 			locale: string;
 		}) => {
 			const res = await fetch("/api/assessment/analyze", {
 				method: "POST",
 				headers: { "Content-Type": "application/json" },
-				body: JSON.stringify({ base64Images, acceptedServiceIds, locale }),
+				body: JSON.stringify({ acceptedServiceIds, carSize, dirtLevel, brand, locale }),
 			});
 
 			if (!res.ok) {

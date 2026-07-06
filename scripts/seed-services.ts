@@ -91,14 +91,17 @@ const main = async () => {
 
 		console.log(`   Public URL: ${publicUrl}`);
 
-		// Insert service row
-		const { error: insertError } = await supabase.from("services").insert({
-			...serviceData,
-			image_url: publicUrl,
-		});
+		// Upsert service row keyed on name (safe to re-run)
+		const { error: upsertError } = await supabase.from("services").upsert(
+			{
+				...serviceData,
+				image_url: publicUrl,
+			},
+			{ onConflict: "name", ignoreDuplicates: false },
+		);
 
-		if (insertError) {
-			console.error(`❌ Failed to insert ${service.name}:`, insertError.message);
+		if (upsertError) {
+			console.error(`❌ Failed to upsert ${service.name}:`, upsertError.message);
 		} else {
 			console.log(`✅ Inserted service: ${service.name}\n`);
 		}

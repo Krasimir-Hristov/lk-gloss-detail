@@ -36,10 +36,10 @@ const devLog = (...args: unknown[]) => {
 // ── Component ──────────────────────────────────────────────────────────────
 
 type ServiceSwipeDeckProps = {
-	onComplete: () => void;
+	onCompleteAction: () => void;
 };
 
-export const ServiceSwipeDeck = ({ onComplete }: ServiceSwipeDeckProps) => {
+export const ServiceSwipeDeck = ({ onCompleteAction }: ServiceSwipeDeckProps) => {
 	const t = useTranslations("Assessment.services");
 
 	const acceptService = useAssessmentStore((s) => s.acceptService);
@@ -48,6 +48,7 @@ export const ServiceSwipeDeck = ({ onComplete }: ServiceSwipeDeckProps) => {
 
 	const [dbServices, setDbServices] = useState<DbService[]>([]);
 	const [isLoading, setIsLoading] = useState(true);
+	const [fetchError, setFetchError] = useState<string | null>(null);
 	const [currentIndex, setCurrentIndex] = useState(0);
 	const [isComplete, setIsComplete] = useState(false);
 
@@ -62,10 +63,11 @@ export const ServiceSwipeDeck = ({ onComplete }: ServiceSwipeDeckProps) => {
 	// Fetch services from DB
 	useEffect(() => {
 		const fetchServices = async () => {
+			let data: DbService[] = [];
 			try {
 				const res = await fetch("/api/services");
 				if (!res.ok) throw new Error("Failed to fetch services");
-				const data = (await res.json()) as DbService[];
+				data = (await res.json()) as DbService[];
 				setDbServices(data);
 
 				// Initialize services in store
@@ -76,8 +78,14 @@ export const ServiceSwipeDeck = ({ onComplete }: ServiceSwipeDeckProps) => {
 				setServices(selections);
 				devLog("[ServiceSwipeDeck] ✅ Loaded", data.length, "services from DB");
 			} catch (err) {
-				console.error("[ServiceSwipeDeck] Failed to load services:", err);
+				const errorMsg = err instanceof Error ? err.message : "Failed to load services";
+				console.error("[ServiceSwipeDeck] Failed to load services:", errorMsg);
+				setFetchError(errorMsg);
 			} finally {
+				// Allow proceeding even if fetch fails or returns empty
+				if (data.length === 0) {
+					setIsComplete(true);
+				}
 				setIsLoading(false);
 			}
 		};
@@ -157,15 +165,16 @@ export const ServiceSwipeDeck = ({ onComplete }: ServiceSwipeDeckProps) => {
 		const nextIndex = currentIndexRef.current + 1;
 		if (nextIndex >= totalCards) {
 			setIsComplete(true);
+			// Auto-advance to analysis when all services are swiped
+			onCompleteAction();
 			devLog("[ServiceSwipeDeck] 🏁 All cards swiped. Logging final state...");
 			setTimeout(() => {
 				logFinalState();
-				onComplete();
 			}, 150);
 		} else {
 			setCurrentIndex(nextIndex);
 		}
-	}, [totalCards, logFinalState, onComplete]);
+	}, [totalCards, logFinalState, onCompleteAction]);
 
 	const handleAccept = useCallback(
 		(serviceId: string) => {
@@ -184,6 +193,22 @@ export const ServiceSwipeDeck = ({ onComplete }: ServiceSwipeDeckProps) => {
 		},
 		[rejectService, advanceCard],
 	);
+
+	// ── Error state ───────────────────────────────────────────────────────
+
+	if (fetchError) {
+		return (
+			<div className="flex flex-col items-center justify-center py-20">
+				<p className="mb-4 text-sm text-red-400">{t("loadingError")}</p>
+				<button
+					onClick={() => window.location.reload()}
+					className="rounded-lg bg-[#7b2dff] px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-[#7b2dff]/80"
+				>
+					{t("retry")}
+				</button>
+			</div>
+		);
+	}
 
 	// ── Loading state ───────────────────────────────────────────────────────
 

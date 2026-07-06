@@ -269,6 +269,8 @@
 			"headingTitle": "Choose Your Services",
 			"headingDescription": "Decide which treatments your vehicle deserves. Swipe right to confirm.",
 			"loading": "Loading services...",
+			"loadingError": "Failed to load services",
+			"retry": "Try Again",
 			"cards": {
 				"interior": {
 					"title": "Professional Interior Cleaning",
@@ -295,12 +297,15 @@
 		},
 		"results": {
 			"title": "Your Result",
+			"errorTitle": "Analysis Failed",
+			"retry": "Try Again",
 			"comingSoon": "The results display will be implemented soon."
 		},
 		"result": {
 			"title": "Your Assessment Result",
 			"priceRange": "Price Range",
 			"duration": "Estimated Duration",
+			"carSize": "Vehicle Size",
 			"summary": "Summary",
 			"bookNow": "Book Appointment"
 		}

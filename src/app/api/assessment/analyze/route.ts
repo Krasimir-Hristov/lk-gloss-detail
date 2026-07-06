@@ -8,7 +8,7 @@ const AnalyzeRequestSchema = z.object({
 	carSize: z.enum(["small", "medium", "large", "suv"]).default("medium"),
 	dirtLevel: z.enum(["light", "moderate", "heavy"]).default("moderate"),
 	brand: z.string().nullable().default(null),
-	locale: z.string().default("de"),
+	locale: z.enum(["de", "en", "el"]).default("de"),
 });
 
 export async function POST(request: NextRequest) {
@@ -35,7 +35,11 @@ export async function POST(request: NextRequest) {
 		});
 
 		if (result.error) {
-			return NextResponse.json({ error: result.error }, { status: 500 });
+			console.error("[analyze] Analysis failed:", result.error);
+			return NextResponse.json(
+				{ error: "Analysis could not be completed. Please try again." },
+				{ status: 500 },
+			);
 		}
 
 		return NextResponse.json({
@@ -50,6 +54,9 @@ export async function POST(request: NextRequest) {
 	} catch (err: unknown) {
 		const message = err instanceof Error ? err.message : "Internal Server Error";
 		console.error("[analyze] Error:", message);
-		return NextResponse.json({ error: message }, { status: 500 });
+		return NextResponse.json(
+			{ error: "An unexpected error occurred. Please try again." },
+			{ status: 500 },
+		);
 	}
 }

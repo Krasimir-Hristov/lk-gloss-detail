@@ -269,6 +269,8 @@
 			"headingTitle": "Wähle deine Services",
 			"headingDescription": "Entscheide, welche Behandlungen dein Fahrzeug verdient. Swipe nach rechts für Bestätigung.",
 			"loading": "Services werden geladen...",
+			"loadingError": "Fehler beim Laden der Services",
+			"retry": "Erneut versuchen",
 			"cards": {
 				"interior": {
 					"title": "Professionelle Innenreinigung",
@@ -295,12 +297,15 @@
 		},
 		"results": {
 			"title": "Dein Ergebnis",
+			"errorTitle": "Analyse fehlgeschlagen",
+			"retry": "Erneut versuchen",
 			"comingSoon": "Die Ergebnisanzeige wird in Kürze implementiert."
 		},
 		"result": {
 			"title": "Ihr Bewertungsergebnis",
 			"priceRange": "Preisspanne",
 			"duration": "Geschätzte Dauer",
+			"carSize": "Fahrzeuggröße",
 			"summary": "Zusammenfassung",
 			"bookNow": "Termin buchen"
 		}

@@ -1,7 +1,7 @@
 "use client";
 
 import { motion, AnimatePresence } from "framer-motion";
-import { ArrowLeft, Loader2 } from "lucide-react";
+import { ArrowLeft, Loader2, Euro, Clock, Car, AlertCircle, Sparkles } from "lucide-react";
 import { useTranslations, useLocale } from "next-intl";
 import { useCallback } from "react";
 
@@ -26,8 +26,12 @@ export const AssessmentWizard = () => {
 		setResult,
 		setIsAnalyzing,
 		setError,
+		clearPhotos,
 		goToStep,
 	} = useAssessmentStore();
+
+	const result = useAssessmentStore((s) => s.result);
+	const error = useAssessmentStore((s) => s.error);
 
 	const completedSteps = photos
 		.filter((p) => p.validationStatus === "valid")
@@ -41,8 +45,8 @@ export const AssessmentWizard = () => {
 			dirtLevel?: "light" | "moderate" | "heavy",
 			carDescription?: string,
 		) => {
-			// Store the photo in Zustand (base64 in browser RAM only)
-			setPhoto(currentStep as PhotoAngle, previewUrl);
+			// Store the photo with the SAME id from the upload step
+			setPhoto(currentStep as PhotoAngle, previewUrl, photoId);
 
 			setPhotoValidation(
 				photoId,
@@ -72,6 +76,7 @@ export const AssessmentWizard = () => {
 
 		if (acceptedIds.length === 0) {
 			console.log("[AssessmentWizard] No services accepted — skipping analysis");
+			clearPhotos();
 			goToStep("results");
 			return;
 		}
@@ -138,13 +143,17 @@ export const AssessmentWizard = () => {
 				createdAt: new Date().toISOString(),
 			});
 
+			// Clear base64 images from browser memory
+			clearPhotos();
+
 			goToStep("results");
 		} catch (err: unknown) {
 			const message = err instanceof Error ? err.message : "Analysis failed";
 			console.error("[AssessmentWizard] Analysis error:", message);
 			setError(message);
+			goToStep("results");
 		}
-	}, [locale, setResult, setIsAnalyzing, setError, goToStep]);
+	}, [locale, setResult, setIsAnalyzing, setError, clearPhotos, goToStep]);
 
 	const isPhotoStep = PHOTO_STEPS.includes(currentStep);
 
@@ -188,7 +197,7 @@ export const AssessmentWizard = () => {
 							transition={{ duration: 0.3 }}
 							className="w-full"
 						>
-							<ServiceSwipeDeck onComplete={handleServicesComplete} />
+							<ServiceSwipeDeck onCompleteAction={handleServicesComplete} />
 						</motion.div>
 					) : null}
 
@@ -212,8 +221,82 @@ export const AssessmentWizard = () => {
 							animate={{ opacity: 1, y: 0 }}
 							className="flex flex-col items-center py-12"
 						>
-							<h2 className="mb-4 text-2xl font-bold text-white">{t("results.title")}</h2>
-							<p className="text-on-surface-variant text-sm">{t("results.comingSoon")}</p>
+							{error ? (
+								// Error state
+								<div className="flex flex-col items-center gap-4 text-center">
+									<div className="flex h-16 w-16 items-center justify-center rounded-full bg-red-500/20">
+										<AlertCircle className="h-8 w-8 text-red-400" />
+									</div>
+									<h2 className="text-2xl font-bold text-white">{t("results.errorTitle")}</h2>
+									<p className="text-on-surface-variant max-w-md text-sm">{error}</p>
+									<button
+										onClick={() => {
+											setError(null);
+											setIsAnalyzing(false);
+											goToStep("services");
+										}}
+										className="mt-4 rounded-lg bg-[#7b2dff] px-6 py-3 font-medium text-white transition-colors hover:bg-[#7b2dff]/80"
+									>
+										{t("results.retry")}
+									</button>
+								</div>
+							) : result ? (
+								// Success state
+								<div className="flex w-full max-w-md flex-col gap-6">
+									<div className="text-center">
+										<div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-linear-to-br from-[#7b2dff] to-[#b303f2]">
+											<Sparkles className="h-8 w-8 text-white" />
+										</div>
+										<h2 className="text-2xl font-bold text-white">{t("results.title")}</h2>
+										{result.summaryText ? (
+											<p className="text-on-surface-variant mt-2 text-sm">{result.summaryText}</p>
+										) : null}
+									</div>
+
+									{/* Price estimate card */}
+									<div className="rounded-2xl border border-[#7b2dff]/20 bg-[#201f1f] p-6">
+										<h3 className="mb-4 text-sm font-bold tracking-widest text-[#d1bcff] uppercase">
+											{t("result.priceRange")}
+										</h3>
+										<div className="flex items-center gap-2">
+											<Euro className="h-6 w-6 text-[#7b2dff]" />
+											<span className="text-3xl font-bold text-white">
+												€{result.priceMin} – €{result.priceMax}
+											</span>
+										</div>
+									</div>
+
+									{/* Details grid */}
+									<div className="grid grid-cols-2 gap-4">
+										<div className="rounded-2xl border border-[#7b2dff]/20 bg-[#201f1f] p-4">
+											<div className="mb-2 flex items-center gap-2">
+												<Car className="h-4 w-4 text-[#7b2dff]" />
+												<span className="text-[10px] font-bold tracking-widest text-[#d1bcff] uppercase">
+													{t("result.carSize")}
+												</span>
+											</div>
+											<p className="text-lg font-bold text-white capitalize">{result.carSize}</p>
+										</div>
+										<div className="rounded-2xl border border-[#7b2dff]/20 bg-[#201f1f] p-4">
+											<div className="mb-2 flex items-center gap-2">
+												<Clock className="h-4 w-4 text-[#7b2dff]" />
+												<span className="text-[10px] font-bold tracking-widest text-[#d1bcff] uppercase">
+													{t("result.duration")}
+												</span>
+											</div>
+											<p className="text-lg font-bold text-white">~{result.durationHours}h</p>
+										</div>
+									</div>
+
+									{/* Book now */}
+									<button className="mt-2 w-full rounded-xl bg-linear-to-r from-[#7b2dff] to-[#b303f2] px-8 py-4 text-lg font-bold text-white transition-all hover:shadow-[0_0_25px_rgba(123,45,255,0.5)]">
+										{t("result.bookNow")}
+									</button>
+								</div>
+							) : (
+								// Fallback (shouldn't happen)
+								<p className="text-on-surface-variant text-sm">{t("results.comingSoon")}</p>
+							)}
 						</motion.div>
 					) : null}
 				</AnimatePresence>
