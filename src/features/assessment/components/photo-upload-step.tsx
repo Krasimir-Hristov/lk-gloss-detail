@@ -1,13 +1,14 @@
 "use client";
 
-import { useCallback, useRef, useState, useEffect } from "react";
-import { Upload, Camera, Loader2, CheckCircle, XCircle } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
+import { Upload, Camera, Loader2, CheckCircle, XCircle } from "lucide-react";
 import { useTranslations, useLocale } from "next-intl";
+import { useCallback, useRef, useState, useEffect } from "react";
 import { v4 as uuidv4 } from "uuid";
 
-import type { PhotoAngle } from "@/features/assessment/schemas/assessment.schema";
 import { useValidatePhoto } from "@/features/assessment/hooks/use-assessment";
+
+import type { PhotoAngle } from "@/features/assessment/schemas/assessment.schema";
 
 type PhotoUploadStepProps = {
 	angle: PhotoAngle;
@@ -136,12 +137,16 @@ export const PhotoUploadStep = ({
 		if (fileInputRef.current) fileInputRef.current.value = "";
 	};
 
+	const isUploading = status === "uploading";
+	const isValid = status === "valid";
+	const isInvalid = status === "invalid";
+
 	return (
 		<div className="flex flex-col items-center gap-6">
 			<h2 className="text-2xl font-bold text-white">{t(`steps.${angle}`)}</h2>
 
 			<AnimatePresence mode="wait">
-				{!preview ? (
+				{preview === null ? (
 					<motion.div
 						key="upload"
 						initial={{ opacity: 0, y: 20 }}
@@ -165,7 +170,7 @@ export const PhotoUploadStep = ({
 								>
 									{t("upload.chooseFile")}
 								</button>
-								{isMobile && (
+								{isMobile ? (
 									<label className="bg-secondary text-on-secondary hover:bg-secondary/90 cursor-pointer rounded-lg px-6 py-3 font-medium transition-colors">
 										<Camera className="mr-2 inline h-5 w-5" />
 										{t("upload.takePhoto")}
@@ -177,7 +182,7 @@ export const PhotoUploadStep = ({
 											className="hidden"
 										/>
 									</label>
-								)}
+								) : null}
 							</div>
 
 							<input
@@ -199,24 +204,24 @@ export const PhotoUploadStep = ({
 					>
 						<div className="border-surface-container-high relative h-64 w-full max-w-sm overflow-hidden rounded-2xl border-4">
 							<img src={preview} alt="Preview" className="h-full w-full object-cover" />
-							{status === "uploading" && (
+							{isUploading ? (
 								<div className="absolute inset-0 flex items-center justify-center bg-black/60">
 									<Loader2 className="text-primary h-12 w-12 animate-spin" />
 								</div>
-							)}
-							{status === "valid" && (
+							) : null}
+							{isValid ? (
 								<div className="absolute top-4 right-4 rounded-full bg-green-500 p-2 text-white">
 									<CheckCircle className="h-6 w-6" />
 								</div>
-							)}
-							{status === "invalid" && (
+							) : null}
+							{isInvalid ? (
 								<div className="absolute top-4 right-4 rounded-full bg-red-500 p-2 text-white">
 									<XCircle className="h-6 w-6" />
 								</div>
-							)}
+							) : null}
 						</div>
 
-						{status === "invalid" && (
+						{isInvalid ? (
 							<div className="text-center">
 								<p className="mb-4 text-red-400">{validationReason}</p>
 								<button
@@ -226,7 +231,7 @@ export const PhotoUploadStep = ({
 									{t("validation.tryAgain")}
 								</button>
 							</div>
-						)}
+						) : null}
 					</motion.div>
 				)}
 			</AnimatePresence>

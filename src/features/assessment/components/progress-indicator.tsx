@@ -3,8 +3,9 @@
 import { motion } from "framer-motion";
 import { Check } from "lucide-react";
 
-import type { WizardStep } from "@/features/assessment/schemas/assessment.schema";
 import { PHOTO_STEPS } from "@/features/assessment/schemas/assessment.schema";
+
+import type { WizardStep } from "@/features/assessment/schemas/assessment.schema";
 
 type ProgressIndicatorProps = {
 	currentStep: WizardStep;
@@ -12,6 +13,8 @@ type ProgressIndicatorProps = {
 };
 
 export const ProgressIndicator = ({ currentStep, completedSteps }: ProgressIndicatorProps) => {
+	const hasMoreSteps = (index: number) => index < PHOTO_STEPS.length - 1;
+
 	return (
 		<div className="flex items-center justify-center">
 			{PHOTO_STEPS.map((step, index) => {
@@ -34,7 +37,7 @@ export const ProgressIndicator = ({ currentStep, completedSteps }: ProgressIndic
 						>
 							{isCompleted ? <Check className="h-5 w-5" /> : <span>{index + 1}</span>}
 						</motion.div>
-						{index < PHOTO_STEPS.length - 1 && (
+						{hasMoreSteps(index) ? (
 							<div className="relative w-12">
 								<div className="bg-surface-container-high absolute top-1/2 left-0 h-0.5 w-full -translate-y-1/2" />
 								<motion.div
@@ -47,7 +50,7 @@ export const ProgressIndicator = ({ currentStep, completedSteps }: ProgressIndic
 									className="absolute top-1/2 left-0 h-0.5 -translate-y-1/2 transition-all duration-500"
 								/>
 							</div>
-						)}
+						) : null}
 					</div>
 				);
 			})}
