@@ -1,9 +1,5 @@
 export { useAssessmentStore } from "@/features/assessment/stores/assessment-store";
-export {
-	useValidatePhoto,
-	useAnalyzeAssessment,
-	useServices,
-} from "@/features/assessment/hooks/use-assessment";
+export { useValidatePhoto, useAnalyzeAssessment } from "@/features/assessment/hooks/use-assessment";
 export * from "@/features/assessment/schemas/assessment.schema";
 export * from "@/features/assessment/schemas/photo-validation.schema";
 export { AssessmentWizard } from "@/features/assessment/components/assessment-wizard";

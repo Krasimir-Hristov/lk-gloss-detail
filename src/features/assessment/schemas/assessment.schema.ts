@@ -11,7 +11,6 @@ export const AssessmentPhotoSchema = z.object({
 	id: z.string().uuid(),
 	angle: PhotoAngleSchema,
 	previewUrl: z.string().url(),
-	uploadedUrl: z.string().url().optional(),
 	validationStatus: z.enum(["pending", "validating", "valid", "invalid"]),
 	validationReason: z.string().optional(),
 	carSize: z.enum(["small", "medium", "large", "suv"]).optional(),
@@ -24,46 +23,21 @@ export type AssessmentPhoto = z.infer<typeof AssessmentPhotoSchema>;
 
 export const ServiceSelectionSchema = z.object({
 	serviceId: z.string().uuid(),
-	name: z.string(),
-	description: z.string(),
-	icon: z.string(),
-	priceHint: z.string(),
 	accepted: z.boolean(),
 });
 export type ServiceSelection = z.infer<typeof ServiceSelectionSchema>;
-
-// ── Price Estimate ─────────────────────────────────────────────────────────
-
-export const PriceEstimateSchema = z.object({
-	priceMin: z.number().positive(),
-	priceMax: z.number().positive(),
-	durationHours: z.number().positive(),
-	currency: z.literal("EUR"),
-});
-export type PriceEstimate = z.infer<typeof PriceEstimateSchema>;
-
-// ── Service Breakdown ──────────────────────────────────────────────────────
-
-export const ServiceBreakdownSchema = z.object({
-	serviceId: z.string().uuid(),
-	name: z.string(),
-	included: z.boolean(),
-	priceContribution: z.number().nonnegative(),
-	notes: z.string().optional(),
-});
-export type ServiceBreakdown = z.infer<typeof ServiceBreakdownSchema>;
 
 // ── Assessment Result ──────────────────────────────────────────────────────
 
 export const AssessmentResultSchema = z.object({
 	id: z.string().uuid(),
-	priceEstimate: PriceEstimateSchema,
-	durationHours: z.number().positive(),
-	summaryText: z.string(),
-	servicesBreakdown: z.array(ServiceBreakdownSchema),
 	carSize: z.enum(["small", "medium", "large", "suv"]),
 	dirtLevel: z.enum(["light", "moderate", "heavy"]),
-	paintCondition: z.enum(["excellent", "good", "fair", "poor"]),
+	brand: z.string().nullable(),
+	priceMin: z.number().nonnegative(),
+	priceMax: z.number().nonnegative(),
+	durationHours: z.number().positive(),
+	summaryText: z.string(),
 	createdAt: z.string().datetime(),
 });
 export type AssessmentResult = z.infer<typeof AssessmentResultSchema>;
