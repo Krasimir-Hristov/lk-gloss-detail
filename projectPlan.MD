@@ -141,54 +141,50 @@
 
 ---
 
-## PHASE 6 — Feature: AI Car Assessment (`/assessment`)
+## PHASE 6 — Feature: Ephemeral AI Car Assessment (`/assessment`)
 
-### 6.1 Multi-step Photo Upload Flow
+### 6.1 Multi-step Photo Upload Flow (Stream & Forget)
 
-- [x] Create assessment wizard component (`AssessmentWizard`)
-- [x] Step 1: Front photo upload (drag & drop + mobile camera)
-- [x] Step 2: Rear photo upload
-- [x] Step 3: Left side photo upload
-- [x] Step 4: Right side photo upload
-- [x] Step 5: Interior photo upload
-- [x] Between each step: AI photo validation call
-- [x] Photo validation API route (`/api/assessment/validate-photo`)
-  - [x] Send image to vision model (GPT-4o via OpenRouter)
-  - [x] Prompt: classify if image matches expected angle (front/rear/side/interior)
-  - [x] Return: `{ valid: boolean, reason: string }`
-- [x] Error state: show message if wrong photo, allow retry
-- [x] Progress indicator (step 1/4, 2/4, etc.) with animations
+- [ ] **Privacy-First Validation API (`/api/assessment/validate-photo`)**
+  - [ ] Accept raw image as `base64` string in the payload.
+  - [ ] Stream base64 directly to gemini via OpenRouter without saving it anywhere (No DB, No Storage, No Local Logs).
+  - [ ] **Node: `validate_image_angle`**
+    - [ ] Prompt model to verify the angle (front/rear/side/interior).
+    - [ ] Return: `{ valid: boolean, reason: string }`.
+- [ ] **Frontend Step Management**
+  - [ ] Keep images strictly in the browser's temporary memory (`RAM`) via Zustand during the 4 steps.
+  - [ ] If a step fails validation, allow the user to overwrite that specific base64 slot.
 
 ### 6.2 Tinder-style Service Cards
 
-- [x] After all 5 photos pass: show service swipe cards
-- [x] `ServiceSwipeCard` component (service name, description, icon, price hint)
-- [x] Swipe right = accept, swipe left = reject (Framer Motion drag)
-- [x] Also show ✓ / ✗ buttons for mobile non-swipe fallback
-- [x] Track accepted/rejected services in state
-- [x] After last card: trigger AI Agent analysis
+- [ ] **Fetch Active Catalog**
+  - [ ] Retrieve available services (IDs, icons, localized strings) from the Supabase `services` table to render cards.
+- [ ] **Swipe Interaction**
+  - [ ] Swipe right = push service ID into frontend Zustand array.
+  - [ ] Swipe left = skip.
 
-### 6.3 AI Agent — Price Estimation
+### 6.3 AI Agent — Stateless Estimation (LangGraph Node Workflow)
 
-- [ ] Create API route `/api/assessment/analyze`
-- [ ] Agent receives: car images (as base64 or URLs), accepted services list
-- [ ] Agent Step 1: Vision analysis — car size, dirt level, paint condition
-- [ ] Agent Step 2: RAG lookup — query `service_vectors` for each accepted service
-- [ ] Agent Step 3: Calculate price range using structured service data + dirt multiplier
-- [ ] Agent Step 4: Generate friendly summary text (de/en/el based on locale)
-- [ ] Return: `{ price_min, price_max, duration_hours, summary_text, services_breakdown }`
-- [ ] Implement with LangChain + LangGraph (StateGraph with 4 nodes)
-- [ ] Add LangSmith tracing
+- [ ] **API Endpoint `/api/assessment/analyze`**
+  - [ ] Receives: `base64_images[]`, `accepted_service_ids[]`, `locale`.
+- [ ] **Stateless LangGraph Implementation**
+  - [ ] **Node 1: `vision_car_analysis`** — Pass the 4 base64 images to GPT-4o in a single query.
+    - [ ] Extract structured JSON only: `car_size` (small/medium/large), `dirty_level` (low/medium/high), `brand`.
+    - [ ] _Immediate Action:_ Drop the base64 data from backend memory as soon as this node completes.
+  - [ ] **Node 2: `fetch_db_pricing`** — Query Supabase `services` table using `.in('id', accepted_service_ids)` to get raw pricing configurations.
+  - [ ] **Node 3: `deterministic_calculator`** — Pure TypeScript logic. Map extracted `car_size` to the database prices. Scale `duration_hours` using the extracted `dirty_level` as a multiplier.
+  - [ ] **Node 4: `generate_localized_summary`** — Use LLM to output 1-2 punchy CTA sentences based on the computed metrics and user `locale` (`de`/`en`/`el`).
+- [ ] **Return Clean Payload**
+  - [ ] Return finalized schema: `{ car_size, dirty_level, brand, price_min, price_max, duration_hours_min, duration_hours_max, summary_text }`.
 
-### 6.4 Results Display
+### 6.4 Results Display & Booking Transition
 
-- [ ] Results card component (price range, duration, summary text)
-- [ ] Services breakdown accordion (what's included, what was skipped)
-- [ ] Animated counter for price reveal
-- [ ] CTA button → `/booking` (carry assessment ID in state/URL)
-- [ ] Save assessment result to `car_assessments` table
-
----
+- [ ] **Render Results Page (`/assessment/results`)**
+  - [ ] Display the structured JSON insights, count-up price animation, and localized AI text from state.
+- [ ] **Wipe Browser Memory**
+  - [ ] Purge the base64 images from the frontend Zustand store entirely upon mounting the results page to guarantee complete data destruction.
+- [ ] **Data-Light Booking Link**
+  - [ ] "Book Now" CTA routes to `/booking`, carrying only the non-sensitive configuration data (size, services, estimated prices) via URL params or state.
 
 ## PHASE 7 — Feature: Booking / Appointments (`/booking`)
 

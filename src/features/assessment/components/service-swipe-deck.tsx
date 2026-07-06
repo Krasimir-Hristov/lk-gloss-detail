@@ -3,47 +3,55 @@
 import { motion } from "framer-motion";
 import { useTranslations } from "next-intl";
 import { useCallback, useEffect, useRef, useState } from "react";
-import { z } from "zod";
 
 import { ServiceSwipeCard } from "@/features/assessment/components/service-swipe-card";
-import { ASSESSMENT_SERVICES } from "@/features/assessment/data/assessment-services";
 import { useAssessmentStore } from "@/features/assessment/stores/assessment-store";
 
 import type { ServiceSelection } from "@/features/assessment/schemas/assessment.schema";
 
-// ── Dev-only logger (silent in production) ────────────────────────────────
+// ── DB Service shape ────────────────────────────────────────────────────────
+
+type DbService = {
+	id: string;
+	name: string;
+	short_description: string | null;
+	icon: string;
+	image_url: string | null;
+	category: string;
+	price_small: number;
+	price_medium: number;
+	price_large: number;
+	price_suv: number;
+	duration_hours: number;
+	sort_order: number;
+};
+
+// ── Dev-only logger (silent in production) ──────────────────────────────────
 
 const isDev = process.env.NODE_ENV === "development";
 const devLog = (...args: unknown[]) => {
 	if (isDev) console.log(...args);
 };
 
-// ── Zod schema for i18n service translation payload ───────────────────────
-
-const ServiceI18nSchema = z.object({
-	title: z.string(),
-	subtitle: z.string(),
-	features: z.array(z.string()),
-	tag: z.string(),
-	duration: z.string(),
-});
-
-type ServiceI18nData = z.infer<typeof ServiceI18nSchema>;
-
 // ── Component ──────────────────────────────────────────────────────────────
 
-export const ServiceSwipeDeck = () => {
+type ServiceSwipeDeckProps = {
+	onComplete: () => void;
+};
+
+export const ServiceSwipeDeck = ({ onComplete }: ServiceSwipeDeckProps) => {
 	const t = useTranslations("Assessment.services");
 
-	// Selector-based store access — avoids re-renders on unrelated state
 	const acceptService = useAssessmentStore((s) => s.acceptService);
 	const rejectService = useAssessmentStore((s) => s.rejectService);
 	const setServices = useAssessmentStore((s) => s.setServices);
 
+	const [dbServices, setDbServices] = useState<DbService[]>([]);
+	const [isLoading, setIsLoading] = useState(true);
 	const [currentIndex, setCurrentIndex] = useState(0);
 	const [isComplete, setIsComplete] = useState(false);
 
-	const totalCards = ASSESSMENT_SERVICES.length;
+	const totalCards = dbServices.length;
 
 	// Keep currentIndex in a ref so callbacks always see the latest value
 	const currentIndexRef = useRef(0);
@@ -51,22 +59,29 @@ export const ServiceSwipeDeck = () => {
 		currentIndexRef.current = currentIndex;
 	}, [currentIndex]);
 
-	// Initialize services in store (useEffect — must not call setState during render)
-	const initializedRef = useRef(false);
+	// Fetch services from DB
 	useEffect(() => {
-		if (initializedRef.current) return;
-		initializedRef.current = true;
+		const fetchServices = async () => {
+			try {
+				const res = await fetch("/api/services");
+				if (!res.ok) throw new Error("Failed to fetch services");
+				const data = (await res.json()) as DbService[];
+				setDbServices(data);
 
-		const services: ServiceSelection[] = ASSESSMENT_SERVICES.map((s) => ({
-			serviceId: s.id,
-			name: s.id,
-			description: "",
-			icon: "",
-			priceHint: "",
-			accepted: false,
-		}));
-		setServices(services);
-		devLog("[ServiceSwipeDeck] ✅ Initialized services in store:", services.length, "services");
+				// Initialize services in store
+				const selections: ServiceSelection[] = data.map((s) => ({
+					serviceId: s.id,
+					accepted: false,
+				}));
+				setServices(selections);
+				devLog("[ServiceSwipeDeck] ✅ Loaded", data.length, "services from DB");
+			} catch (err) {
+				console.error("[ServiceSwipeDeck] Failed to load services:", err);
+			} finally {
+				setIsLoading(false);
+			}
+		};
+		fetchServices();
 	}, [setServices]);
 
 	// ── Log final assessment state ──────────────────────────────────────────
@@ -98,7 +113,6 @@ export const ServiceSwipeDeck = () => {
 					carSize: p.carSize ?? "—",
 					dirtLevel: p.dirtLevel ?? "—",
 					carDescription: p.carDescription ?? "—",
-					uploadedUrl: p.uploadedUrl ? "✅" : "❌",
 				})),
 			);
 		}
@@ -124,7 +138,6 @@ export const ServiceSwipeDeck = () => {
 			rejected.forEach((s) => devLog(`     • ${s.serviceId}`));
 		}
 
-		// Edge case: client rejects all services
 		if (accepted.length === 0) {
 			devLog(
 				"\n%c⚠️ EDGE CASE: Client selected ZERO services — app should handle gracefully",
@@ -147,11 +160,12 @@ export const ServiceSwipeDeck = () => {
 			devLog("[ServiceSwipeDeck] 🏁 All cards swiped. Logging final state...");
 			setTimeout(() => {
 				logFinalState();
+				onComplete();
 			}, 150);
 		} else {
 			setCurrentIndex(nextIndex);
 		}
-	}, [totalCards, logFinalState]);
+	}, [totalCards, logFinalState, onComplete]);
 
 	const handleAccept = useCallback(
 		(serviceId: string) => {
@@ -171,29 +185,16 @@ export const ServiceSwipeDeck = () => {
 		[rejectService, advanceCard],
 	);
 
-	// ── Get services data from i18n (Zod-validated) ─────────────────────────
+	// ── Loading state ───────────────────────────────────────────────────────
 
-	const getServiceData = (serviceKey: string): ServiceI18nData => {
-		const rawData = t.raw(serviceKey);
-		const result = ServiceI18nSchema.safeParse(rawData);
-
-		if (!result.success) {
-			console.error(
-				`[ServiceSwipeDeck] Invalid i18n payload for key "${serviceKey}":`,
-				result.error.flatten(),
-			);
-			// Return a safe fallback so the card doesn't crash
-			return {
-				title: `[Missing: ${serviceKey}]`,
-				subtitle: "",
-				features: [],
-				tag: "",
-				duration: "",
-			};
-		}
-
-		return result.data;
-	};
+	if (isLoading) {
+		return (
+			<div className="flex flex-col items-center justify-center py-20">
+				<div className="h-8 w-8 animate-spin rounded-full border-2 border-[#7b2dff] border-t-transparent" />
+				<p className="mt-4 text-sm text-[#ccc3d9]">{t("loading")}</p>
+			</div>
+		);
+	}
 
 	return (
 		<div className="flex flex-col items-center">
@@ -210,7 +211,7 @@ export const ServiceSwipeDeck = () => {
 			{!isComplete ? (
 				<>
 					<div className="relative mx-auto h-130 w-full max-w-95">
-						{ASSESSMENT_SERVICES.map((service, index) => {
+						{dbServices.map((service, index) => {
 							const isBehind = index < currentIndex;
 							if (isBehind) return null;
 
@@ -221,9 +222,8 @@ export const ServiceSwipeDeck = () => {
 								<ServiceSwipeCard
 									key={service.id}
 									service={service}
-									serviceData={getServiceData(service.key)}
-									onAccept={handleAccept}
-									onReject={handleReject}
+									onAcceptAction={handleAccept}
+									onRejectAction={handleReject}
 									isTop={isTop}
 									stackIndex={stackIndex}
 								/>
@@ -233,7 +233,7 @@ export const ServiceSwipeDeck = () => {
 
 					{/* Progress indicator */}
 					<div className="mt-24 flex items-center gap-2">
-						{ASSESSMENT_SERVICES.map((_, index) => (
+						{dbServices.map((_, index) => (
 							<div
 								key={index}
 								className={`h-1.5 rounded-full transition-all duration-300 ${

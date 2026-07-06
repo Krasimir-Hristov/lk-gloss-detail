@@ -23,7 +23,6 @@ type AssessmentActions = {
 		dirtLevel?: "light" | "moderate" | "heavy",
 		carDescription?: string,
 	) => void;
-	setPhotoUploadedUrl: (photoId: string, url: string) => void;
 	nextStep: () => void;
 	prevStep: () => void;
 	goToStep: (step: WizardStep) => void;
@@ -33,6 +32,7 @@ type AssessmentActions = {
 	setResult: (result: AssessmentResult) => void;
 	setIsAnalyzing: (isAnalyzing: boolean) => void;
 	setError: (error: string | null) => void;
+	clearPhotos: () => void;
 	reset: () => void;
 };
 
@@ -82,13 +82,6 @@ export const useAssessmentStore = create<AssessmentState & AssessmentActions>()(
 						}
 					: p,
 			),
-		}));
-	},
-
-	setPhotoUploadedUrl: (photoId, url) => {
-		console.log("[AssessmentStore] setPhotoUploadedUrl:", { photoId, url });
-		set((state) => ({
-			photos: state.photos.map((p) => (p.id === photoId ? { ...p, uploadedUrl: url } : p)),
 		}));
 	},
 
@@ -155,7 +148,8 @@ export const useAssessmentStore = create<AssessmentState & AssessmentActions>()(
 	setResult: (result) => {
 		console.log("[AssessmentStore] setResult:", {
 			id: result.id,
-			priceRange: result.priceEstimate,
+			priceMin: result.priceMin,
+			priceMax: result.priceMax,
 		});
 		set({ result, isAnalyzing: false });
 	},
@@ -168,6 +162,11 @@ export const useAssessmentStore = create<AssessmentState & AssessmentActions>()(
 	setError: (error) => {
 		console.log("[AssessmentStore] setError:", error);
 		set({ error, isAnalyzing: false });
+	},
+
+	clearPhotos: () => {
+		console.log("[AssessmentStore] clearPhotos — wiping base64 data from memory");
+		set({ photos: [] });
 	},
 
 	reset: () => {

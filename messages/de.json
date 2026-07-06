@@ -268,41 +268,34 @@
 			"headingTag": "Konfigurator",
 			"headingTitle": "Wähle deine Services",
 			"headingDescription": "Entscheide, welche Behandlungen dein Fahrzeug verdient. Swipe nach rechts für Bestätigung.",
-			"interior": {
-				"title": "Professionelle Innenreinigung",
-				"subtitle": "Tiefenreinigung & Pflege",
-				"features": [
-					"Gründliche Reinigung aller Oberflächen",
-					"Lederaufbereitung & Imprägnierung",
-					"Geruchsneutralisation"
-				],
-				"tag": "Premium Pflege",
-				"duration": "2-3 Stunden"
-			},
-			"headlights": {
-				"title": "Scheinwerferaufbereitung",
-				"subtitle": "Klare Sicht & Sicherheit",
-				"features": [
-					"Entfernung von Vergilbung & Trübung",
-					"Politur der Streuscheiben",
-					"Langlebiger UV-Schutz"
-				],
-				"tag": "Sicherheit",
-				"duration": "1 Stunde"
-			},
-			"paintCorrection": {
-				"title": "Lackkorrektur, Politur & Versiegelung",
-				"subtitle": "3-Stufen Hochglanz & Schutz",
-				"features": [
-					"Entfernung von Kratzern & Swirls",
-					"Politur bis zum Hochglanz",
-					"Versiegelung für langanhaltenden Schutz"
-				],
-				"tag": "Premium Schutz",
-				"duration": "4-6 Stunden"
+			"loading": "Services werden geladen...",
+			"cards": {
+				"interior": {
+					"title": "Professionelle Innenreinigung",
+					"description": "Tiefenreinigung & Pflege mit Dampfreiniger und Spezialprodukten",
+					"tag": "Premium Pflege"
+				},
+				"headlights": {
+					"title": "Scheinwerferaufbereitung",
+					"description": "Entfernung von Vergilbung und Kratzern für klare Sicht",
+					"tag": "Sicherheit"
+				},
+				"paintCorrection": {
+					"title": "Lackkorrektur & Versiegelung",
+					"description": "3-Stufen Hochglanz-Politur mit Keramikversiegelung für langanhaltenden Schutz",
+					"tag": "Premium Schutz"
+				}
 			},
 			"completeTitle": "Services konfiguriert!",
 			"completeDescription": "Deine Auswahl wurde gespeichert. Weiter zur KI-Analyse..."
+		},
+		"analyzing": {
+			"title": "KI analysiert dein Fahrzeug...",
+			"description": "Unsere KI wertet deine Fotos aus und berechnet den besten Preis für dich."
+		},
+		"results": {
+			"title": "Dein Ergebnis",
+			"comingSoon": "Die Ergebnisanzeige wird in Kürze implementiert."
 		},
 		"result": {
 			"title": "Ihr Bewertungsergebnis",

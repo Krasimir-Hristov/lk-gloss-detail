@@ -1,6 +1,6 @@
 "use client";
 
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useMutation } from "@tanstack/react-query";
 
 import type {
 	PhotoValidationRequest,
@@ -27,23 +27,23 @@ export const useValidatePhoto = () => {
 	});
 };
 
-// ── Analyze Assessment Hook (streaming) ────────────────────────────────────
+// ── Analyze Assessment Hook ────────────────────────────────────────────────
 
 export const useAnalyzeAssessment = () => {
 	return useMutation({
 		mutationFn: async ({
-			photoUrls,
+			base64Images,
 			acceptedServiceIds,
 			locale,
 		}: {
-			photoUrls: string[];
+			base64Images: string[];
 			acceptedServiceIds: string[];
 			locale: string;
 		}) => {
 			const res = await fetch("/api/assessment/analyze", {
 				method: "POST",
 				headers: { "Content-Type": "application/json" },
-				body: JSON.stringify({ photoUrls, acceptedServiceIds, locale }),
+				body: JSON.stringify({ base64Images, acceptedServiceIds, locale }),
 			});
 
 			if (!res.ok) {
@@ -53,19 +53,5 @@ export const useAnalyzeAssessment = () => {
 
 			return res.json();
 		},
-	});
-};
-
-// ── Services Query ─────────────────────────────────────────────────────────
-
-export const useServices = (locale: string) => {
-	return useQuery({
-		queryKey: ["services", locale],
-		queryFn: async () => {
-			const res = await fetch(`/api/services?locale=${locale}`);
-			if (!res.ok) throw new Error("Failed to fetch services");
-			return res.json();
-		},
-		staleTime: 5 * 60 * 1000, // 5 min cache
 	});
 };
