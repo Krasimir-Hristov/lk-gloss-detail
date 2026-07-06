@@ -145,46 +145,46 @@
 
 ### 6.1 Multi-step Photo Upload Flow (Stream & Forget)
 
-- [ ] **Privacy-First Validation API (`/api/assessment/validate-photo`)**
-  - [ ] Accept raw image as `base64` string in the payload.
-  - [ ] Stream base64 directly to gemini via OpenRouter without saving it anywhere (No DB, No Storage, No Local Logs).
-  - [ ] **Node: `validate_image_angle`**
-    - [ ] Prompt model to verify the angle (front/rear/side/interior).
-    - [ ] Return: `{ valid: boolean, reason: string }`.
-- [ ] **Frontend Step Management**
-  - [ ] Keep images strictly in the browser's temporary memory (`RAM`) via Zustand during the 4 steps.
-  - [ ] If a step fails validation, allow the user to overwrite that specific base64 slot.
+- [x] **Privacy-First Validation API (`/api/assessment/validate-photo`)**
+  - [x] Accept raw image as `base64` string in the payload.
+  - [x] Stream base64 directly to gemini via OpenRouter without saving it anywhere (No DB, No Storage, No Local Logs).
+  - [x] **Node: `validate_image_angle`**
+    - [x] Prompt model to verify the angle (front/rear/side/interior).
+    - [x] Return: `{ valid: boolean, reason: string }`.
+- [x] **Frontend Step Management**
+  - [x] Keep images strictly in the browser's temporary memory (`RAM`) via Zustand during the 4 steps.
+  - [x] If a step fails validation, allow the user to overwrite that specific base64 slot.
 
 ### 6.2 Tinder-style Service Cards
 
-- [ ] **Fetch Active Catalog**
-  - [ ] Retrieve available services (IDs, icons, localized strings) from the Supabase `services` table to render cards.
-- [ ] **Swipe Interaction**
-  - [ ] Swipe right = push service ID into frontend Zustand array.
-  - [ ] Swipe left = skip.
+- [x] **Fetch Active Catalog**
+  - [x] Retrieve available services (IDs, icons, localized strings) from the Supabase `services` table to render cards.
+- [x] **Swipe Interaction**
+  - [x] Swipe right = push service ID into frontend Zustand array.
+  - [x] Swipe left = skip.
 
 ### 6.3 AI Agent — Stateless Estimation (LangGraph Node Workflow)
 
-- [ ] **API Endpoint `/api/assessment/analyze`**
-  - [ ] Receives: `base64_images[]`, `accepted_service_ids[]`, `locale`.
-- [ ] **Stateless LangGraph Implementation**
-  - [ ] **Node 1: `vision_car_analysis`** — Pass the 4 base64 images to GPT-4o in a single query.
-    - [ ] Extract structured JSON only: `car_size` (small/medium/large), `dirty_level` (low/medium/high), `brand`.
-    - [ ] _Immediate Action:_ Drop the base64 data from backend memory as soon as this node completes.
-  - [ ] **Node 2: `fetch_db_pricing`** — Query Supabase `services` table using `.in('id', accepted_service_ids)` to get raw pricing configurations.
-  - [ ] **Node 3: `deterministic_calculator`** — Pure TypeScript logic. Map extracted `car_size` to the database prices. Scale `duration_hours` using the extracted `dirty_level` as a multiplier.
-  - [ ] **Node 4: `generate_localized_summary`** — Use LLM to output 1-2 punchy CTA sentences based on the computed metrics and user `locale` (`de`/`en`/`el`).
-- [ ] **Return Clean Payload**
-  - [ ] Return finalized schema: `{ car_size, dirty_level, brand, price_min, price_max, duration_hours_min, duration_hours_max, summary_text }`.
+- [x] **API Endpoint `/api/assessment/analyze`**
+  - [x] Receives: `base64_images[]`, `accepted_service_ids[]`, `locale`.
+- [x] **Stateless LangGraph Implementation**
+  - [x] **Node 1: `vision_car_analysis`** — Pass the 4 base64 images to GPT-4o in a single query.
+    - [x] Extract structured JSON only: `car_size` (small/medium/large), `dirty_level` (low/medium/high), `brand`.
+    - [x] _Immediate Action:_ Drop the base64 data from backend memory as soon as this node completes.
+  - [x] **Node 2: `fetch_db_pricing`** — Query Supabase `services` table using `.in('id', accepted_service_ids)` to get raw pricing configurations.
+  - [x] **Node 3: `deterministic_calculator`** — Pure TypeScript logic. Map extracted `car_size` to the database prices. Scale `duration_hours` using the extracted `dirty_level` as a multiplier.
+  - [x] **Node 4: `generate_localized_summary`** — Use LLM to output 1-2 punchy CTA sentences based on the computed metrics and user `locale` (`de`/`en`/`el`).
+- [x] **Return Clean Payload**
+  - [x] Return finalized schema: `{ car_size, dirty_level, brand, price_min, price_max, duration_hours_min, duration_hours_max, summary_text }`.
 
 ### 6.4 Results Display & Booking Transition
 
-- [ ] **Render Results Page (`/assessment/results`)**
-  - [ ] Display the structured JSON insights, count-up price animation, and localized AI text from state.
-- [ ] **Wipe Browser Memory**
-  - [ ] Purge the base64 images from the frontend Zustand store entirely upon mounting the results page to guarantee complete data destruction.
-- [ ] **Data-Light Booking Link**
-  - [ ] "Book Now" CTA routes to `/booking`, carrying only the non-sensitive configuration data (size, services, estimated prices) via URL params or state.
+- [x] **Render Results Page (`/assessment/results`)**
+  - [x] Display the structured JSON insights, count-up price animation, and localized AI text from state.
+- [x] **Wipe Browser Memory**
+  - [x] Purge the base64 images from the frontend Zustand store entirely upon mounting the results page to guarantee complete data destruction.
+- [x] **Data-Light Booking Link**
+  - [x] "Book Now" CTA routes to `/booking`, carrying only the non-sensitive configuration data (size, services, estimated prices) via URL params or state.
 
 ## PHASE 7 — Feature: Booking / Appointments (`/booking`)
 
