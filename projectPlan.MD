@@ -200,35 +200,114 @@
 
 ## PHASE 7 — Feature: Booking / Appointments (`/booking`)
 
-### 7.1 Booking Flow
+## PHASE 7 — Feature: Full-Day Booking with Double Opt-In (/booking)
 
-- [ ] Step 1: Client info form (name, email, phone) — shadcn Form + React Hook Form + Zod
-- [ ] Step 2: Date picker (calendar) — show only available dates
-- [ ] Step 3: Time slot picker — show only available slots (not blocked)
-- [ ] Step 4: Confirmation summary (selected service, date, time, price estimate)
-- [ ] Step 5: Submit → create appointment in DB
+7.1 Database Migrations (Supabase)
+[ ] Create blocked_dates table: (За ръчно блокиране на дни от админа)
 
-### 7.2 Availability Logic
+id (uuid, primary key)
 
-- [ ] API route `GET /api/booking/slots?date=YYYY-MM-DD`
-  - [ ] Query `appointments` table for date (status != cancelled)
-  - [ ] Query `blocked_slots` table for date
-  - [ ] Return available hours (default: 08:00–18:00, every hour)
-- [ ] API route `POST /api/booking/create`
-  - [ ] Validate slot still free (race condition check)
-  - [ ] Create appointment record
-  - [ ] Send confirmation email via Resend
-  - [ ] Return appointment ID + confirmation
+blocked_date (date, UNIQUE, not null)
 
-### 7.3 Email Confirmation (Resend)
+reason (text)
 
-- [ ] Install `resend` package
-- [ ] Create React Email template (`AppointmentConfirmation.tsx`)
-- [ ] Template includes: date, time, services, estimated price, contact info
-- [ ] Send to: client email + BCC to Lulezim's Gmail
-- [ ] Setup Resend account (free tier: 3000 emails/month)
+[ ] Create appointments table: (Основна таблица за Admin Dashboard)
 
----
+id (uuid, primary key)
+
+first_name (text, not null), last_name (text, not null)
+
+email (text, not null), phone (text, not null)
+
+car_description (text) — Забележки от клиента какво иска да се прави по колата
+
+booking_date (date, UNIQUE, not null) — UNIQUE гарантира, че няма как да се дублират два потвърдени записа за един ден
+
+status (text, default 'confirmed')
+
+created_at (timestamp)
+
+[ ] Create appointment_services junction table: (Връзка много-към-много)
+
+appointment_id (uuid, fk to appointments ON DELETE CASCADE)
+
+service_id (uuid, fk to existing services table ON DELETE CASCADE)
+
+Primary key (appointment_id, service_id)
+
+[ ] Create pending_bookings table: (Временна таблица за Вариант А)
+
+token (uuid, primary key, default gen_random_uuid())
+
+first_name (text), last_name (text), email (text), phone (text)
+
+car_description (text)
+
+booking_date (date) — Без unique констрейнт, за да могат няколко души да чакат за потвърждение на един и същ ден
+
+selected_services (uuid[]) — Масив от ID-та на услугите, които ще се прехвърлят след потвърждение
+
+expires_at (timestamp) — Токенът изтича след 2 часа
+
+7.2 Frontend State & Form (Zustand + Zod)
+[ ] Setup Zustand Store (useBookingStore):
+
+Пази състоянието на формата стъпка по стъпка и списъка с избрани услуги (масив от ID-та).
+
+Валидация на всяка стъпка преди преминаване напред.
+
+[ ] Step 1: Client Info & Car Notes (/booking/step-1):
+
+Полета: Име, Фамилия, Телефон, Email, Описание за колата.
+
+Checkbox: Съгласие за Datenschutz и Общи условия (Terms).
+
+Стриктна Zod валидация (валиден email/телефон и задължително true на checkbox-а).
+
+[ ] Step 2: Services Selection (/booking/step-2):
+
+Fetch-ване на услугите от съществуващата services таблица.
+
+Multi-select (checkboxes) за избор на няколко услуги едновременно.
+
+[ ] Step 3: Date Picker (/booking/step-3):
+
+Компонент: shadcn Calendar.
+
+Изключване (disable) на заетите дати (от appointments и blocked_dates). Избира се само цял ден.
+
+[ ] Step 4: Summary & Submit (/booking/step-4):
+
+Преглед на данните и бутон "Заяви час" -> POST към API-то.
+
+[ ] Step 5: Verification Screen:
+
+Съобщение: "Изпратихме ви имейл. Моля, потвърдете часа си в рамките на 2 часа."
+
+7.3 Backend Logic & Email Security (Next.js API + Resend)
+[ ] API Route GET /api/booking/unavailable-dates:
+
+Връща заетите дати от appointments и blocked_dates.
+
+[ ] API Route POST /api/booking/request:
+
+Zod валидация на бекенда + проверка дали датата не е заета в appointments.
+
+Запис в pending_bookings с генериран token.
+
+Изпращане на имейл през Resend с линк за потвърждение.
+
+[ ] API Route GET /api/booking/confirm:
+
+Приема token, проверява expires_at и прави Race Condition Check в appointments.
+
+Ако е зает: Редирект към /booking/error?reason=date-taken.
+
+Ако е свободен: DB Транзакция (запис в appointments и appointment_services, изтриване от pending_bookings).
+
+Втори имейл през Resend: Финално потвърждение до клиента + BCC до Lulezim.
+
+Редирект към /booking/success.
 
 ## PHASE 8 — Feature: RAG Chatbot (`/` — floating widget)
 
