@@ -27,6 +27,14 @@ export const ServiceSelectionSchema = z.object({
 });
 export type ServiceSelection = z.infer<typeof ServiceSelectionSchema>;
 
+// ── Assessment Diagnostic ──────────────────────────────────────────────────
+
+export const AssessmentDiagnosticSchema = z.object({
+	title: z.string(),
+	description: z.string(),
+});
+export type AssessmentDiagnostic = z.infer<typeof AssessmentDiagnosticSchema>;
+
 // ── Assessment Result ──────────────────────────────────────────────────────
 
 export const AssessmentResultSchema = z.object({
@@ -38,6 +46,8 @@ export const AssessmentResultSchema = z.object({
 	priceMax: z.number().nonnegative(),
 	durationHours: z.number().positive(),
 	summaryText: z.string(),
+	diagnostics: z.array(AssessmentDiagnosticSchema),
+	expertVerdict: z.string(),
 	createdAt: z.string().datetime(),
 });
 export type AssessmentResult = z.infer<typeof AssessmentResultSchema>;

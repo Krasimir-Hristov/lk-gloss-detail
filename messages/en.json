@@ -307,7 +307,23 @@
 			"duration": "Estimated Duration",
 			"carSize": "Vehicle Size",
 			"summary": "Summary",
-			"bookNow": "Book Appointment"
+			"bookNow": "Book Appointment",
+			"carSizes": {
+				"small": "Small",
+				"medium": "Medium",
+				"large": "Large",
+				"suv": "SUV"
+			}
+		},
+		"report": {
+			"title": "Analysis Report",
+			"vehicle": "Your Vehicle",
+			"aiDiagnostics": "AI Diagnostics",
+			"expertVerdict": "Expert Verdict",
+			"investment": "Investment",
+			"timeline": "Timeline",
+			"bookAppointment": "Book Appointment",
+			"durationValue": "~{hours}h"
 		}
 	}
 }

@@ -1,14 +1,18 @@
 "use client";
 
 import { motion, AnimatePresence } from "framer-motion";
-import { ArrowLeft, Loader2, Euro, Clock, Car, AlertCircle, Sparkles } from "lucide-react";
+import { ArrowLeft, Loader2, AlertCircle } from "lucide-react";
 import { useTranslations, useLocale } from "next-intl";
 import { useCallback } from "react";
 
+import { AssessmentReport } from "@/features/assessment/components/assessment-report";
 import { PhotoUploadStep } from "@/features/assessment/components/photo-upload-step";
 import { ProgressIndicator } from "@/features/assessment/components/progress-indicator";
 import { ServiceSwipeDeck } from "@/features/assessment/components/service-swipe-deck";
-import { PHOTO_STEPS } from "@/features/assessment/schemas/assessment.schema";
+import {
+	PHOTO_STEPS,
+	AssessmentResultSchema,
+} from "@/features/assessment/schemas/assessment.schema";
 import { useAssessmentStore } from "@/features/assessment/stores/assessment-store";
 
 import type { PhotoAngle, WizardStep } from "@/features/assessment/schemas/assessment.schema";
@@ -125,23 +129,26 @@ export const AssessmentWizard = () => {
 			});
 
 			if (!res.ok) {
-				const err = (await res.json()) as { error?: string };
-				throw new Error(err.error ?? "Analysis failed");
+				let errorMsg = "Analysis failed";
+				try {
+					const err = await res.json();
+					errorMsg = (err as { error?: string }).error ?? errorMsg;
+				} catch {
+					// Response body is not JSON — use text or default
+					errorMsg = (await res.text().catch(() => "")) || errorMsg;
+				}
+				throw new Error(errorMsg);
 			}
 
-			const result = await res.json();
+			const rawBody = await res.json();
+			const parsed = AssessmentResultSchema.safeParse(rawBody);
 
-			setResult({
-				id: crypto.randomUUID(),
-				carSize: result.carSize,
-				dirtLevel: result.dirtLevel,
-				brand: result.brand,
-				priceMin: result.priceMin,
-				priceMax: result.priceMax,
-				durationHours: result.durationHours,
-				summaryText: result.summaryText,
-				createdAt: new Date().toISOString(),
-			});
+			if (!parsed.success) {
+				console.error("[AssessmentWizard] Response validation failed:", parsed.error.flatten());
+				throw new Error("Invalid response from server");
+			}
+
+			setResult(parsed.data);
 
 			// Clear base64 images from browser memory
 			clearPhotos();
@@ -241,57 +248,9 @@ export const AssessmentWizard = () => {
 									</button>
 								</div>
 							) : result ? (
-								// Success state
-								<div className="flex w-full max-w-md flex-col gap-6">
-									<div className="text-center">
-										<div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-linear-to-br from-[#7b2dff] to-[#b303f2]">
-											<Sparkles className="h-8 w-8 text-white" />
-										</div>
-										<h2 className="text-2xl font-bold text-white">{t("results.title")}</h2>
-										{result.summaryText ? (
-											<p className="text-on-surface-variant mt-2 text-sm">{result.summaryText}</p>
-										) : null}
-									</div>
-
-									{/* Price estimate card */}
-									<div className="rounded-2xl border border-[#7b2dff]/20 bg-[#201f1f] p-6">
-										<h3 className="mb-4 text-sm font-bold tracking-widest text-[#d1bcff] uppercase">
-											{t("result.priceRange")}
-										</h3>
-										<div className="flex items-center gap-2">
-											<Euro className="h-6 w-6 text-[#7b2dff]" />
-											<span className="text-3xl font-bold text-white">
-												€{result.priceMin} – €{result.priceMax}
-											</span>
-										</div>
-									</div>
-
-									{/* Details grid */}
-									<div className="grid grid-cols-2 gap-4">
-										<div className="rounded-2xl border border-[#7b2dff]/20 bg-[#201f1f] p-4">
-											<div className="mb-2 flex items-center gap-2">
-												<Car className="h-4 w-4 text-[#7b2dff]" />
-												<span className="text-[10px] font-bold tracking-widest text-[#d1bcff] uppercase">
-													{t("result.carSize")}
-												</span>
-											</div>
-											<p className="text-lg font-bold text-white capitalize">{result.carSize}</p>
-										</div>
-										<div className="rounded-2xl border border-[#7b2dff]/20 bg-[#201f1f] p-4">
-											<div className="mb-2 flex items-center gap-2">
-												<Clock className="h-4 w-4 text-[#7b2dff]" />
-												<span className="text-[10px] font-bold tracking-widest text-[#d1bcff] uppercase">
-													{t("result.duration")}
-												</span>
-											</div>
-											<p className="text-lg font-bold text-white">~{result.durationHours}h</p>
-										</div>
-									</div>
-
-									{/* Book now */}
-									<button className="mt-2 w-full rounded-xl bg-linear-to-r from-[#7b2dff] to-[#b303f2] px-8 py-4 text-lg font-bold text-white transition-all hover:shadow-[0_0_25px_rgba(123,45,255,0.5)]">
-										{t("result.bookNow")}
-									</button>
+								// Success state — use the AssessmentReport component
+								<div className="w-full max-w-2xl">
+									<AssessmentReport result={result} />
 								</div>
 							) : (
 								// Fallback (shouldn't happen)
