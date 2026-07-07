@@ -322,7 +322,8 @@
 			"expertVerdict": "Γνώμη Ειδικού",
 			"investment": "Επένδυση",
 			"timeline": "Χρονοδιάγραμμα",
-			"bookAppointment": "Κλείστε Ραντεβού"
+			"bookAppointment": "Κλείστε Ραντεβού",
+			"durationValue": "~{hours} ώρες"
 		}
 	}
 }

@@ -9,7 +9,10 @@ import { AssessmentReport } from "@/features/assessment/components/assessment-re
 import { PhotoUploadStep } from "@/features/assessment/components/photo-upload-step";
 import { ProgressIndicator } from "@/features/assessment/components/progress-indicator";
 import { ServiceSwipeDeck } from "@/features/assessment/components/service-swipe-deck";
-import { PHOTO_STEPS } from "@/features/assessment/schemas/assessment.schema";
+import {
+	PHOTO_STEPS,
+	AssessmentResultSchema,
+} from "@/features/assessment/schemas/assessment.schema";
 import { useAssessmentStore } from "@/features/assessment/stores/assessment-store";
 
 import type { PhotoAngle, WizardStep } from "@/features/assessment/schemas/assessment.schema";
@@ -126,25 +129,26 @@ export const AssessmentWizard = () => {
 			});
 
 			if (!res.ok) {
-				const err = (await res.json()) as { error?: string };
-				throw new Error(err.error ?? "Analysis failed");
+				let errorMsg = "Analysis failed";
+				try {
+					const err = await res.json();
+					errorMsg = (err as { error?: string }).error ?? errorMsg;
+				} catch {
+					// Response body is not JSON — use text or default
+					errorMsg = (await res.text().catch(() => "")) || errorMsg;
+				}
+				throw new Error(errorMsg);
 			}
 
-			const result = await res.json();
+			const rawBody = await res.json();
+			const parsed = AssessmentResultSchema.safeParse(rawBody);
 
-			setResult({
-				id: crypto.randomUUID(),
-				carSize: result.carSize,
-				dirtLevel: result.dirtLevel,
-				brand: result.brand,
-				priceMin: result.priceMin,
-				priceMax: result.priceMax,
-				durationHours: result.durationHours,
-				summaryText: result.summaryText ?? "",
-				diagnostics: result.diagnostics ?? [],
-				expertVerdict: result.expertVerdict ?? "",
-				createdAt: new Date().toISOString(),
-			});
+			if (!parsed.success) {
+				console.error("[AssessmentWizard] Response validation failed:", parsed.error.flatten());
+				throw new Error("Invalid response from server");
+			}
+
+			setResult(parsed.data);
 
 			// Clear base64 images from browser memory
 			clearPhotos();

@@ -322,7 +322,8 @@
 			"expertVerdict": "Expertenurteil",
 			"investment": "Investition",
 			"timeline": "Dauer",
-			"bookAppointment": "Termin buchen"
+			"bookAppointment": "Termin buchen",
+			"durationValue": "~{hours} Std."
 		}
 	}
 }

@@ -322,7 +322,8 @@
 			"expertVerdict": "Expert Verdict",
 			"investment": "Investment",
 			"timeline": "Timeline",
-			"bookAppointment": "Book Appointment"
+			"bookAppointment": "Book Appointment",
+			"durationValue": "~{hours}h"
 		}
 	}
 }

@@ -3,6 +3,7 @@ import { StateGraph, START, END } from "@langchain/langgraph";
 import { ChatOpenAI } from "@langchain/openai";
 import { z } from "zod";
 
+import { AssessmentDiagnosticSchema } from "@/features/assessment/schemas/assessment.schema";
 import { createClient } from "@/lib/supabase/server";
 
 // ── State Schema ────────────────────────────────────────────────────────────
@@ -251,7 +252,13 @@ Generate the structured assessment report as JSON.`,
 			};
 		}
 
-		const diagnostics = Array.isArray(parsed.diagnostics) ? parsed.diagnostics : [];
+		// Validate each diagnostic item with the shared Zod schema
+		const diagnostics = (Array.isArray(parsed.diagnostics) ? parsed.diagnostics : [])
+			.map((d) => {
+				const result = AssessmentDiagnosticSchema.safeParse(d);
+				return result.success ? result.data : null;
+			})
+			.filter((d): d is NonNullable<typeof d> => d !== null);
 		const expertVerdict = typeof parsed.expertVerdict === "string" ? parsed.expertVerdict : "";
 		const summaryText = typeof parsed.summaryText === "string" ? parsed.summaryText : rawContent;
 

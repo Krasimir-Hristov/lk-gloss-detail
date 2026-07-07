@@ -3,7 +3,7 @@
 import { motion } from "framer-motion";
 import { Euro, Clock, ShieldCheck, Sparkles, MessageSquareQuote, ArrowRight } from "lucide-react";
 import Link from "next/link";
-import { useTranslations } from "next-intl";
+import { useTranslations, useFormatter } from "next-intl";
 
 import type { AssessmentResult } from "@/features/assessment/schemas/assessment.schema";
 
@@ -13,6 +13,7 @@ type AssessmentReportProps = {
 
 export const AssessmentReport = ({ result }: AssessmentReportProps) => {
 	const t = useTranslations("Assessment");
+	const format = useFormatter();
 
 	const {
 		priceMin,
@@ -25,7 +26,7 @@ export const AssessmentReport = ({ result }: AssessmentReportProps) => {
 		expertVerdict,
 	} = result;
 
-	const carSizeLabel: Record<string, string> = {
+	const carSizeLabel: Record<AssessmentResult["carSize"], string> = {
 		small: t("result.carSizes.small"),
 		medium: t("result.carSizes.medium"),
 		large: t("result.carSizes.large"),
@@ -48,7 +49,7 @@ export const AssessmentReport = ({ result }: AssessmentReportProps) => {
 					{t("report.title")}
 				</h1>
 				<p className="text-on-surface-variant mt-2 text-sm">
-					{brand ?? t("report.vehicle")} – {carSizeLabel[carSize] ?? carSize}
+					{brand ?? t("report.vehicle")} – {carSizeLabel[carSize]}
 				</p>
 			</div>
 
@@ -110,7 +111,17 @@ export const AssessmentReport = ({ result }: AssessmentReportProps) => {
 						</h3>
 					</div>
 					<p className="font-['Montserrat'] text-3xl font-extrabold text-white">
-						€{priceMin} – €{priceMax}
+						{format.number(priceMin, {
+							style: "currency",
+							currency: "EUR",
+							maximumFractionDigits: 0,
+						})}
+						{" – "}
+						{format.number(priceMax, {
+							style: "currency",
+							currency: "EUR",
+							maximumFractionDigits: 0,
+						})}
 					</p>
 				</div>
 
@@ -123,7 +134,7 @@ export const AssessmentReport = ({ result }: AssessmentReportProps) => {
 						</h3>
 					</div>
 					<p className="font-['Montserrat'] text-3xl font-extrabold text-white">
-						~{durationHours}h
+						{t("report.durationValue", { hours: durationHours })}
 					</p>
 				</div>
 			</div>
