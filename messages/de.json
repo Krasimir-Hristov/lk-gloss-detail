@@ -307,7 +307,22 @@
 			"duration": "Geschätzte Dauer",
 			"carSize": "Fahrzeuggröße",
 			"summary": "Zusammenfassung",
-			"bookNow": "Termin buchen"
+			"bookNow": "Termin buchen",
+			"carSizes": {
+				"small": "Klein",
+				"medium": "Mittel",
+				"large": "Groß",
+				"suv": "SUV"
+			}
+		},
+		"report": {
+			"title": "Analysebericht",
+			"vehicle": "Ihr Fahrzeug",
+			"aiDiagnostics": "KI-Diagnose",
+			"expertVerdict": "Expertenurteil",
+			"investment": "Investition",
+			"timeline": "Dauer",
+			"bookAppointment": "Termin buchen"
 		}
 	}
 }

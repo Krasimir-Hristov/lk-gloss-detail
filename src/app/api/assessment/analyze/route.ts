@@ -50,6 +50,8 @@ export async function POST(request: NextRequest) {
 			priceMax: result.priceMax,
 			durationHours: result.durationHours,
 			summaryText: result.summaryText,
+			diagnostics: result.diagnostics ?? [],
+			expertVerdict: result.expertVerdict ?? "",
 		});
 	} catch (err: unknown) {
 		const message = err instanceof Error ? err.message : "Internal Server Error";

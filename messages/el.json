@@ -307,7 +307,22 @@
 			"duration": "Εκτιμώμενη Διάρκεια",
 			"carSize": "Μέγεθος Οχήματος",
 			"summary": "Σύνοψη",
-			"bookNow": "Κλείστε Ραντεβού"
+			"bookNow": "Κλείστε Ραντεβού",
+			"carSizes": {
+				"small": "Μικρό",
+				"medium": "Μεσαίο",
+				"large": "Μεγάλο",
+				"suv": "SUV"
+			}
+		},
+		"report": {
+			"title": "Αναφορά Ανάλυσης",
+			"vehicle": "Το Όχημά σας",
+			"aiDiagnostics": "Διαγνωστικά AI",
+			"expertVerdict": "Γνώμη Ειδικού",
+			"investment": "Επένδυση",
+			"timeline": "Χρονοδιάγραμμα",
+			"bookAppointment": "Κλείστε Ραντεβού"
 		}
 	}
 }

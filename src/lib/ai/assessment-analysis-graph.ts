@@ -31,6 +31,15 @@ const AnalysisState = z.object({
 	priceMax: z.number().default(0),
 	durationHours: z.number().default(0),
 	summaryText: z.string().default(""),
+	diagnostics: z
+		.array(
+			z.object({
+				title: z.string(),
+				description: z.string(),
+			}),
+		)
+		.default([]),
+	expertVerdict: z.string().default(""),
 	error: z.string().nullable().default(null),
 });
 
@@ -163,17 +172,35 @@ const deterministicCalculator = async (
 
 // ── Node 4: generate_localized_summary ─────────────────────────────────────
 
-const SUMMARY_SYSTEM_PROMPT = `You are a friendly car detailing expert at LK Gloss & Detail, a mobile car detailing service in Germany.
-Generate a short, punchy summary (1-2 sentences) for the customer based on their car assessment results.
-Include the estimated price range and duration.
-Be enthusiastic and professional.
+const SUMMARY_SYSTEM_PROMPT = `You are a friendly, professional car detailing expert at LK Gloss & Detail, a mobile car detailing service in Germany.
+Generate a structured assessment report for the customer based on their car assessment results.
+
+You MUST respond with valid JSON in exactly this shape (no markdown, no code fences, just the raw JSON object):
+{
+  "summaryText": "A short, punchy 1-2 sentence CTA summary including the estimated price range and duration. Be enthusiastic.",
+  "diagnostics": [
+    { "title": "Short finding title (e.g., Heavy Swirls Detected)", "description": "1-2 sentence professional explanation of the finding and its impact" }
+  ],
+  "expertVerdict": "A 2-3 sentence professional verdict from the detailing expert, summarizing the car's condition and recommended action."
+}
+
+Generate 3-5 diagnostic findings relevant to the car's condition (car size, dirt level, and the accepted services).
 Respond in the language specified by the user's locale.`;
 
 const generateLocalizedSummary = async (
 	state: AnalysisStateType,
 ): Promise<Partial<AnalysisStateType>> => {
 	try {
-		const { carSize, dirtLevel, brand, priceMin, priceMax, durationHours, locale } = state;
+		const {
+			carSize,
+			dirtLevel,
+			brand,
+			priceMin,
+			priceMax,
+			durationHours,
+			servicesPricing,
+			locale,
+		} = state;
 
 		const localeNames: Record<string, string> = {
 			de: "German",
@@ -181,24 +208,64 @@ const generateLocalizedSummary = async (
 			el: "Greek",
 		};
 
+		const serviceNames = servicesPricing.map((s) => s.name).join(", ");
+
 		const messages = [
 			new SystemMessage(SUMMARY_SYSTEM_PROMPT),
 			new HumanMessage(
 				`Car: ${brand ?? "Unknown"} (${carSize ?? "medium"} size, ${dirtLevel ?? "moderate"} dirt level)
+Accepted services: ${serviceNames || "None"}
 Price estimate: €${priceMin} – €${priceMax}
 Duration: ~${durationHours} hours
 Language: ${localeNames[locale] ?? "German"}
 
-Generate a short CTA summary for the customer.`,
+Generate the structured assessment report as JSON.`,
 			),
 		];
 
 		const response = await summaryModel.invoke(messages);
-		const summaryText = (response.content as string).trim();
+		const rawContent = (response.content as string).trim();
 
-		console.log("[analysis-graph] Summary generated:", summaryText);
+		console.log("[analysis-graph] Raw LLM response:", rawContent);
 
-		return { summaryText };
+		// Parse the structured JSON from the LLM
+		let parsed: {
+			summaryText?: string;
+			diagnostics?: { title: string; description: string }[];
+			expertVerdict?: string;
+		};
+
+		try {
+			// Handle potential code fences
+			const jsonStr = rawContent
+				.replace(/```json\n?/gi, "")
+				.replace(/```\n?/g, "")
+				.trim();
+			parsed = JSON.parse(jsonStr);
+		} catch {
+			console.warn("[analysis-graph] Failed to parse structured JSON, using fallback");
+			parsed = {
+				summaryText: rawContent,
+				diagnostics: [],
+				expertVerdict: "",
+			};
+		}
+
+		const diagnostics = Array.isArray(parsed.diagnostics) ? parsed.diagnostics : [];
+		const expertVerdict = typeof parsed.expertVerdict === "string" ? parsed.expertVerdict : "";
+		const summaryText = typeof parsed.summaryText === "string" ? parsed.summaryText : rawContent;
+
+		console.log("[analysis-graph] Structured result:", {
+			summaryText: summaryText.slice(0, 80),
+			diagnosticsCount: diagnostics.length,
+			verdictLength: expertVerdict.length,
+		});
+
+		return {
+			summaryText,
+			diagnostics,
+			expertVerdict,
+		};
 	} catch (err) {
 		const message = err instanceof Error ? err.message : "Summary generation failed";
 		console.error("[analysis-graph] generate_localized_summary error:", message);
