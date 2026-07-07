@@ -177,14 +177,26 @@
 - [x] **Return Clean Payload**
   - [x] Return finalized schema: `{ car_size, dirty_level, brand, price_min, price_max, duration_hours_min, duration_hours_max, summary_text }`.
 
-### 6.4 Results Display & Booking Transition
+### 6.4 Results Display — AI Analysis Report
 
-- [x] **Render Results Page (`/assessment/results`)**
-  - [x] Display the structured JSON insights, count-up price animation, and localized AI text from state.
+- [x] **Design-Faithful Report Component**
+  - [x] Header with "Analysis Report" title, brand/vehicle info, and sparkle icon
+  - [x] AI Diagnostics section — 3-5 structured findings (title + description) from LLM
+  - [x] Expert Verdict section — styled quote box with purple accent
+  - [x] Investment card — price range €X – €Y with gradient background
+  - [x] Timeline card — estimated duration in hours
+  - [x] "Book Appointment" CTA button with gradient + hover glow effect
+- [x] **No Car Image Display** (explicitly excluded per design)
+- [x] **No PDF Export Button** (explicitly excluded per design)
 - [x] **Wipe Browser Memory**
   - [x] Purge the base64 images from the frontend Zustand store entirely upon mounting the results page to guarantee complete data destruction.
 - [x] **Data-Light Booking Link**
-  - [x] "Book Now" CTA routes to `/booking`, carrying only the non-sensitive configuration data (size, services, estimated prices) via URL params or state.
+  - [x] "Book Appointment" CTA routes to `/booking`.
+- [x] **Structured LLM Output**
+  - [x] Updated LangGraph `generate_localized_summary` node to produce JSON: `{ summaryText, diagnostics[], expertVerdict }`
+  - [x] Added `AssessmentDiagnostic` schema (title + description) to Zod validation
+  - [x] Added `diagnostics` and `expertVerdict` fields to `AssessmentResultSchema`
+- [x] **i18n** — Added `report.*` and `result.carSizes.*` keys to de/en/el messages
 
 ## PHASE 7 — Feature: Booking / Appointments (`/booking`)
 
