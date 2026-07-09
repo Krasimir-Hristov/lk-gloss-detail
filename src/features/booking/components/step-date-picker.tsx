@@ -12,7 +12,11 @@ export const StepDatePicker = () => {
 	const t = useTranslations("Booking.step3");
 	const { bookingDate, setDate, nextStep, prevStep } = useBookingStore();
 
-	const { data: unavailableDates = [], isLoading } = useQuery<string[]>({
+	const {
+		data: unavailableDates = [],
+		isLoading,
+		error: fetchError,
+	} = useQuery<string[]>({
 		queryKey: ["unavailable-dates"],
 		queryFn: async () => {
 			const res = await fetch("/api/booking/unavailable-dates");
@@ -36,6 +40,10 @@ export const StepDatePicker = () => {
 
 	if (isLoading) {
 		return <p className="text-white/70">{t("loading")}</p>;
+	}
+
+	if (fetchError) {
+		return <p className="text-red-400">{t("loadingError")}</p>;
 	}
 
 	return (

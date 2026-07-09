@@ -15,6 +15,10 @@ export const BookingServicesSchema = z.object({
 	selectedServiceIds: z.array(z.string().uuid()).min(1, "selectMinServices"),
 });
 
+export const PreselectedServicesSchema = z.object({
+	selectedServiceIds: z.array(z.string().uuid()),
+});
+
 export const BookingDateSchema = z.object({
 	bookingDate: z.string().regex(/^\d{4}-\d{2}-\d{2}$/, "invalidDate"),
 });

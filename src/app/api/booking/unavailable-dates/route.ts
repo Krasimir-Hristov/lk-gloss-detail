@@ -1,4 +1,3 @@
-import { format } from "date-fns";
 import { NextResponse } from "next/server";
 
 import { createClient } from "@/lib/supabase/server";
@@ -6,16 +5,15 @@ import { createClient } from "@/lib/supabase/server";
 export const GET = async () => {
 	try {
 		const supabase = await createClient();
+		const today = new Date().toISOString().slice(0, 10);
 
 		const [{ data: appointments }, { data: blockedDates }] = await Promise.all([
-			supabase.from("appointments").select("booking_date"),
-			supabase.from("blocked_dates").select("blocked_date"),
+			supabase.from("appointments").select("booking_date").gte("booking_date", today),
+			supabase.from("blocked_dates").select("blocked_date").gte("blocked_date", today),
 		]);
 
-		const appointmentDates = (appointments ?? []).map((a) =>
-			format(new Date(a.booking_date), "yyyy-MM-dd"),
-		);
-		const blocked = (blockedDates ?? []).map((b) => format(new Date(b.blocked_date), "yyyy-MM-dd"));
+		const appointmentDates = (appointments ?? []).map((a) => a.booking_date as string);
+		const blocked = (blockedDates ?? []).map((b) => b.blocked_date as string);
 
 		const unavailableDates = Array.from(new Set([...appointmentDates, ...blocked]));
 

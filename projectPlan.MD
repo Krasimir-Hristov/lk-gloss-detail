@@ -261,7 +261,7 @@
 
 - [x] Step 4 — Summary & Submit:
   - Review all data
-  - Button "Termin verbindlich buchen" → POST to `/api/booking/create`
+  - Button "Termin verbindlich buchen" → calls `createBooking` Server Action
 
 ### 7.3 Backend Logic (Next.js API)
 
@@ -458,13 +458,14 @@ Phase 0 → Phase 1 → Phase 2 → Phase 3
                     Phase 5 (Services needs: 1.2, 2)
                     Phase 6 (Assessment needs: 1.2, 1.3, 1.4, 5)
                     Phase 7 (Booking needs: 1.2, 6)
-                    Phase 8 (Chatbot needs: 1.3)
-                    Phase 9 (Gallery needs: 1.4)
-                    Phase 10 (Contact needs: 1.2)
-                    Phase 11 (Impressum needs: 2, 3)
-                    Phase 12 (Admin needs: ALL above)
-                              ↓
-                    Phase 13 → Phase 14 → Phase 15
+                     Phase 8 (Chatbot needs: 1.3)
+                     Phase 9 (Contact needs: 1.2)
+                     Phase 10 (Impressum needs: 2, 3)
+                     Phase 11 (Admin needs: ALL above)
+                               ↓
+                     Phase 12 (SEO needs: ALL above)
+                               ↓
+                     Phase 13 → Phase 14
 ```
 
 ---

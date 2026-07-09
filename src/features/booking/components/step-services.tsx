@@ -58,7 +58,11 @@ export const StepServices = () => {
 					<div
 						key={service.id}
 						className="flex cursor-pointer items-start gap-3 rounded-xl border border-white/10 bg-[#201f1f] p-4 transition-colors hover:border-[#7b2dff]/30"
-						onClick={() => toggleService(service.id)}
+						onClick={(e) => {
+							// Only toggle from the wrapper click, not from Checkbox events
+							if ((e.target as HTMLElement).closest("[data-slot=checkbox]")) return;
+							toggleService(service.id);
+						}}
 						onKeyDown={(e) => {
 							if (e.key === "Enter" || e.key === " ") {
 								e.preventDefault();

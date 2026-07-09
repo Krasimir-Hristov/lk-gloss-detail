@@ -6,8 +6,13 @@ import type { Metadata } from "next";
 
 type Params = { locale: string };
 
-export const generateMetadata = async ({ params }: { params: Params }): Promise<Metadata> => {
-	const t = await getTranslations({ locale: params.locale, namespace: "Booking" });
+export const generateMetadata = async ({
+	params,
+}: {
+	params: Promise<Params>;
+}): Promise<Metadata> => {
+	const { locale } = await params;
+	const t = await getTranslations({ locale, namespace: "Booking" });
 
 	return {
 		title: t("title"),

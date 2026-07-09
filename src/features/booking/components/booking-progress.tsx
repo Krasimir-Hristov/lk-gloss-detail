@@ -21,7 +21,7 @@ export const BookingProgress = ({ currentStep }: BookingProgressProps) => {
 				const isCompleted = stepNumber < currentStep;
 
 				return (
-					<div key={stepNumber} className="flex flex-1 flex-col items-center gap-2">
+					<div key={stepNumber} className="relative flex flex-1 flex-col items-center gap-2">
 						<div
 							className={cn(
 								"flex h-10 w-10 items-center justify-center rounded-full border-2 font-bold transition-colors",

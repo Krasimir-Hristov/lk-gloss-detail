@@ -5,6 +5,7 @@ import { format, parseISO } from "date-fns";
 import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
 
+import { createBooking } from "@/actions/booking";
 import { Button } from "@/components/ui/button";
 import { useBookingStore } from "@/features/booking/stores/booking-store";
 
@@ -27,7 +28,9 @@ export const StepSummary = () => {
 		isSubmitting,
 		setIsSubmitting,
 		setSubmitError,
+		submitError,
 		reset,
+		prevStep,
 	} = useBookingStore();
 
 	const { data: services = [] } = useQuery<Service[]>({
@@ -45,41 +48,24 @@ export const StepSummary = () => {
 		setIsSubmitting(true);
 		setSubmitError(null);
 
-		try {
-			const res = await fetch("/api/booking/create", {
-				method: "POST",
-				headers: { "Content-Type": "application/json" },
-				body: JSON.stringify({
-					firstName,
-					lastName,
-					email,
-					phone,
-					carDescription,
-					selectedServiceIds,
-					bookingDate,
-				}),
-			});
+		const result = await createBooking({
+			firstName,
+			lastName,
+			email,
+			phone,
+			carDescription,
+			selectedServiceIds,
+			bookingDate,
+		});
 
-			if (res.status === 409) {
-				setSubmitError("dateTaken");
-				setIsSubmitting(false);
-				return;
-			}
-
-			if (!res.ok) {
-				setSubmitError("generic");
-				setIsSubmitting(false);
-				return;
-			}
-
-			reset();
-			router.push(
-				`/booking/success?email=${encodeURIComponent(email)}&phone=${encodeURIComponent(phone)}`,
-			);
-		} catch {
-			setSubmitError("generic");
+		if (!result.success) {
+			setSubmitError(result.error === "DATE_TAKEN" ? "dateTaken" : "generic");
 			setIsSubmitting(false);
+			return;
 		}
+
+		reset();
+		router.push(`/booking/success?id=${result.appointmentId}`);
 	};
 
 	return (
@@ -123,17 +109,13 @@ export const StepSummary = () => {
 				</p>
 			</div>
 
-			{useBookingStore.getState().submitError ? (
-				<p className="text-center text-sm text-red-400">
-					{t(useBookingStore.getState().submitError as string)}
-				</p>
-			) : null}
+			{submitError ? <p className="text-center text-sm text-red-400">{t(submitError)}</p> : null}
 
 			<div className="flex gap-3">
 				<Button
 					type="button"
 					variant="outline"
-					onClick={() => useBookingStore.getState().prevStep()}
+					onClick={prevStep}
 					disabled={isSubmitting}
 					className="flex-1 border-white/20 bg-transparent py-6 text-white hover:bg-white/10"
 				>

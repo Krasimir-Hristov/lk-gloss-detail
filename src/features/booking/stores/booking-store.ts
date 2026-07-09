@@ -6,6 +6,7 @@ import {
 	BookingClientInfoSchema,
 	BookingDateSchema,
 	BookingServicesSchema,
+	PreselectedServicesSchema,
 } from "@/features/booking/schemas/booking.schema";
 
 import type {
@@ -70,6 +71,8 @@ export const useBookingStore = create<BookingState & BookingActions>()((set, get
 		const parsed = BookingClientInfoSchema.safeParse(data);
 		if (parsed.success) {
 			set({ ...parsed.data });
+		} else {
+			console.error("[booking-store] setClientInfo validation failed:", parsed.error.issues);
 		}
 	},
 
@@ -77,6 +80,8 @@ export const useBookingStore = create<BookingState & BookingActions>()((set, get
 		const parsed = BookingServicesSchema.safeParse(data);
 		if (parsed.success) {
 			set({ ...parsed.data });
+		} else {
+			console.error("[booking-store] setServices validation failed:", parsed.error.issues);
 		}
 	},
 
@@ -84,11 +89,23 @@ export const useBookingStore = create<BookingState & BookingActions>()((set, get
 		const parsed = BookingDateSchema.safeParse(data);
 		if (parsed.success) {
 			set({ ...parsed.data });
+		} else {
+			console.error("[booking-store] setDate validation failed:", parsed.error.issues);
 		}
 	},
 
 	setPreselectedServices: (serviceIds) => {
-		set({ selectedServiceIds: serviceIds });
+		const parsed = PreselectedServicesSchema.safeParse({
+			selectedServiceIds: serviceIds,
+		});
+		if (parsed.success) {
+			set({ selectedServiceIds: parsed.data.selectedServiceIds });
+		} else {
+			console.error(
+				"[booking-store] setPreselectedServices validation failed:",
+				parsed.error.issues,
+			);
+		}
 	},
 
 	setIsSubmitting: (isSubmitting) => set({ isSubmitting }),

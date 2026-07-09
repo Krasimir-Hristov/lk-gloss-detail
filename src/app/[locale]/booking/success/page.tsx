@@ -3,18 +3,34 @@ import Link from "next/link";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 
 import { Button } from "@/components/ui/button";
+import { createServiceClient } from "@/lib/supabase/service";
 
 import type { Metadata } from "next";
 
 type Params = { locale: string };
-type SearchParams = { email?: string; phone?: string };
+type SearchParams = { id?: string };
 
-export const generateMetadata = async ({ params }: { params: Params }): Promise<Metadata> => {
-	const t = await getTranslations({ locale: params.locale, namespace: "Booking.success" });
+export const generateMetadata = async ({
+	params,
+}: {
+	params: Promise<Params>;
+}): Promise<Metadata> => {
+	const { locale } = await params;
+	const t = await getTranslations({ locale, namespace: "Booking.success" });
 
 	return {
 		title: t("title"),
 	};
+};
+
+const getAppointmentContact = async (id: string) => {
+	const supabase = createServiceClient();
+	const { data } = await supabase
+		.from("appointments")
+		.select("email, phone")
+		.eq("id", id)
+		.single<{ email: string; phone: string }>();
+	return data;
 };
 
 const BookingSuccessPage = async ({
@@ -25,10 +41,20 @@ const BookingSuccessPage = async ({
 	searchParams: Promise<SearchParams>;
 }) => {
 	const { locale } = await params;
-	const { email = "", phone = "" } = await searchParams;
+	const { id } = await searchParams;
 	setRequestLocale(locale);
 
 	const t = await getTranslations({ locale, namespace: "Booking" });
+
+	let email = "";
+	let phone = "";
+	if (id) {
+		const contact = await getAppointmentContact(id);
+		if (contact) {
+			email = contact.email ?? "";
+			phone = contact.phone ?? "";
+		}
+	}
 
 	return (
 		<section className="flex min-h-screen items-center justify-center bg-[#121212] px-4 py-12">
