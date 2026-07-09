@@ -205,7 +205,9 @@
 			"date": "Appointment",
 			"submit": "Book Appointment",
 			"submitting": "Booking...",
-			"back": "Back"
+			"back": "Back",
+			"dateTaken": "This appointment has just been taken. Please choose another date.",
+			"generic": "An error occurred. Please try again."
 		},
 		"success": {
 			"title": "Appointment Booked Successfully!",

@@ -5,16 +5,20 @@ let serviceClient: ReturnType<typeof createClient> | null = null;
 export const createServiceClient = () => {
 	if (serviceClient) return serviceClient;
 
-	serviceClient = createClient(
-		process.env.NEXT_PUBLIC_SUPABASE_URL!,
-		process.env.SUPABASE_SERVICE_ROLE_KEY!,
-		{
-			auth: {
-				autoRefreshToken: false,
-				persistSession: false,
-			},
+	const serviceRoleKey = process.env.SUPABASE_SECRET_KEY;
+	if (!process.env.NEXT_PUBLIC_SUPABASE_URL) {
+		throw new Error("NEXT_PUBLIC_SUPABASE_URL is required.");
+	}
+	if (!serviceRoleKey) {
+		throw new Error("SUPABASE_SECRET_KEY (service role) is required.");
+	}
+
+	serviceClient = createClient(process.env.NEXT_PUBLIC_SUPABASE_URL, serviceRoleKey, {
+		auth: {
+			autoRefreshToken: false,
+			persistSession: false,
 		},
-	);
+	});
 
 	return serviceClient;
 };

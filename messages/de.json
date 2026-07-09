@@ -205,7 +205,9 @@
 			"date": "Termin",
 			"submit": "Termin verbindlich buchen",
 			"submitting": "Wird gebucht...",
-			"back": "Zurück"
+			"back": "Zurück",
+			"dateTaken": "Dieser Termin wurde leider gerade vergeben. Bitte wählen Sie ein anderes Datum.",
+			"generic": "Ein Fehler ist aufgetreten. Bitte versuchen Sie es erneut."
 		},
 		"success": {
 			"title": "Termin erfolgreich gebucht!",

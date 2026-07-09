@@ -1,9 +1,8 @@
 "use client";
 
 import { useQuery } from "@tanstack/react-query";
-import { format, parseISO } from "date-fns";
 import { useRouter } from "next/navigation";
-import { useTranslations } from "next-intl";
+import { useFormatter, useTranslations } from "next-intl";
 
 import { createBooking } from "@/actions/booking";
 import { Button } from "@/components/ui/button";
@@ -16,6 +15,7 @@ type Service = {
 
 export const StepSummary = () => {
 	const t = useTranslations("Booking.step4");
+	const format = useFormatter();
 	const router = useRouter();
 	const {
 		firstName,
@@ -48,24 +48,29 @@ export const StepSummary = () => {
 		setIsSubmitting(true);
 		setSubmitError(null);
 
-		const result = await createBooking({
-			firstName,
-			lastName,
-			email,
-			phone,
-			carDescription,
-			selectedServiceIds,
-			bookingDate,
-		});
+		try {
+			const result = await createBooking({
+				firstName,
+				lastName,
+				email,
+				phone,
+				carDescription,
+				selectedServiceIds,
+				bookingDate,
+			});
 
-		if (!result.success) {
-			setSubmitError(result.error === "DATE_TAKEN" ? "dateTaken" : "generic");
+			if (!result.success) {
+				setSubmitError(result.error === "DATE_TAKEN" ? "dateTaken" : "generic");
+				return;
+			}
+
+			reset();
+			router.push(`/booking/success?id=${result.appointmentId}`);
+		} catch {
+			setSubmitError("generic");
+		} finally {
 			setIsSubmitting(false);
-			return;
 		}
-
-		reset();
-		router.push(`/booking/success?id=${result.appointmentId}`);
 	};
 
 	return (
@@ -105,7 +110,13 @@ export const StepSummary = () => {
 			<div className="rounded-xl border border-white/10 bg-[#201f1f] p-5">
 				<h3 className="mb-4 text-lg font-semibold text-white">{t("date")}</h3>
 				<p className="text-sm text-white/80">
-					{bookingDate ? format(parseISO(bookingDate), "dd.MM.yyyy") : "-"}
+					{bookingDate
+						? format.dateTime(new Date(bookingDate), {
+								day: "2-digit",
+								month: "2-digit",
+								year: "numeric",
+							})
+						: "-"}
 				</p>
 			</div>
 

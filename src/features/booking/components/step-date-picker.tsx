@@ -4,6 +4,7 @@ import { useQuery } from "@tanstack/react-query";
 import { format, parseISO } from "date-fns";
 import { useTranslations } from "next-intl";
 
+import { getUnavailableDates } from "@/actions/booking";
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
 import { useBookingStore } from "@/features/booking/stores/booking-store";
@@ -18,11 +19,7 @@ export const StepDatePicker = () => {
 		error: fetchError,
 	} = useQuery<string[]>({
 		queryKey: ["unavailable-dates"],
-		queryFn: async () => {
-			const res = await fetch("/api/booking/unavailable-dates");
-			if (!res.ok) throw new Error("Failed to fetch unavailable dates");
-			return res.json();
-		},
+		queryFn: getUnavailableDates,
 	});
 
 	const selectedDate = bookingDate ? parseISO(bookingDate) : undefined;

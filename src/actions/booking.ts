@@ -2,16 +2,16 @@
 
 import { z } from "zod";
 
-import { createClient } from "@/lib/supabase/server";
+import { createServiceClient } from "@/lib/supabase/service";
 
 const CreateBookingSchema = z.object({
 	firstName: z.string().min(1),
 	lastName: z.string().min(1),
-	email: z.string().email(),
+	email: z.email(),
 	phone: z.string().min(6),
 	carDescription: z.string().optional(),
-	selectedServiceIds: z.array(z.string().uuid()).min(1),
-	bookingDate: z.string().regex(/^\d{4}-\d{2}-\d{2}$/),
+	selectedServiceIds: z.array(z.uuid()).min(1),
+	bookingDate: z.iso.date(),
 });
 
 type BookingResult =
@@ -23,76 +23,53 @@ export const createBooking = async (
 ): Promise<BookingResult> => {
 	const parsed = CreateBookingSchema.safeParse(data);
 	if (!parsed.success) {
-		console.error("[booking/create] Validation error:", parsed.error.issues);
+		console.error(
+			"[booking/create] Validation error:",
+			parsed.error.issues.map(({ code, path }) => ({ code, path })),
+		);
 		return { success: false, error: "INVALID_DATA" };
 	}
 
 	const { firstName, lastName, email, phone, carDescription, selectedServiceIds, bookingDate } =
 		parsed.data;
 
-	const supabase = await createClient();
+	const supabase = createServiceClient();
 
-	// Pre-check date availability
-	const [
-		{ data: existingAppointments, error: existingError },
-		{ data: blockedDates, error: blockedError },
-	] = await Promise.all([
-		supabase.from("appointments").select("id").eq("booking_date", bookingDate),
-		supabase.from("blocked_dates").select("id").eq("blocked_date", bookingDate),
-	]);
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
+	const { data: appointmentId, error } = await (supabase.rpc as any)("create_booking", {
+		p_first_name: firstName,
+		p_last_name: lastName,
+		p_email: email,
+		p_phone: phone,
+		p_car_description: carDescription ?? null,
+		p_booking_date: bookingDate,
+		p_service_ids: selectedServiceIds,
+	});
 
-	if (existingError) {
-		console.error("[booking/create] Existing appointments query error:", existingError.message);
-		return { success: false, error: "INTERNAL_ERROR" };
-	}
-	if (blockedError) {
-		console.error("[booking/create] Blocked dates query error:", blockedError.message);
-		return { success: false, error: "INTERNAL_ERROR" };
-	}
-
-	if ((existingAppointments ?? []).length > 0 || (blockedDates ?? []).length > 0) {
-		return { success: false, error: "DATE_TAKEN" };
-	}
-
-	// Insert appointment
-	const { data: appointment, error: appointmentError } = await supabase
-		.from("appointments")
-		.insert({
-			first_name: firstName,
-			last_name: lastName,
-			email,
-			phone,
-			car_description: carDescription,
-			booking_date: bookingDate,
-			status: "confirmed",
-		})
-		.select("id")
-		.single();
-
-	if (appointmentError) {
-		if (appointmentError.code === "23505") {
+	if (error) {
+		if (error.message === "DATE_TAKEN") {
 			return { success: false, error: "DATE_TAKEN" };
 		}
-		console.error("[booking/create] Appointment insert error:", appointmentError.message);
+		console.error("[booking/create] RPC error:", error.message);
 		return { success: false, error: "INTERNAL_ERROR" };
 	}
 
-	// Insert junction records
-	const junctionRecords = selectedServiceIds.map((serviceId) => ({
-		appointment_id: appointment.id,
-		service_id: serviceId,
-	}));
+	return { success: true, appointmentId: appointmentId as string };
+};
 
-	const { error: junctionError } = await supabase
-		.from("appointment_services")
-		.insert(junctionRecords);
+export const getUnavailableDates = async (): Promise<string[]> => {
+	const supabase = createServiceClient();
+	const today = new Date().toISOString().slice(0, 10);
 
-	if (junctionError) {
-		// Cleanup orphaned appointment
-		await supabase.from("appointments").delete().eq("id", appointment.id);
-		console.error("[booking/create] Junction insert error:", junctionError.message);
-		return { success: false, error: "INTERNAL_ERROR" };
-	}
+	const [{ data: appointments }, { data: blockedDates }] = await Promise.all([
+		supabase.from("appointments").select("booking_date").gte("booking_date", today),
+		supabase.from("blocked_dates").select("blocked_date").gte("blocked_date", today),
+	]);
 
-	return { success: true, appointmentId: appointment.id };
+	const appointmentDates = ((appointments ?? []) as { booking_date: string }[]).map(
+		(a) => a.booking_date,
+	);
+	const blocked = ((blockedDates ?? []) as { blocked_date: string }[]).map((b) => b.blocked_date);
+
+	return Array.from(new Set([...appointmentDates, ...blocked]));
 };
