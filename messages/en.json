@@ -156,21 +156,67 @@
 	},
 	"Booking": {
 		"title": "Book Appointment",
-		"steps": {
-			"info": "Your Details",
-			"date": "Choose Date",
-			"time": "Choose Time",
-			"confirm": "Confirmation"
+		"subtitle": "Choose your services and preferred date",
+		"progress": {
+			"step1": "Your Details",
+			"step2": "Services",
+			"step3": "Date",
+			"step4": "Confirmation"
 		},
-		"form": {
+		"step1": {
+			"title": "Your Contact Details",
+			"firstName": "First Name",
+			"lastName": "Last Name",
+			"email": "Email",
+			"phone": "Phone",
+			"carDescription": "Vehicle Description",
+			"carDescriptionHint": "What should be done? (optional)",
+			"gdpr": "I agree to the privacy policy and terms of service",
+			"firstNameRequired": "Please enter your first name",
+			"lastNameRequired": "Please enter your last name",
+			"invalidEmail": "Please enter a valid email address",
+			"invalidPhone": "Please enter a valid phone number",
+			"gdprRequired": "Please agree to the privacy policy",
+			"next": "Next"
+		},
+		"step2": {
+			"title": "Desired Services",
+			"loading": "Loading services...",
+			"loadingError": "Failed to load services",
+			"selectMin": "Please select at least one service",
+			"back": "Back",
+			"next": "Next"
+		},
+		"step3": {
+			"title": "Choose Date",
+			"loading": "Loading available dates...",
+			"selected": "Selected Date",
+			"back": "Back",
+			"next": "Next"
+		},
+		"step4": {
+			"title": "Summary",
+			"yourData": "Your Details",
 			"name": "Name",
 			"email": "Email",
 			"phone": "Phone",
-			"submit": "Confirm Booking"
+			"carDescription": "Vehicle Description",
+			"selectedServices": "Selected Services",
+			"date": "Appointment",
+			"submit": "Book Appointment",
+			"submitting": "Booking...",
+			"back": "Back"
 		},
-		"confirmation": {
-			"title": "Booking Confirmed!",
-			"message": "We have received your booking. You will receive a confirmation email shortly."
+		"success": {
+			"title": "Appointment Booked Successfully!",
+			"message": "We will contact you shortly.",
+			"contactEmail": "by email at {email}",
+			"contactPhone": "or by phone at {phone}",
+			"backHome": "Back to Home"
+		},
+		"error": {
+			"dateTaken": "This appointment has just been taken. Please choose another date.",
+			"generic": "An error occurred. Please try again."
 		}
 	},
 	"Gallery": {
