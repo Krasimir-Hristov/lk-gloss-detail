@@ -5,6 +5,8 @@ import { Euro, Clock, ShieldCheck, Sparkles, MessageSquareQuote, ArrowRight } fr
 import Link from "next/link";
 import { useTranslations, useFormatter } from "next-intl";
 
+import { useAssessmentStore } from "@/features/assessment/stores/assessment-store";
+
 import type { AssessmentResult } from "@/features/assessment/schemas/assessment.schema";
 
 type AssessmentReportProps = {
@@ -14,6 +16,7 @@ type AssessmentReportProps = {
 export const AssessmentReport = ({ result }: AssessmentReportProps) => {
 	const t = useTranslations("Assessment");
 	const format = useFormatter();
+	const { services } = useAssessmentStore();
 
 	const {
 		priceMin,
@@ -25,6 +28,12 @@ export const AssessmentReport = ({ result }: AssessmentReportProps) => {
 		diagnostics,
 		expertVerdict,
 	} = result;
+
+	const acceptedServiceIds = services.filter((s) => s.accepted).map((s) => s.serviceId);
+	const bookingHref =
+		acceptedServiceIds.length > 0
+			? `/booking?services=${acceptedServiceIds.join(",")}`
+			: "/booking";
 
 	const carSizeLabel: Record<AssessmentResult["carSize"], string> = {
 		small: t("result.carSizes.small"),
@@ -141,7 +150,7 @@ export const AssessmentReport = ({ result }: AssessmentReportProps) => {
 
 			{/* ── Book Appointment CTA ────────────────────────────── */}
 			<Link
-				href="/booking"
+				href={bookingHref}
 				className="group flex w-full items-center justify-center gap-2 rounded-xl bg-linear-to-r from-[#7b2dff] to-[#b303f2] px-8 py-4 text-lg font-bold text-white transition-all hover:scale-[1.02] hover:shadow-[0_0_30px_rgba(123,45,255,0.5)]"
 			>
 				{t("report.bookAppointment")}

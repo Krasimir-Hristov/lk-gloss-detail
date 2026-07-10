@@ -156,21 +156,69 @@
 	},
 	"Booking": {
 		"title": "Termin buchen",
-		"steps": {
-			"info": "Ihre Daten",
-			"date": "Datum wählen",
-			"time": "Uhrzeit wählen",
-			"confirm": "Bestätigung"
+		"subtitle": "Wählen Sie Ihre Leistungen und Ihren Wunschtermin",
+		"progress": {
+			"step1": "Ihre Daten",
+			"step2": "Leistungen",
+			"step3": "Datum",
+			"step4": "Bestätigung"
 		},
-		"form": {
+		"step1": {
+			"title": "Ihre Kontaktdaten",
+			"firstName": "Vorname",
+			"lastName": "Nachname",
+			"email": "E-Mail",
+			"phone": "Telefon",
+			"carDescription": "Beschreibung Ihres Fahrzeugs",
+			"carDescriptionHint": "Was soll gemacht werden? (freiwillig)",
+			"gdpr": "Ich stimme den Datenschutzbestimmungen und AGB zu",
+			"firstNameRequired": "Bitte geben Sie Ihren Vornamen ein",
+			"lastNameRequired": "Bitte geben Sie Ihren Nachnamen ein",
+			"invalidEmail": "Bitte geben Sie eine gültige E-Mail-Adresse ein",
+			"invalidPhone": "Bitte geben Sie eine gültige Telefonnummer ein",
+			"gdprRequired": "Bitte stimmen Sie den Datenschutzbestimmungen zu",
+			"next": "Weiter"
+		},
+		"step2": {
+			"title": "Gewünschte Leistungen",
+			"loading": "Leistungen werden geladen...",
+			"loadingError": "Fehler beim Laden der Leistungen",
+			"selectMin": "Bitte wählen Sie mindestens eine Leistung",
+			"back": "Zurück",
+			"next": "Weiter"
+		},
+		"step3": {
+			"title": "Datum wählen",
+			"loading": "Verfügbare Termine werden geladen...",
+			"selected": "Gewählter Termin",
+			"back": "Zurück",
+			"next": "Weiter"
+		},
+		"step4": {
+			"title": "Übersicht",
+			"yourData": "Ihre Daten",
 			"name": "Name",
 			"email": "E-Mail",
 			"phone": "Telefon",
-			"submit": "Termin bestätigen"
+			"carDescription": "Fahrzeugbeschreibung",
+			"selectedServices": "Ausgewählte Leistungen",
+			"date": "Termin",
+			"submit": "Termin verbindlich buchen",
+			"submitting": "Wird gebucht...",
+			"back": "Zurück",
+			"dateTaken": "Dieser Termin wurde leider gerade vergeben. Bitte wählen Sie ein anderes Datum.",
+			"generic": "Ein Fehler ist aufgetreten. Bitte versuchen Sie es erneut."
 		},
-		"confirmation": {
-			"title": "Termin bestätigt!",
-			"message": "Wir haben Ihre Buchung erhalten. Sie erhalten in Kürze eine Bestätigungs-E-Mail."
+		"success": {
+			"title": "Termin erfolgreich gebucht!",
+			"message": "Wir werden uns in Kürze bei Ihnen melden.",
+			"contactEmail": "per E-Mail an {email}",
+			"contactPhone": "oder telefonisch unter {phone}",
+			"backHome": "Zurück zur Startseite"
+		},
+		"error": {
+			"dateTaken": "Dieser Termin wurde leider gerade vergeben. Bitte wählen Sie ein anderes Datum.",
+			"generic": "Ein Fehler ist aufgetreten. Bitte versuchen Sie es erneut."
 		}
 	},
 	"Gallery": {
