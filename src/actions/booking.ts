@@ -61,10 +61,28 @@ export const getUnavailableDates = async (): Promise<string[]> => {
 	const supabase = createServiceClient();
 	const today = new Date().toISOString().slice(0, 10);
 
-	const [{ data: appointments }, { data: blockedDates }] = await Promise.all([
+	const [
+		{ data: appointments, error: appointmentsError },
+		{ data: blockedDates, error: blockedDatesError },
+	] = await Promise.all([
 		supabase.from("appointments").select("booking_date").gte("booking_date", today),
 		supabase.from("blocked_dates").select("blocked_date").gte("blocked_date", today),
 	]);
+
+	if (appointmentsError) {
+		console.error(
+			"[booking/unavailable-dates] Appointments query error:",
+			appointmentsError.message,
+		);
+		throw new Error("Failed to fetch unavailable dates");
+	}
+	if (blockedDatesError) {
+		console.error(
+			"[booking/unavailable-dates] Blocked dates query error:",
+			blockedDatesError.message,
+		);
+		throw new Error("Failed to fetch unavailable dates");
+	}
 
 	const appointmentDates = ((appointments ?? []) as { booking_date: string }[]).map(
 		(a) => a.booking_date,
