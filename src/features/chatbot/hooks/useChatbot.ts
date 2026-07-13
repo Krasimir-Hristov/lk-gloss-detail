@@ -1,6 +1,10 @@
 import { create } from "zustand";
 
-import { createMessage, type ChatMessage } from "../schemas/chatbot";
+import {
+	ChatMessageSchema,
+	createMessage,
+	type ChatMessage,
+} from "@/features/chatbot/schemas/chatbot";
 
 interface ChatbotState {
 	isOpen: boolean;
@@ -21,10 +25,9 @@ export const useChatbot = create<ChatbotState>((set) => ({
 	toggleOpen: () =>
 		set((state) => ({
 			isOpen: !state.isOpen,
-			// Initialize with greeting if opening for the first time
 			messages:
 				state.messages.length === 0 && !state.isOpen
-					? [createMessage("assistant", "")]
+					? [createMessage("assistant", "", { isGreeting: true })]
 					: state.messages,
 		})),
 
@@ -32,7 +35,7 @@ export const useChatbot = create<ChatbotState>((set) => ({
 
 	addMessage: (msg) =>
 		set((state) => ({
-			messages: [...state.messages, msg],
+			messages: [...state.messages, ChatMessageSchema.parse(msg)],
 		})),
 
 	setLoading: (loading) => set({ isLoading: loading }),

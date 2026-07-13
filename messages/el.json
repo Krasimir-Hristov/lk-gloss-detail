@@ -274,7 +274,10 @@
 		"botName": "Lulezim Kodhimaj AI",
 		"online": "Online",
 		"close": "Κλείσιμο",
-		"send": "Αποστολή"
+		"send": "Αποστολή",
+		"typing": "Πληκτρολογεί...",
+		"openChat": "Άνοιγμα συνομιλίας",
+		"closeChat": "Κλείσιμο συνομιλίας"
 	},
 	"Impressum": {
 		"title": "Νομικά"

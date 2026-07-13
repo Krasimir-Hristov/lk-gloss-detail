@@ -2,11 +2,13 @@
 
 import { motion } from "framer-motion";
 import { MessageCircle, X } from "lucide-react";
+import { useTranslations } from "next-intl";
 
-import { ChatbotDrawer } from "./ChatbotDrawer";
-import { useChatbot } from "../hooks/useChatbot";
+import { ChatbotDrawer } from "@/features/chatbot/components/ChatbotDrawer";
+import { useChatbot } from "@/features/chatbot/hooks/useChatbot";
 
 export const ChatbotWidget = () => {
+	const t = useTranslations("Chatbot");
 	const { isOpen, toggleOpen } = useChatbot();
 
 	return (
@@ -32,7 +34,7 @@ export const ChatbotWidget = () => {
 						ease: "easeInOut",
 					},
 				}}
-				aria-label={isOpen ? "Close chat" : "Open chat"}
+				aria-label={isOpen ? t("closeChat") : t("openChat")}
 			>
 				{isOpen ? <X className="h-6 w-6" /> : <MessageCircle className="h-6 w-6" />}
 			</motion.button>

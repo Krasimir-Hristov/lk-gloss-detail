@@ -274,7 +274,10 @@
 		"botName": "Lulezim Kodhimaj AI",
 		"online": "Online",
 		"close": "Close",
-		"send": "Send"
+		"send": "Send",
+		"typing": "Typing...",
+		"openChat": "Open chat",
+		"closeChat": "Close chat"
 	},
 	"Impressum": {
 		"title": "Impressum"

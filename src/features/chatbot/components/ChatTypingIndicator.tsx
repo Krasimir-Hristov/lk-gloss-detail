@@ -15,7 +15,7 @@ export const ChatTypingIndicator = () => {
 	const t = useTranslations("Chatbot");
 
 	return (
-		<div className="flex items-start gap-3">
+		<div className="flex items-start gap-3" aria-label={t("typing")}>
 			{/* Avatar */}
 			<div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-[#7b2dff]/20">
 				<Bot className="h-4 w-4 text-[#d1bcff]" />

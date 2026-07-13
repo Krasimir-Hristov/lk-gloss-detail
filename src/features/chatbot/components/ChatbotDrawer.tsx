@@ -3,21 +3,38 @@
 import { motion, AnimatePresence } from "framer-motion";
 import { Bot, X } from "lucide-react";
 import { useTranslations } from "next-intl";
+import { useRef, useEffect, useCallback } from "react";
 
-import { ChatInput } from "./ChatInput";
-import { ChatMessageList } from "./ChatMessageList";
-import { useChatbot } from "../hooks/useChatbot";
-import { createMessage } from "../schemas/chatbot";
+import { ChatInput } from "@/features/chatbot/components/ChatInput";
+import { ChatMessageList } from "@/features/chatbot/components/ChatMessageList";
+import { useChatbot } from "@/features/chatbot/hooks/useChatbot";
+import { createMessage } from "@/features/chatbot/schemas/chatbot";
 
 export const ChatbotDrawer = () => {
 	const t = useTranslations("Chatbot");
 	const { isOpen, closeDrawer, addMessage, isLoading, setLoading } = useChatbot();
+	const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+	const clearPendingTimeout = useCallback(() => {
+		if (timeoutRef.current !== null) {
+			clearTimeout(timeoutRef.current);
+			timeoutRef.current = null;
+		}
+	}, []);
+
+	useEffect(() => {
+		return () => {
+			clearPendingTimeout();
+		};
+	}, [clearPendingTimeout]);
 
 	const handleSend = (content: string) => {
 		addMessage(createMessage("user", content));
-		// Placeholder: in Phase 8.2 this will call the API
 		setLoading(true);
-		setTimeout(() => {
+
+		clearPendingTimeout();
+		timeoutRef.current = setTimeout(() => {
+			timeoutRef.current = null;
 			addMessage(createMessage("assistant", t("greeting")));
 			setLoading(false);
 		}, 1500);

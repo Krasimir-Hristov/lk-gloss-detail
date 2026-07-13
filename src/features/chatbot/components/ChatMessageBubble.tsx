@@ -3,7 +3,7 @@
 import { Bot, User } from "lucide-react";
 import { useTranslations } from "next-intl";
 
-import type { ChatMessage } from "../schemas/chatbot";
+import type { ChatMessage } from "@/features/chatbot/schemas/chatbot";
 
 type ChatMessageBubbleProps = {
 	message: ChatMessage;
