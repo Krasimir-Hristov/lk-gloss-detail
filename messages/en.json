@@ -269,7 +269,12 @@
 	},
 	"Chatbot": {
 		"placeholder": "Type a message...",
-		"greeting": "Hello! How can I help you?"
+		"greeting": "Hello! How can I help you?",
+		"userLabel": "You",
+		"botName": "Lulezim Kodhimaj AI",
+		"online": "Online",
+		"close": "Close",
+		"send": "Send"
 	},
 	"Impressum": {
 		"title": "Impressum"
