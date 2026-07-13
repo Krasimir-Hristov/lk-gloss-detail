@@ -269,7 +269,15 @@
 	},
 	"Chatbot": {
 		"placeholder": "Γράψτε ένα μήνυμα...",
-		"greeting": "Γεια σας! Πώς μπορώ να σας βοηθήσω;"
+		"greeting": "Γεια σας! Πώς μπορώ να σας βοηθήσω;",
+		"userLabel": "Εσύ",
+		"botName": "Lulezim Kodhimaj AI",
+		"online": "Online",
+		"close": "Κλείσιμο",
+		"send": "Αποστολή",
+		"typing": "Πληκτρολογεί...",
+		"openChat": "Άνοιγμα συνομιλίας",
+		"closeChat": "Κλείσιμο συνομιλίας"
 	},
 	"Impressum": {
 		"title": "Νομικά"

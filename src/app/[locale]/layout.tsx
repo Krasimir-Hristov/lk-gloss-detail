@@ -5,6 +5,7 @@ import { getMessages, getTranslations, setRequestLocale } from "next-intl/server
 import Footer from "@/components/layout/Footer";
 import Navbar from "@/components/layout/Navbar";
 import ScrollToTop from "@/components/shared/ScrollToTop";
+import { ChatbotWidget } from "@/features/chatbot";
 import { routing } from "@/i18n/routing";
 
 import type { Metadata } from "next";
@@ -55,6 +56,7 @@ const LocaleLayout = async ({ children, params }: Props) => {
 			<main className="flex-1 pt-20">{children}</main>
 			<Footer />
 			<ScrollToTop />
+			<ChatbotWidget />
 		</NextIntlClientProvider>
 	);
 };
