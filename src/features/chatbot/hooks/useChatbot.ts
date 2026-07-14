@@ -13,6 +13,7 @@ interface ChatbotState {
 	toggleOpen: () => void;
 	closeDrawer: () => void;
 	addMessage: (msg: ChatMessage) => void;
+	appendToLastMessage: (content: string) => void;
 	setLoading: (loading: boolean) => void;
 	clearMessages: () => void;
 }
@@ -37,6 +38,15 @@ export const useChatbot = create<ChatbotState>((set) => ({
 		set((state) => ({
 			messages: [...state.messages, ChatMessageSchema.parse(msg)],
 		})),
+
+	appendToLastMessage: (content: string) =>
+		set((state) => {
+			const messages = [...state.messages];
+			const last = messages[messages.length - 1];
+			if (!last) return state;
+			messages[messages.length - 1] = { ...last, content: last.content + content };
+			return { messages };
+		}),
 
 	setLoading: (loading) => set({ isLoading: loading }),
 

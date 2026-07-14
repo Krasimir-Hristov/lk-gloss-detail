@@ -277,7 +277,8 @@
 		"send": "Senden",
 		"typing": "Schreibt...",
 		"openChat": "Chat öffnen",
-		"closeChat": "Chat schließen"
+		"closeChat": "Chat schließen",
+		"errorFallback": "Entschuldigung, etwas ist schiefgelaufen. Bitte versuchen Sie es erneut."
 	},
 	"Impressum": {
 		"title": "Impressum"

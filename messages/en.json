@@ -277,7 +277,8 @@
 		"send": "Send",
 		"typing": "Typing...",
 		"openChat": "Open chat",
-		"closeChat": "Close chat"
+		"closeChat": "Close chat",
+		"errorFallback": "Sorry, something went wrong. Please try again."
 	},
 	"Impressum": {
 		"title": "Impressum"

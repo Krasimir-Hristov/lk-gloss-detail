@@ -307,17 +307,17 @@
 
 ### 8.2 Chatbot Backend
 
-- [ ] API route `POST /api/chatbot/message`
-- [ ] Embed user question (OpenRouter embedding model)
-- [ ] Query `chatbot_knowledge` table (cosine similarity, top 5 results)
-- [ ] Build prompt: system + context chunks + conversation history (last 6 messages)
-- [ ] Stream response from LLM (OpenRouter, Deepseek or similar)
-- [ ] Return streamed text chunks (Server-Sent Events)
+- [x] API route `POST /api/chatbot/message`
+- [x] Embed user question (OpenRouter embedding model)
+- [x] Query `chatbot_knowledge` table (cosine similarity, top 5 results)
+- [x] Build prompt: system + context chunks + conversation history (last 6 messages)
+- [x] Stream response from LLM (OpenRouter, Deepseek or similar)
+- [x] Return streamed text chunks (Server-Sent Events)
 
 ### 8.3 Chatbot Knowledge Base (Admin seeding)
 
-- [ ] Script: `scripts/seed-chatbot.ts` — seed initial Q&A data
-- [ ] Initial knowledge: services, prices, location, FAQ, contact info
+- [x] Script: `scripts/seed-chatbot.ts` — seed initial Q&A data
+- [x] Initial knowledge: services, prices, location, FAQ, contact info
 - [ ] Admin can add/view/delete entries from Admin Dashboard
 
 ---
