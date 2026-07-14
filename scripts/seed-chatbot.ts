@@ -11,16 +11,16 @@
  *   2. .env must have NEXT_PUBLIC_SUPABASE_URL, SUPABASE_SECRET_KEY, OPENROUTER_API_KEY
  */
 
-import { OpenAIEmbeddings } from "@langchain/openai";
 import { createClient } from "@supabase/supabase-js";
+
+import { getOpenRouterEmbeddings } from "../src/lib/chatbot/embeddings";
 
 // ── Config ──────────────────────────────────────────────────────────────────
 
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
 const supabaseKey = process.env.SUPABASE_SECRET_KEY!;
-const openRouterKey = process.env.OPENROUTER_API_KEY!;
 
-if (!supabaseUrl || !supabaseKey || !openRouterKey) {
+if (!supabaseUrl || !supabaseKey || !process.env.OPENROUTER_API_KEY) {
 	console.error(
 		"Missing NEXT_PUBLIC_SUPABASE_URL, SUPABASE_SECRET_KEY, or OPENROUTER_API_KEY in .env",
 	);
@@ -31,15 +31,9 @@ const supabase = createClient(supabaseUrl, supabaseKey, {
 	auth: { persistSession: false },
 });
 
-// ── LangChain Embeddings (OpenRouter via @langchain/openai) ─────────────────
+// ── LangChain Embeddings (shared helper) ────────────────────────────────────
 
-const embeddings = new OpenAIEmbeddings({
-	apiKey: openRouterKey,
-	modelName: "openai/text-embedding-3-small",
-	configuration: {
-		baseURL: "https://openrouter.ai/api/v1",
-	},
-});
+const embeddings = getOpenRouterEmbeddings();
 
 async function getEmbedding(text: string): Promise<number[]> {
 	return embeddings.embedQuery(text);

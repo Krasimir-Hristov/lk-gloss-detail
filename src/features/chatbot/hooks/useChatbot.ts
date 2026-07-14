@@ -44,7 +44,8 @@ export const useChatbot = create<ChatbotState>((set) => ({
 			const messages = [...state.messages];
 			const last = messages[messages.length - 1];
 			if (!last) return state;
-			messages[messages.length - 1] = { ...last, content: last.content + content };
+			const updated = { ...last, content: last.content + content };
+			messages[messages.length - 1] = ChatMessageSchema.parse(updated);
 			return { messages };
 		}),
 

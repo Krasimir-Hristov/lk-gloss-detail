@@ -4,11 +4,17 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Bot, X } from "lucide-react";
 import { useLocale, useTranslations } from "next-intl";
 import { useRef, useEffect, useCallback } from "react";
+import { z } from "zod";
 
 import { ChatInput } from "@/features/chatbot/components/ChatInput";
 import { ChatMessageList } from "@/features/chatbot/components/ChatMessageList";
 import { useChatbot } from "@/features/chatbot/hooks/useChatbot";
 import { createMessage } from "@/features/chatbot/schemas/chatbot";
+
+const SSEChunkSchema = z.object({
+	content: z.string().optional(),
+	error: z.string().optional(),
+});
 
 export const ChatbotDrawer = () => {
 	const t = useTranslations("Chatbot");
@@ -43,6 +49,9 @@ export const ChatbotDrawer = () => {
 				content: m.content,
 			}));
 
+		// Cancel any in-flight request before starting a new one
+		cancelRequest();
+
 		const controller = new AbortController();
 		abortRef.current = controller;
 
@@ -65,7 +74,6 @@ export const ChatbotDrawer = () => {
 
 			// Add an empty assistant message that we'll stream into
 			addMessage(createMessage("assistant", ""));
-			setLoading(false);
 
 			const reader = response.body?.getReader();
 			if (!reader) throw new Error("No response body");
@@ -89,7 +97,8 @@ export const ChatbotDrawer = () => {
 					if (dataStr === "[DONE]") continue;
 
 					try {
-						const parsed = JSON.parse(dataStr);
+						const raw = JSON.parse(dataStr);
+						const parsed = SSEChunkSchema.parse(raw);
 						if (parsed.content) {
 							appendToLastMessage(parsed.content);
 						}
@@ -97,7 +106,7 @@ export const ChatbotDrawer = () => {
 							console.error("[chatbot] Stream error:", parsed.error);
 						}
 					} catch {
-						// Skip unparseable lines
+						// Skip unparseable or invalid lines
 					}
 				}
 			}
@@ -105,9 +114,12 @@ export const ChatbotDrawer = () => {
 			if ((err as Error).name === "AbortError") return;
 			console.error("[chatbot] Send failed:", err);
 			addMessage(createMessage("assistant", t("errorFallback")));
-			setLoading(false);
 		} finally {
-			abortRef.current = null;
+			setLoading(false);
+			// Only clear the ref if it still belongs to this request
+			if (abortRef.current === controller) {
+				abortRef.current = null;
+			}
 		}
 	};
 

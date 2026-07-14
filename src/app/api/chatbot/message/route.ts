@@ -1,8 +1,9 @@
 import { HumanMessage, SystemMessage, AIMessage } from "@langchain/core/messages";
-import { ChatOpenAI, OpenAIEmbeddings } from "@langchain/openai";
+import { ChatOpenAI } from "@langchain/openai";
 import { NextResponse } from "next/server";
 import { z } from "zod";
 
+import { getOpenRouterEmbeddings } from "@/lib/chatbot/embeddings";
 import { createServiceClient } from "@/lib/supabase/service";
 
 import type { NextRequest } from "next/server";
@@ -35,13 +36,7 @@ interface MatchDoc {
 
 // ── Shared embedding model (OpenRouter via LangChain) ───────────────────────
 
-const embeddings = new OpenAIEmbeddings({
-	apiKey: process.env.OPENROUTER_API_KEY,
-	modelName: "openai/text-embedding-3-small",
-	configuration: {
-		baseURL: "https://openrouter.ai/api/v1",
-	},
-});
+const embeddings = getOpenRouterEmbeddings();
 
 async function getEmbedding(text: string): Promise<number[]> {
 	return embeddings.embedQuery(text);
@@ -166,7 +161,7 @@ export async function POST(request: NextRequest) {
 				contextChunks = data.filter((row) => row.similarity > 0.5).map((row) => row.content);
 			}
 
-			console.error(`[chatbot] Found ${contextChunks.length} relevant chunks for locale=${locale}`);
+			console.warn(`[chatbot] Found ${contextChunks.length} relevant chunks for locale=${locale}`);
 		} catch (err) {
 			console.error("[chatbot] Embedding/RAG failed, proceeding without context:", err);
 			// Continue with empty context — LLM will answer from system prompt knowledge
