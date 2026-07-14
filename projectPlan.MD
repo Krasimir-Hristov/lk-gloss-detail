@@ -298,12 +298,12 @@
 
 ### 8.1 Chatbot UI
 
-- [ ] Floating chat button (bottom right, animated)
-- [ ] Chat drawer/modal component
-- [ ] Message list with user/assistant bubbles
-- [ ] Input field + send button
-- [ ] Typing indicator animation
-- [ ] Language: auto-detect from current locale
+- [x] Floating chat button (bottom right, animated)
+- [x] Chat drawer/modal component
+- [x] Message list with user/assistant bubbles
+- [x] Input field + send button
+- [x] Typing indicator animation
+- [x] Language: auto-detect from current locale
 
 ### 8.2 Chatbot Backend
 
