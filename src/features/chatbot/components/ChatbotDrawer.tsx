@@ -2,42 +2,125 @@
 
 import { motion, AnimatePresence } from "framer-motion";
 import { Bot, X } from "lucide-react";
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import { useRef, useEffect, useCallback } from "react";
+import { z } from "zod";
 
 import { ChatInput } from "@/features/chatbot/components/ChatInput";
 import { ChatMessageList } from "@/features/chatbot/components/ChatMessageList";
 import { useChatbot } from "@/features/chatbot/hooks/useChatbot";
 import { createMessage } from "@/features/chatbot/schemas/chatbot";
 
+const SSEChunkSchema = z.object({
+	content: z.string().optional(),
+	error: z.string().optional(),
+});
+
 export const ChatbotDrawer = () => {
 	const t = useTranslations("Chatbot");
-	const { isOpen, closeDrawer, addMessage, isLoading, setLoading } = useChatbot();
-	const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+	const locale = useLocale();
+	const { isOpen, closeDrawer, addMessage, appendToLastMessage, isLoading, setLoading, messages } =
+		useChatbot();
+	const abortRef = useRef<AbortController | null>(null);
 
-	const clearPendingTimeout = useCallback(() => {
-		if (timeoutRef.current !== null) {
-			clearTimeout(timeoutRef.current);
-			timeoutRef.current = null;
+	const cancelRequest = useCallback(() => {
+		if (abortRef.current) {
+			abortRef.current.abort();
+			abortRef.current = null;
 		}
 	}, []);
 
 	useEffect(() => {
 		return () => {
-			clearPendingTimeout();
+			cancelRequest();
 		};
-	}, [clearPendingTimeout]);
+	}, [cancelRequest]);
 
-	const handleSend = (content: string) => {
+	const handleSend = async (content: string) => {
 		addMessage(createMessage("user", content));
 		setLoading(true);
 
-		clearPendingTimeout();
-		timeoutRef.current = setTimeout(() => {
-			timeoutRef.current = null;
-			addMessage(createMessage("assistant", t("greeting")));
+		// Build conversation history (last 6 messages, excluding the current one)
+		const history = messages
+			.filter((m) => !m.isGreeting)
+			.slice(-6)
+			.map((m) => ({
+				role: m.role,
+				content: m.content,
+			}));
+
+		// Cancel any in-flight request before starting a new one
+		cancelRequest();
+
+		const controller = new AbortController();
+		abortRef.current = controller;
+
+		try {
+			const response = await fetch("/api/chatbot/message", {
+				method: "POST",
+				headers: { "Content-Type": "application/json" },
+				body: JSON.stringify({
+					message: content,
+					locale,
+					history,
+				}),
+				signal: controller.signal,
+			});
+
+			if (!response.ok) {
+				const err = await response.json().catch(() => ({ error: "Request failed" }));
+				throw new Error(err.error ?? `HTTP ${response.status}`);
+			}
+
+			// Add an empty assistant message that we'll stream into
+			addMessage(createMessage("assistant", ""));
+
+			const reader = response.body?.getReader();
+			if (!reader) throw new Error("No response body");
+
+			const decoder = new TextDecoder();
+			let buffer = "";
+
+			while (true) {
+				const { done, value } = await reader.read();
+				if (done) break;
+
+				buffer += decoder.decode(value, { stream: true });
+				const lines = buffer.split("\n");
+				buffer = lines.pop() ?? "";
+
+				for (const line of lines) {
+					const trimmed = line.trim();
+					if (!trimmed || !trimmed.startsWith("data: ")) continue;
+
+					const dataStr = trimmed.slice(6);
+					if (dataStr === "[DONE]") continue;
+
+					try {
+						const raw = JSON.parse(dataStr);
+						const parsed = SSEChunkSchema.parse(raw);
+						if (parsed.content) {
+							appendToLastMessage(parsed.content);
+						}
+						if (parsed.error) {
+							console.error("[chatbot] Stream error:", parsed.error);
+						}
+					} catch {
+						// Skip unparseable or invalid lines
+					}
+				}
+			}
+		} catch (err) {
+			if ((err as Error).name === "AbortError") return;
+			console.error("[chatbot] Send failed:", err);
+			addMessage(createMessage("assistant", t("errorFallback")));
+		} finally {
 			setLoading(false);
-		}, 1500);
+			// Only clear the ref if it still belongs to this request
+			if (abortRef.current === controller) {
+				abortRef.current = null;
+			}
+		}
 	};
 
 	return (
