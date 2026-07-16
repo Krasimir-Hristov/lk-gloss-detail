@@ -230,17 +230,29 @@
 	},
 	"Contact": {
 		"title": "Contact",
+		"mapTitle": "Our Location",
 		"form": {
 			"name": "Name",
+			"namePlaceholder": "Your full name",
 			"email": "Email",
 			"phone": "Phone",
-			"service": "Service",
 			"message": "Message",
-			"submit": "Send Message"
+			"submit": "Send Message",
+			"submitting": "Sending...",
+			"submitSuccess": "Thank you! We will contact you shortly.",
+			"submitError": "An error occurred. Please try again.",
+			"nameRequired": "Name is required",
+			"invalidEmail": "Valid email required",
+			"invalidPhone": "Valid phone number required",
+			"messageRequired": "Message is required",
+			"messagePlaceholder": "Your message to us..."
 		},
 		"details": {
+			"title": "Contact Details",
 			"phone": "Phone",
 			"email": "Email",
+			"callNow": "Call now",
+			"emailUs": "Send email",
 			"whatsapp": "WhatsApp"
 		}
 	},
