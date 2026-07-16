@@ -31,9 +31,21 @@ const DesktopNavLink = ({ href, children }: { href: string; children: ReactNode 
 
 	const targetHref = isAnchor ? (isHomepage ? href : `/${locale}${href}`) : `/${locale}${href}`;
 
+	const handleClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
+		if (isAnchor && isHomepage) {
+			e.preventDefault();
+			const element = document.querySelector(href);
+			if (element) {
+				element.scrollIntoView({ behavior: "smooth" });
+			}
+			window.history.pushState(null, "", href);
+		}
+	};
+
 	return (
 		<Link
 			href={targetHref}
+			onClick={handleClick}
 			className={cn(
 				navLinkClass(isActive),
 				"relative pb-1",
@@ -66,10 +78,22 @@ const MobileNavLink = ({
 
 	const targetHref = isAnchor ? (isHomepage ? href : `/${locale}${href}`) : `/${locale}${href}`;
 
+	const handleClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
+		onClick(); // Close drawer
+		if (isAnchor && isHomepage) {
+			e.preventDefault();
+			const element = document.querySelector(href);
+			if (element) {
+				element.scrollIntoView({ behavior: "smooth" });
+			}
+			window.history.pushState(null, "", href);
+		}
+	};
+
 	return (
 		<Link
 			href={targetHref}
-			onClick={onClick}
+			onClick={handleClick}
 			className={cn(
 				"block rounded-lg px-4 py-3 text-lg font-medium transition-colors",
 				isActive ? "bg-[#7b2dff]/20 text-[#d1bcff]" : "text-[#e5e2e1] hover:bg-[#2a2a2a]",
