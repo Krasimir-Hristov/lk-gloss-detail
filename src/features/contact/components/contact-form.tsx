@@ -1,6 +1,7 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
+import { Check } from "lucide-react";
 import { useTranslations } from "next-intl";
 import * as React from "react";
 import { Controller, useForm } from "react-hook-form";
@@ -56,14 +57,7 @@ export const ContactForm: React.FC = () => {
 		return (
 			<div className="flex flex-col items-center gap-4 rounded-2xl border border-[#7b2dff]/30 bg-[#1a1a2e] p-8 text-center">
 				<div className="flex h-14 w-14 items-center justify-center rounded-full bg-[#7b2dff]/20">
-					<svg
-						className="h-7 w-7 text-[#7b2dff]"
-						fill="none"
-						viewBox="0 0 24 24"
-						stroke="currentColor"
-					>
-						<path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-					</svg>
+					<Check className="h-7 w-7 text-[#7b2dff]" />
 				</div>
 				<p className="text-lg font-semibold text-white">{t("submitSuccess")}</p>
 			</div>

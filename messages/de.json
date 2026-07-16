@@ -231,6 +231,8 @@
 	"Contact": {
 		"title": "Kontakt",
 		"mapTitle": "Unser Standort",
+		"whatsappMessage": "Hallo! Ich habe eine Frage zu Ihren Dienstleistungen.",
+		"whatsappAria": "WhatsApp Kontakt",
 		"form": {
 			"name": "Name",
 			"namePlaceholder": "Ihr vollständiger Name",

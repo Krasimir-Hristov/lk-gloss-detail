@@ -231,6 +231,8 @@
 	"Contact": {
 		"title": "Επικοινωνία",
 		"mapTitle": "Η Τοποθεσία μας",
+		"whatsappMessage": "Γεια σας! Έχω μια ερώτηση σχετικά με τις υπηρεσίες σας.",
+		"whatsappAria": "Επικοινωνήστε στο WhatsApp",
 		"form": {
 			"name": "Όνομα",
 			"namePlaceholder": "Το πλήρες όνομά σας",

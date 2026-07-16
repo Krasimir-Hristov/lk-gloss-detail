@@ -2,7 +2,6 @@
 
 import { motion, AnimatePresence } from "framer-motion";
 import { Globe, ChevronDown } from "lucide-react";
-import { usePathname } from "next/navigation";
 import { useLocale, useTranslations } from "next-intl";
 import { useState } from "react";
 
@@ -11,7 +10,6 @@ import { routing } from "@/i18n/routing";
 export const LanguageSwitcher = () => {
 	const t = useTranslations("LanguageSwitcher");
 	const locale = useLocale();
-	const pathname = usePathname();
 	const [isNavigating, setIsNavigating] = useState(false);
 	const [isOpen, setIsOpen] = useState(false);
 
@@ -19,14 +17,15 @@ export const LanguageSwitcher = () => {
 		setIsNavigating(true);
 		setIsOpen(false);
 
-		const segments = pathname.split("/");
+		const url = new URL(window.location.href);
+		const segments = url.pathname.split("/");
 		if ((routing.locales as readonly string[]).includes(segments[1])) {
 			segments[1] = nextLocale;
 		} else {
 			segments.splice(1, 0, nextLocale);
 		}
-		const newPathname = segments.join("/") || "/";
-		window.location.assign(newPathname);
+		url.pathname = segments.join("/") || "/";
+		window.location.assign(url.toString());
 	};
 
 	const currentName = t(`locales.${locale}.short`);
