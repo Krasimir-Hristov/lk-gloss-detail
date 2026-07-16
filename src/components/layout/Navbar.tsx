@@ -23,16 +23,17 @@ const DesktopNavLink = ({ href, children }: { href: string; children: ReactNode 
 	const pathname = usePathname();
 	const locale = useLocale();
 	const stripped = pathname.replace(`/${locale}`, "") || "/";
-	// Anchor links (starting with #) scroll to sections on homepage — never "active"
-	const isActive = href.startsWith("#")
-		? false
-		: href === "/"
-			? stripped === "/"
-			: stripped.startsWith(href);
+
+	const isAnchor = href.startsWith("#");
+	const isHomepage = stripped === "/";
+
+	const isActive = isAnchor ? false : href === "/" ? stripped === "/" : stripped.startsWith(href);
+
+	const targetHref = isAnchor ? (isHomepage ? href : `/${locale}${href}`) : `/${locale}${href}`;
 
 	return (
 		<Link
-			href={`/${locale}${href}`}
+			href={targetHref}
 			className={cn(
 				navLinkClass(isActive),
 				"relative pb-1",
@@ -57,15 +58,17 @@ const MobileNavLink = ({
 	const pathname = usePathname();
 	const locale = useLocale();
 	const stripped = pathname.replace(`/${locale}`, "") || "/";
-	const isActive = href.startsWith("#")
-		? false
-		: href === "/"
-			? stripped === "/"
-			: stripped.startsWith(href);
+
+	const isAnchor = href.startsWith("#");
+	const isHomepage = stripped === "/";
+
+	const isActive = isAnchor ? false : href === "/" ? stripped === "/" : stripped.startsWith(href);
+
+	const targetHref = isAnchor ? (isHomepage ? href : `/${locale}${href}`) : `/${locale}${href}`;
 
 	return (
 		<Link
-			href={`/${locale}${href}`}
+			href={targetHref}
 			onClick={onClick}
 			className={cn(
 				"block rounded-lg px-4 py-3 text-lg font-medium transition-colors",
