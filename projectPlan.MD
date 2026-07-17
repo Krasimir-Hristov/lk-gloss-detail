@@ -324,11 +324,11 @@
 
 ## PHASE 9 — Feature: Contact Page (`/contact`)
 
-- [ ] Contact form (name, email, phone, message) — React Hook Form + Zod validation
-- [ ] API route `POST /api/contact` → save to DB + email notification to Lulezim
-- [ ] Google Maps embed (region: Neuhausen auf den Fildern)
-- [ ] Contact details card (phone, email, WhatsApp link)
-- [ ] WhatsApp floating button (wa.me link with pre-filled message)
+- [x] Contact form (name, email, phone, message) — React Hook Form + Zod validation
+- [x] API route `POST /api/contact` → save to DB + email notification to Lulezim
+- [x] Google Maps embed (region: Neuhausen auf den Fildern)
+- [x] Contact details card (phone, email, WhatsApp link)
+- [x] WhatsApp floating button (wa.me link with pre-filled message)
 
 ---
 
