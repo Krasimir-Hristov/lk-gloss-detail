@@ -9,6 +9,7 @@ import { useState, useCallback, useEffect, useRef, type ReactNode } from "react"
 
 import { LanguageSwitcher } from "@/components/shared/LanguageSwitcher";
 import { NAV_LINKS } from "@/constants/navigation";
+import { routing } from "@/i18n/routing";
 import { cn } from "@/lib/utils";
 
 // ---------- Inline sub-components ----------
@@ -19,7 +20,15 @@ const navLinkClass = (isActive: boolean) =>
 		isActive ? "text-[#d1bcff] font-bold" : "text-[#ccc3d9] hover:text-[#d1bcff]",
 	);
 
-const DesktopNavLink = ({ href, children }: { href: string; children: ReactNode }) => {
+const DesktopNavLink = ({
+	href,
+	activeSection,
+	children,
+}: {
+	href: string;
+	activeSection: string;
+	children: ReactNode;
+}) => {
 	const pathname = usePathname();
 	const locale = useLocale();
 	const stripped = pathname.replace(`/${locale}`, "") || "/";
@@ -27,7 +36,17 @@ const DesktopNavLink = ({ href, children }: { href: string; children: ReactNode 
 	const isAnchor = href.startsWith("#");
 	const isHomepage = stripped === "/";
 
-	const isActive = isAnchor ? false : href === "/" ? stripped === "/" : stripped.startsWith(href);
+	let isActive = false;
+	if (isHomepage) {
+		if (isAnchor) {
+			const sectionId = href.replace("#", "");
+			isActive = activeSection === sectionId;
+		} else if (href === "/") {
+			isActive = activeSection === "";
+		}
+	} else {
+		isActive = !isAnchor && (href === "/" ? stripped === "/" : stripped.startsWith(href));
+	}
 
 	const targetHref = isAnchor ? (isHomepage ? href : `/${locale}${href}`) : `/${locale}${href}`;
 
@@ -60,10 +79,12 @@ const DesktopNavLink = ({ href, children }: { href: string; children: ReactNode 
 
 const MobileNavLink = ({
 	href,
+	activeSection,
 	children,
 	onClick,
 }: {
 	href: string;
+	activeSection: string;
 	children: ReactNode;
 	onClick: () => void;
 }) => {
@@ -74,7 +95,17 @@ const MobileNavLink = ({
 	const isAnchor = href.startsWith("#");
 	const isHomepage = stripped === "/";
 
-	const isActive = isAnchor ? false : href === "/" ? stripped === "/" : stripped.startsWith(href);
+	let isActive = false;
+	if (isHomepage) {
+		if (isAnchor) {
+			const sectionId = href.replace("#", "");
+			isActive = activeSection === sectionId;
+		} else if (href === "/") {
+			isActive = activeSection === "";
+		}
+	} else {
+		isActive = !isAnchor && (href === "/" ? stripped === "/" : stripped.startsWith(href));
+	}
 
 	const targetHref = isAnchor ? (isHomepage ? href : `/${locale}${href}`) : `/${locale}${href}`;
 
@@ -111,9 +142,11 @@ const Navbar = () => {
 	const locale = useLocale();
 	const [mobileOpen, setMobileOpen] = useState(false);
 	const [hidden, setHidden] = useState(false);
+	const [activeSection, setActiveSection] = useState<string>("");
 	const lastScrollY = useRef(0);
 	const isInitial = useRef(true);
 
+	// Hide/Show navbar on scroll
 	useEffect(() => {
 		lastScrollY.current = window.scrollY;
 
@@ -139,6 +172,58 @@ const Navbar = () => {
 		window.addEventListener("scroll", onScroll, { passive: true });
 		return () => window.removeEventListener("scroll", onScroll);
 	}, [mobileOpen]);
+
+	// Highlight active section (scrollspy)
+	useEffect(() => {
+		if (typeof window === "undefined") return;
+
+		const pathname = window.location.pathname;
+		const isHomepage =
+			pathname === "/" ||
+			routing.locales.some((loc) => pathname === `/${loc}` || pathname === `/${loc}/`);
+
+		if (!isHomepage) {
+			const timer = setTimeout(() => {
+				setActiveSection("");
+			}, 0);
+			return () => clearTimeout(timer);
+		}
+
+		const handleScroll = () => {
+			const scrollPosition = window.scrollY + 220; // Trigger threshold
+			const servicesEl = document.getElementById("services");
+			const contactEl = document.getElementById("contact");
+
+			const servicesTop = servicesEl ? servicesEl.offsetTop : Infinity;
+			const contactTop = contactEl ? contactEl.offsetTop : Infinity;
+
+			let currentSection = "";
+			if (scrollPosition >= contactTop) {
+				currentSection = "contact";
+			} else if (scrollPosition >= servicesTop) {
+				currentSection = "services";
+			} else {
+				currentSection = "";
+			}
+
+			if (window.scrollY < 100) {
+				currentSection = "";
+			}
+
+			setActiveSection(currentSection);
+		};
+
+		window.addEventListener("scroll", handleScroll, { passive: true });
+
+		const timer = setTimeout(() => {
+			handleScroll(); // Initial check
+		}, 0);
+
+		return () => {
+			window.removeEventListener("scroll", handleScroll);
+			clearTimeout(timer);
+		};
+	}, [locale]);
 
 	const closeMobile = useCallback(() => setMobileOpen(false), []);
 
@@ -167,7 +252,7 @@ const Navbar = () => {
 				{/* ----- Desktop Links ----- */}
 				<div className="hidden items-center gap-8 md:flex">
 					{navLinks.map((l) => (
-						<DesktopNavLink key={l.href} href={l.href}>
+						<DesktopNavLink key={l.href} href={l.href} activeSection={activeSection}>
 							{l.label}
 						</DesktopNavLink>
 					))}
@@ -209,7 +294,12 @@ const Navbar = () => {
 					>
 						<div className="flex flex-col gap-1 px-4 py-4">
 							{navLinks.map((l) => (
-								<MobileNavLink key={l.href} href={l.href} onClick={closeMobile}>
+								<MobileNavLink
+									key={l.href}
+									href={l.href}
+									activeSection={activeSection}
+									onClick={closeMobile}
+								>
 									{l.label}
 								</MobileNavLink>
 							))}
