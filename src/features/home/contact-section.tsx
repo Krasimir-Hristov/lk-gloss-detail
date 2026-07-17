@@ -1,6 +1,8 @@
 import { Mail, Phone, MessageCircle } from "lucide-react";
 import { useTranslations } from "next-intl";
 
+import { ContactForm } from "@/features/contact";
+
 export const ContactSection = () => {
 	const t = useTranslations("Contact");
 
@@ -15,52 +17,8 @@ export const ContactSection = () => {
 
 				<div className="mx-auto grid max-w-4xl gap-12 lg:grid-cols-2">
 					{/* Contact form */}
-					<div className="space-y-6 rounded-xl border border-[#353534] bg-[#201f1f] p-8">
-						<div className="space-y-4">
-							<div>
-								<label className="mb-2 block text-xs font-semibold tracking-wider text-[#ccc3d9] uppercase">
-									{t("form.name")}
-								</label>
-								<input
-									type="text"
-									placeholder={t("form.name")}
-									className="w-full rounded-lg border border-[#353534] bg-[#131313] px-4 py-3 text-sm text-[#e5e2e1] placeholder:text-[#ccc3d9]/50 focus:border-[#7b2dff]/50 focus:outline-none"
-								/>
-							</div>
-							<div>
-								<label className="mb-2 block text-xs font-semibold tracking-wider text-[#ccc3d9] uppercase">
-									{t("form.email")}
-								</label>
-								<input
-									type="email"
-									placeholder={t("form.email")}
-									className="w-full rounded-lg border border-[#353534] bg-[#131313] px-4 py-3 text-sm text-[#e5e2e1] placeholder:text-[#ccc3d9]/50 focus:border-[#7b2dff]/50 focus:outline-none"
-								/>
-							</div>
-							<div>
-								<label className="mb-2 block text-xs font-semibold tracking-wider text-[#ccc3d9] uppercase">
-									{t("form.phone")}
-								</label>
-								<input
-									type="tel"
-									placeholder={t("form.phone")}
-									className="w-full rounded-lg border border-[#353534] bg-[#131313] px-4 py-3 text-sm text-[#e5e2e1] placeholder:text-[#ccc3d9]/50 focus:border-[#7b2dff]/50 focus:outline-none"
-								/>
-							</div>
-							<div>
-								<label className="mb-2 block text-xs font-semibold tracking-wider text-[#ccc3d9] uppercase">
-									{t("form.message")}
-								</label>
-								<textarea
-									rows={4}
-									placeholder={t("form.message")}
-									className="w-full rounded-lg border border-[#353534] bg-[#131313] px-4 py-3 text-sm text-[#e5e2e1] placeholder:text-[#ccc3d9]/50 focus:border-[#7b2dff]/50 focus:outline-none"
-								/>
-							</div>
-							<button className="flex w-full items-center justify-center gap-2 rounded-lg bg-[#7b2dff] px-6 py-4 text-base font-semibold text-white transition-all hover:bg-[#7b2dff]/90">
-								{t("form.submit")}
-							</button>
-						</div>
+					<div className="rounded-xl border border-[#353534] bg-[#201f1f] p-8">
+						<ContactForm />
 					</div>
 
 					{/* Contact details */}

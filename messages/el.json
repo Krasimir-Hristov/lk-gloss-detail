@@ -230,17 +230,31 @@
 	},
 	"Contact": {
 		"title": "Επικοινωνία",
+		"mapTitle": "Η Τοποθεσία μας",
+		"whatsappMessage": "Γεια σας! Έχω μια ερώτηση σχετικά με τις υπηρεσίες σας.",
+		"whatsappAria": "Επικοινωνήστε στο WhatsApp",
 		"form": {
 			"name": "Όνομα",
+			"namePlaceholder": "Το πλήρες όνομά σας",
 			"email": "Email",
 			"phone": "Τηλέφωνο",
-			"service": "Υπηρεσία",
 			"message": "Μήνυμα",
-			"submit": "Αποστολή Μηνύματος"
+			"submit": "Αποστολή Μηνύματος",
+			"submitting": "Αποστολή...",
+			"submitSuccess": "Ευχαριστούμε! Θα επικοινωνήσουμε σύντομα μαζί σας.",
+			"submitError": "Παρουσιάστηκε σφάλμα. Παρακαλώ δοκιμάστε ξανά.",
+			"nameRequired": "Το όνομα είναι υποχρεωτικό",
+			"invalidEmail": "Απαιτείται έγκυρο email",
+			"invalidPhone": "Απαιτείται έγκυρος αριθμός τηλεφώνου",
+			"messageRequired": "Το μήνυμα είναι υποχρεωτικό",
+			"messagePlaceholder": "Το μήνυμά σας προς εμάς..."
 		},
 		"details": {
+			"title": "Στοιχεία Επικοινωνίας",
 			"phone": "Τηλέφωνο",
 			"email": "Email",
+			"callNow": "Καλέστε τώρα",
+			"emailUs": "Στείλτε email",
 			"whatsapp": "WhatsApp"
 		}
 	},

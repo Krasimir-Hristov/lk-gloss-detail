@@ -5,6 +5,7 @@ import { getMessages, getTranslations, setRequestLocale } from "next-intl/server
 import Footer from "@/components/layout/Footer";
 import Navbar from "@/components/layout/Navbar";
 import ScrollToTop from "@/components/shared/ScrollToTop";
+import { WhatsAppFloatingButton } from "@/components/shared/whatsapp-floating-button";
 import { ChatbotWidget } from "@/features/chatbot";
 import { routing } from "@/i18n/routing";
 
@@ -57,6 +58,7 @@ const LocaleLayout = async ({ children, params }: Props) => {
 			<Footer />
 			<ScrollToTop />
 			<ChatbotWidget />
+			<WhatsAppFloatingButton />
 		</NextIntlClientProvider>
 	);
 };

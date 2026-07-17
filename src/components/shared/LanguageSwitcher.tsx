@@ -4,24 +4,28 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Globe, ChevronDown } from "lucide-react";
 import { useLocale, useTranslations } from "next-intl";
 import { useState } from "react";
-import { useTransition } from "react";
 
-import { usePathname, useRouter } from "@/i18n/routing";
 import { routing } from "@/i18n/routing";
 
 export const LanguageSwitcher = () => {
 	const t = useTranslations("LanguageSwitcher");
 	const locale = useLocale();
-	const pathname = usePathname();
-	const router = useRouter();
-	const [isPending, startTransition] = useTransition();
+	const [isNavigating, setIsNavigating] = useState(false);
 	const [isOpen, setIsOpen] = useState(false);
 
 	const handleChange = (nextLocale: string) => {
-		startTransition(() => {
-			router.replace(pathname, { locale: nextLocale });
-			setIsOpen(false);
-		});
+		setIsNavigating(true);
+		setIsOpen(false);
+
+		const url = new URL(window.location.href);
+		const segments = url.pathname.split("/");
+		if ((routing.locales as readonly string[]).includes(segments[1])) {
+			segments[1] = nextLocale;
+		} else {
+			segments.splice(1, 0, nextLocale);
+		}
+		url.pathname = segments.join("/") || "/";
+		window.location.assign(url.toString());
 	};
 
 	const currentName = t(`locales.${locale}.short`);
@@ -57,7 +61,7 @@ export const LanguageSwitcher = () => {
 									type="button"
 									key={loc}
 									onClick={() => handleChange(loc)}
-									disabled={isPending || isActive}
+									disabled={isNavigating || isActive}
 									className={`block w-full px-4 py-2 text-left text-sm transition-colors ${
 										isActive
 											? "bg-[#7b2dff] text-white"

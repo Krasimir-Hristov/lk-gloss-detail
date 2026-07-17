@@ -230,17 +230,31 @@
 	},
 	"Contact": {
 		"title": "Kontakt",
+		"mapTitle": "Unser Standort",
+		"whatsappMessage": "Hallo! Ich habe eine Frage zu Ihren Dienstleistungen.",
+		"whatsappAria": "WhatsApp Kontakt",
 		"form": {
 			"name": "Name",
+			"namePlaceholder": "Ihr vollständiger Name",
 			"email": "E-Mail",
 			"phone": "Telefon",
-			"service": "Leistung",
 			"message": "Nachricht",
-			"submit": "Nachricht senden"
+			"submit": "Nachricht senden",
+			"submitting": "Wird gesendet...",
+			"submitSuccess": "Vielen Dank! Wir werden uns in Kürze bei Ihnen melden.",
+			"submitError": "Ein Fehler ist aufgetreten. Bitte versuchen Sie es erneut.",
+			"nameRequired": "Name ist erforderlich",
+			"invalidEmail": "Gültige E-Mail-Adresse erforderlich",
+			"invalidPhone": "Gültige Telefonnummer erforderlich",
+			"messageRequired": "Nachricht ist erforderlich",
+			"messagePlaceholder": "Ihre Nachricht an uns..."
 		},
 		"details": {
+			"title": "Kontaktdaten",
 			"phone": "Telefon",
 			"email": "E-Mail",
+			"callNow": "Jetzt anrufen",
+			"emailUs": "E-Mail senden",
 			"whatsapp": "WhatsApp"
 		}
 	},
