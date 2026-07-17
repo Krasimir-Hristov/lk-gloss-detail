@@ -297,6 +297,9 @@
 	"Impressum": {
 		"title": "Impressum"
 	},
+	"Privacy": {
+		"title": "Datenschutzerklärung"
+	},
 	"Assessment": {
 		"title": "KI-Fotoanalyse",
 		"steps": {
@@ -396,5 +399,11 @@
 			"bookAppointment": "Termin buchen",
 			"durationValue": "~{hours} Std."
 		}
+	},
+	"CookieConsent": {
+		"message": "Wir verwenden Cookies, um Ihre Erfahrung auf unserer Website zu verbessern. Weitere Informationen finden Sie in unserer Datenschutzerklärung.",
+		"accept": "Alle akzeptieren",
+		"decline": "Nur notwendige",
+		"privacy": "Datenschutzerklärung"
 	}
 }

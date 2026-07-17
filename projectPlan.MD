@@ -334,25 +334,25 @@
 
 ## PHASE 10 — Feature: Impressum Page (`/impressum`)
 
-- [ ] Static page with all legally required DE Impressum fields
-  - [ ] Name des Diensteanbieters (Lulezim Kodhimaj)
-  - [ ] Anschrift (to be filled when available)
-  - [ ] Kontakt (Tel, Email)
-  - [ ] Steuernummer / USt-IdNr. (to be filled)
-  - [ ] Berufsbezeichnung (Autopflege / Fahrzeugaufbereitung)
-  - [ ] Aufsichtsbehörde (if applicable)
-  - [ ] EU-Streitschlichtung disclaimer
-  - [ ] Haftung für Inhalte + Links disclaimer
-  - [ ] Urheberrecht notice
-- [ ] Add Datenschutzerklärung (GDPR Privacy Policy) as separate section or page
-  - [ ] Cookie notice
-  - [ ] Data processing info (contact form, booking)
-  - [ ] Hosting provider info
-  - [ ] AI processing disclosure (assessment feature)
-- [ ] Cookie consent banner (required by DSGVO for DE)
-  - [ ] Accept / Decline
-  - [ ] Store preference in localStorage
-  - [ ] Only load analytics if accepted
+- [x] Static page with all legally required DE Impressum fields
+  - [x] Name des Diensteanbieters (Lulezim Kodhimaj)
+  - [x] Anschrift (to be filled when available)
+  - [x] Kontakt (Tel, Email)
+  - [x] Steuernummer / USt-IdNr. (to be filled)
+  - [x] Berufsbezeichnung (Autopflege / Fahrzeugaufbereitung)
+  - [x] Aufsichtsbehörde (if applicable)
+  - [x] EU-Streitschlichtung disclaimer
+  - [x] Haftung für Inhalte + Links disclaimer
+  - [x] Urheberrecht notice
+- [x] Add Datenschutzerklärung (GDPR Privacy Policy) as separate section or page
+  - [x] Cookie notice
+  - [x] Data processing info (contact form, booking)
+  - [x] Hosting provider info
+  - [x] AI processing disclosure (assessment feature)
+- [x] Cookie consent banner (required by DSGVO for DE)
+  - [x] Accept / Decline
+  - [x] Store preference in localStorage
+  - [x] Only load analytics if accepted
 
 ---
 

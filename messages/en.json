@@ -297,6 +297,9 @@
 	"Impressum": {
 		"title": "Impressum"
 	},
+	"Privacy": {
+		"title": "Privacy Policy"
+	},
 	"Assessment": {
 		"title": "AI Photo Analysis",
 		"steps": {
@@ -396,5 +399,11 @@
 			"bookAppointment": "Book Appointment",
 			"durationValue": "~{hours}h"
 		}
+	},
+	"CookieConsent": {
+		"message": "We use cookies to improve your experience on our website. You can find more details in our Privacy Policy.",
+		"accept": "Accept all",
+		"decline": "Necessary only",
+		"privacy": "Privacy Policy"
 	}
 }
