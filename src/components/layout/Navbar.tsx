@@ -10,23 +10,9 @@ import { NAV_LINKS } from "@/constants/navigation";
 import { Link, usePathname } from "@/i18n/routing";
 import { cn } from "@/lib/utils";
 
-// ---------- Inline sub-components ----------
+// ---------- Custom Hooks ----------
 
-const navLinkClass = (isActive: boolean) =>
-	cn(
-		"font-medium text-sm transition-colors",
-		isActive ? "text-[#d1bcff] font-bold" : "text-[#ccc3d9] hover:text-[#d1bcff]",
-	);
-
-const DesktopNavLink = ({
-	href,
-	activeSection,
-	children,
-}: {
-	href: string;
-	activeSection: string;
-	children: ReactNode;
-}) => {
+const useNavActiveState = (href: string, activeSection: string) => {
 	const pathname = usePathname();
 
 	const isAnchor = href.startsWith("#");
@@ -46,21 +32,31 @@ const DesktopNavLink = ({
 
 	const targetHref = isAnchor && !isHomepage ? `/${href}` : href;
 
-	const handleClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
-		if (isAnchor && isHomepage) {
-			e.preventDefault();
-			const element = document.querySelector(href);
-			if (element) {
-				element.scrollIntoView({ behavior: "smooth" });
-			}
-			window.history.pushState(null, "", href);
-		}
-	};
+	return { isActive, targetHref };
+};
+
+// ---------- Inline sub-components ----------
+
+const navLinkClass = (isActive: boolean) =>
+	cn(
+		"font-medium text-sm transition-colors",
+		isActive ? "text-[#d1bcff] font-bold" : "text-[#ccc3d9] hover:text-[#d1bcff]",
+	);
+
+const DesktopNavLink = ({
+	href,
+	activeSection,
+	children,
+}: {
+	href: string;
+	activeSection: string;
+	children: ReactNode;
+}) => {
+	const { isActive, targetHref } = useNavActiveState(href, activeSection);
 
 	return (
 		<Link
 			href={targetHref}
-			onClick={handleClick}
 			className={cn(
 				navLinkClass(isActive),
 				"relative pb-1",
@@ -84,41 +80,12 @@ const MobileNavLink = ({
 	children: ReactNode;
 	onClick: () => void;
 }) => {
-	const pathname = usePathname();
-
-	const isAnchor = href.startsWith("#");
-	const isHomepage = pathname === "/";
-
-	let isActive = false;
-	if (isHomepage) {
-		if (isAnchor) {
-			const sectionId = href.replace("#", "");
-			isActive = activeSection === sectionId;
-		} else if (href === "/") {
-			isActive = activeSection === "";
-		}
-	} else {
-		isActive = !isAnchor && (href === "/" ? pathname === "/" : pathname.startsWith(href));
-	}
-
-	const targetHref = isAnchor && !isHomepage ? `/${href}` : href;
-
-	const handleClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
-		onClick(); // Close drawer
-		if (isAnchor && isHomepage) {
-			e.preventDefault();
-			const element = document.querySelector(href);
-			if (element) {
-				element.scrollIntoView({ behavior: "smooth" });
-			}
-			window.history.pushState(null, "", href);
-		}
-	};
+	const { isActive, targetHref } = useNavActiveState(href, activeSection);
 
 	return (
 		<Link
 			href={targetHref}
-			onClick={handleClick}
+			onClick={onClick}
 			className={cn(
 				"block rounded-lg px-4 py-3 text-lg font-medium transition-colors",
 				isActive ? "bg-[#7b2dff]/20 text-[#d1bcff]" : "text-[#e5e2e1] hover:bg-[#2a2a2a]",
@@ -180,13 +147,18 @@ const Navbar = () => {
 			return () => clearTimeout(timer);
 		}
 
-		const handleScroll = () => {
-			const scrollPosition = window.scrollY + 220; // Trigger threshold
+		let servicesTop = Infinity;
+		let contactTop = Infinity;
+
+		const updateOffsets = () => {
 			const servicesEl = document.getElementById("services");
 			const contactEl = document.getElementById("contact");
+			servicesTop = servicesEl ? servicesEl.offsetTop : Infinity;
+			contactTop = contactEl ? contactEl.offsetTop : Infinity;
+		};
 
-			const servicesTop = servicesEl ? servicesEl.offsetTop : Infinity;
-			const contactTop = contactEl ? contactEl.offsetTop : Infinity;
+		const handleScroll = () => {
+			const scrollPosition = window.scrollY + 220; // Trigger threshold
 
 			let currentSection = "";
 			if (scrollPosition >= contactTop) {
@@ -204,6 +176,8 @@ const Navbar = () => {
 			setActiveSection(currentSection);
 		};
 
+		updateOffsets();
+		window.addEventListener("resize", updateOffsets, { passive: true });
 		window.addEventListener("scroll", handleScroll, { passive: true });
 
 		const timer = setTimeout(() => {
@@ -211,6 +185,7 @@ const Navbar = () => {
 		}, 0);
 
 		return () => {
+			window.removeEventListener("resize", updateOffsets);
 			window.removeEventListener("scroll", handleScroll);
 			clearTimeout(timer);
 		};
@@ -265,7 +240,7 @@ const Navbar = () => {
 					<button
 						onClick={() => setMobileOpen((prev) => !prev)}
 						className="inline-flex items-center justify-center rounded-lg p-2 text-[#ccc3d9] transition-colors hover:text-[#d1bcff] md:hidden"
-						aria-label={mobileOpen ? "Close menu" : "Open menu"}
+						aria-label={mobileOpen ? t("closeMenu") : t("openMenu")}
 						aria-expanded={mobileOpen}
 					>
 						{mobileOpen ? <X className="size-6" /> : <Menu className="size-6" />}

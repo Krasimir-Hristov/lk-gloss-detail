@@ -21,16 +21,6 @@ export default function proxy(request: NextRequest) {
 	const ip = currentRequest.headers.get("x-forwarded-for") ?? "unknown";
 	const { pathname } = currentRequest.nextUrl;
 
-	// Check if the request is an internal Next.js/next-intl preflight/router request or a client-side navigation
-	const isNextInternal =
-		currentRequest.headers.has("x-middleware-preflight") ||
-		currentRequest.headers.has("x-nextjs-data") ||
-		currentRequest.headers.has("rsc") ||
-		currentRequest.headers.has("next-router-state-tree") ||
-		currentRequest.headers.has("next-router-prefetch") ||
-		currentRequest.headers.has("x-middleware-prefetch") ||
-		currentRequest.headers.get("sec-fetch-site") === "same-origin";
-
 	// ── Rate limit assessment API routes ──────────────────────────────
 	if (pathname.startsWith("/api/assessment/")) {
 		const key = `${ip}:${pathname}`;
@@ -52,41 +42,16 @@ export default function proxy(request: NextRequest) {
 			);
 		}
 
-		// Scrub headers for external client requests to API
-		const headers = new Headers(currentRequest.headers);
-		if (!isNextInternal) {
-			for (const name of Array.from(headers.keys())) {
-				if (name.toLowerCase().startsWith("x-")) {
-					headers.delete(name);
-				}
-			}
-		}
-
 		// Let API routes pass through to their handlers with scrubbed headers
 		return NextResponse.next({
 			request: {
-				headers,
+				headers: currentRequest.headers,
 			},
 		});
 	}
 
 	// ── Delegate to next-intl for all other routes ────────────────────
-	if (isNextInternal) {
-		// If it's a Next.js client-side preflight/data request, pass the original request directly
-		// to preserve internal preflight headers and client-side page transitions.
-		return intlMiddleware(currentRequest);
-	}
-
-	// For external client requests, perform defensive header scrubbing (CVE-2025-29927 Mitigation)
-	const headers = new Headers(currentRequest.headers);
-	for (const name of Array.from(headers.keys())) {
-		if (name.toLowerCase().startsWith("x-")) {
-			headers.delete(name);
-		}
-	}
-
-	const scrubbedRequest = new NextRequest(currentRequest, { headers });
-	return intlMiddleware(scrubbedRequest);
+	return intlMiddleware(currentRequest);
 }
 
 export const config = {
