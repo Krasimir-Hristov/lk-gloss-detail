@@ -138,6 +138,8 @@
 - [x] Individual service detail expandable section (accordion)
 - [x] CTA per service → goes to AI Assessment flow
 - [x] Add service-specific JSON-LD schema
+- [ ] Refactor services page to fetch services dynamically from Supabase DB
+- [ ] Render service images loaded from Supabase Storage instead of static local imports
 
 ---
 
@@ -380,6 +382,9 @@
 - [ ] Edit service (price ranges, duration, multipliers) — inline JSON editor
 - [ ] Add new service
 - [ ] Toggle service active/inactive (show/hide on site)
+- [ ] Set up Supabase Storage bucket for service images
+- [ ] Add image upload / delete functionality to Add/Edit service forms (saving to Supabase Storage)
+- [ ] Support deletion of service (including its images from storage)
 
 ### 11.4 RAG Knowledge Base Management
 
