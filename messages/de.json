@@ -10,7 +10,9 @@
 		"assessment": "KI-Bewertung",
 		"gallery": "Galerie",
 		"contact": "Kontakt",
-		"bookNow": "Termin buchen"
+		"bookNow": "Termin buchen",
+		"openMenu": "Menü öffnen",
+		"closeMenu": "Menü schließen"
 	},
 	"HomePage": {
 		"hero": {

@@ -1,9 +1,11 @@
+import { Geist, Geist_Mono } from "next/font/google";
 import { notFound } from "next/navigation";
 import { NextIntlClientProvider, hasLocale } from "next-intl";
 import { getMessages, getTranslations, setRequestLocale } from "next-intl/server";
 
 import Footer from "@/components/layout/Footer";
 import Navbar from "@/components/layout/Navbar";
+import { Providers } from "@/components/providers";
 import { CookieConsentBanner } from "@/components/shared/cookie-consent-banner";
 import ScrollToTop from "@/components/shared/ScrollToTop";
 import { WhatsAppFloatingButton } from "@/components/shared/whatsapp-floating-button";
@@ -11,6 +13,18 @@ import { ChatbotWidget } from "@/features/chatbot";
 import { routing } from "@/i18n/routing";
 
 import type { Metadata } from "next";
+
+import "../globals.css";
+
+const geistSans = Geist({
+	variable: "--font-geist-sans",
+	subsets: ["latin"],
+});
+
+const geistMono = Geist_Mono({
+	variable: "--font-geist-mono",
+	subsets: ["latin"],
+});
 
 type Props = {
 	children: React.ReactNode;
@@ -53,15 +67,31 @@ const LocaleLayout = async ({ children, params }: Props) => {
 	const messages = await getMessages();
 
 	return (
-		<NextIntlClientProvider messages={messages}>
-			<Navbar />
-			<main className="flex-1 pt-20">{children}</main>
-			<Footer />
-			<ScrollToTop />
-			<ChatbotWidget />
-			<WhatsAppFloatingButton />
-			<CookieConsentBanner />
-		</NextIntlClientProvider>
+		<html
+			lang={locale}
+			data-scroll-behavior="smooth"
+			className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
+		>
+			<head>
+				<link
+					rel="stylesheet"
+					href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=swap"
+				/>
+			</head>
+			<body className="flex min-h-full flex-col bg-[#131313] font-sans text-[#e5e2e1]">
+				<Providers>
+					<NextIntlClientProvider messages={messages} locale={locale}>
+						<Navbar />
+						<main className="flex-1 pt-20">{children}</main>
+						<Footer />
+						<ScrollToTop />
+						<ChatbotWidget />
+						<WhatsAppFloatingButton />
+						<CookieConsentBanner />
+					</NextIntlClientProvider>
+				</Providers>
+			</body>
+		</html>
 	);
 };
 
