@@ -363,18 +363,18 @@
 - [ ] Supabase Auth — email/password for admin only
 - [ ] Proxy.ts: protect `/admin/*` routes
 - [ ] Login page (`/admin/login`)
-- [ ] Logout button
+- [ ] Logout button only visible on /admin/\* pages
 
 ### 11.2 Appointments View
 
 - [ ] Calendar view of all appointments (week/month toggle)
 - [ ] List view with filters (date, status)
-- [ ] Appointment detail modal (client info, services, AI estimate, car photos)
+- [ ] Appointment detail modal (client info, services)
 - [ ] Status update (pending → confirmed → completed / cancelled)
 - [ ] Manual slot blocking: pick date + time → add to `blocked_slots`
-- [ ] Delete/cancel appointment
+- [ ] Delete/cancel/edit appointment.
 
-### 11.3 Services Management
+### 11.3 Services Management full CRUD operations
 
 - [ ] List all services from DB
 - [ ] Edit service (price ranges, duration, multipliers) — inline JSON editor
