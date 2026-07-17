@@ -361,7 +361,7 @@
 ### 11.1 Auth
 
 - [ ] Supabase Auth — email/password for admin only
-- [ ] Middleware: protect `/admin/*` routes
+- [ ] Proxy.ts: protect `/admin/*` routes
 - [ ] Login page (`/admin/login`)
 - [ ] Logout button
 
