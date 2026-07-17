@@ -53,7 +53,7 @@ const LocaleLayout = async ({ children, params }: Props) => {
 	const messages = await getMessages();
 
 	return (
-		<NextIntlClientProvider messages={messages}>
+		<NextIntlClientProvider messages={messages} locale={locale}>
 			<Navbar />
 			<main className="flex-1 pt-20">{children}</main>
 			<Footer />

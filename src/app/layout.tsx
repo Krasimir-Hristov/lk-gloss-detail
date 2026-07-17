@@ -23,7 +23,11 @@ export const metadata: Metadata = {
 
 const RootLayout = ({ children }: Readonly<{ children: React.ReactNode }>) => {
 	return (
-		<html lang="de" className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}>
+		<html
+			lang="de"
+			data-scroll-behavior="smooth"
+			className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
+		>
 			<head>
 				<link
 					rel="stylesheet"

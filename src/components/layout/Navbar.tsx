@@ -2,14 +2,12 @@
 
 import { motion, AnimatePresence } from "framer-motion";
 import { Menu, X } from "lucide-react";
-import Link from "next/link";
-import { usePathname } from "next/navigation";
-import { useTranslations, useLocale } from "next-intl";
+import { useTranslations } from "next-intl";
 import { useState, useCallback, useEffect, useRef, type ReactNode } from "react";
 
 import { LanguageSwitcher } from "@/components/shared/LanguageSwitcher";
 import { NAV_LINKS } from "@/constants/navigation";
-import { routing } from "@/i18n/routing";
+import { Link, usePathname } from "@/i18n/routing";
 import { cn } from "@/lib/utils";
 
 // ---------- Inline sub-components ----------
@@ -30,11 +28,9 @@ const DesktopNavLink = ({
 	children: ReactNode;
 }) => {
 	const pathname = usePathname();
-	const locale = useLocale();
-	const stripped = pathname.replace(`/${locale}`, "") || "/";
 
 	const isAnchor = href.startsWith("#");
-	const isHomepage = stripped === "/";
+	const isHomepage = pathname === "/";
 
 	let isActive = false;
 	if (isHomepage) {
@@ -45,10 +41,10 @@ const DesktopNavLink = ({
 			isActive = activeSection === "";
 		}
 	} else {
-		isActive = !isAnchor && (href === "/" ? stripped === "/" : stripped.startsWith(href));
+		isActive = !isAnchor && (href === "/" ? pathname === "/" : pathname.startsWith(href));
 	}
 
-	const targetHref = isAnchor ? (isHomepage ? href : `/${locale}${href}`) : `/${locale}${href}`;
+	const targetHref = isAnchor && !isHomepage ? `/${href}` : href;
 
 	const handleClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
 		if (isAnchor && isHomepage) {
@@ -89,11 +85,9 @@ const MobileNavLink = ({
 	onClick: () => void;
 }) => {
 	const pathname = usePathname();
-	const locale = useLocale();
-	const stripped = pathname.replace(`/${locale}`, "") || "/";
 
 	const isAnchor = href.startsWith("#");
-	const isHomepage = stripped === "/";
+	const isHomepage = pathname === "/";
 
 	let isActive = false;
 	if (isHomepage) {
@@ -104,10 +98,10 @@ const MobileNavLink = ({
 			isActive = activeSection === "";
 		}
 	} else {
-		isActive = !isAnchor && (href === "/" ? stripped === "/" : stripped.startsWith(href));
+		isActive = !isAnchor && (href === "/" ? pathname === "/" : pathname.startsWith(href));
 	}
 
-	const targetHref = isAnchor ? (isHomepage ? href : `/${locale}${href}`) : `/${locale}${href}`;
+	const targetHref = isAnchor && !isHomepage ? `/${href}` : href;
 
 	const handleClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
 		onClick(); // Close drawer
@@ -139,7 +133,7 @@ const MobileNavLink = ({
 
 const Navbar = () => {
 	const t = useTranslations("Navigation");
-	const locale = useLocale();
+	const pathname = usePathname();
 	const [mobileOpen, setMobileOpen] = useState(false);
 	const [hidden, setHidden] = useState(false);
 	const [activeSection, setActiveSection] = useState<string>("");
@@ -177,10 +171,7 @@ const Navbar = () => {
 	useEffect(() => {
 		if (typeof window === "undefined") return;
 
-		const pathname = window.location.pathname;
-		const isHomepage =
-			pathname === "/" ||
-			routing.locales.some((loc) => pathname === `/${loc}` || pathname === `/${loc}/`);
+		const isHomepage = pathname === "/";
 
 		if (!isHomepage) {
 			const timer = setTimeout(() => {
@@ -223,7 +214,7 @@ const Navbar = () => {
 			window.removeEventListener("scroll", handleScroll);
 			clearTimeout(timer);
 		};
-	}, [locale]);
+	}, [pathname]);
 
 	const closeMobile = useCallback(() => setMobileOpen(false), []);
 
@@ -241,7 +232,7 @@ const Navbar = () => {
 		>
 			<nav className="mx-auto flex h-20 max-w-7xl items-center justify-between px-4 md:px-16">
 				{/* ----- Logo ----- */}
-				<Link href={`/${locale}`} className="flex items-center">
+				<Link href="/" className="flex items-center">
 					<div className="md:col-span-2">
 						<div className="mb-4 text-xl font-extrabold tracking-tighter text-[#d1bcff] uppercase">
 							LK Gloss <span className="text-[#7b2dff]">&</span> Detail
@@ -264,7 +255,7 @@ const Navbar = () => {
 
 					{/* Desktop CTA */}
 					<Link
-						href={`/${locale}/booking`}
+						href="/booking"
 						className="hidden rounded-lg bg-linear-to-r from-[#7B2DFF] to-[#C026FF] px-5 py-2.5 text-sm font-bold text-white shadow-[0px_0px_15px_rgba(192,38,255,0.4)] transition-all hover:shadow-[0px_0px_25px_rgba(192,38,255,0.6)] active:scale-95 md:inline-flex"
 					>
 						{t("bookNow")}
@@ -305,7 +296,7 @@ const Navbar = () => {
 							))}
 							<hr className="my-2 border-white/10" />
 							<Link
-								href={`/${locale}/booking`}
+								href="/booking"
 								onClick={closeMobile}
 								className="mt-2 block rounded-lg bg-linear-to-r from-[#7B2DFF] to-[#C026FF] px-4 py-3 text-center text-base font-bold text-white shadow-[0px_0px_15px_rgba(192,38,255,0.4)]"
 							>

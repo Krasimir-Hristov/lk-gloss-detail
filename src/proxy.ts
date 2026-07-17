@@ -11,16 +11,25 @@ export default function proxy(request: NextRequest) {
 	// ── Prevent security bypass (CVE-2025-29927 Mitigation) ──────────────────
 	// Unconditionally strip x-middleware-subrequest from all incoming requests.
 	// This prevents client-side header spoofing from bypassing our proxy controls.
-	const safeHeaders = new Headers(request.headers);
-	safeHeaders.delete("x-middleware-subrequest");
-	const safeRequest = new NextRequest(request, { headers: safeHeaders });
+	let currentRequest = request;
+	if (request.headers.has("x-middleware-subrequest")) {
+		const safeHeaders = new Headers(request.headers);
+		safeHeaders.delete("x-middleware-subrequest");
+		currentRequest = new NextRequest(request, { headers: safeHeaders });
+	}
 
-	const ip = safeRequest.headers.get("x-forwarded-for") ?? "unknown";
-	const { pathname } = safeRequest.nextUrl;
+	const ip = currentRequest.headers.get("x-forwarded-for") ?? "unknown";
+	const { pathname } = currentRequest.nextUrl;
 
-	// Check if the request is an internal Next.js/next-intl preflight/router request
+	// Check if the request is an internal Next.js/next-intl preflight/router request or a client-side navigation
 	const isNextInternal =
-		safeRequest.headers.has("x-middleware-preflight") || safeRequest.headers.has("x-nextjs-data");
+		currentRequest.headers.has("x-middleware-preflight") ||
+		currentRequest.headers.has("x-nextjs-data") ||
+		currentRequest.headers.has("rsc") ||
+		currentRequest.headers.has("next-router-state-tree") ||
+		currentRequest.headers.has("next-router-prefetch") ||
+		currentRequest.headers.has("x-middleware-prefetch") ||
+		currentRequest.headers.get("sec-fetch-site") === "same-origin";
 
 	// ── Rate limit assessment API routes ──────────────────────────────
 	if (pathname.startsWith("/api/assessment/")) {
@@ -44,7 +53,7 @@ export default function proxy(request: NextRequest) {
 		}
 
 		// Scrub headers for external client requests to API
-		const headers = new Headers(safeRequest.headers);
+		const headers = new Headers(currentRequest.headers);
 		if (!isNextInternal) {
 			for (const name of Array.from(headers.keys())) {
 				if (name.toLowerCase().startsWith("x-")) {
@@ -65,18 +74,18 @@ export default function proxy(request: NextRequest) {
 	if (isNextInternal) {
 		// If it's a Next.js client-side preflight/data request, pass the original request directly
 		// to preserve internal preflight headers and client-side page transitions.
-		return intlMiddleware(safeRequest);
+		return intlMiddleware(currentRequest);
 	}
 
 	// For external client requests, perform defensive header scrubbing (CVE-2025-29927 Mitigation)
-	const headers = new Headers(safeRequest.headers);
+	const headers = new Headers(currentRequest.headers);
 	for (const name of Array.from(headers.keys())) {
 		if (name.toLowerCase().startsWith("x-")) {
 			headers.delete(name);
 		}
 	}
 
-	const scrubbedRequest = new NextRequest(safeRequest, { headers });
+	const scrubbedRequest = new NextRequest(currentRequest, { headers });
 	return intlMiddleware(scrubbedRequest);
 }
 

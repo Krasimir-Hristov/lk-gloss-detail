@@ -1,12 +1,11 @@
-import Link from "next/link";
-import { useTranslations, useLocale } from "next-intl";
+import { useTranslations } from "next-intl";
 
 import { NAV_LINKS, LEGAL_LINKS } from "@/constants/navigation";
+import { Link } from "@/i18n/routing";
 
 const Footer = () => {
 	const t = useTranslations("Footer");
 	const tNav = useTranslations("Navigation");
-	const locale = useLocale();
 
 	const year = new Date().getFullYear();
 
@@ -40,7 +39,7 @@ const Footer = () => {
 						{navLinks.map((l) => (
 							<li key={l.href}>
 								<Link
-									href={`/${locale}${l.href}`}
+									href={l.href}
 									className="text-sm text-[#ccc3d9] transition-colors hover:text-[#d1bcff] hover:underline"
 								>
 									{l.label}
@@ -59,7 +58,7 @@ const Footer = () => {
 						{legalLinks.map((l) => (
 							<li key={l.href + l.label}>
 								<Link
-									href={`/${locale}${l.href}`}
+									href={l.href}
 									className="text-sm text-[#ccc3d9] transition-colors hover:text-[#d1bcff] hover:underline"
 								>
 									{l.label}
