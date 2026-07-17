@@ -10,7 +10,9 @@
 		"assessment": "Αξιολόγηση AI",
 		"gallery": "Γκαλερί",
 		"contact": "Επικοινωνία",
-		"bookNow": "Κλείσε Ραντεβού"
+		"bookNow": "Κλείσε Ραντεβού",
+		"openMenu": "Άνοιγμα μενού",
+		"closeMenu": "Κλείσιμο μενού"
 	},
 	"HomePage": {
 		"hero": {

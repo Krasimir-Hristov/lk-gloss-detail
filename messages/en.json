@@ -10,7 +10,9 @@
 		"assessment": "AI Assessment",
 		"gallery": "Gallery",
 		"contact": "Contact",
-		"bookNow": "Book Now"
+		"bookNow": "Book Now",
+		"openMenu": "Open menu",
+		"closeMenu": "Close menu"
 	},
 	"HomePage": {
 		"hero": {
