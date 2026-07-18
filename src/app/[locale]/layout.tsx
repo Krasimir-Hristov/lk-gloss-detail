@@ -6,9 +6,9 @@ import { getMessages, getTranslations, setRequestLocale } from "next-intl/server
 import Footer from "@/components/layout/Footer";
 import Navbar from "@/components/layout/Navbar";
 import { Providers } from "@/components/providers";
-import { CookieConsentBanner } from "@/components/shared/cookie-consent-banner";
+import { CookieConsentBanner } from "@/components/shared/CookieConsentBanner";
 import ScrollToTop from "@/components/shared/ScrollToTop";
-import { WhatsAppFloatingButton } from "@/components/shared/whatsapp-floating-button";
+import { WhatsAppFloatingButton } from "@/components/shared/WhatsAppFloatingButton";
 import { ChatbotWidget } from "@/features/chatbot";
 import { routing } from "@/i18n/routing";
 

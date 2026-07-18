@@ -3,7 +3,7 @@ import { useTranslations } from "next-intl";
 import { setRequestLocale } from "next-intl/server";
 import { z } from "zod";
 
-import { LocalBusinessJsonLd } from "@/components/shared/json-ld";
+import { LocalBusinessJsonLd } from "@/components/shared/JsonLd";
 import {
 	B2BSection,
 	ContactSection,

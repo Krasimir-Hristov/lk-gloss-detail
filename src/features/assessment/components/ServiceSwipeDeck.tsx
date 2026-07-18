@@ -4,7 +4,7 @@ import { motion } from "framer-motion";
 import { useTranslations } from "next-intl";
 import { useCallback, useEffect, useRef, useState } from "react";
 
-import { ServiceSwipeCard } from "@/features/assessment/components/service-swipe-card";
+import { ServiceSwipeCard } from "@/features/assessment/components/ServiceSwipeCard";
 import { useAssessmentStore } from "@/features/assessment/stores/assessment-store";
 
 import type { ServiceSelection } from "@/features/assessment/schemas/assessment.schema";

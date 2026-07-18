@@ -1,3 +1,5 @@
+import { randomUUID } from "crypto";
+
 import { type NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
 
@@ -43,6 +45,7 @@ export async function POST(request: NextRequest) {
 		}
 
 		return NextResponse.json({
+			id: randomUUID(),
 			carSize: result.carSize,
 			dirtLevel: result.dirtLevel,
 			brand: result.brand,
@@ -52,6 +55,7 @@ export async function POST(request: NextRequest) {
 			summaryText: result.summaryText,
 			diagnostics: result.diagnostics ?? [],
 			expertVerdict: result.expertVerdict ?? "",
+			createdAt: new Date().toISOString(),
 		});
 	} catch (err: unknown) {
 		const message = err instanceof Error ? err.message : "Internal Server Error";

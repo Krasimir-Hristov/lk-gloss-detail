@@ -5,11 +5,11 @@ import { useSearchParams } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { Suspense, useEffect } from "react";
 
-import { BookingProgress } from "@/features/booking/components/booking-progress";
-import { StepClientInfo } from "@/features/booking/components/step-client-info";
-import { StepDatePicker } from "@/features/booking/components/step-date-picker";
-import { StepServices } from "@/features/booking/components/step-services";
-import { StepSummary } from "@/features/booking/components/step-summary";
+import { BookingProgress } from "@/features/booking/components/BookingProgress";
+import { StepClientInfo } from "@/features/booking/components/StepClientInfo";
+import { StepDatePicker } from "@/features/booking/components/StepDatePicker";
+import { StepServices } from "@/features/booking/components/StepServices";
+import { StepSummary } from "@/features/booking/components/StepSummary";
 import { useBookingStore } from "@/features/booking/stores/booking-store";
 
 const BookingWizardContent = () => {

@@ -5,10 +5,10 @@ import { ArrowLeft, Loader2, AlertCircle } from "lucide-react";
 import { useTranslations, useLocale } from "next-intl";
 import { useCallback } from "react";
 
-import { AssessmentReport } from "@/features/assessment/components/assessment-report";
-import { PhotoUploadStep } from "@/features/assessment/components/photo-upload-step";
-import { ProgressIndicator } from "@/features/assessment/components/progress-indicator";
-import { ServiceSwipeDeck } from "@/features/assessment/components/service-swipe-deck";
+import { AssessmentReport } from "@/features/assessment/components/AssessmentReport";
+import { PhotoUploadStep } from "@/features/assessment/components/PhotoUploadStep";
+import { ProgressIndicator } from "@/features/assessment/components/ProgressIndicator";
+import { ServiceSwipeDeck } from "@/features/assessment/components/ServiceSwipeDeck";
 import {
 	PHOTO_STEPS,
 	AssessmentResultSchema,

@@ -1,4 +1,4 @@
-export { BookingWizard } from "./components/booking-wizard";
+export { BookingWizard } from "./components/BookingWizard";
 export { useBookingStore } from "./stores/booking-store";
 export {
 	BookingClientInfoSchema,
