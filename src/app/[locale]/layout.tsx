@@ -1,4 +1,5 @@
 import { Geist, Geist_Mono } from "next/font/google";
+import { headers } from "next/headers";
 import { notFound } from "next/navigation";
 import { NextIntlClientProvider, hasLocale } from "next-intl";
 import { getMessages, getTranslations, setRequestLocale } from "next-intl/server";
@@ -66,6 +67,10 @@ const LocaleLayout = async ({ children, params }: Props) => {
 	setRequestLocale(locale);
 	const messages = await getMessages();
 
+	const headersList = await headers();
+	const pathname = headersList.get("x-pathname") || "";
+	const isAdminRoute = /^\/(de|en|el)\/admin(\/|$)/.test(pathname);
+
 	return (
 		<html
 			lang={locale}
@@ -81,13 +86,19 @@ const LocaleLayout = async ({ children, params }: Props) => {
 			<body className="flex min-h-full flex-col bg-[#131313] font-sans text-[#e5e2e1]">
 				<Providers>
 					<NextIntlClientProvider messages={messages} locale={locale}>
-						<Navbar />
-						<main className="flex-1 pt-20">{children}</main>
-						<Footer />
-						<ScrollToTop />
-						<ChatbotWidget />
-						<WhatsAppFloatingButton />
-						<CookieConsentBanner />
+						{isAdminRoute ? (
+							<main className="flex min-h-screen flex-1 flex-col">{children}</main>
+						) : (
+							<>
+								<Navbar />
+								<main className="flex-1 pt-20">{children}</main>
+								<Footer />
+								<ScrollToTop />
+								<ChatbotWidget />
+								<WhatsAppFloatingButton />
+								<CookieConsentBanner />
+							</>
+						)}
 					</NextIntlClientProvider>
 				</Providers>
 			</body>

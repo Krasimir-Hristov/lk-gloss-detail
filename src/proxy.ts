@@ -28,44 +28,16 @@ export default async function proxy(request: NextRequest) {
 	// ── Prevent security bypass (CVE-2025-29927 Mitigation) ──────────────────
 	// Strip only x-middleware-subrequest from external client requests to preserve
 	// other x-* headers like x-forwarded-for for rate limiting.
-	let currentRequest = request;
+	const safeHeaders = new Headers(request.headers);
 	if (request.headers.has("x-middleware-subrequest")) {
-		const safeHeaders = new Headers(request.headers);
 		safeHeaders.delete("x-middleware-subrequest");
-		currentRequest = new NextRequest(request, { headers: safeHeaders });
 	}
 
+	const { pathname } = request.nextUrl;
+	safeHeaders.set("x-pathname", pathname);
+
+	const currentRequest = new NextRequest(request, { headers: safeHeaders });
 	const ip = currentRequest.headers.get("x-forwarded-for") ?? "unknown";
-	const { pathname } = currentRequest.nextUrl;
-
-	// ── Rate limit assessment API routes ──────────────────────────────
-	if (pathname.startsWith("/api/assessment/")) {
-		const key = `${ip}:${pathname}`;
-
-		const limit = pathname.includes("validate")
-			? ASSESSMENT_RATE_LIMIT.validatePhoto
-			: ASSESSMENT_RATE_LIMIT.analyze;
-
-		const result = rateLimit(key, limit);
-
-		if (!result.success) {
-			const retryAfter = Math.ceil(result.resetIn / 1000);
-			return NextResponse.json(
-				{ error: "Too many requests", retryAfter },
-				{
-					status: 429,
-					headers: { "Retry-After": String(retryAfter) },
-				},
-			);
-		}
-
-		// Let API routes pass through to their handlers with scrubbed headers
-		return NextResponse.next({
-			request: {
-				headers: currentRequest.headers,
-			},
-		});
-	}
 
 	// ── Admin Route Protection ────────────────────────────────────────
 	if (isProtectedRoute(pathname)) {
@@ -121,6 +93,7 @@ export default async function proxy(request: NextRequest) {
 					maxAge: cookie.maxAge,
 				});
 			});
+			intlResponse.headers.set("x-pathname", pathname);
 			return intlResponse;
 		} catch (error) {
 			console.error("[proxy/admin-auth] Error validating admin session:", error);
@@ -131,8 +104,39 @@ export default async function proxy(request: NextRequest) {
 		}
 	}
 
+	// ── Rate limit assessment API routes ──────────────────────────────
+	if (pathname.startsWith("/api/assessment/")) {
+		const key = `${ip}:${pathname}`;
+
+		const limit = pathname.includes("validate")
+			? ASSESSMENT_RATE_LIMIT.validatePhoto
+			: ASSESSMENT_RATE_LIMIT.analyze;
+
+		const result = rateLimit(key, limit);
+
+		if (!result.success) {
+			const retryAfter = Math.ceil(result.resetIn / 1000);
+			return NextResponse.json(
+				{ error: "Too many requests", retryAfter },
+				{
+					status: 429,
+					headers: { "Retry-After": String(retryAfter) },
+				},
+			);
+		}
+
+		// Let API routes pass through to their handlers with scrubbed headers
+		return NextResponse.next({
+			request: {
+				headers: currentRequest.headers,
+			},
+		});
+	}
+
 	// ── Delegate to next-intl for all other routes ────────────────────
-	return intlMiddleware(currentRequest);
+	const response = intlMiddleware(currentRequest);
+	response.headers.set("x-pathname", pathname);
+	return response;
 }
 
 export const config = {

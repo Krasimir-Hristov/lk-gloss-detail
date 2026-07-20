@@ -1,12 +1,17 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useRouter, useParams } from "next/navigation";
+import { motion } from "framer-motion";
+import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
-import React, { useState } from "react";
+import * as React from "react";
 import { useForm } from "react-hook-form";
 
 import ErrorBoundary from "@/components/shared/ErrorBoundary";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import { loginAdmin } from "@/features/admin/actions/auth";
 import {
 	LoginSchema,
@@ -14,14 +19,12 @@ import {
 	type LoginFormValues,
 } from "@/features/admin/schemas/auth.schema";
 
-const LoginPage: React.FC = () => {
+const AdminLoginPage: React.FC = () => {
 	const t = useTranslations("Admin");
 	const router = useRouter();
-	const params = useParams();
-	const locale = (params?.locale as string) || "de";
 
-	const [isSubmitting, setIsSubmitting] = useState(false);
-	const [serverError, setServerError] = useState<AuthErrorType | null>(null);
+	const [isSubmitting, setIsSubmitting] = React.useState(false);
+	const [serverError, setServerError] = React.useState<AuthErrorType | null>(null);
 
 	const {
 		register,
@@ -43,7 +46,7 @@ const LoginPage: React.FC = () => {
 			const result = await loginAdmin(values);
 
 			if (result.success) {
-				router.push(`/${locale}/admin`);
+				router.push("/admin");
 				router.refresh();
 			} else {
 				setServerError(result.error);
@@ -57,84 +60,81 @@ const LoginPage: React.FC = () => {
 	};
 
 	return (
-		<div className="relative flex min-h-screen items-center justify-center overflow-hidden bg-black px-4 text-white">
-			{/* Decorative background glows */}
-			<div className="absolute top-1/4 left-1/4 h-96 w-96 rounded-full bg-purple-600/10 blur-3xl"></div>
-			<div className="absolute right-1/4 bottom-1/4 h-96 w-96 rounded-full bg-fuchsia-600/10 blur-3xl"></div>
+		<div className="flex min-h-[80vh] items-center justify-center bg-black px-4 py-12 sm:px-6 lg:px-8">
+			<motion.div
+				initial={{ opacity: 0, y: 20 }}
+				animate={{ opacity: 1, y: 0 }}
+				transition={{ duration: 0.5, ease: "easeOut" }}
+				className="w-full max-w-md"
+			>
+				<Card className="border border-[#7b2dff]/20 bg-[#121212]/90 shadow-[0px_0px_50px_rgba(123,45,255,0.15)] backdrop-blur-xl">
+					<CardHeader className="space-y-1 text-center">
+						<CardTitle className="bg-linear-to-r from-[#d8b4fe] via-[#a855f7] to-[#7b2dff] bg-clip-text text-3xl font-extrabold tracking-tight text-transparent">
+							{t("loginTitle")}
+						</CardTitle>
+						<CardDescription className="text-sm text-[#ccc3d9]">
+							{t("loginSubtitle")}
+						</CardDescription>
+					</CardHeader>
+					<CardContent>
+						<form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+							{serverError ? (
+								<motion.div
+									initial={{ opacity: 0, scale: 0.95 }}
+									animate={{ opacity: 1, scale: 1 }}
+									className="bg-destructive/10 border-destructive/30 text-destructive rounded-lg border p-3 text-center text-sm font-semibold"
+								>
+									{t(`errors.${serverError}`)}
+								</motion.div>
+							) : null}
 
-			<div className="relative z-10 w-full max-w-md rounded-2xl border border-neutral-800/80 bg-neutral-900/80 p-8 shadow-2xl backdrop-blur-md">
-				{/* Top branding */}
-				<div className="mb-8 text-center">
-					<h1 className="Montserrat bg-linear-to-r from-purple-400 via-fuchsia-400 to-indigo-400 bg-clip-text text-2xl font-black tracking-widest text-transparent uppercase">
-						LK GLOSS & DETAIL
-					</h1>
-					<p className="mt-2 text-xs font-medium tracking-wide text-neutral-400">
-						{t("loginSubtitle")}
-					</p>
-				</div>
+							<div className="space-y-2">
+								<Label htmlFor="email" className="text-sm font-semibold text-[#e5e2e1]">
+									{t("emailLabel")}
+								</Label>
+								<Input
+									id="email"
+									type="email"
+									placeholder={t("emailPlaceholder")}
+									{...register("email")}
+									disabled={isSubmitting}
+									className="border-white/10 bg-black/50 text-[#e5e2e1] placeholder-white/20 transition-all focus:border-[#7b2dff] focus:ring-2 focus:ring-[#7b2dff]/20"
+								/>
+								{errors.email?.message ? (
+									<p className="text-destructive text-xs">{t(`errors.${errors.email.message}`)}</p>
+								) : null}
+							</div>
 
-				{/* Error Alerts */}
-				{serverError ? (
-					<div className="mb-6 flex flex-col gap-1 rounded-lg border border-red-500/30 bg-red-950/20 p-4 text-sm text-red-400 transition-all duration-200">
-						<span className="font-semibold">Error</span>
-						<span>{t(`errors.${serverError}`)}</span>
-					</div>
-				) : null}
+							<div className="space-y-2">
+								<Label htmlFor="password" className="text-sm font-semibold text-[#e5e2e1]">
+									{t("passwordLabel")}
+								</Label>
+								<Input
+									id="password"
+									type="password"
+									placeholder={t("passwordPlaceholder")}
+									{...register("password")}
+									disabled={isSubmitting}
+									className="border-white/10 bg-black/50 text-[#e5e2e1] placeholder-white/20 transition-all focus:border-[#7b2dff] focus:ring-2 focus:ring-[#7b2dff]/20"
+								/>
+								{errors.password?.message ? (
+									<p className="text-destructive text-xs">
+										{t(`errors.${errors.password.message}`)}
+									</p>
+								) : null}
+							</div>
 
-				<form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
-					<div>
-						<label
-							htmlFor="email"
-							className="mb-2 block text-xs font-bold tracking-wider text-neutral-400 uppercase"
-						>
-							{t("emailLabel")}
-						</label>
-						<input
-							id="email"
-							type="email"
-							placeholder={t("emailPlaceholder")}
-							{...register("email")}
-							className="w-full rounded-lg border border-neutral-800 bg-neutral-950 px-4 py-3 text-sm text-white placeholder-neutral-600 transition-all duration-200 focus:border-purple-500 focus:ring-1 focus:ring-purple-500 focus:outline-hidden"
-							disabled={isSubmitting}
-						/>
-						{errors.email?.message ? (
-							<p className="mt-2 text-xs font-medium text-red-400">
-								{t(`errors.${errors.email.message}`)}
-							</p>
-						) : null}
-					</div>
-
-					<div>
-						<label
-							htmlFor="password"
-							className="mb-2 block text-xs font-bold tracking-wider text-neutral-400 uppercase"
-						>
-							{t("passwordLabel")}
-						</label>
-						<input
-							id="password"
-							type="password"
-							placeholder={t("passwordPlaceholder")}
-							{...register("password")}
-							className="w-full rounded-lg border border-neutral-800 bg-neutral-950 px-4 py-3 text-sm text-white placeholder-neutral-600 transition-all duration-200 focus:border-purple-500 focus:ring-1 focus:ring-purple-500 focus:outline-hidden"
-							disabled={isSubmitting}
-						/>
-						{errors.password?.message ? (
-							<p className="mt-2 text-xs font-medium text-red-400">
-								{t(`errors.${errors.password.message}`)}
-							</p>
-						) : null}
-					</div>
-
-					<button
-						type="submit"
-						disabled={isSubmitting}
-						className="flex w-full cursor-pointer items-center justify-center rounded-lg bg-linear-to-r from-purple-600 to-indigo-600 py-3 text-sm font-bold tracking-wide shadow-lg shadow-purple-950/20 transition-all duration-250 hover:from-purple-500 hover:to-indigo-500 hover:shadow-purple-500/10 active:scale-[0.98] disabled:opacity-50"
-					>
-						{isSubmitting ? t("loggingIn") : t("submitButton")}
-					</button>
-				</form>
-			</div>
+							<Button
+								type="submit"
+								disabled={isSubmitting}
+								className="w-full cursor-pointer bg-linear-to-r from-[#7B2DFF] to-[#C026FF] py-6 font-bold text-white shadow-[0px_0px_15px_rgba(192,38,255,0.4)] transition-all hover:shadow-[0px_0px_25px_rgba(192,38,255,0.6)] active:scale-98 disabled:opacity-50"
+							>
+								{isSubmitting ? t("loggingIn") : t("submitButton")}
+							</Button>
+						</form>
+					</CardContent>
+				</Card>
+			</motion.div>
 		</div>
 	);
 };
@@ -142,7 +142,7 @@ const LoginPage: React.FC = () => {
 const LoginPageWithBoundary: React.FC = () => {
 	return (
 		<ErrorBoundary>
-			<LoginPage />
+			<AdminLoginPage />
 		</ErrorBoundary>
 	);
 };
