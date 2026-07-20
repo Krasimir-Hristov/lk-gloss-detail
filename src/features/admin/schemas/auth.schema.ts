@@ -11,6 +11,7 @@ export type AuthErrorType =
 	| "invalid_credentials"
 	| "not_admin"
 	| "server_error"
-	| "validation_error";
+	| "validation_error"
+	| "too_many_attempts";
 
 export type AuthResult = { success: true } | { success: false; error: AuthErrorType };

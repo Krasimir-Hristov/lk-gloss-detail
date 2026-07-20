@@ -2,6 +2,7 @@ import { createServerClient } from "@supabase/ssr";
 import { NextRequest, NextResponse } from "next/server";
 import createMiddleware from "next-intl/middleware";
 
+import { isAdminUser } from "@/features/admin/utils/auth";
 import { rateLimit, ASSESSMENT_RATE_LIMIT } from "@/lib/rate-limit";
 
 import { routing } from "./i18n/routing";
@@ -16,22 +17,21 @@ const isProtectedRoute = (pathname: string) => {
 	return adminPattern.test(pathname) && !loginPattern.test(pathname);
 };
 
+const getLocaleFromPathname = (pathname: string): (typeof routing.locales)[number] => {
+	const segments = pathname.split("/");
+	const potentialLocale = segments[1];
+	const isLocale = (routing.locales as readonly string[]).includes(potentialLocale);
+	return isLocale ? (potentialLocale as (typeof routing.locales)[number]) : routing.defaultLocale;
+};
+
 export default async function proxy(request: NextRequest) {
 	// ── Prevent security bypass (CVE-2025-29927 Mitigation) ──────────────────
-	// Unconditionally strip all x- headers (specifically x-middleware-subrequest)
-	// from external client requests.
+	// Strip only x-middleware-subrequest from external client requests to preserve
+	// other x-* headers like x-forwarded-for for rate limiting.
 	let currentRequest = request;
-	const safeHeaders = new Headers(request.headers);
-	let modified = false;
-
-	for (const key of Array.from(safeHeaders.keys())) {
-		if (key.toLowerCase().startsWith("x-")) {
-			safeHeaders.delete(key);
-			modified = true;
-		}
-	}
-
-	if (modified) {
+	if (request.headers.has("x-middleware-subrequest")) {
+		const safeHeaders = new Headers(request.headers);
+		safeHeaders.delete("x-middleware-subrequest");
 		currentRequest = new NextRequest(request, { headers: safeHeaders });
 	}
 
@@ -99,20 +99,10 @@ export default async function proxy(request: NextRequest) {
 				data: { user },
 			} = await supabase.auth.getUser();
 
-			let isAdmin = false;
-			if (user) {
-				const { data: profile } = await supabase
-					.from("profiles")
-					.select("role")
-					.eq("id", user.id)
-					.single();
-
-				isAdmin = profile?.role === "admin";
-			}
+			const isAdmin = user ? await isAdminUser(supabase, user.id) : false;
 
 			if (!user || !isAdmin) {
-				const segments = pathname.split("/");
-				const locale = ["de", "en", "el"].includes(segments[1]) ? segments[1] : "de";
+				const locale = getLocaleFromPathname(pathname);
 				const redirectUrl = currentRequest.nextUrl.clone();
 				redirectUrl.pathname = `/${locale}/admin/login`;
 				return NextResponse.redirect(redirectUrl);
@@ -134,8 +124,7 @@ export default async function proxy(request: NextRequest) {
 			return intlResponse;
 		} catch (error) {
 			console.error("[proxy/admin-auth] Error validating admin session:", error);
-			const segments = pathname.split("/");
-			const locale = ["de", "en", "el"].includes(segments[1]) ? segments[1] : "de";
+			const locale = getLocaleFromPathname(pathname);
 			const redirectUrl = currentRequest.nextUrl.clone();
 			redirectUrl.pathname = `/${locale}/admin/login`;
 			return NextResponse.redirect(redirectUrl);

@@ -6,7 +6,8 @@ import { useTranslations } from "next-intl";
 import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 
-import { loginAdmin } from "@/actions/auth";
+import ErrorBoundary from "@/components/shared/ErrorBoundary";
+import { loginAdmin } from "@/features/admin/actions/auth";
 import {
 	LoginSchema,
 	type AuthErrorType,
@@ -138,4 +139,12 @@ const LoginPage: React.FC = () => {
 	);
 };
 
-export default LoginPage;
+const LoginPageWithBoundary: React.FC = () => {
+	return (
+		<ErrorBoundary>
+			<LoginPage />
+		</ErrorBoundary>
+	);
+};
+
+export default LoginPageWithBoundary;

@@ -1,51 +1,23 @@
 /* eslint-disable no-console */
 /**
  * Admin Creation Script
- * Creates a new admin user in Supabase Auth.
+ * Creates a new admin user in Supabase Auth and elevates their role to 'admin'.
  *
  * Usage:
  *   pnpm tsx scripts/create-admin.ts <email> <password>
  */
 
-import fs from "fs";
-import path from "path";
-
+import { loadEnvConfig } from "@next/env";
 import { createClient } from "@supabase/supabase-js";
 
-// ── Load Environment Variables ──────────────────────────────────────────────
-const loadEnv = () => {
-	try {
-		const envPath = path.resolve(process.cwd(), ".env");
-		if (fs.existsSync(envPath)) {
-			const envContent = fs.readFileSync(envPath, "utf-8");
-			envContent.split("\n").forEach((line) => {
-				const match = line.match(/^\s*([\w.-]+)\s*=\s*(.*)?\s*$/);
-				if (match) {
-					const key = match[1];
-					let value = match[2] || "";
-					if (value.startsWith('"') && value.endsWith('"')) {
-						value = value.substring(1, value.length - 1);
-					} else if (value.startsWith("'") && value.endsWith("'")) {
-						value = value.substring(1, value.length - 1);
-					}
-					if (!process.env[key]) {
-						process.env[key] = value.trim();
-					}
-				}
-			});
-		}
-	} catch (err) {
-		console.warn("⚠️ Failed to parse .env file manually:", err);
-	}
-};
-
-loadEnv();
+// Load Next.js environment variables (resolves .env, .env.local, .env.development etc.)
+loadEnvConfig(process.cwd());
 
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
-const supabaseKey = process.env.SUPABASE_SECRET_KEY; // service_role key is required to create users bypass confirm
+const supabaseKey = process.env.SUPABASE_SECRET_KEY; // service_role key is required to manage users and bypass RLS
 
 if (!supabaseUrl || !supabaseKey) {
-	console.error("❌ Missing NEXT_PUBLIC_SUPABASE_URL or SUPABASE_SECRET_KEY in .env");
+	console.error("❌ Missing NEXT_PUBLIC_SUPABASE_URL or SUPABASE_SECRET_KEY in environment");
 	process.exit(1);
 }
 
@@ -63,11 +35,11 @@ const main = async () => {
 
 	if (!email || !password) {
 		console.error("❌ Usage: pnpm tsx scripts/create-admin.ts <email> <password>");
-		console.error("   Or set ADMIN_EMAIL and ADMIN_PASSWORD in your .env file.");
+		console.error("   Or set ADMIN_EMAIL and ADMIN_PASSWORD in your environment variables.");
 		process.exit(1);
 	}
 
-	console.log(`🚀 Creating admin user with email: ${email}...`);
+	console.log(`🚀 Creating auth user with email: ${email}...`);
 
 	const { data, error } = await supabase.auth.admin.createUser({
 		email,
@@ -76,13 +48,34 @@ const main = async () => {
 	});
 
 	if (error) {
-		console.error("❌ Failed to create admin user:", error.message);
+		console.error("❌ Failed to create auth user:", error.message);
 		process.exit(1);
 	}
 
-	console.log("✅ Admin user created successfully!");
-	console.log(`👤 User ID: ${data.user.id}`);
-	console.log("ℹ️ The RLS database trigger will automatically create their profile row.");
+	console.log(`✅ Auth user created successfully (ID: ${data.user.id}).`);
+	console.log("👑 Elevating profile role to 'admin'...");
+
+	// The RLS database trigger automatically inserts the profiles row, but defaults to 'user'.
+	// Here, we explicitly update it to 'admin' using the service-role client.
+	const { error: profileError } = await supabase
+		.from("profiles")
+		.update({ role: "admin" })
+		.eq("id", data.user.id);
+
+	if (profileError) {
+		console.error("❌ Failed to elevate profile to admin role:", profileError.message);
+		// Try to insert just in case trigger hasn't completed or conflict occurred
+		const { error: insertError } = await supabase
+			.from("profiles")
+			.upsert({ id: data.user.id, role: "admin" });
+
+		if (insertError) {
+			console.error("❌ Failed to upsert admin profile:", insertError.message);
+			process.exit(1);
+		}
+	}
+
+	console.log("🎉 Admin user created and elevated to admin role successfully!");
 };
 
 main().catch((err) => {

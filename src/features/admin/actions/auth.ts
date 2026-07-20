@@ -1,5 +1,6 @@
 "use server";
 
+import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 
 import {
@@ -7,6 +8,8 @@ import {
 	type LoginFormValues,
 	type AuthResult,
 } from "@/features/admin/schemas/auth.schema";
+import { isAdminUser } from "@/features/admin/utils/auth";
+import { rateLimit } from "@/lib/rate-limit";
 import { createClient } from "@/lib/supabase/server";
 
 /**
@@ -17,6 +20,19 @@ export const loginAdmin = async (data: LoginFormValues): Promise<AuthResult> => 
 		const parsed = LoginSchema.safeParse(data);
 		if (!parsed.success) {
 			return { success: false, error: "validation_error" };
+		}
+
+		// Enforce rate limiting based on IP and route
+		const headerList = await headers();
+		const ip = headerList.get("x-forwarded-for") ?? "unknown";
+		const rateLimitResult = rateLimit(`${ip}:loginAdmin`, {
+			interval: 60000, // 1 minute
+			maxRequests: 5, // max 5 requests per minute
+		});
+
+		if (!rateLimitResult.success) {
+			console.warn(`[auth/login] Rate limit exceeded for IP: ${ip}`);
+			return { success: false, error: "too_many_attempts" };
 		}
 
 		const { email, password } = parsed.data;
@@ -32,14 +48,10 @@ export const loginAdmin = async (data: LoginFormValues): Promise<AuthResult> => 
 			return { success: false, error: "invalid_credentials" };
 		}
 
-		// Double Check: Verify profile role is 'admin' (Defense in Depth)
-		const { data: profile, error: profileError } = await supabase
-			.from("profiles")
-			.select("role")
-			.eq("id", authData.user.id)
-			.single();
+		// Double Check: Verify profile role is 'admin' (Defense in Depth) using the shared helper
+		const isAdmin = await isAdminUser(supabase, authData.user.id);
 
-		if (profileError || profile?.role !== "admin") {
+		if (!isAdmin) {
 			console.error("[auth/login] Authorization failed: Not an admin profile");
 			// Sign out immediately if logged in but not an admin
 			await supabase.auth.signOut();

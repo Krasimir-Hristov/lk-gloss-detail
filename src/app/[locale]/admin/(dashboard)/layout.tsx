@@ -2,7 +2,8 @@ import { redirect } from "next/navigation";
 import { getTranslations } from "next-intl/server";
 import React from "react";
 
-import { logoutAdmin } from "@/actions/auth";
+import { logoutAdmin } from "@/features/admin/actions/auth";
+import { isAdminUser } from "@/features/admin/utils/auth";
 import { createClient } from "@/lib/supabase/server";
 
 interface AdminLayoutProps {
@@ -20,15 +21,7 @@ const AdminLayout: React.FC<AdminLayoutProps> = async ({ children, params }) => 
 		data: { user },
 	} = await supabase.auth.getUser();
 
-	let isAdmin = false;
-	if (user) {
-		const { data: profile } = await supabase
-			.from("profiles")
-			.select("role")
-			.eq("id", user.id)
-			.single();
-		isAdmin = profile?.role === "admin";
-	}
+	const isAdmin = user ? await isAdminUser(supabase, user.id) : false;
 
 	if (!user || !isAdmin) {
 		redirect(`/${locale}/admin/login`);
