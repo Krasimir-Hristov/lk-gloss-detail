@@ -407,5 +407,30 @@
 		"accept": "Αποδοχή όλων",
 		"decline": "Μόνο απαραίτητα",
 		"privacy": "Πολιτική Απορρήτου"
+	},
+	"Admin": {
+		"loginTitle": "Είσοδος Διαχειριστή",
+		"loginSubtitle": "Πρόσβαση στον Πίνακα Ελέγχου LK Gloss & Detail",
+		"emailLabel": "Διεύθυνση Email",
+		"emailPlaceholder": "admin@lkglossanddetail.de",
+		"passwordLabel": "Κωδικός πρόσβασης",
+		"passwordPlaceholder": "••••••••",
+		"submitButton": "Σύνδεση",
+		"loggingIn": "Σύνδεση σε εξέλιξη...",
+		"logoutButton": "Αποσύνδεση",
+		"errors": {
+			"invalid_credentials": "Το email ή ο κωδικός πρόσβασης που εισαγάγατε είναι λάθος.",
+			"not_admin": "Δεν έχετε δικαιώματα διαχειριστή.",
+			"server_error": "Παρουσιάστηκε εσωτερικό σφάλμα διακομιστή. Παρακαλώ προσπαθήστε ξανά.",
+			"validation_error": "Παρακαλώ συμπληρώστε όλα τα πεδία σωστά.",
+			"emailRequired": "Η διεύθυνση email είναι υποχρεωτική.",
+			"invalidEmail": "Απαιτείται έγκυρη διεύθυνση email.",
+			"passwordTooShort": "Ο κωδικός πρόσβασης πρέπει να είναι τουλάχιστον 6 χαρακτήρες."
+		},
+		"dashboard": {
+			"title": "Πίνακας Ελέγχου",
+			"welcome": "Καλώς ορίσατε, Διαχειριστή!",
+			"subtitle": "Επισκόπηση ραντεβού, υπηρεσιών και της βάσης γνώσεων του chatbot."
+		}
 	}
 }

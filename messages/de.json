@@ -407,5 +407,30 @@
 		"accept": "Alle akzeptieren",
 		"decline": "Nur notwendige",
 		"privacy": "Datenschutzerklärung"
+	},
+	"Admin": {
+		"loginTitle": "Admin-Anmeldung",
+		"loginSubtitle": "Zugang zum LK Gloss & Detail Dashboard",
+		"emailLabel": "E-Mail-Adresse",
+		"emailPlaceholder": "admin@lkglossanddetail.de",
+		"passwordLabel": "Passwort",
+		"passwordPlaceholder": "••••••••",
+		"submitButton": "Einloggen",
+		"loggingIn": "Wird angemeldet...",
+		"logoutButton": "Abmelden",
+		"errors": {
+			"invalid_credentials": "Die eingegebene E-Mail-Adresse oder das Passwort ist falsch.",
+			"not_admin": "Sie haben keine Administratorrechte.",
+			"server_error": "Ein interner Serverfehler ist aufgetreten. Bitte versuchen Sie es erneut.",
+			"validation_error": "Bitte füllen Sie alle Felder korrekt aus.",
+			"emailRequired": "E-Mail-Adresse ist erforderlich.",
+			"invalidEmail": "Gültige E-Mail-Adresse erforderlich.",
+			"passwordTooShort": "Das Passwort muss mindestens 6 Zeichen lang sein."
+		},
+		"dashboard": {
+			"title": "Admin-Dashboard",
+			"welcome": "Willkommen zurück, Administrator!",
+			"subtitle": "Übersicht über Termine, Leistungen und die Chatbot-Wissensdatenbank."
+		}
 	}
 }

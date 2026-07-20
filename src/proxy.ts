@@ -1,3 +1,4 @@
+import { createServerClient } from "@supabase/ssr";
 import { NextRequest, NextResponse } from "next/server";
 import createMiddleware from "next-intl/middleware";
 
@@ -7,14 +8,30 @@ import { routing } from "./i18n/routing";
 
 const intlMiddleware = createMiddleware(routing);
 
-export default function proxy(request: NextRequest) {
+const isProtectedRoute = (pathname: string) => {
+	// Matches /admin, /admin/dashboard, /de/admin, /en/admin/dashboard, etc.
+	// But NOT /admin/login, /de/admin/login, /api/..., or static assets.
+	const adminPattern = /^\/(?:[a-z]{2}\/)?admin(?:\/.*)?$/;
+	const loginPattern = /^\/(?:[a-z]{2}\/)?admin\/login$/;
+	return adminPattern.test(pathname) && !loginPattern.test(pathname);
+};
+
+export default async function proxy(request: NextRequest) {
 	// ── Prevent security bypass (CVE-2025-29927 Mitigation) ──────────────────
-	// Unconditionally strip x-middleware-subrequest from all incoming requests.
-	// This prevents client-side header spoofing from bypassing our proxy controls.
+	// Unconditionally strip all x- headers (specifically x-middleware-subrequest)
+	// from external client requests.
 	let currentRequest = request;
-	if (request.headers.has("x-middleware-subrequest")) {
-		const safeHeaders = new Headers(request.headers);
-		safeHeaders.delete("x-middleware-subrequest");
+	const safeHeaders = new Headers(request.headers);
+	let modified = false;
+
+	for (const key of Array.from(safeHeaders.keys())) {
+		if (key.toLowerCase().startsWith("x-")) {
+			safeHeaders.delete(key);
+			modified = true;
+		}
+	}
+
+	if (modified) {
 		currentRequest = new NextRequest(request, { headers: safeHeaders });
 	}
 
@@ -48,6 +65,81 @@ export default function proxy(request: NextRequest) {
 				headers: currentRequest.headers,
 			},
 		});
+	}
+
+	// ── Admin Route Protection ────────────────────────────────────────
+	if (isProtectedRoute(pathname)) {
+		let supabaseResponse = NextResponse.next({
+			request: currentRequest,
+		});
+
+		const supabase = createServerClient(
+			process.env.NEXT_PUBLIC_SUPABASE_URL!,
+			process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY!,
+			{
+				cookies: {
+					getAll() {
+						return currentRequest.cookies.getAll();
+					},
+					setAll(cookiesToSet) {
+						cookiesToSet.forEach(({ name, value }) => currentRequest.cookies.set(name, value));
+						supabaseResponse = NextResponse.next({
+							request: currentRequest,
+						});
+						cookiesToSet.forEach(({ name, value, options }) =>
+							supabaseResponse.cookies.set(name, value, options),
+						);
+					},
+				},
+			},
+		);
+
+		try {
+			const {
+				data: { user },
+			} = await supabase.auth.getUser();
+
+			let isAdmin = false;
+			if (user) {
+				const { data: profile } = await supabase
+					.from("profiles")
+					.select("role")
+					.eq("id", user.id)
+					.single();
+
+				isAdmin = profile?.role === "admin";
+			}
+
+			if (!user || !isAdmin) {
+				const segments = pathname.split("/");
+				const locale = ["de", "en", "el"].includes(segments[1]) ? segments[1] : "de";
+				const redirectUrl = currentRequest.nextUrl.clone();
+				redirectUrl.pathname = `/${locale}/admin/login`;
+				return NextResponse.redirect(redirectUrl);
+			}
+
+			// Pass through to next-intl, but merge cookies/headers from supabaseResponse
+			const intlResponse = intlMiddleware(currentRequest);
+			supabaseResponse.cookies.getAll().forEach((cookie) => {
+				intlResponse.cookies.set(cookie.name, cookie.value, {
+					path: cookie.path,
+					domain: cookie.domain,
+					secure: cookie.secure,
+					sameSite: cookie.sameSite,
+					expires: cookie.expires,
+					httpOnly: cookie.httpOnly,
+					maxAge: cookie.maxAge,
+				});
+			});
+			return intlResponse;
+		} catch (error) {
+			console.error("[proxy/admin-auth] Error validating admin session:", error);
+			const segments = pathname.split("/");
+			const locale = ["de", "en", "el"].includes(segments[1]) ? segments[1] : "de";
+			const redirectUrl = currentRequest.nextUrl.clone();
+			redirectUrl.pathname = `/${locale}/admin/login`;
+			return NextResponse.redirect(redirectUrl);
+		}
 	}
 
 	// ── Delegate to next-intl for all other routes ────────────────────
