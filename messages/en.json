@@ -407,5 +407,18 @@
 		"accept": "Accept all",
 		"decline": "Necessary only",
 		"privacy": "Privacy Policy"
+	},
+	"Admin": {
+		"loginTitle": "Admin Portal — Login",
+		"email": "Email Address",
+		"password": "Password",
+		"signIn": "Sign In",
+		"signingIn": "Signing In...",
+		"logout": "Logout",
+		"unauthorized": "Access denied. Admin role required.",
+		"invalidCredentials": "Invalid email or password.",
+		"unexpectedError": "An unexpected error occurred.",
+		"welcome": "Welcome to the Admin Portal!",
+		"welcomeDescription": "You have successfully logged in as an administrator. Use this portal to manage appointments, services, and the chatbot knowledge base."
 	}
 }

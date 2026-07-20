@@ -407,5 +407,18 @@
 		"accept": "Alle akzeptieren",
 		"decline": "Nur notwendige",
 		"privacy": "Datenschutzerklärung"
+	},
+	"Admin": {
+		"loginTitle": "Admin Portal — Login",
+		"email": "E-Mail",
+		"password": "Passwort",
+		"signIn": "Anmelden",
+		"signingIn": "Wird angemeldet...",
+		"logout": "Abmelden",
+		"unauthorized": "Kein Administrator-Zugriff.",
+		"invalidCredentials": "Ungültige E-Mail-Adresse oder Passwort.",
+		"unexpectedError": "Ein unerwarteter Fehler ist aufgetreten.",
+		"welcome": "Willkommen im Admin-Bereich!",
+		"welcomeDescription": "Sie sind erfolgreich als Administrator angemeldet. Verwenden Sie dieses Portal, um Termine, Services und die Chatbot-Wissensdatenbank zu verwalten."
 	}
 }
