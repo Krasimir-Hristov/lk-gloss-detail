@@ -409,7 +409,15 @@
 		"privacy": "Privacy Policy"
 	},
 	"Admin": {
-		"loginTitle": "Admin Portal — Login",
+		"loginTitle": "Admin Login",
+		"loginSubtitle": "Access the LK Gloss & Detail Dashboard",
+		"emailLabel": "Email Address",
+		"emailPlaceholder": "admin@lkglossanddetail.de",
+		"passwordLabel": "Password",
+		"passwordPlaceholder": "••••••••",
+		"submitButton": "Sign In",
+		"loggingIn": "Signing In...",
+		"logoutButton": "Sign Out",
 		"email": "Email Address",
 		"password": "Password",
 		"signIn": "Sign In",
@@ -419,6 +427,47 @@
 		"invalidCredentials": "Invalid email or password.",
 		"unexpectedError": "An unexpected error occurred.",
 		"welcome": "Welcome to the Admin Portal!",
-		"welcomeDescription": "You have successfully logged in as an administrator. Use this portal to manage appointments, services, and the chatbot knowledge base."
+		"welcomeDescription": "You have successfully logged in as an administrator. Use this portal to manage appointments, services, and the chatbot knowledge base.",
+		"errors": {
+			"invalid_credentials": "The email or password you entered is incorrect.",
+			"not_admin": "You do not have administrative access.",
+			"server_error": "An internal server error occurred. Please try again.",
+			"validation_error": "Please fill in all fields correctly.",
+			"emailRequired": "Email address is required.",
+			"invalidEmail": "Valid email address is required.",
+			"passwordTooShort": "Password must be at least 6 characters.",
+			"too_many_attempts": "Too many login attempts. Please try again in a minute."
+		},
+		"dashboard": {
+			"title": "Admin Dashboard",
+			"welcome": "Welcome back, Admin!",
+			"subtitle": "Overview of appointments, services, and chatbot knowledge base.",
+			"error": {
+				"title": "Database Error",
+				"message": "Failed to load database statistics. Please verify database connection and that RLS migrations have been applied."
+			},
+			"cards": {
+				"appointments": {
+					"title": "Appointments",
+					"desc": "Total bookings registered"
+				},
+				"services": {
+					"title": "Active Services",
+					"desc": "Available catalog entries"
+				},
+				"contact": {
+					"title": "Contact Submissions",
+					"desc": "Total inquiries received"
+				},
+				"chatbot": {
+					"title": "Chatbot Knowledge",
+					"desc": "Vectorized QA pairs"
+				}
+			},
+			"overview": {
+				"title": "Dashboard Overview",
+				"text": "This admin panel allows you to monitor and manage all aspects of the LK Gloss & Detail website. In the next phases of development, you will be able to review booking calendars, modify service pricing tiers, and train the AI chatbot with new knowledge database entries directly."
+			}
+		}
 	}
 }

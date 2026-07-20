@@ -2,36 +2,29 @@
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { motion } from "framer-motion";
+import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
 import * as React from "react";
 import { useForm } from "react-hook-form";
-import { z } from "zod";
 
-import { login } from "@/actions/auth";
+import ErrorBoundary from "@/components/shared/ErrorBoundary";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { useRouter } from "@/i18n/routing";
+import { loginAdmin } from "@/features/admin/actions/auth";
+import {
+	LoginSchema,
+	type AuthErrorType,
+	type LoginFormValues,
+} from "@/features/admin/schemas/auth.schema";
 
-const LoginSchema = z.object({
-	email: z.string().email({ message: "invalidEmail" }),
-	password: z.string().min(6, { message: "passwordTooShort" }),
-});
-
-type LoginFormValues = z.infer<typeof LoginSchema>;
-
-type PageProps = {
-	params: Promise<{ locale: string }>;
-};
-
-const AdminLoginPage: React.FC<PageProps> = ({ params }) => {
-	const { locale } = React.use(params);
+const AdminLoginPage: React.FC = () => {
 	const t = useTranslations("Admin");
 	const router = useRouter();
 
-	const [errorMsg, setErrorMsg] = React.useState<string | null>(null);
-	const [isPending, startTransition] = React.useTransition();
+	const [isSubmitting, setIsSubmitting] = React.useState(false);
+	const [serverError, setServerError] = React.useState<AuthErrorType | null>(null);
 
 	const {
 		register,
@@ -45,31 +38,25 @@ const AdminLoginPage: React.FC<PageProps> = ({ params }) => {
 		},
 	});
 
-	const onSubmit = (values: LoginFormValues) => {
-		setErrorMsg(null);
-		startTransition(async () => {
-			try {
-				const res = await login({
-					email: values.email,
-					password: values.password,
-					locale,
-				});
+	const onSubmit = async (values: LoginFormValues) => {
+		setIsSubmitting(true);
+		setServerError(null);
 
-				if (res.success) {
-					router.push("/admin");
-					router.refresh();
-				} else {
-					if (res.error === "INVALID_CREDENTIALS" || res.error === "NOT_ADMIN") {
-						setErrorMsg(t("invalidCredentials"));
-					} else {
-						setErrorMsg(t("unexpectedError"));
-					}
-				}
-			} catch (err) {
-				console.error("[login_page] Submission error:", err);
-				setErrorMsg(t("unexpectedError"));
+		try {
+			const result = await loginAdmin(values);
+
+			if (result.success) {
+				router.push("/admin");
+				router.refresh();
+			} else {
+				setServerError(result.error);
 			}
-		});
+		} catch (error) {
+			console.error("[login/submit] Unexpected login error:", error);
+			setServerError("server_error");
+		} finally {
+			setIsSubmitting(false);
+		}
 	};
 
 	return (
@@ -86,69 +73,63 @@ const AdminLoginPage: React.FC<PageProps> = ({ params }) => {
 							{t("loginTitle")}
 						</CardTitle>
 						<CardDescription className="text-sm text-[#ccc3d9]">
-							LK Gloss & Detail Administration
+							{t("loginSubtitle")}
 						</CardDescription>
 					</CardHeader>
 					<CardContent>
 						<form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
-							{errorMsg ? (
+							{serverError ? (
 								<motion.div
 									initial={{ opacity: 0, scale: 0.95 }}
 									animate={{ opacity: 1, scale: 1 }}
 									className="bg-destructive/10 border-destructive/30 text-destructive rounded-lg border p-3 text-center text-sm font-semibold"
 								>
-									{errorMsg}
+									{t(`errors.${serverError}`)}
 								</motion.div>
 							) : null}
 
 							<div className="space-y-2">
 								<Label htmlFor="email" className="text-sm font-semibold text-[#e5e2e1]">
-									{t("email")}
+									{t("emailLabel")}
 								</Label>
 								<Input
 									id="email"
 									type="email"
-									placeholder="admin@lkglossanddetail.de"
+									placeholder={t("emailPlaceholder")}
 									{...register("email")}
-									disabled={isPending}
+									disabled={isSubmitting}
 									className="border-white/10 bg-black/50 text-[#e5e2e1] placeholder-white/20 transition-all focus:border-[#7b2dff] focus:ring-2 focus:ring-[#7b2dff]/20"
 								/>
-								{errors.email ? (
-									<p className="text-destructive text-xs">
-										{errors.email.message === "invalidEmail"
-											? "Bitte geben Sie eine gültige E-Mail-Adresse ein."
-											: errors.email.message}
-									</p>
+								{errors.email?.message ? (
+									<p className="text-destructive text-xs">{t(`errors.${errors.email.message}`)}</p>
 								) : null}
 							</div>
 
 							<div className="space-y-2">
 								<Label htmlFor="password" className="text-sm font-semibold text-[#e5e2e1]">
-									{t("password")}
+									{t("passwordLabel")}
 								</Label>
 								<Input
 									id="password"
 									type="password"
-									placeholder="••••••••"
+									placeholder={t("passwordPlaceholder")}
 									{...register("password")}
-									disabled={isPending}
+									disabled={isSubmitting}
 									className="border-white/10 bg-black/50 text-[#e5e2e1] placeholder-white/20 transition-all focus:border-[#7b2dff] focus:ring-2 focus:ring-[#7b2dff]/20"
 								/>
-								{errors.password ? (
+								{errors.password?.message ? (
 									<p className="text-destructive text-xs">
-										{errors.password.message === "passwordTooShort"
-											? "Das Passwort muss mindestens 6 Zeichen lang sein."
-											: errors.password.message}
+										{t(`errors.${errors.password.message}`)}
 									</p>
 								) : null}
 							</div>
 
 							<Button
 								type="submit"
-								disabled={isPending}
-								className="w-full bg-linear-to-r from-[#7B2DFF] to-[#C026FF] py-6 font-bold text-white shadow-[0px_0px_15px_rgba(192,38,255,0.4)] transition-all hover:shadow-[0px_0px_25px_rgba(192,38,255,0.6)] active:scale-98 disabled:opacity-50"
+								disabled={isSubmitting}
+								className="w-full cursor-pointer bg-linear-to-r from-[#7B2DFF] to-[#C026FF] py-6 font-bold text-white shadow-[0px_0px_15px_rgba(192,38,255,0.4)] transition-all hover:shadow-[0px_0px_25px_rgba(192,38,255,0.6)] active:scale-98 disabled:opacity-50"
 							>
-								{isPending ? t("signingIn") : t("signIn")}
+								{isSubmitting ? t("loggingIn") : t("submitButton")}
 							</Button>
 						</form>
 					</CardContent>
@@ -158,4 +139,12 @@ const AdminLoginPage: React.FC<PageProps> = ({ params }) => {
 	);
 };
 
-export default AdminLoginPage;
+const LoginPageWithBoundary: React.FC = () => {
+	return (
+		<ErrorBoundary>
+			<AdminLoginPage />
+		</ErrorBoundary>
+	);
+};
+
+export default LoginPageWithBoundary;

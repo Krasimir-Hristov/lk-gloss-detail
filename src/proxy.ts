@@ -2,20 +2,35 @@ import { createServerClient } from "@supabase/ssr";
 import { NextRequest, NextResponse } from "next/server";
 import createMiddleware from "next-intl/middleware";
 
+import { isAdminUser } from "@/features/admin/utils/auth";
 import { rateLimit, ASSESSMENT_RATE_LIMIT } from "@/lib/rate-limit";
 
 import { routing } from "./i18n/routing";
 
 const intlMiddleware = createMiddleware(routing);
 
+const isProtectedRoute = (pathname: string) => {
+	// Matches /admin, /admin/dashboard, /de/admin, /en/admin/dashboard, etc.
+	// But NOT /admin/login, /de/admin/login, /api/..., or static assets.
+	const adminPattern = /^\/(?:[a-z]{2}\/)?admin(?:\/.*)?$/;
+	const loginPattern = /^\/(?:[a-z]{2}\/)?admin\/login$/;
+	return adminPattern.test(pathname) && !loginPattern.test(pathname);
+};
+
+const getLocaleFromPathname = (pathname: string): (typeof routing.locales)[number] => {
+	const segments = pathname.split("/");
+	const potentialLocale = segments[1];
+	const isLocale = (routing.locales as readonly string[]).includes(potentialLocale);
+	return isLocale ? (potentialLocale as (typeof routing.locales)[number]) : routing.defaultLocale;
+};
+
 export default async function proxy(request: NextRequest) {
 	// ── Prevent security bypass (CVE-2025-29927 Mitigation) ──────────────────
-	// Strip all x- headers from incoming external client requests to prevent spoofing
+	// Strip only x-middleware-subrequest from external client requests to preserve
+	// other x-* headers like x-forwarded-for for rate limiting.
 	const safeHeaders = new Headers(request.headers);
-	for (const [name] of request.headers.entries()) {
-		if (name.toLowerCase().startsWith("x-")) {
-			safeHeaders.delete(name);
-		}
+	if (request.headers.has("x-middleware-subrequest")) {
+		safeHeaders.delete("x-middleware-subrequest");
 	}
 
 	const { pathname } = request.nextUrl;
@@ -24,11 +39,12 @@ export default async function proxy(request: NextRequest) {
 	const currentRequest = new NextRequest(request, { headers: safeHeaders });
 	const ip = currentRequest.headers.get("x-forwarded-for") ?? "unknown";
 
-	// ── Protect admin routes ──────────────────────────────────────────
-	const isLoginPage = /^\/(de|en|el)\/admin\/login\/?$/.test(pathname);
-	const isAdminRoute = /^\/(de|en|el)\/admin(\/|$)/.test(pathname);
+	// ── Admin Route Protection ────────────────────────────────────────
+	if (isProtectedRoute(pathname)) {
+		let supabaseResponse = NextResponse.next({
+			request: currentRequest,
+		});
 
-	if (isAdminRoute && !isLoginPage) {
 		const supabase = createServerClient(
 			process.env.NEXT_PUBLIC_SUPABASE_URL!,
 			process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY!,
@@ -38,13 +54,13 @@ export default async function proxy(request: NextRequest) {
 						return currentRequest.cookies.getAll();
 					},
 					setAll(cookiesToSet) {
-						try {
-							for (const { name, value } of cookiesToSet) {
-								currentRequest.cookies.set(name, value);
-							}
-						} catch {
-							// Ignored in Edge middleware context
-						}
+						cookiesToSet.forEach(({ name, value }) => currentRequest.cookies.set(name, value));
+						supabaseResponse = NextResponse.next({
+							request: currentRequest,
+						});
+						cookiesToSet.forEach(({ name, value, options }) =>
+							supabaseResponse.cookies.set(name, value, options),
+						);
 					},
 				},
 			},
@@ -55,29 +71,36 @@ export default async function proxy(request: NextRequest) {
 				data: { user },
 			} = await supabase.auth.getUser();
 
-			if (!user) {
-				const match = pathname.match(/^\/(de|en|el)/);
-				const locale = match ? match[1] : "de";
-				return NextResponse.redirect(new URL(`/${locale}/admin/login`, request.url));
+			const isAdmin = user ? await isAdminUser(supabase, user.id) : false;
+
+			if (!user || !isAdmin) {
+				const locale = getLocaleFromPathname(pathname);
+				const redirectUrl = currentRequest.nextUrl.clone();
+				redirectUrl.pathname = `/${locale}/admin/login`;
+				return NextResponse.redirect(redirectUrl);
 			}
 
-			const { data: profile } = await supabase
-				.from("profiles")
-				.select("role")
-				.eq("id", user.id)
-				.single();
-
-			if (!profile || profile.role !== "admin") {
-				await supabase.auth.signOut();
-				const match = pathname.match(/^\/(de|en|el)/);
-				const locale = match ? match[1] : "de";
-				return NextResponse.redirect(new URL(`/${locale}/admin/login`, request.url));
-			}
-		} catch (err) {
-			console.error("[proxy] Auth check failed:", err);
-			const match = pathname.match(/^\/(de|en|el)/);
-			const locale = match ? match[1] : "de";
-			return NextResponse.redirect(new URL(`/${locale}/admin/login`, request.url));
+			// Pass through to next-intl, but merge cookies/headers from supabaseResponse
+			const intlResponse = intlMiddleware(currentRequest);
+			supabaseResponse.cookies.getAll().forEach((cookie) => {
+				intlResponse.cookies.set(cookie.name, cookie.value, {
+					path: cookie.path,
+					domain: cookie.domain,
+					secure: cookie.secure,
+					sameSite: cookie.sameSite,
+					expires: cookie.expires,
+					httpOnly: cookie.httpOnly,
+					maxAge: cookie.maxAge,
+				});
+			});
+			intlResponse.headers.set("x-pathname", pathname);
+			return intlResponse;
+		} catch (error) {
+			console.error("[proxy/admin-auth] Error validating admin session:", error);
+			const locale = getLocaleFromPathname(pathname);
+			const redirectUrl = currentRequest.nextUrl.clone();
+			redirectUrl.pathname = `/${locale}/admin/login`;
+			return NextResponse.redirect(redirectUrl);
 		}
 	}
 

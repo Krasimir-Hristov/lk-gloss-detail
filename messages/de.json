@@ -409,7 +409,15 @@
 		"privacy": "Datenschutzerklärung"
 	},
 	"Admin": {
-		"loginTitle": "Admin Portal — Login",
+		"loginTitle": "Admin-Anmeldung",
+		"loginSubtitle": "Zugang zum LK Gloss & Detail Dashboard",
+		"emailLabel": "E-Mail-Adresse",
+		"emailPlaceholder": "admin@lkglossanddetail.de",
+		"passwordLabel": "Passwort",
+		"passwordPlaceholder": "••••••••",
+		"submitButton": "Einloggen",
+		"loggingIn": "Wird angemeldet...",
+		"logoutButton": "Abmelden",
 		"email": "E-Mail",
 		"password": "Passwort",
 		"signIn": "Anmelden",
@@ -419,6 +427,47 @@
 		"invalidCredentials": "Ungültige E-Mail-Adresse oder Passwort.",
 		"unexpectedError": "Ein unerwarteter Fehler ist aufgetreten.",
 		"welcome": "Willkommen im Admin-Bereich!",
-		"welcomeDescription": "Sie sind erfolgreich als Administrator angemeldet. Verwenden Sie dieses Portal, um Termine, Services und die Chatbot-Wissensdatenbank zu verwalten."
+		"welcomeDescription": "Sie sind erfolgreich als Administrator angemeldet. Verwenden Sie dieses Portal, um Termine, Services und die Chatbot-Wissensdatenbank zu verwalten.",
+		"errors": {
+			"invalid_credentials": "Die eingegebene E-Mail-Adresse oder das Passwort ist falsch.",
+			"not_admin": "Sie haben keine Administratorrechte.",
+			"server_error": "Ein interner Serverfehler ist aufgetreten. Bitte versuchen Sie es erneut.",
+			"validation_error": "Bitte füllen Sie alle Felder korrekt aus.",
+			"emailRequired": "E-Mail-Adresse ist erforderlich.",
+			"invalidEmail": "Gültige E-Mail-Adresse erforderlich.",
+			"passwordTooShort": "Das Passwort muss mindestens 6 Zeichen lang sein.",
+			"too_many_attempts": "Zu viele Login-Versuche. Bitte versuchen Sie es in einer Minute erneut."
+		},
+		"dashboard": {
+			"title": "Admin-Dashboard",
+			"welcome": "Willkommen zurück, Administrator!",
+			"subtitle": "Übersicht über Termine, Leistungen und die Chatbot-Wissensdatenbank.",
+			"error": {
+				"title": "Datenbankfehler",
+				"message": "Fehler beim Laden der Datenbankstatistiken. Bitte überprüfen Sie die Verbindung zur Datenbank und ob die RLS-Migrationen angewendet wurden."
+			},
+			"cards": {
+				"appointments": {
+					"title": "Termine",
+					"desc": "Registrierte Buchungen insgesamt"
+				},
+				"services": {
+					"title": "Aktive Leistungen",
+					"desc": "Verfügbare Katalogeinträge"
+				},
+				"contact": {
+					"title": "Kontaktanfragen",
+					"desc": "Erhaltene Anfragen insgesamt"
+				},
+				"chatbot": {
+					"title": "Chatbot-Wissen",
+					"desc": "Vektorisierte Q&A-Paare"
+				}
+			},
+			"overview": {
+				"title": "Dashboard-Übersicht",
+				"text": "Dieses Admin-Panel ermöglicht es Ihnen, alle Aspekte der LK Gloss & Detail-Website zu überwachen und zu verwalten. In den nächsten Entwicklungsphasen können Sie Buchungskalender einsehen, Preisklassen für Dienstleistungen anpassen und die KI-Wissensdatenbank direkt trainieren."
+			}
+		}
 	}
 }
