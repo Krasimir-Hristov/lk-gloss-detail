@@ -12,6 +12,7 @@ import {
 	isSameDay,
 	addDays,
 } from "date-fns";
+import { de, el, enUS } from "date-fns/locale";
 import {
 	ChevronLeft,
 	ChevronRight,
@@ -19,10 +20,16 @@ import {
 	CalendarOff,
 	Eye,
 } from "lucide-react";
-import { useTranslations } from "next-intl";
+import { useTranslations, useLocale } from "next-intl";
 import React, { useState } from "react";
 
 import type { AdminAppointment, BlockedDateItem } from "@/features/admin/types/appointments.types";
+
+const localesMap = {
+	de,
+	el,
+	en: enUS,
+};
 
 interface AppointmentsCalendarViewProps {
 	appointments: AdminAppointment[];
@@ -36,6 +43,8 @@ export const AppointmentsCalendarView: React.FC<AppointmentsCalendarViewProps> =
 	onViewDetails,
 }) => {
 	const t = useTranslations("Admin.appointments");
+	const locale = useLocale();
+	const activeLocale = localesMap[locale as keyof typeof localesMap] || enUS;
 
 	const [currentMonth, setCurrentMonth] = useState<Date>(new Date());
 	const [selectedDate, setSelectedDate] = useState<Date>(new Date());
@@ -63,6 +72,12 @@ export const AppointmentsCalendarView: React.FC<AppointmentsCalendarViewProps> =
 	// Get blocked info for selected day
 	const selectedDayBlocked = blockedDates.find((b) => b.blocked_date === selectedDateStr);
 
+	// Generate weekday names dynamically using active locale
+	const weekdayNames = [0, 1, 2, 3, 4, 5, 6].map((idx) => {
+		const d = addDays(startDate, idx);
+		return format(d, "EEE", { locale: activeLocale });
+	});
+
 	return (
 		<div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
 			{/* Calendar Grid */}
@@ -70,7 +85,7 @@ export const AppointmentsCalendarView: React.FC<AppointmentsCalendarViewProps> =
 				{/* Calendar Header Navigation */}
 				<div className="mb-6 flex items-center justify-between">
 					<h2 className="Montserrat text-xl font-bold text-white">
-						{format(currentMonth, "MMMM yyyy")}
+						{format(currentMonth, "MMMM yyyy", { locale: activeLocale })}
 					</h2>
 					<div className="flex items-center gap-2">
 						<button
@@ -86,7 +101,7 @@ export const AppointmentsCalendarView: React.FC<AppointmentsCalendarViewProps> =
 							onClick={() => setCurrentMonth(new Date())}
 							className="cursor-pointer rounded-lg border border-neutral-800 bg-neutral-950 px-3 py-2 text-xs font-semibold text-neutral-300 transition-colors hover:border-purple-500/50 hover:text-white"
 						>
-							Today
+							{t("today")}
 						</button>
 						<button
 							type="button"
@@ -101,13 +116,9 @@ export const AppointmentsCalendarView: React.FC<AppointmentsCalendarViewProps> =
 
 				{/* Weekday Names */}
 				<div className="mb-2 grid grid-cols-7 text-center text-xs font-semibold tracking-wider text-neutral-500 uppercase">
-					<div>Mon</div>
-					<div>Tue</div>
-					<div>Wed</div>
-					<div>Thu</div>
-					<div>Fri</div>
-					<div>Sat</div>
-					<div>Sun</div>
+					{weekdayNames.map((name, i) => (
+						<div key={i}>{name}</div>
+					))}
 				</div>
 
 				{/* Days Grid */}
@@ -172,7 +183,7 @@ export const AppointmentsCalendarView: React.FC<AppointmentsCalendarViewProps> =
 						{t("table.date")}
 					</span>
 					<h3 className="Montserrat text-xl font-bold text-white">
-						{format(selectedDate, "EEEE, MMMM d, yyyy")}
+						{format(selectedDate, "EEEE, MMMM d, yyyy", { locale: activeLocale })}
 					</h3>
 				</div>
 

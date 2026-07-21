@@ -487,6 +487,7 @@
 			"subtitle": "Manage incoming bookings, update appointment statuses, and block unavailable calendar slots.",
 			"refresh": "Refresh",
 			"blockDate": "Block Date",
+			"today": "Today",
 			"calendar": "Calendar",
 			"listView": "List View",
 			"searchPlaceholder": "Search by client name, email, phone, car, or date...",

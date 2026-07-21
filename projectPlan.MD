@@ -373,7 +373,7 @@
 - [x] List view with filters (date, status)
 - [x] Appointment detail modal (client info, services)
 - [x] Status update (pending → confirmed → completed / cancelled)
-- [x] Manual slot blocking: pick date + time → add to `blocked_slots`
+- [x] Manual date blocking: select date → add to `blocked_dates`
 - [x] Delete/cancel/edit appointment.
 
 ### 11.3 Services Management full CRUD operations

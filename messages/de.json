@@ -487,6 +487,7 @@
 			"subtitle": "Verwalten Sie eingehende Buchungen, aktualisieren Sie Termin-Status und blockieren Sie nicht verfügbare Kalender-Slots.",
 			"refresh": "Aktualisieren",
 			"blockDate": "Datum blockieren",
+			"today": "Heute",
 			"calendar": "Kalender",
 			"listView": "Listenansicht",
 			"searchPlaceholder": "Suchen nach Kundenname, E-Mail, Telefon, Auto oder Datum...",

@@ -15,9 +15,31 @@ import { createClient } from "@/lib/supabase/server";
 import type {
 	AdminAppointment,
 	AppointmentServiceItem,
+	AppointmentStatus,
 } from "@/features/admin/types/appointments.types";
 
 export type ActionResult<T> = { success: true; data: T } | { success: false; error: string };
+
+const validStatuses: readonly AppointmentStatus[] = [
+	"pending",
+	"confirmed",
+	"completed",
+	"cancelled",
+];
+
+interface SupabaseServiceRecord {
+	id: string;
+	name: string | null;
+	price_small: number | null;
+	price_medium: number | null;
+	price_large: number | null;
+	price_suv: number | null;
+	duration_hours: number | null;
+}
+
+interface SupabaseAppointmentServiceJoin {
+	services: SupabaseServiceRecord | null;
+}
 
 const revalidateAdminAppointments = () => {
 	for (const loc of routing.locales) {
@@ -81,10 +103,13 @@ export const getAdminAppointments = async (): Promise<ActionResult<AdminAppointm
 		const appointments: AdminAppointment[] = (data || []).map((row) => {
 			const servicesList: AppointmentServiceItem[] = [];
 
-			if (Array.isArray(row.appointment_services)) {
-				for (const item of row.appointment_services) {
-					// eslint-disable-next-line @typescript-eslint/no-explicit-any
-					const rawService = (item as any).services;
+			const rawJoins = row.appointment_services as unknown as
+				| SupabaseAppointmentServiceJoin[]
+				| null;
+
+			if (Array.isArray(rawJoins)) {
+				for (const item of rawJoins) {
+					const rawService = item.services;
 					if (rawService) {
 						servicesList.push({
 							id: rawService.id,
@@ -99,6 +124,11 @@ export const getAdminAppointments = async (): Promise<ActionResult<AdminAppointm
 				}
 			}
 
+			const statusVal = row.status as AppointmentStatus;
+			const safeStatus: AppointmentStatus = validStatuses.includes(statusVal)
+				? statusVal
+				: "confirmed";
+
 			return {
 				id: row.id,
 				first_name: row.first_name,
@@ -107,8 +137,7 @@ export const getAdminAppointments = async (): Promise<ActionResult<AdminAppointm
 				phone: row.phone,
 				car_description: row.car_description,
 				booking_date: row.booking_date,
-				// eslint-disable-next-line @typescript-eslint/no-explicit-any
-				status: (row.status as any) || "confirmed",
+				status: safeStatus,
 				created_at: row.created_at,
 				services: servicesList,
 			};
@@ -285,6 +314,14 @@ export const editAppointment = async (input: EditAppointmentInput): Promise<Acti
 export const getAvailableServices = async (): Promise<ActionResult<AppointmentServiceItem[]>> => {
 	try {
 		const supabase = await createClient();
+
+		const {
+			data: { user },
+		} = await supabase.auth.getUser();
+
+		if (!user || !(await isAdminUser(supabase, user.id))) {
+			return { success: false, error: "Unauthorized access" };
+		}
 
 		const { data, error } = await supabase
 			.from("services")

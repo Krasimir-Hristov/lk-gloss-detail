@@ -1,7 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { Calendar, List, CalendarOff, RefreshCw } from "lucide-react";
+import { Calendar, List, CalendarOff, RefreshCw, AlertCircle } from "lucide-react";
 import { useTranslations } from "next-intl";
 import React, { useState, useEffect, useCallback } from "react";
 
@@ -43,6 +43,7 @@ export const AppointmentsManager: React.FC<AppointmentsManagerProps> = ({
 
 	const [viewMode, setViewMode] = useState<"calendar" | "list">("calendar");
 	const [isLoading, setIsLoading] = useState(false);
+	const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
 	// Modals state
 	const [detailAppointment, setDetailAppointment] = useState<AdminAppointment | null>(null);
@@ -56,6 +57,7 @@ export const AppointmentsManager: React.FC<AppointmentsManagerProps> = ({
 	// Refresh data function
 	const refreshData = useCallback(async () => {
 		setIsLoading(true);
+		setErrorMessage(null);
 		try {
 			const [apptsRes, blockedRes] = await Promise.all([getAdminAppointments(), getBlockedDates()]);
 
@@ -63,6 +65,7 @@ export const AppointmentsManager: React.FC<AppointmentsManagerProps> = ({
 			if (blockedRes.success) setBlockedDates(blockedRes.data);
 		} catch (err) {
 			console.error("[AppointmentsManager] Error refreshing data:", err);
+			setErrorMessage("Failed to refresh appointments");
 		} finally {
 			setIsLoading(false);
 		}
@@ -99,6 +102,7 @@ export const AppointmentsManager: React.FC<AppointmentsManagerProps> = ({
 		if (!deletingId || isDeleting) return;
 
 		setIsDeleting(true);
+		setErrorMessage(null);
 		try {
 			const res = await deleteAppointment(deletingId);
 			if (res.success) {
@@ -106,11 +110,11 @@ export const AppointmentsManager: React.FC<AppointmentsManagerProps> = ({
 				if (detailAppointment?.id === deletingId) setDetailAppointment(null);
 				if (editAppointment?.id === deletingId) setEditAppointment(null);
 			} else {
-				alert(res.error);
+				setErrorMessage(res.error);
 			}
 		} catch (err) {
 			console.error("[AppointmentsManager] Error deleting appointment:", err);
-			alert("Failed to delete appointment");
+			setErrorMessage("Failed to delete appointment");
 		} finally {
 			setIsDeleting(false);
 			setDeletingId(null);
@@ -176,6 +180,22 @@ export const AppointmentsManager: React.FC<AppointmentsManagerProps> = ({
 					</div>
 				</div>
 			</div>
+
+			{errorMessage ? (
+				<div className="flex items-center justify-between rounded-lg border border-rose-500/30 bg-rose-950/20 p-3.5 text-xs text-rose-400">
+					<div className="flex items-center gap-2">
+						<AlertCircle className="size-4 shrink-0" />
+						<span>{errorMessage}</span>
+					</div>
+					<button
+						type="button"
+						onClick={() => setErrorMessage(null)}
+						className="cursor-pointer text-xs font-bold text-rose-400 hover:underline"
+					>
+						Dismiss
+					</button>
+				</div>
+			) : null}
 
 			{/* Render Selected View */}
 			<motion.div
