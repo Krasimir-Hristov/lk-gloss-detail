@@ -362,19 +362,19 @@
 
 ### 11.1 Auth
 
-- [ ] Supabase Auth — email/password for admin only
-- [ ] Proxy.ts: protect `/admin/*` routes
-- [ ] Login page (`/admin/login`)
-- [ ] Logout button only visible on /admin/\* pages
+- [x] Supabase Auth — email/password for admin only
+- [x] Proxy.ts: protect `/admin/*` routes
+- [x] Login page (`/admin/login`)
+- [x] Logout button only visible on /admin/\* pages
 
 ### 11.2 Appointments View
 
-- [ ] Calendar view of all appointments (week/month toggle)
-- [ ] List view with filters (date, status)
-- [ ] Appointment detail modal (client info, services)
-- [ ] Status update (pending → confirmed → completed / cancelled)
-- [ ] Manual slot blocking: pick date + time → add to `blocked_slots`
-- [ ] Delete/cancel/edit appointment.
+- [x] Calendar view of all appointments (week/month toggle)
+- [x] List view with filters (date, status)
+- [x] Appointment detail modal (client info, services)
+- [x] Status update (pending → confirmed → completed / cancelled)
+- [x] Manual slot blocking: pick date + time → add to `blocked_slots`
+- [x] Delete/cancel/edit appointment.
 
 ### 11.3 Services Management full CRUD operations
 

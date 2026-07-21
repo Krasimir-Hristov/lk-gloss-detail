@@ -5,6 +5,7 @@ import React from "react";
 import { LanguageSwitcher } from "@/components/shared/LanguageSwitcher";
 import { logoutAdmin } from "@/features/admin/actions/auth";
 import { isAdminUser } from "@/features/admin/utils/auth";
+import { Link } from "@/i18n/routing";
 import { createClient } from "@/lib/supabase/server";
 
 interface AdminLayoutProps {
@@ -49,12 +50,18 @@ const AdminLayout: React.FC<AdminLayoutProps> = async ({ children, params }) => 
 						<div className="px-3 py-2 text-xs font-semibold tracking-wider text-neutral-500 uppercase">
 							{t("dashboard.sidebar.management")}
 						</div>
-						<div className="block rounded-md border border-purple-500/20 bg-neutral-900 px-3 py-2 text-sm font-medium text-neutral-400">
+						<Link
+							href="/admin"
+							className="block rounded-md border border-purple-500/20 bg-neutral-900 px-3 py-2 text-sm font-medium text-purple-300 transition-colors hover:bg-neutral-800"
+						>
 							{t("dashboard.sidebar.overview")}
-						</div>
-						<div className="block cursor-not-allowed rounded-md px-3 py-2 text-sm font-medium text-neutral-500">
+						</Link>
+						<Link
+							href="/admin/appointments"
+							className="block rounded-md px-3 py-2 text-sm font-medium text-neutral-400 transition-colors hover:bg-neutral-900 hover:text-white"
+						>
 							{t("dashboard.sidebar.appointments")}
-						</div>
+						</Link>
 						<div className="block cursor-not-allowed rounded-md px-3 py-2 text-sm font-medium text-neutral-500">
 							{t("dashboard.sidebar.servicesCrud")}
 						</div>

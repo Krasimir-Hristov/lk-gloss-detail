@@ -408,6 +408,12 @@
 		"decline": "Nur notwendige",
 		"privacy": "Datenschutzerklärung"
 	},
+	"ConfirmModal": {
+		"deleteTitle": "Termin löschen",
+		"deleteDescription": "Sind Sie sicher, dass Sie diesen Termin löschen möchten? Diese Aktion kann nicht rückgängig gemacht werden.",
+		"confirm": "Löschen bestätigen",
+		"cancel": "Abbrechen"
+	},
 	"Admin": {
 		"loginTitle": "Admin-Anmeldung",
 		"loginSubtitle": "Zugang zum LK Gloss & Detail Dashboard",
@@ -474,6 +480,71 @@
 				"appointments": "Termine",
 				"servicesCrud": "Dienstleistungen",
 				"chatbotKb": "Chatbot-Wissen"
+			}
+		},
+		"appointments": {
+			"title": "Termine & Buchungskalender",
+			"subtitle": "Verwalten Sie eingehende Buchungen, aktualisieren Sie Termin-Status und blockieren Sie nicht verfügbare Kalender-Slots.",
+			"refresh": "Aktualisieren",
+			"blockDate": "Datum blockieren",
+			"calendar": "Kalender",
+			"listView": "Listenansicht",
+			"searchPlaceholder": "Suchen nach Kundenname, E-Mail, Telefon, Auto oder Datum...",
+			"filterLabel": "Filter:",
+			"allStatuses": "Alle Status",
+			"noAppointments": "Keine Termine entsprechen den ausgewählten Kriterien.",
+			"table": {
+				"date": "Datum",
+				"client": "Kunde",
+				"services": "Leistungen",
+				"total": "Gesamt",
+				"status": "Status",
+				"actions": "Aktionen"
+			},
+			"status": {
+				"pending": "Ausstehend",
+				"confirmed": "Bestätigt",
+				"completed": "Abgeschlossen",
+				"cancelled": "Storniert"
+			},
+			"modals": {
+				"details": {
+					"title": "Buchungsdetails",
+					"clientName": "Kundenname",
+					"email": "E-Mail-Adresse",
+					"phone": "Telefon",
+					"car": "Fahrzeugbeschreibung",
+					"bookedServices": "Gebuchte Leistungen",
+					"total": "Gesamt",
+					"updateStatus": "Status aktualisieren",
+					"delete": "Löschen",
+					"edit": "Bearbeiten",
+					"close": "Schließen"
+				},
+				"edit": {
+					"title": "Termin bearbeiten",
+					"firstName": "Vorname",
+					"lastName": "Nachname",
+					"email": "E-Mail-Adresse",
+					"phone": "Telefonnummer",
+					"car": "Fahrzeugbeschreibung",
+					"date": "Buchungsdatum",
+					"status": "Status",
+					"services": "Leistungen",
+					"cancel": "Abbrechen",
+					"save": "Änderungen speichern"
+				},
+				"block": {
+					"title": "Blockierte Termine",
+					"subtitle": "Buchungen an bestimmten Kalendertagen verhindern",
+					"blockNew": "Neues Datum blockieren",
+					"selectDate": "Datum auswählen",
+					"reason": "Grund (optional)",
+					"submit": "Datum blockieren",
+					"currentlyBlocked": "Derzeit blockiert",
+					"noBlocked": "Derzeit sind keine Termine blockiert.",
+					"done": "Fertig"
+				}
 			}
 		}
 	}
