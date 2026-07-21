@@ -31,7 +31,7 @@ BEGIN
   -- 2. Insert appointment (TOCTOU-safe: unique constraint catches concurrent bookings)
   BEGIN
     INSERT INTO public.appointments (first_name, last_name, email, phone, car_description, booking_date, status)
-    VALUES (p_first_name, p_last_name, p_email, p_phone, p_car_description, p_booking_date, 'confirmed')
+    VALUES (p_first_name, p_last_name, p_email, p_phone, p_car_description, p_booking_date, 'pending')
     RETURNING id INTO v_appointment_id;
   EXCEPTION WHEN unique_violation THEN
     RAISE EXCEPTION 'DATE_TAKEN' USING ERRCODE = '23505';

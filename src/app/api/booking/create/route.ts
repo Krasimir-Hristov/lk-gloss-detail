@@ -48,7 +48,7 @@ export const POST = async (request: Request) => {
 				phone,
 				car_description: carDescription,
 				booking_date: bookingDate,
-				status: "confirmed",
+				status: "pending",
 			})
 			.select("id")
 			.single();
