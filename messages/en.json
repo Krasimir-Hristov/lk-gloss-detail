@@ -408,6 +408,12 @@
 		"decline": "Necessary only",
 		"privacy": "Privacy Policy"
 	},
+	"ConfirmModal": {
+		"deleteTitle": "Delete Appointment",
+		"deleteDescription": "Are you sure you want to delete this appointment? This action cannot be undone.",
+		"confirm": "Confirm Delete",
+		"cancel": "Cancel"
+	},
 	"Admin": {
 		"loginTitle": "Admin Login",
 		"loginSubtitle": "Access the LK Gloss & Detail Dashboard",
@@ -474,6 +480,72 @@
 				"appointments": "Appointments",
 				"servicesCrud": "Services",
 				"chatbotKb": "Chatbot KB"
+			}
+		},
+		"appointments": {
+			"title": "Appointments & Booking Calendar",
+			"subtitle": "Manage incoming bookings, update appointment statuses, and block unavailable calendar slots.",
+			"refresh": "Refresh",
+			"blockDate": "Block Date",
+			"today": "Today",
+			"calendar": "Calendar",
+			"listView": "List View",
+			"searchPlaceholder": "Search by client name, email, phone, car, or date...",
+			"filterLabel": "Filter:",
+			"allStatuses": "All Statuses",
+			"noAppointments": "No appointments match the selected criteria.",
+			"table": {
+				"date": "Date",
+				"client": "Client",
+				"services": "Services",
+				"total": "Total",
+				"status": "Status",
+				"actions": "Actions"
+			},
+			"status": {
+				"pending": "Pending",
+				"confirmed": "Confirmed",
+				"completed": "Completed",
+				"cancelled": "Cancelled"
+			},
+			"modals": {
+				"details": {
+					"title": "Booking Details",
+					"clientName": "Client Name",
+					"email": "Email Address",
+					"phone": "Phone",
+					"car": "Vehicle Description",
+					"bookedServices": "Booked Services",
+					"total": "Total",
+					"updateStatus": "Update Status",
+					"delete": "Delete",
+					"edit": "Edit",
+					"close": "Close"
+				},
+				"edit": {
+					"title": "Edit Appointment",
+					"firstName": "First Name",
+					"lastName": "Last Name",
+					"email": "Email Address",
+					"phone": "Phone Number",
+					"car": "Vehicle Description",
+					"date": "Booking Date",
+					"status": "Status",
+					"services": "Services",
+					"cancel": "Cancel",
+					"save": "Save Changes"
+				},
+				"block": {
+					"title": "Blocked Dates",
+					"subtitle": "Prevent bookings on specific calendar days",
+					"blockNew": "Block New Date",
+					"selectDate": "Select Date",
+					"reason": "Reason (Optional)",
+					"submit": "Block Date",
+					"currentlyBlocked": "Currently Blocked",
+					"noBlocked": "No dates are currently blocked.",
+					"done": "Done"
+				}
 			}
 		}
 	}
