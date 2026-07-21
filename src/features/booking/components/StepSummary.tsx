@@ -1,6 +1,6 @@
 "use client";
 
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
 import { useFormatter, useTranslations } from "next-intl";
 
@@ -17,6 +17,7 @@ export const StepSummary = () => {
 	const t = useTranslations("Booking.step4");
 	const format = useFormatter();
 	const router = useRouter();
+	const queryClient = useQueryClient();
 	const {
 		firstName,
 		lastName,
@@ -64,6 +65,10 @@ export const StepSummary = () => {
 				return;
 			}
 
+			// Invalidate TanStack query cache for unavailable-dates so the calendar refreshes immediately
+			await queryClient.invalidateQueries({ queryKey: ["unavailable-dates"] });
+			router.refresh();
+
 			reset();
 			router.push(`/booking/success?id=${result.appointmentId}`);
 		} catch {
@@ -100,45 +105,32 @@ export const StepSummary = () => {
 
 			<div className="rounded-xl border border-white/10 bg-[#201f1f] p-5">
 				<h3 className="mb-4 text-lg font-semibold text-white">{t("selectedServices")}</h3>
-				<ul className="list-inside list-disc text-sm text-white/80">
+				<ul className="flex flex-col gap-2">
 					{selectedServices.map((service) => (
-						<li key={service.id}>{service.name}</li>
+						<li key={service.id} className="text-sm text-white/80">
+							• {service.name}
+						</li>
 					))}
 				</ul>
 			</div>
 
 			<div className="rounded-xl border border-white/10 bg-[#201f1f] p-5">
-				<h3 className="mb-4 text-lg font-semibold text-white">{t("date")}</h3>
-				<p className="text-sm text-white/80">
-					{bookingDate
-						? format.dateTime(new Date(bookingDate), {
-								day: "2-digit",
-								month: "2-digit",
-								year: "numeric",
-							})
-						: "-"}
+				<h3 className="mb-4 text-lg font-semibold text-white">{t("dateAndTime")}</h3>
+				<p className="text-sm text-white">
+					{bookingDate ? format.dateTime(new Date(bookingDate), { dateStyle: "long" }) : ""}
 				</p>
 			</div>
 
-			{submitError ? <p className="text-center text-sm text-red-400">{t(submitError)}</p> : null}
+			{submitError ? (
+				<p className="text-center text-sm font-medium text-red-500">{t(submitError)}</p>
+			) : null}
 
-			<div className="flex gap-3">
-				<Button
-					type="button"
-					variant="outline"
-					onClick={prevStep}
-					disabled={isSubmitting}
-					className="flex-1 border-white/20 bg-transparent py-6 text-white hover:bg-white/10"
-				>
+			<div className="flex justify-between gap-5">
+				<Button variant="outline" onClick={prevStep} disabled={isSubmitting}>
 					{t("back")}
 				</Button>
-				<Button
-					type="button"
-					onClick={handleSubmit}
-					disabled={isSubmitting}
-					className="flex-1 bg-linear-to-r from-[#7b2dff] to-[#b303f2] py-6 text-lg font-bold text-white hover:shadow-[0_0_30px_rgba(123,45,255,0.5)] disabled:opacity-50"
-				>
-					{isSubmitting ? t("submitting") : t("submit")}
+				<Button onClick={handleSubmit} disabled={isSubmitting}>
+					{isSubmitting ? t("submitting") : t("confirm")}
 				</Button>
 			</div>
 		</div>
