@@ -467,6 +467,13 @@
 			"overview": {
 				"title": "Dashboard Overview",
 				"text": "This admin panel allows you to monitor and manage all aspects of the LK Gloss & Detail website. In the next phases of development, you will be able to review booking calendars, modify service pricing tiers, and train the AI chatbot with new knowledge database entries directly."
+			},
+			"sidebar": {
+				"management": "Management",
+				"overview": "Overview",
+				"appointments": "Appointments",
+				"servicesCrud": "Services",
+				"chatbotKb": "Chatbot KB"
 			}
 		}
 	}

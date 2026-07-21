@@ -2,6 +2,7 @@ import { redirect } from "next/navigation";
 import { getTranslations } from "next-intl/server";
 import React from "react";
 
+import { LanguageSwitcher } from "@/components/shared/LanguageSwitcher";
 import { logoutAdmin } from "@/features/admin/actions/auth";
 import { isAdminUser } from "@/features/admin/utils/auth";
 import { createClient } from "@/lib/supabase/server";
@@ -39,23 +40,26 @@ const AdminLayout: React.FC<AdminLayoutProps> = async ({ children, params }) => 
 							LK GLOSS & DETAIL
 						</h2>
 						<p className="mt-1 text-xs text-neutral-400">{t("dashboard.title")}</p>
+						<div className="mt-4">
+							<LanguageSwitcher />
+						</div>
 					</div>
 
 					<nav className="space-y-2">
 						<div className="px-3 py-2 text-xs font-semibold tracking-wider text-neutral-500 uppercase">
-							Management
+							{t("dashboard.sidebar.management")}
 						</div>
 						<div className="block rounded-md border border-purple-500/20 bg-neutral-900 px-3 py-2 text-sm font-medium text-neutral-400">
-							Overview
+							{t("dashboard.sidebar.overview")}
 						</div>
 						<div className="block cursor-not-allowed rounded-md px-3 py-2 text-sm font-medium text-neutral-500">
-							Appointments
+							{t("dashboard.sidebar.appointments")}
 						</div>
 						<div className="block cursor-not-allowed rounded-md px-3 py-2 text-sm font-medium text-neutral-500">
-							Services CRUD
+							{t("dashboard.sidebar.servicesCrud")}
 						</div>
 						<div className="block cursor-not-allowed rounded-md px-3 py-2 text-sm font-medium text-neutral-500">
-							Chatbot KB
+							{t("dashboard.sidebar.chatbotKb")}
 						</div>
 					</nav>
 				</div>

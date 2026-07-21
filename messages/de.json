@@ -467,6 +467,13 @@
 			"overview": {
 				"title": "Dashboard-Übersicht",
 				"text": "Dieses Admin-Panel ermöglicht es Ihnen, alle Aspekte der LK Gloss & Detail-Website zu überwachen und zu verwalten. In den nächsten Entwicklungsphasen können Sie Buchungskalender einsehen, Preisklassen für Dienstleistungen anpassen und die KI-Wissensdatenbank direkt trainieren."
+			},
+			"sidebar": {
+				"management": "Verwaltung",
+				"overview": "Übersicht",
+				"appointments": "Termine",
+				"servicesCrud": "Dienstleistungen",
+				"chatbotKb": "Chatbot-Wissen"
 			}
 		}
 	}
