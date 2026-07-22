@@ -248,6 +248,14 @@ export const uploadServiceImage = async (formData: FormData): Promise<ActionResu
 			return { success: false, error: "No file provided" };
 		}
 
+		if (!file.type.startsWith("image/")) {
+			return { success: false, error: "Only image files are allowed" };
+		}
+
+		if (file.size > 5 * 1024 * 1024) {
+			return { success: false, error: "Image size must be less than 5MB" };
+		}
+
 		const fileExt = file.name.split(".").pop();
 		const fileName = `services/${uuidv4()}.${fileExt}`;
 

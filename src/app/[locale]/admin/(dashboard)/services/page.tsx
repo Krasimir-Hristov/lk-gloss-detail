@@ -15,7 +15,8 @@ export async function generateMetadata({
 }): Promise<Metadata> {
 	const { locale } = await params;
 	const t = await getTranslations({ locale, namespace: "Metadata" });
-	return { title: t("template").replace("%s", "Services Management") };
+	const tAdmin = await getTranslations({ locale, namespace: "Admin.services" });
+	return { title: t("template").replace("%s", tAdmin("title")) };
 }
 
 export default async function AdminServicesPage() {
@@ -30,7 +31,7 @@ export default async function AdminServicesPage() {
 					{t("title")}
 				</h1>
 				<div className="rounded-lg border border-red-500/30 bg-red-950/20 p-6 text-red-400">
-					<h2 className="Montserrat mb-2 text-lg font-bold">Error loading services</h2>
+					<h2 className="Montserrat mb-2 text-lg font-bold">{t("loadingError")}</h2>
 					<p className="text-sm">{res.error}</p>
 				</div>
 			</div>

@@ -1,113 +1,119 @@
-import { readFileSync } from "fs";
-import { resolve } from "path";
-
+import { loadEnvConfig } from "@next/env";
 import { createClient } from "@supabase/supabase-js";
 
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
-const supabaseKey = process.env.SUPABASE_SECRET_KEY!;
+// Load environment variables
+loadEnvConfig(process.cwd());
+
+const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+const supabaseKey = process.env.SUPABASE_SECRET_KEY; // Service role key
 
 if (!supabaseUrl || !supabaseKey) {
-	console.error("Missing NEXT_PUBLIC_SUPABASE_URL or SUPABASE_SECRET_KEY in .env");
+	console.error("❌ Missing NEXT_PUBLIC_SUPABASE_URL or SUPABASE_SECRET_KEY in environment");
 	process.exit(1);
 }
 
 const supabase = createClient(supabaseUrl, supabaseKey, {
-	auth: { persistSession: false },
+	auth: {
+		autoRefreshToken: false,
+		persistSession: false,
+	},
 });
 
-const services = [
+const servicesToInsert = [
 	{
-		name: "interior",
-		short_description: "Professionelle Innenraumreinigung mit Dampfreiniger und Spezialprodukten",
-		icon: "Sparkles",
-		imageFile: "man-with-vacum.png",
-		category: "interior",
+		name: {
+			en: "Mobile Wash",
+			de: "Mobile Autowäsche",
+			el: "Κινητό Πλύσιμο",
+		},
+		short_description: {
+			en: "We will come to your home and wash your car",
+			de: "Wir kommen zu Ihnen nach Hause und waschen Ihr Auto",
+			el: "Ερχόμαστε στο σπίτι σας και πλένουμε το αυτοκίνητό σας",
+		},
+		category: "mobile-wash",
+		price_small: 30,
+		price_medium: 35,
+		price_large: 40,
+		price_suv: 40,
+		duration_hours: 2,
+		active: true,
 		sort_order: 1,
-		price_small: 89,
-		price_medium: 119,
-		price_large: 149,
-		price_suv: 179,
-		duration_hours: 2.5,
+		icon: "Car",
 	},
 	{
-		name: "headlights",
-		short_description: "Scheinwerferaufbereitung — Entfernung von Vergilbung und Kratzern",
-		icon: "Lightbulb",
-		imageFile: "headlights_cleaning.png",
-		category: "exterior",
+		name: {
+			en: "Interior Detailing",
+			de: "Innenraumaufbereitung",
+			el: "Βιολογικός Καθαρισμός",
+		},
+		short_description: {
+			en: "Deep cleaning of the interior",
+			de: "Tiefenreinigung des Innenraums",
+			el: "Βαθύς καθαρισμός του εσωτερικού",
+		},
+		category: "interior",
+		price_small: 50,
+		price_medium: 60,
+		price_large: 70,
+		price_suv: 70,
+		duration_hours: 3,
+		active: true,
 		sort_order: 2,
-		price_small: 49,
-		price_medium: 49,
-		price_large: 49,
-		price_suv: 49,
-		duration_hours: 1,
+		icon: "SprayCan",
 	},
 	{
-		name: "paintCorrection",
-		short_description: "Lackkorrektur & Keramikversiegelung für tiefen Glanz und Schutz",
-		icon: "ShieldCheck",
-		imageFile: "mop-sege.png",
-		category: "exterior",
+		name: {
+			en: "Full Detailing",
+			de: "Komplettaufbereitung",
+			el: "Πλήρης Καθαρισμός",
+		},
+		short_description: {
+			en: "Complete inside and outside cleaning",
+			de: "Komplette Innen- und Außenreinigung",
+			el: "Πλήρης καθαρισμός εσωτερικά και εξωτερικά",
+		},
+		category: "full-detail",
+		price_small: 100,
+		price_medium: 120,
+		price_large: 150,
+		price_suv: 150,
+		duration_hours: 5,
+		active: true,
 		sort_order: 3,
-		price_small: 199,
-		price_medium: 299,
-		price_large: 399,
-		price_suv: 499,
-		duration_hours: 4,
+		icon: "Sparkles",
 	},
 ];
 
-const assetsDir = resolve(import.meta.dirname, "..", "src", "assets", "services");
-
 const main = async () => {
-	console.log("🚀 Seeding services...\n");
+	console.log("🗑️  Deleting all existing services...");
+	const { error: deleteError } = await supabase
+		.from("services")
+		.delete()
+		.neq("id", "00000000-0000-0000-0000-000000000000");
 
-	for (const service of services) {
-		const { imageFile, ...serviceData } = service;
-
-		// Upload image to gallery bucket
-		const filePath = resolve(assetsDir, imageFile);
-		const fileBuffer = readFileSync(filePath);
-
-		const storagePath = `services/${imageFile}`;
-		const { data: uploadData, error: uploadError } = await supabase.storage
-			.from("gallery")
-			.upload(storagePath, fileBuffer, {
-				contentType: "image/png",
-				upsert: true,
-			});
-
-		if (uploadError) {
-			console.error(`❌ Failed to upload ${imageFile}:`, uploadError.message);
-			continue;
-		}
-
-		console.log(`✅ Uploaded ${imageFile} → ${uploadData.path}`);
-
-		// Get public URL
-		const {
-			data: { publicUrl },
-		} = supabase.storage.from("gallery").getPublicUrl(storagePath);
-
-		console.log(`   Public URL: ${publicUrl}`);
-
-		// Upsert service row keyed on name (safe to re-run)
-		const { error: upsertError } = await supabase.from("services").upsert(
-			{
-				...serviceData,
-				image_url: publicUrl,
-			},
-			{ onConflict: "name", ignoreDuplicates: false },
-		);
-
-		if (upsertError) {
-			console.error(`❌ Failed to upsert ${service.name}:`, upsertError.message);
-		} else {
-			console.log(`✅ Inserted service: ${service.name}\n`);
-		}
+	if (deleteError) {
+		console.error("❌ Failed to delete existing services:", deleteError.message);
+		process.exit(1);
 	}
 
-	console.log("🎉 Seeding complete!");
+	console.log("✅ Successfully deleted existing services.");
+	console.log("🌱 Seeding new services...");
+
+	const { data, error: insertError } = await supabase
+		.from("services")
+		.insert(servicesToInsert)
+		.select();
+
+	if (insertError) {
+		console.error("❌ Failed to insert services:", insertError.message);
+		process.exit(1);
+	}
+
+	console.log(`✅ Successfully seeded ${data.length} services!`);
 };
 
-main().catch(console.error);
+main().catch((err) => {
+	console.error("❌ Uncaught error:", err);
+	process.exit(1);
+});

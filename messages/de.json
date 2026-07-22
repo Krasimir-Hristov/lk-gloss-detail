@@ -423,6 +423,7 @@
 			"subtitle": "Verwalten Sie alle verfügbaren Dienstleistungen, Preise und aktiven Status.",
 			"addService": "Dienstleistung hinzufügen",
 			"searchPlaceholder": "Nach Name suchen...",
+			"loadingError": "Fehler beim Laden der Dienste",
 			"filters": {
 				"allCategories": "Alle Kategorien",
 				"allStatuses": "Alle Status",

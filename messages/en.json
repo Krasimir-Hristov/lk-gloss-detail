@@ -423,6 +423,7 @@
 			"subtitle": "Manage all available detailing services, pricing, and active status.",
 			"addService": "Add Service",
 			"searchPlaceholder": "Search by name...",
+			"loadingError": "Error loading services",
 			"filters": {
 				"allCategories": "All Categories",
 				"allStatuses": "All Statuses",

@@ -10,12 +10,14 @@ const supabase = createClient(supabaseUrl, supabaseKey);
 
 async function main() {
 	console.log("Fetching services from Supabase...");
-	const { data: services, error } = await supabase.from("services").select("*");
+	const { data, error } = await supabase.from("services").select("*");
 
 	if (error) {
 		console.error("Error fetching services:", error);
 		process.exit(1);
 	}
+
+	const services = data || [];
 
 	console.log(`Found ${services.length} services to check/migrate.`);
 
