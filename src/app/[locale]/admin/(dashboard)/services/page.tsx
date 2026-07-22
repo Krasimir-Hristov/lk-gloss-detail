@@ -4,9 +4,15 @@ import React from "react";
 import { getAdminServices } from "@/features/admin/actions/services";
 import { ServicesManager } from "@/features/admin/components/services/ServicesManager";
 
+import type { Metadata } from "next";
+
 export const dynamic = "force-dynamic";
 
-export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }) {
+export async function generateMetadata({
+	params,
+}: {
+	params: Promise<{ locale: string }>;
+}): Promise<Metadata> {
 	const { locale } = await params;
 	const t = await getTranslations({ locale, namespace: "Metadata" });
 	return { title: t("template").replace("%s", "Services Management") };
