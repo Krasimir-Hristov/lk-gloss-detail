@@ -1,22 +1,24 @@
 "use client";
 
 import { useQuery } from "@tanstack/react-query";
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
+import { getLocalizedText } from "@/features/admin/types/services.types";
 import { useBookingStore } from "@/features/booking/stores/booking-store";
 
 type Service = {
 	id: string;
-	name: string;
-	short_description: string | null;
+	name: Record<string, string> | string;
+	short_description: Record<string, string> | string | null;
 	icon: string;
 };
 
 export const StepServices = () => {
 	const t = useTranslations("Booking.step2");
+	const locale = useLocale();
 	const { selectedServiceIds, setServices, nextStep, prevStep } = useBookingStore();
 
 	const {
@@ -83,10 +85,12 @@ export const StepServices = () => {
 								htmlFor={`service-${service.id}`}
 								className="cursor-pointer text-base font-semibold text-white"
 							>
-								{service.name}
+								{getLocalizedText(service.name, locale)}
 							</Label>
 							{service.short_description ? (
-								<p className="text-sm text-white/60">{service.short_description}</p>
+								<p className="text-sm text-white/60">
+									{getLocalizedText(service.short_description, locale)}
+								</p>
 							) : null}
 						</div>
 					</div>

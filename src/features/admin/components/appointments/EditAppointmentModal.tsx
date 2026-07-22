@@ -2,10 +2,11 @@
 
 import { motion, AnimatePresence } from "framer-motion";
 import { X, Edit3, AlertCircle, Save } from "lucide-react";
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import React, { useState, useEffect } from "react";
 
 import { editAppointment } from "@/features/admin/actions/appointments";
+import { getLocalizedText } from "@/features/admin/types/services.types";
 
 import type {
 	AdminAppointment,
@@ -28,6 +29,7 @@ export const EditAppointmentModal: React.FC<EditAppointmentModalProps> = ({
 }) => {
 	const t = useTranslations("Admin.appointments");
 	const tServices = useTranslations("HomePage.services");
+	const locale = useLocale();
 
 	const [firstName, setFirstName] = useState(appointment?.first_name || "");
 	const [lastName, setLastName] = useState(appointment?.last_name || "");
@@ -55,15 +57,16 @@ export const EditAppointmentModal: React.FC<EditAppointmentModalProps> = ({
 		return () => window.removeEventListener("keydown", handleKeyDown);
 	}, [appointment, isSubmitting, onClose]);
 
-	const getServiceName = (name: string) => {
+	const getServiceName = (name: Record<string, string> | string) => {
+		const localized = getLocalizedText(name, locale);
 		try {
-			if (tServices.has(`${name}.title`)) {
-				return tServices(`${name}.title`);
+			if (tServices.has(`${localized}.title`)) {
+				return tServices(`${localized}.title`);
 			}
 		} catch {
 			// Fallback
 		}
-		return name;
+		return localized;
 	};
 
 	const handleServiceToggle = (id: string) => {

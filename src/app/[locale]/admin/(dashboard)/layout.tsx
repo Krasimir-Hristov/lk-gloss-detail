@@ -62,9 +62,12 @@ const AdminLayout: React.FC<AdminLayoutProps> = async ({ children, params }) => 
 						>
 							{t("dashboard.sidebar.appointments")}
 						</Link>
-						<div className="block cursor-not-allowed rounded-md px-3 py-2 text-sm font-medium text-neutral-500">
+						<Link
+							href="/admin/services"
+							className="block rounded-md px-3 py-2 text-sm font-medium text-neutral-400 transition-colors hover:bg-neutral-900 hover:text-white"
+						>
 							{t("dashboard.sidebar.servicesCrud")}
-						</div>
+						</Link>
 						<div className="block cursor-not-allowed rounded-md px-3 py-2 text-sm font-medium text-neutral-500">
 							{t("dashboard.sidebar.chatbotKb")}
 						</div>

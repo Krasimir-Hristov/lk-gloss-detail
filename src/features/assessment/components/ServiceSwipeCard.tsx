@@ -3,17 +3,18 @@
 import { motion, useMotionValue, useTransform, type PanInfo } from "framer-motion";
 import { Clock, Sparkles } from "lucide-react";
 import Image from "next/image";
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import { createElement, useRef, useState } from "react";
 
+import { getLocalizedText } from "@/features/admin/types/services.types";
 import { getIcon } from "@/lib/icon-map";
 
 // ── DB Service shape ────────────────────────────────────────────────────────
 
 type DbService = {
 	id: string;
-	name: string;
-	short_description: string | null;
+	name: Record<string, string> | string;
+	short_description: Record<string, string> | string | null;
 	icon: string;
 	image_url: string | null;
 	category: string;
@@ -26,13 +27,13 @@ type DbService = {
 
 // ── Props ──────────────────────────────────────────────────────────────────
 
-type ServiceSwipeCardProps = {
+interface ServiceSwipeCardProps {
 	service: DbService;
 	onAcceptAction: (serviceId: string) => void;
 	onRejectAction: (serviceId: string) => void;
 	isTop: boolean;
 	stackIndex: number;
-};
+}
 
 export const ServiceSwipeCard = ({
 	service,
@@ -42,6 +43,7 @@ export const ServiceSwipeCard = ({
 	stackIndex,
 }: ServiceSwipeCardProps) => {
 	const t = useTranslations("Assessment.services");
+	const locale = useLocale();
 	const [isExiting, setIsExiting] = useState<"left" | "right" | null>(null);
 	const cardRef = useRef<HTMLDivElement>(null);
 
@@ -85,9 +87,25 @@ export const ServiceSwipeCard = ({
 	const priceText = `€${service.price_small} – €${service.price_suv}`;
 
 	// i18n display text (falls back to DB name if key missing)
-	const displayName = t.raw(`cards.${service.name}.title`) as string | undefined;
-	const displayDescription = t.raw(`cards.${service.name}.description`) as string | undefined;
-	const displayCategory = t.raw(`cards.${service.name}.tag`) as string | undefined;
+	const localizedName = getLocalizedText(service.name, locale);
+	const localizedDesc = getLocalizedText(service.short_description, locale);
+
+	let displayName: string | undefined;
+	let displayDescription: string | undefined;
+	let displayCategory: string | undefined;
+
+	try {
+		if (typeof service.name === "string") {
+			displayName = t.raw(`cards.${service.name}.title`) as string | undefined;
+			displayDescription = t.raw(`cards.${service.name}.description`) as string | undefined;
+			displayCategory = t.raw(`cards.${service.name}.tag`) as string | undefined;
+		}
+	} catch {
+		// Ignore if key missing
+	}
+
+	displayName = displayName || localizedName;
+	displayDescription = displayDescription || localizedDesc;
 
 	return (
 		<motion.div
@@ -142,7 +160,7 @@ export const ServiceSwipeCard = ({
 					{service.image_url ? (
 						<Image
 							src={service.image_url}
-							alt={service.name}
+							alt={displayName ?? "Service image"}
 							fill
 							sizes="(max-width: 420px) 100vw, 420px"
 							className="object-cover"
@@ -176,10 +194,8 @@ export const ServiceSwipeCard = ({
 						{displayCategory ?? service.category}
 					</span>
 
-					<h2 className="text-2xl font-bold text-white">{displayName ?? service.name}</h2>
-					<p className="mt-1 text-sm text-[#d1bcff]">
-						{displayDescription ?? service.short_description ?? ""}
-					</p>
+					<h2 className="text-2xl font-bold text-white">{displayName}</h2>
+					<p className="mt-1 text-sm text-[#d1bcff]">{displayDescription}</p>
 
 					{/* Price range */}
 					<div className="mt-4 flex items-center gap-2">

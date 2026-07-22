@@ -2,7 +2,7 @@ export type AppointmentStatus = "pending" | "confirmed" | "completed" | "cancell
 
 export interface AppointmentServiceItem {
 	id: string;
-	name: string;
+	name: Record<string, string> | string;
 	price_small: number;
 	price_medium: number;
 	price_large: number;
