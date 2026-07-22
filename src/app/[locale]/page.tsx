@@ -13,6 +13,9 @@ import {
 	ServicesSection,
 	WhyLKSection,
 } from "@/features/home";
+import { getPublicServices } from "@/features/services/actions/get-public-services";
+
+import type { PublicService } from "@/features/services/actions/get-public-services";
 
 // ── Zod schemas for i18n payload validation ──────────────────────────────
 
@@ -47,12 +50,14 @@ const HomePage = async ({ params }: Props) => {
 	const { locale } = await params;
 	setRequestLocale(locale);
 
-	return <HomePageContent locale={locale} />;
+	const services = await getPublicServices();
+
+	return <HomePageContent locale={locale} services={services} />;
 };
 
 export default HomePage;
 
-const HomePageContent = ({ locale }: { locale: string }) => {
+const HomePageContent = ({ locale, services }: { locale: string; services: PublicService[] }) => {
 	const t = useTranslations("HomePage");
 
 	return (
@@ -60,7 +65,7 @@ const HomePageContent = ({ locale }: { locale: string }) => {
 			<HeroSection locale={locale} />
 
 			{/* ── Services Section ── */}
-			<ServicesSection />
+			<ServicesSection services={services} />
 
 			{/* ── Mobile Service Section ── */}
 			<section className="relative overflow-hidden px-4 py-20 md:px-16 md:py-28">

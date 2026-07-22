@@ -26,7 +26,8 @@
 		},
 		"servicesPreview": {
 			"title": "Unsere Leistungen",
-			"description": "Professionelle Autopflege direkt bei Ihnen"
+			"description": "Professionelle Autopflege direkt bei Ihnen",
+			"from": "Ab"
 		},
 		"services": {
 			"interior": {
@@ -417,6 +418,64 @@
 		"cancel": "Abbrechen"
 	},
 	"Admin": {
+		"services": {
+			"title": "Dienstleistungsverwaltung",
+			"subtitle": "Verwalten Sie alle verfügbaren Dienstleistungen, Preise und aktiven Status.",
+			"addService": "Dienstleistung hinzufügen",
+			"searchPlaceholder": "Nach Name suchen...",
+			"loadingError": "Fehler beim Laden der Dienste",
+			"filters": {
+				"allCategories": "Alle Kategorien",
+				"allStatuses": "Alle Status",
+				"active": "Aktiv",
+				"inactive": "Inaktiv"
+			},
+			"empty": "Keine Dienstleistungen gefunden.",
+			"columns": {
+				"image": "Bild",
+				"name": "Name",
+				"category": "Kategorie",
+				"pricing": "Preise (S/M/L/SUV)",
+				"duration": "Dauer",
+				"active": "Aktiv",
+				"order": "Sortierung",
+				"actions": "Aktionen"
+			},
+			"edit": "Bearbeiten",
+			"delete": {
+				"title": "Dienstleistung löschen",
+				"message": "Sind Sie sicher, dass Sie {name} löschen möchten?",
+				"warning": "Diese Aktion kann nicht rückgängig gemacht werden.",
+				"confirm": "Löschen bestätigen",
+				"deleting": "Wird gelöscht..."
+			},
+			"cancel": "Abbrechen",
+			"form": {
+				"addTitle": "Neue Dienstleistung",
+				"editTitle": "Dienstleistung bearbeiten",
+				"sections": {
+					"basic": "Grundinformationen",
+					"pricing": "Preise & Dauer",
+					"image": "Titelbild"
+				},
+				"name": "Name der Dienstleistung",
+				"category": "Kategorie",
+				"shortDescription": "Kurzbeschreibung",
+				"iconName": "Lucide Icon Name",
+				"sortOrder": "Sortierreihenfolge",
+				"durationHours": "Dauer (Stunden)",
+				"uploadPrompt": "Klicken oder ziehen, um ein Bild hochzuladen",
+				"uploading": "Wird hochgeladen...",
+				"active": "Aktiv (sichtbar auf der Website)",
+				"save": "Dienstleistung speichern"
+			},
+			"toast": {
+				"createSuccess": "Dienstleistung erfolgreich erstellt",
+				"updateSuccess": "Dienstleistung erfolgreich aktualisiert",
+				"deleteSuccess": "Dienstleistung erfolgreich gelöscht",
+				"statusUpdateSuccess": "Status aktualisiert"
+			}
+		},
 		"loginTitle": "Admin-Anmeldung",
 		"loginSubtitle": "Zugang zum LK Gloss & Detail Dashboard",
 		"emailLabel": "E-Mail-Adresse",

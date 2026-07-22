@@ -26,7 +26,8 @@
 		},
 		"servicesPreview": {
 			"title": "Our Services",
-			"description": "Professional car care right at your doorstep"
+			"description": "Professional car care right at your doorstep",
+			"from": "From"
 		},
 		"services": {
 			"interior": {
@@ -417,6 +418,64 @@
 		"cancel": "Cancel"
 	},
 	"Admin": {
+		"services": {
+			"title": "Services Management",
+			"subtitle": "Manage all available detailing services, pricing, and active status.",
+			"addService": "Add Service",
+			"searchPlaceholder": "Search by name...",
+			"loadingError": "Error loading services",
+			"filters": {
+				"allCategories": "All Categories",
+				"allStatuses": "All Statuses",
+				"active": "Active",
+				"inactive": "Inactive"
+			},
+			"empty": "No services found.",
+			"columns": {
+				"image": "Image",
+				"name": "Name",
+				"category": "Category",
+				"pricing": "Pricing (S/M/L/SUV)",
+				"duration": "Duration",
+				"active": "Active",
+				"order": "Order",
+				"actions": "Actions"
+			},
+			"edit": "Edit",
+			"delete": {
+				"title": "Delete Service",
+				"message": "Are you sure you want to delete {name}?",
+				"warning": "This action cannot be undone.",
+				"confirm": "Confirm Delete",
+				"deleting": "Deleting..."
+			},
+			"cancel": "Cancel",
+			"form": {
+				"addTitle": "Add New Service",
+				"editTitle": "Edit Service",
+				"sections": {
+					"basic": "Basic Information",
+					"pricing": "Pricing & Duration",
+					"image": "Cover Image"
+				},
+				"name": "Service Name",
+				"category": "Category",
+				"shortDescription": "Short Description",
+				"iconName": "Lucide Icon Name",
+				"sortOrder": "Sort Order",
+				"durationHours": "Duration (Hours)",
+				"uploadPrompt": "Click or drag to upload an image",
+				"uploading": "Uploading...",
+				"active": "Active (visible on website)",
+				"save": "Save Service"
+			},
+			"toast": {
+				"createSuccess": "Service created successfully",
+				"updateSuccess": "Service updated successfully",
+				"deleteSuccess": "Service deleted successfully",
+				"statusUpdateSuccess": "Service status updated"
+			}
+		},
 		"loginTitle": "Admin Login",
 		"loginSubtitle": "Access the LK Gloss & Detail Dashboard",
 		"emailLabel": "Email Address",

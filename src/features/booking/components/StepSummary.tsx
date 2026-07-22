@@ -2,19 +2,21 @@
 
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
-import { useFormatter, useTranslations } from "next-intl";
+import { useFormatter, useLocale, useTranslations } from "next-intl";
 
 import { createBooking } from "@/actions/booking";
 import { Button } from "@/components/ui/button";
+import { getLocalizedText } from "@/features/admin/types/services.types";
 import { useBookingStore } from "@/features/booking/stores/booking-store";
 
 type Service = {
 	id: string;
-	name: string;
+	name: Record<string, string> | string;
 };
 
 export const StepSummary = () => {
 	const t = useTranslations("Booking.step4");
+	const locale = useLocale();
 	const format = useFormatter();
 	const router = useRouter();
 	const queryClient = useQueryClient();
@@ -108,7 +110,7 @@ export const StepSummary = () => {
 				<ul className="flex flex-col gap-2">
 					{selectedServices.map((service) => (
 						<li key={service.id} className="text-sm text-white/80">
-							• {service.name}
+							• {getLocalizedText(service.name, locale)}
 						</li>
 					))}
 				</ul>

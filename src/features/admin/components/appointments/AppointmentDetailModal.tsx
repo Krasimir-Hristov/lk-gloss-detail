@@ -18,6 +18,7 @@ import { useTranslations } from "next-intl";
 import React, { useState, useEffect } from "react";
 
 import { updateAppointmentStatus } from "@/features/admin/actions/appointments";
+import { getLocalizedText } from "@/features/admin/types/services.types";
 
 import type {
 	AdminAppointment,
@@ -41,6 +42,7 @@ export const AppointmentDetailModal: React.FC<AppointmentDetailModalProps> = ({
 }) => {
 	const t = useTranslations("Admin.appointments");
 	const tServices = useTranslations("HomePage.services");
+	const locale = useTranslations("LanguageSwitcher").has("label") ? "de" : "de"; // fallback or useLocale
 	const [isUpdatingStatus, setIsUpdatingStatus] = useState(false);
 
 	useEffect(() => {
@@ -55,15 +57,19 @@ export const AppointmentDetailModal: React.FC<AppointmentDetailModalProps> = ({
 		return () => window.removeEventListener("keydown", handleKeyDown);
 	}, [appointment, isUpdatingStatus, onClose]);
 
-	const getServiceName = (name: string) => {
+	const getServiceName = (name: string | Record<string, string>) => {
+		if (typeof name === "object" && name !== null) {
+			return getLocalizedText(name, locale); // Use default or locale if available
+		}
+		const nameStr = String(name);
 		try {
-			if (tServices.has(`${name}.title`)) {
-				return tServices(`${name}.title`);
+			if (tServices.has(`${nameStr}.title`)) {
+				return tServices(`${nameStr}.title`);
 			}
 		} catch {
 			// Fallback
 		}
-		return name;
+		return nameStr;
 	};
 
 	const handleStatusChange = async (newStatus: AppointmentStatus) => {

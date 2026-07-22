@@ -4,6 +4,8 @@ import { Search, Eye, Edit, Trash2, Calendar, Mail, Phone } from "lucide-react";
 import { useTranslations } from "next-intl";
 import React, { useState } from "react";
 
+import { getLocalizedText } from "@/features/admin/types/services.types";
+
 import type {
 	AdminAppointment,
 	AppointmentStatus,
@@ -24,19 +26,24 @@ export const AppointmentsListView: React.FC<AppointmentsListViewProps> = ({
 }) => {
 	const t = useTranslations("Admin.appointments");
 	const tServices = useTranslations("HomePage.services");
+	const locale = useTranslations("LanguageSwitcher").has("label") ? "de" : "de"; // fallback or useLocale
 
 	const [searchQuery, setSearchQuery] = useState("");
 	const [statusFilter, setStatusFilter] = useState<string>("all");
 
-	const getServiceName = (name: string) => {
+	const getServiceName = (name: string | Record<string, string>) => {
+		if (typeof name === "object" && name !== null) {
+			return getLocalizedText(name, locale); // Use default or locale if available
+		}
+		const nameStr = String(name);
 		try {
-			if (tServices.has(`${name}.title`)) {
-				return tServices(`${name}.title`);
+			if (tServices.has(`${nameStr}.title`)) {
+				return tServices(`${nameStr}.title`);
 			}
 		} catch {
 			// Fallback to name
 		}
-		return name;
+		return nameStr;
 	};
 
 	const filteredAppointments = appointments.filter((app) => {
