@@ -378,13 +378,13 @@
 
 ### 11.3 Services Management full CRUD operations
 
-- [x] List all services from DB
-- [x] Edit service (price ranges, duration, multipliers) — inline JSON editor
-- [x] Add new service
-- [x] Toggle service active/inactive (show/hide on site)
-- [x] Set up Supabase Storage bucket for service images
-- [x] Add image upload / delete functionality to Add/Edit service forms (saving to Supabase Storage)
-- [x] Support deletion of service (including its images from storage)
+- [ ] List all services from DB
+- [ ] Edit service (price ranges, duration, multipliers) — inline JSON editor
+- [ ] Add new service
+- [ ] Toggle service active/inactive (show/hide on site)
+- [ ] Set up Supabase Storage bucket for service images
+- [ ] Add image upload / delete functionality to Add/Edit service forms (saving to Supabase Storage)
+- [ ] Support deletion of service (including its images from storage)
 
 ### 11.4 RAG Knowledge Base Management
 
