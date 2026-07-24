@@ -403,6 +403,9 @@
   - Delete entry (with confirmation modal)
 - [x] **Semantic Search Diagnostic Tester**:
   - Real-time RAG query simulator to test vector similarity matching via Cosine similarity calculation against `chatbot_knowledge` vectors
+- [x] **RAG Retrieval & Chatbot Markdown Navigation**:
+  - Enhanced RAG context retrieval with active DB service fallback for exact pricing, services, and duration output
+  - Integrated `react-markdown` rendering in chatbot UI with Next.js SPA internal links for `/booking`, `/assessment`, `/contact`, and `/services`
 
 ### 11.6 Dashboard Overview
 

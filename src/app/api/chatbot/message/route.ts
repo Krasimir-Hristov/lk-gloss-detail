@@ -24,58 +24,50 @@ const ChatbotRequestSchema = z.object({
 		.default([]),
 });
 
-// ── Types ───────────────────────────────────────────────────────────────────
-
-interface MatchDoc {
-	id: string;
+interface KnowledgeRow {
 	content: string;
-	metadata: Record<string, unknown>;
+	embedding: unknown;
 	language: string;
-	similarity: number;
 }
 
-// ── Shared embedding model (OpenRouter via LangChain) ───────────────────────
-
-const embeddings = getOpenRouterEmbeddings();
+// ── Embedding Generation ───────────────────────────────────────────────────
 
 async function getEmbedding(text: string): Promise<number[]> {
-	return embeddings.embedQuery(text);
+	const embeddings = getOpenRouterEmbeddings();
+	return await embeddings.embedQuery(text);
 }
 
-// ── Stream from OpenRouter LLM ──────────────────────────────────────────────
+// ── Stream Handler ─────────────────────────────────────────────────────────
 
-async function streamLLMResponse(
-	messages: Array<{ role: string; content: string }>,
-): Promise<ReadableStream<Uint8Array>> {
+async function streamLLMResponse(messages: Array<{ role: string; content: string }>) {
 	const model = new ChatOpenAI({
 		apiKey: process.env.OPENROUTER_API_KEY,
-		modelName: "deepseek/deepseek-v4-flash",
-		temperature: 0.7,
-		maxTokens: 1000,
+		modelName: "google/gemini-2.5-flash",
 		streaming: true,
+		temperature: 0.1,
 		configuration: {
 			baseURL: "https://openrouter.ai/api/v1",
 		},
 	});
 
-	const stream = await model.stream(
-		messages.map((m) => {
-			if (m.role === "system") return new SystemMessage(m.content);
-			if (m.role === "assistant") return new AIMessage(m.content);
-			return new HumanMessage(m.content);
-		}),
-	);
+	const langchainMessages = messages.map((m) => {
+		if (m.role === "system") return new SystemMessage(m.content);
+		if (m.role === "user") return new HumanMessage(m.content);
+		return new AIMessage(m.content);
+	});
 
 	const encoder = new TextEncoder();
 
 	return new ReadableStream({
 		async start(controller) {
 			try {
+				const stream = await model.stream(langchainMessages);
+
 				for await (const chunk of stream) {
-					const content = typeof chunk.content === "string" ? chunk.content : "";
-					if (content) {
-						const sseData = `data: ${JSON.stringify({ content })}\n\n`;
-						controller.enqueue(encoder.encode(sseData));
+					if (typeof chunk.content === "string" && chunk.content) {
+						controller.enqueue(
+							encoder.encode(`data: ${JSON.stringify({ content: chunk.content })}\n\n`),
+						);
 					}
 				}
 				controller.enqueue(encoder.encode("data: [DONE]\n\n"));
@@ -98,28 +90,52 @@ function buildSystemPrompt(locale: string, contextChunks: string[]): string {
 		el: "Πάντα να απαντάς στα Ελληνικά. Να είσαι φιλικός, επαγγελματίας και εξυπηρετικός.",
 	};
 
+	const localizedLinks: Record<
+		string,
+		{ services: string; booking: string; assessment: string; contact: string }
+	> = {
+		de: {
+			services: "Dienstleistungen",
+			booking: "Termin buchen",
+			assessment: "KI-Fahrzeugbewertung",
+			contact: "Kontakt",
+		},
+		en: {
+			services: "Services",
+			booking: "Book Appointment",
+			assessment: "AI Vehicle Assessment",
+			contact: "Contact",
+		},
+		el: {
+			services: "Υπηρεσίες",
+			booking: "Κράτηση Ραντεβού",
+			assessment: "Αξιολόγηση Οχήματος",
+			contact: "Επικοινωνία",
+		},
+	};
+
+	const links = localizedLinks[locale] ?? localizedLinks.en;
+
 	const contextSection =
 		contextChunks.length > 0
-			? `\n\nRelevante Informationen über LK Gloss & Detail (nutze diese, um die Frage zu beantworten):\n${contextChunks.map((c, i) => `[${i + 1}] ${c}`).join("\n")}\n\nWenn die obigen Informationen die Frage nicht beantworten, sage ehrlich, dass du es nicht weißt, und schlage vor, das Kontaktformular zu nutzen oder direkt anzurufen. Erfinde keine Informationen.`
-			: "";
+			? `\n\nRelevante Informationen aus der Wissensdatenbank (RAG):\n${contextChunks.map((c, i) => `[${i + 1}] ${c}`).join("\n")}\n\nSTRIKTE ANWEISUNG: Gib alle Details, Preise und Dienstleistungen aus den obigen RAG-Informationen präzise an. Erfinde KEINE ungefragten Pakete oder gefälschte Dienste.`
+			: "\n\nKeine passenden Informationen in der Wissensdatenbank gefunden. Wenn der Nutzer nach Dienstleistungen oder Preisen fragt, antworte ehrlich, dass noch keine spezifischen Daten hinterlegt sind, und verweise auf das Kontaktformular oder die Terminbuchung.";
 
 	return `Du bist Lulezim Kodhimaj AI, der virtuelle Assistent von LK Gloss & Detail, einem mobilen Auto-Detailing-Service in Deutschland (Neuhausen auf den Fildern).
 
-LK Gloss & Detail bietet professionelle mobile Autopflege und Fahrzeugaufbereitung direkt vor Ort beim Kunden. Dienstleistungen umfassen:
-- Professionelle Innenreinigung (Tiefenreinigung, Lederaufbereitung, Geruchsneutralisation)
-- Scheinwerferaufbereitung (Entfernung von Vergilbung, Politur, UV-Schutz)
-- Lackkorrektur, Politur & Versiegelung (3-Stufen Hochglanz, Keramikversiegelung)
-- Mobile Service — wir kommen direkt zum Kunden nach Hause oder an den Arbeitsplatz
-- KI-gestützte Fahrzeugbewertung über unsere Website
-- B2B & Flottenmanagement für Unternehmen
+LK Gloss & Detail bietet professionelle mobile Autopflege und Fahrzeugaufbereitung direkt vor Ort beim Kunden.
 
 ${localeInstructions[locale] ?? localeInstructions.de}
 
 Wichtige Regeln:
-1. Halte deine Antworten kurz und prägnant (maximal 3-4 Sätze, außer bei komplexen Fragen).
-2. Wenn jemand einen Termin buchen möchte, verweise auf die Buchungsseite.
-3. Wenn jemand eine detaillierte Preisauskunft möchte, erkläre, dass die Preise von Fahrzeuggröße und Zustand abhängen, und verweise auf die KI-Bewertung.
-4. Für geschäftliche Anfragen (B2B/Flotten) bitte das Kontaktformular empfehlen.
+1. Halte deine Antworten kurz, ehrlich und prägnant (maximal 3-4 Sätze).
+2. Erfinde KEINE Dienstleistungen, Pakete oder Preise. Gib NUR Informationen an, die explizit im obenstehenden RAG-Kontext enthalten sind.
+3. Verwende exakt diese Markdown-Links für die Navigation auf unserer Website (verwende die übersetzten Linktexte):
+   - Services: [${links.services}](/${locale}#services)
+   - Booking: [${links.booking}](/${locale}/booking)
+   - Assessment: [${links.assessment}](/${locale}/assessment)
+   - Contact: [${links.contact}](/${locale}/contact)
+4. Für geschäftliche Anfragen (B2B/Flotten) verweise auf das [${links.contact}](/${locale}/contact).
 5. Sei immer höflich und professionell.${contextSection}`;
 }
 
@@ -139,43 +155,42 @@ export async function POST(request: NextRequest) {
 
 		const { message, locale, history } = parseResult.data;
 
-		// Step 1: Get embedding for user message
-		let embedding: number[];
+		// Combine history & current message for context query
+		const combinedSearchText = [...history.slice(-3).map((h) => h.content), message].join(" ");
+
 		let contextChunks: string[] = [];
 
 		try {
-			embedding = await getEmbedding(message);
-
-			// Step 2: Query chatbot_knowledge for relevant context
 			const supabase = createServiceClient();
+
+			// Fetch knowledge base rows for locale
 			// eslint-disable-next-line @typescript-eslint/no-explicit-any
-			const { data, error } = (await (supabase as any).rpc("match_chatbot_docs", {
-				query_embedding: embedding,
-				match_count: 5,
-				filter_language: locale,
-			})) as { data: MatchDoc[] | null; error: Error | null };
+			const { data: rows, error: fetchError } = (await (supabase as any)
+				.from("chatbot_knowledge")
+				.select("content, embedding, language")
+				.eq("language", locale)
+				.limit(50)) as { data: KnowledgeRow[] | null; error: Error | null };
 
-			if (!error && data) {
-				contextChunks = data.filter((row) => row.similarity > 0.2).map((row) => row.content);
-			} else {
-				if (error) {
-					console.warn("[chatbot] RPC match_chatbot_docs failed, using fallback query:", error);
-				}
-
-				// Fallback: Constrained fetch (limit 50) & compute exact cosine similarity
-				const { data: rows, error: fallbackError } = await supabase
+			let targetRows = rows;
+			if (fetchError || !targetRows || targetRows.length === 0) {
+				// eslint-disable-next-line @typescript-eslint/no-explicit-any
+				const { data: allRows } = (await (supabase as any)
 					.from("chatbot_knowledge")
 					.select("content, embedding, language")
-					.eq("language", locale)
-					.limit(50);
+					.limit(50)) as { data: KnowledgeRow[] | null };
+				targetRows = allRows;
+			}
 
-				if (fallbackError) {
-					console.error("[chatbot] Fallback query failed:", fallbackError);
-				}
-
-				if (rows && rows.length > 0) {
-					contextChunks = rows
-						.map((row: { content: string; embedding: unknown; language: string }) => {
+			if (targetRows && targetRows.length > 0) {
+				// If total entries for locale is modest (<= 15), include ALL entries in context
+				// so Gemini has 100% complete knowledge for any question or follow-up question
+				if (targetRows.length <= 15) {
+					contextChunks = targetRows.map((r) => r.content);
+				} else {
+					// Otherwise, compute similarity against combined search text
+					const embedding = await getEmbedding(combinedSearchText);
+					contextChunks = targetRows
+						.map((row: KnowledgeRow) => {
 							let vec: number[] | null = null;
 							if (Array.isArray(row.embedding)) vec = row.embedding as number[];
 							else if (typeof row.embedding === "string") {
@@ -188,17 +203,17 @@ export async function POST(request: NextRequest) {
 							const similarity = vec ? cosineSimilarity(embedding, vec) : 0;
 							return { content: row.content, similarity };
 						})
-						.filter((r) => r.similarity > 0.2)
 						.sort((a, b) => b.similarity - a.similarity)
-						.slice(0, 5)
+						.slice(0, 10)
 						.map((r) => r.content);
 				}
 			}
 
-			console.warn(`[chatbot] Found ${contextChunks.length} relevant chunks for locale=${locale}`);
+			console.warn(
+				`[chatbot] Loaded ${contextChunks.length} knowledge base chunks for locale=${locale}`,
+			);
 		} catch (err) {
 			console.error("[chatbot] Embedding/RAG failed, proceeding without context:", err);
-			// Continue with empty context — LLM will answer from system prompt knowledge
 		}
 
 		// Step 3: Build prompt with context + history + user message
@@ -223,7 +238,6 @@ export async function POST(request: NextRequest) {
 			},
 		});
 	} catch (err) {
-		console.error("[chatbot] Unexpected error:", err);
 		const msg = err instanceof Error ? err.message : "Internal server error";
 		return NextResponse.json({ error: msg }, { status: 500 });
 	}
