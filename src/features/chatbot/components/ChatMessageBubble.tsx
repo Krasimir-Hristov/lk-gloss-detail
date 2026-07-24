@@ -2,12 +2,22 @@
 
 import { Bot, User } from "lucide-react";
 import { useTranslations } from "next-intl";
+import ReactMarkdown from "react-markdown";
 
 import type { ChatMessage } from "@/features/chatbot/schemas/chatbot";
+import type { AnchorHTMLAttributes, HTMLAttributes, ReactNode } from "react";
 
 type ChatMessageBubbleProps = {
 	message: ChatMessage;
 };
+
+interface LinkProps extends AnchorHTMLAttributes<HTMLAnchorElement> {
+	children?: ReactNode;
+}
+
+interface BlockProps extends HTMLAttributes<HTMLElement> {
+	children?: ReactNode;
+}
 
 export const ChatMessageBubble = ({ message }: ChatMessageBubbleProps) => {
 	const t = useTranslations("Chatbot");
@@ -22,7 +32,7 @@ export const ChatMessageBubble = ({ message }: ChatMessageBubbleProps) => {
 				</div>
 			) : null}
 
-			<div className={`flex max-w-[75%] flex-col ${isAssistant ? "items-start" : "items-end"}`}>
+			<div className={`flex max-w-[80%] flex-col ${isAssistant ? "items-start" : "items-end"}`}>
 				{/* Name label */}
 				<span className="mb-1 text-xs font-medium text-[#ccc3d9]">
 					{isAssistant ? t("botName") : t("userLabel")}
@@ -36,7 +46,47 @@ export const ChatMessageBubble = ({ message }: ChatMessageBubbleProps) => {
 							: "rounded-tr-sm border border-[#7b2dff]/30 bg-[#7b2dff]/20 text-[#e5e2e1]"
 					}`}
 				>
-					{message.content}
+					{isAssistant ? (
+						<ReactMarkdown
+							components={{
+								a: ({ href, children }: LinkProps) => {
+									if (!href) return <span>{children}</span>;
+									return (
+										<a
+											href={href}
+											onClick={(e) => {
+												if (href.includes("#")) {
+													e.preventDefault();
+													const hash = href.slice(href.indexOf("#"));
+													const element = document.querySelector(hash);
+													if (element) {
+														element.scrollIntoView({ behavior: "smooth" });
+													}
+													const cleanUrl = window.location.pathname + hash;
+													window.history.replaceState(null, "", cleanUrl);
+												}
+											}}
+											className="font-semibold text-[#d1bcff] underline underline-offset-2 transition-colors hover:text-white"
+										>
+											{children}
+										</a>
+									);
+								},
+								p: ({ children }: BlockProps) => <p className="mb-2 last:mb-0">{children}</p>,
+								ul: ({ children }: BlockProps) => (
+									<ul className="mb-2 list-disc pl-4 last:mb-0">{children}</ul>
+								),
+								ol: ({ children }: BlockProps) => (
+									<ol className="mb-2 list-decimal pl-4 last:mb-0">{children}</ol>
+								),
+								li: ({ children }: BlockProps) => <li className="mb-0.5">{children}</li>,
+							}}
+						>
+							{message.content}
+						</ReactMarkdown>
+					) : (
+						message.content
+					)}
 				</div>
 			</div>
 

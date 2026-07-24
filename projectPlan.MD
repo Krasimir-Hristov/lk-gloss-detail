@@ -403,6 +403,19 @@
   - Delete entry (with confirmation modal)
 - [x] **Semantic Search Diagnostic Tester**:
   - Real-time RAG query simulator to test vector similarity matching via Cosine similarity calculation against `chatbot_knowledge` vectors
+- [x] **RAG Retrieval & Chatbot Markdown Navigation**:
+  - Enhanced RAG context retrieval with active DB service fallback for exact pricing, services, and duration output
+  - Integrated `react-markdown` rendering in chatbot UI with Next.js SPA internal links for `/booking`, `/assessment`, `/contact`, and `/services`
+- [x] **Chatbot Session Persistence & Full RAG Context (`feature/chatbot-rag-fixes`)**:
+  - Persisted chatbot history and open state in `sessionStorage` (`useChatbot` hook) across page navigation
+  - Full locale RAG knowledge base context ingestion for Gemini 2.5 Flash
+  - Fixed anchor link formatting (`/#services`, `/booking`, `/assessment`, `/contact`) and link label localization per language
+
+> [!IMPORTANT]
+> **NEXT IMMEDIATE STEP (TOMORROW / NEXT SESSION)**:
+> 1. Check CodeRabbit PR review on branch `feature/chatbot-rag-fixes` after rate limit resets tomorrow (or push a minor commit to re-trigger if needed).
+> 2. Merge `feature/chatbot-rag-fixes` into `main` and sync local `main`.
+> 3. Proceed with Phase 11.6 (Dashboard Overview widgets) & Phase 12 (SEO & Performance).
 
 ### 11.6 Dashboard Overview
 
