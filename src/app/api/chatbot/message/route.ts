@@ -155,10 +155,38 @@ export async function POST(request: NextRequest) {
 				filter_language: locale,
 			})) as { data: MatchDoc[] | null; error: Error | null };
 
-			if (error) {
-				console.error("[chatbot] match_chatbot_docs error:", error);
-			} else if (data) {
-				contextChunks = data.filter((row) => row.similarity > 0.5).map((row) => row.content);
+			if (!error && data) {
+				contextChunks = data.filter((row) => row.similarity > 0.2).map((row) => row.content);
+			} else {
+				// Fallback: Fetch knowledge directly & compute exact cosine similarity
+				const { data: rows } = await supabase
+					.from("chatbot_knowledge")
+					.select("content, embedding, language")
+					.eq("language", locale);
+
+				if (rows && rows.length > 0) {
+					contextChunks = rows
+						.map((row: { content: string; embedding: unknown; language: string }) => {
+							let sim = 0;
+							let vec: number[] | null = null;
+							if (Array.isArray(row.embedding)) vec = row.embedding;
+							else if (typeof row.embedding === "string") {
+								try {
+									vec = JSON.parse(row.embedding);
+								} catch {
+									vec = null;
+								}
+							}
+							if (vec && vec.length === embedding.length) {
+								sim = vec.reduce((acc, v, i) => acc + v * embedding[i], 0);
+							}
+							return { content: row.content, similarity: sim };
+						})
+						.filter((r) => r.similarity > 0.2)
+						.sort((a, b) => b.similarity - a.similarity)
+						.slice(0, 5)
+						.map((r) => r.content);
+				}
 			}
 
 			console.warn(`[chatbot] Found ${contextChunks.length} relevant chunks for locale=${locale}`);

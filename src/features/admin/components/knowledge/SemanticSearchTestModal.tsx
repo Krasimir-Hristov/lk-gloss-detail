@@ -1,0 +1,174 @@
+"use client";
+
+import { X, Search } from "lucide-react";
+import { useTranslations } from "next-intl";
+import { useState } from "react";
+
+import { testSemanticSearchAction } from "../../actions/knowledge";
+
+import type { SupportedLocale, VectorSearchResult } from "../../types/knowledge";
+
+interface SemanticSearchTestModalProps {
+	onClose: () => void;
+}
+
+function formatTextValue(val: unknown, currentLocale: string = "de"): string {
+	if (val === null || val === undefined) return "";
+	if (typeof val === "string") return val;
+	if (typeof val === "number" || typeof val === "boolean") return String(val);
+	if (typeof val === "object" && val !== null) {
+		const obj = val as Record<string, unknown>;
+		if (obj[currentLocale] && typeof obj[currentLocale] === "string") return obj[currentLocale];
+		if (obj.de && typeof obj.de === "string") return obj.de;
+		if (obj.el && typeof obj.el === "string") return obj.el;
+		if (obj.en && typeof obj.en === "string") return obj.en;
+		if (obj.title && typeof obj.title === "string") return obj.title;
+		return JSON.stringify(obj);
+	}
+	return String(val);
+}
+
+export function SemanticSearchTestModal({ onClose }: SemanticSearchTestModalProps) {
+	const t = useTranslations("Admin.chatbotKb.testModal");
+	const [query, setQuery] = useState("");
+	const [locale, setLocale] = useState<SupportedLocale>("de");
+	const [loading, setLoading] = useState(false);
+	const [results, setResults] = useState<VectorSearchResult[]>([]);
+	const [error, setError] = useState<string | null>(null);
+
+	const handleSearch = async (e: React.FormEvent) => {
+		e.preventDefault();
+		if (!query.trim()) return;
+
+		setLoading(true);
+		setError(null);
+
+		const res = await testSemanticSearchAction(query, locale);
+		if (res.success && res.data) {
+			setResults(res.data);
+		} else {
+			setError(res.error || "Search failed");
+		}
+		setLoading(false);
+	};
+
+	return (
+		<div
+			onClick={onClose}
+			className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 p-4 backdrop-blur-md"
+		>
+			<div
+				onClick={(e) => e.stopPropagation()}
+				className="flex max-h-[85vh] w-full max-w-2xl flex-col overflow-hidden rounded-xl border border-neutral-800 bg-neutral-950 shadow-2xl"
+			>
+				{/* Header */}
+				<div className="flex shrink-0 items-center justify-between border-b border-neutral-800 p-4">
+					<h3 className="text-lg font-semibold text-white">{t("title")}</h3>
+					<button
+						onClick={onClose}
+						className="rounded-md p-1.5 text-neutral-400 transition-colors hover:bg-neutral-800 hover:text-white"
+					>
+						<X className="h-5 w-5" />
+					</button>
+				</div>
+
+				{/* Scrollable Body */}
+				<div className="flex-1 space-y-4 overflow-y-auto p-6">
+					<form onSubmit={handleSearch} className="flex gap-2">
+						<select
+							value={locale}
+							onChange={(e) => setLocale(e.target.value as SupportedLocale)}
+							className="rounded-md border border-neutral-800 bg-neutral-900 px-3 py-2 text-sm text-white outline-none focus:border-purple-500"
+						>
+							<option value="de">German (de)</option>
+							<option value="el">Greek (el)</option>
+							<option value="en">English (en)</option>
+						</select>
+						<input
+							type="text"
+							value={query}
+							onChange={(e) => setQuery(e.target.value)}
+							placeholder={t("placeholder")}
+							className="flex-1 rounded-md border border-neutral-800 bg-neutral-900 px-3 py-2 text-sm text-white outline-none focus:border-purple-500"
+						/>
+						<button
+							type="submit"
+							disabled={loading || !query.trim()}
+							className="flex items-center gap-2 rounded-md bg-purple-600 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-purple-500 disabled:opacity-50"
+						>
+							{loading ? (
+								<div className="h-4 w-4 animate-spin rounded-full border-2 border-white/20 border-t-white" />
+							) : (
+								<Search className="h-4 w-4" />
+							)}
+							{t("searchButton")}
+						</button>
+					</form>
+
+					{error ? (
+						<div className="rounded-md border border-red-500/20 bg-red-950/30 p-3 text-sm text-red-400">
+							{error}
+						</div>
+					) : null}
+
+					<div className="space-y-4">
+						{results.length > 0 ? (
+							<h4 className="text-sm font-medium text-neutral-400">{t("topMatches")}</h4>
+						) : null}
+
+						{results.length === 0 && !loading && !error && query ? (
+							<div className="py-8 text-center text-sm text-neutral-500">{t("noMatches")}</div>
+						) : null}
+
+						<div className="space-y-3">
+							{results.map((r, i) => (
+								<div
+									key={r.id}
+									className="rounded-lg border border-neutral-800 bg-neutral-900/50 p-4"
+								>
+									<div className="mb-2 flex items-center justify-between">
+										<div className="flex items-center gap-2">
+											<span className="flex h-5 w-5 items-center justify-center rounded-full bg-neutral-800 text-xs font-medium text-neutral-400">
+												{i + 1}
+											</span>
+											<span className="text-sm font-medium text-white">
+												{formatTextValue(r.metadata?.title || r.metadata?.topic, locale)}
+											</span>
+										</div>
+										<div className="flex items-center gap-2">
+											<span className="rounded bg-neutral-800 px-2 py-0.5 text-xs font-medium text-neutral-300 uppercase">
+												{r.language}
+											</span>
+											<span
+												className={`rounded px-2 py-0.5 text-xs font-medium ${
+													r.similarity > 0.8
+														? "bg-green-950/30 text-green-400"
+														: r.similarity > 0.7
+															? "bg-yellow-950/30 text-yellow-400"
+															: "bg-red-950/30 text-red-400"
+												}`}
+											>
+												Sim: {r.similarity.toFixed(3)}
+											</span>
+										</div>
+									</div>
+									<p className="text-sm text-neutral-400">{formatTextValue(r.content, locale)}</p>
+								</div>
+							))}
+						</div>
+					</div>
+				</div>
+
+				{/* Footer */}
+				<div className="flex shrink-0 items-center justify-end border-t border-neutral-800 bg-neutral-950 p-4">
+					<button
+						onClick={onClose}
+						className="rounded-md border border-neutral-800 bg-neutral-900 px-5 py-2 text-sm font-medium text-neutral-300 transition-colors hover:bg-neutral-800 hover:text-white"
+					>
+						Close
+					</button>
+				</div>
+			</div>
+		</div>
+	);
+}
