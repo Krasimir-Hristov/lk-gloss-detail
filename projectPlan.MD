@@ -386,17 +386,23 @@
 - [x] Add image upload / delete functionality to Add/Edit service forms (saving to Supabase Storage)
 - [x] Support deletion of service (including its images from storage)
 
-### 11.4 RAG Knowledge Base Management
+### 11.4 RAG Knowledge Base Management (AI-Assisted Multi-lingual Hub)
 
-- [ ] **Chatbot KB tab**: list all `chatbot_knowledge` entries (content + metadata)
-- [ ] Add new entry (textarea → auto-embed → save)
-- [ ] Delete entry (with confirmation modal)
-- [ ] View embedding metadata
-
-- [ ] **Service Vectors tab**: list all `service_vectors` entries
-- [ ] Add new vector (structured form → auto-embed → save)
-- [ ] Delete entry
-- [ ] Trigger re-embed existing entry
+- [x] **AI-Assisted Draft & Structuring Assistant (OpenAI / OpenRouter)**:
+  - Input rough client notes/bullet points in any language
+  - AI Structured Output (Zod Schema) to format self-contained, RAG-optimized knowledge blocks in 3 target locales: German (`de`), Greek (`el`), English (`en`)
+  - Support category classification (`interior`, `exterior`, `paint_correction`, `headlights_special`, `company_policy`, `general`)
+- [x] **Admin Review & Multi-tab Preview Modal**:
+  - Side-by-side or tabbed editor for `de`, `el`, `en` formatted chunks before vectorization
+  - Customizable title, metadata tags, and content
+- [x] **Auto-Vectorization & Storage (`chatbot_knowledge`)**:
+  - Vectorize generated/edited text entries using `openai/text-embedding-3-small` (1536-dim vector)
+  - Insert/update records into Supabase `chatbot_knowledge` with metadata and language filters with stable entry identity duplicate prevention
+- [x] **Knowledge Base Entry Management UI**:
+  - List all knowledge entries with filters by language (`de`, `el`, `en`), category, and text search
+  - Delete entry (with confirmation modal)
+- [x] **Semantic Search Diagnostic Tester**:
+  - Real-time RAG query simulator to test vector similarity matching via Cosine similarity calculation against `chatbot_knowledge` vectors
 
 ### 11.6 Dashboard Overview
 

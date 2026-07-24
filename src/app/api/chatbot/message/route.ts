@@ -3,7 +3,7 @@ import { ChatOpenAI } from "@langchain/openai";
 import { NextResponse } from "next/server";
 import { z } from "zod";
 
-import { getOpenRouterEmbeddings } from "@/lib/chatbot/embeddings";
+import { cosineSimilarity, getOpenRouterEmbeddings } from "@/lib/chatbot/embeddings";
 import { createServiceClient } from "@/lib/supabase/service";
 
 import type { NextRequest } from "next/server";
@@ -155,10 +155,44 @@ export async function POST(request: NextRequest) {
 				filter_language: locale,
 			})) as { data: MatchDoc[] | null; error: Error | null };
 
-			if (error) {
-				console.error("[chatbot] match_chatbot_docs error:", error);
-			} else if (data) {
-				contextChunks = data.filter((row) => row.similarity > 0.5).map((row) => row.content);
+			if (!error && data) {
+				contextChunks = data.filter((row) => row.similarity > 0.2).map((row) => row.content);
+			} else {
+				if (error) {
+					console.warn("[chatbot] RPC match_chatbot_docs failed, using fallback query:", error);
+				}
+
+				// Fallback: Constrained fetch (limit 50) & compute exact cosine similarity
+				const { data: rows, error: fallbackError } = await supabase
+					.from("chatbot_knowledge")
+					.select("content, embedding, language")
+					.eq("language", locale)
+					.limit(50);
+
+				if (fallbackError) {
+					console.error("[chatbot] Fallback query failed:", fallbackError);
+				}
+
+				if (rows && rows.length > 0) {
+					contextChunks = rows
+						.map((row: { content: string; embedding: unknown; language: string }) => {
+							let vec: number[] | null = null;
+							if (Array.isArray(row.embedding)) vec = row.embedding as number[];
+							else if (typeof row.embedding === "string") {
+								try {
+									vec = JSON.parse(row.embedding);
+								} catch {
+									vec = null;
+								}
+							}
+							const similarity = vec ? cosineSimilarity(embedding, vec) : 0;
+							return { content: row.content, similarity };
+						})
+						.filter((r) => r.similarity > 0.2)
+						.sort((a, b) => b.similarity - a.similarity)
+						.slice(0, 5)
+						.map((r) => r.content);
+				}
 			}
 
 			console.warn(`[chatbot] Found ${contextChunks.length} relevant chunks for locale=${locale}`);
