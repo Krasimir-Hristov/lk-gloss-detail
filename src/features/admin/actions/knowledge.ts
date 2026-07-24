@@ -1,6 +1,5 @@
 "use server";
 
-// @ts-expect-error - community module export types
 import { SupabaseVectorStore } from "@langchain/community/vectorstores/supabase";
 import { Document } from "@langchain/core/documents";
 import { ChatOpenAI } from "@langchain/openai";

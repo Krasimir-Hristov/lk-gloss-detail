@@ -3,6 +3,7 @@
 import { X, Sparkles, FileText, CheckCircle2, AlertTriangle, Building2 } from "lucide-react";
 import { useTranslations } from "next-intl";
 import React, { useState, useEffect } from "react";
+import { z } from "zod";
 
 import { aiAgentProcessAction, saveBatchKnowledgeAction } from "@/features/admin/actions/knowledge";
 import { formatTextValue } from "@/features/admin/utils/format";
@@ -16,6 +17,19 @@ interface AiKnowledgeWizardProps {
 }
 
 type TabMode = "form" | "company";
+
+const ServiceInputFormSchema = z.object({
+	serviceTitle: z.string().trim().min(1, "errTitle"),
+	servicePrice: z.string().trim().min(1, "errPrice"),
+	serviceDuration: z.string().trim().min(1, "errDuration"),
+	description: z.string().trim().min(1, "errDescription"),
+	requirements: z.string().optional(),
+	category: z.string(),
+});
+
+const CompanyInfoFormSchema = z.object({
+	companyInfoText: z.string().trim().min(1, "errCompanyInfo"),
+});
 
 export const AiKnowledgeWizard: React.FC<AiKnowledgeWizardProps> = ({ onClose, onSuccess }) => {
 	const t = useTranslations("Admin.chatbotKb.wizard");
@@ -58,26 +72,41 @@ export const AiKnowledgeWizard: React.FC<AiKnowledgeWizardProps> = ({ onClose, o
 			let combinedPrompt = "";
 
 			if (activeTab === "form") {
-				if (!serviceTitle.trim()) throw new Error(t("errTitle"));
-				if (!servicePrice.trim()) throw new Error(t("errPrice"));
-				if (!serviceDuration.trim()) throw new Error(t("errDuration"));
-				if (!description.trim()) throw new Error(t("errDescription"));
+				const parseResult = ServiceInputFormSchema.safeParse({
+					serviceTitle,
+					servicePrice,
+					serviceDuration,
+					description,
+					requirements,
+					category,
+				});
 
+				if (!parseResult.success) {
+					const firstErrorKey = parseResult.error.issues[0]?.message;
+					throw new Error(firstErrorKey ? t(firstErrorKey as "errTitle") : t("genericError"));
+				}
+
+				const data = parseResult.data;
 				combinedPrompt = `
 NEW SERVICE DETAILS:
-- Service Name: ${serviceTitle.trim()}
-- Category: ${category}
-- Price: ${servicePrice.trim()}
-- Working Duration: ${serviceDuration.trim()}
-- Detailed Description & Included Steps: ${description.trim()}
-${requirements.trim() ? `- Special Rules & Conditions: ${requirements.trim()}` : ""}
+- Service Name: ${data.serviceTitle}
+- Category: ${data.category}
+- Price: ${data.servicePrice}
+- Working Duration: ${data.serviceDuration}
+- Detailed Description & Included Steps: ${data.description}
+${data.requirements ? `- Special Rules & Conditions: ${data.requirements}` : ""}
 `.trim();
 			} else {
-				if (!companyInfoText.trim()) throw new Error(t("errCompanyInfo"));
+				const parseResult = CompanyInfoFormSchema.safeParse({ companyInfoText });
+				if (!parseResult.success) {
+					const firstErrorKey = parseResult.error.issues[0]?.message;
+					throw new Error(firstErrorKey ? t(firstErrorKey as "errCompanyInfo") : t("genericError"));
+				}
+
 				combinedPrompt = `
 COMPANY GENERAL INFORMATION / POLICY:
 Category: company_policy
-Details: ${companyInfoText.trim()}
+Details: ${parseResult.data.companyInfoText}
 `.trim();
 			}
 
@@ -95,6 +124,7 @@ Details: ${companyInfoText.trim()}
 	const handleSave = async () => {
 		if (!generatedStructure) return;
 		setIsSaving(true);
+		setError(null);
 		try {
 			const res = await saveBatchKnowledgeAction(generatedStructure);
 			if (res.success) {
@@ -104,6 +134,7 @@ Details: ${companyInfoText.trim()}
 			}
 		} catch (err: unknown) {
 			setError((err as Error).message || t("genericError"));
+		} finally {
 			setIsSaving(false);
 		}
 	};

@@ -10,10 +10,21 @@ import {
 
 export type { KnowledgeCategory, SupportedLocale, AiKnowledgeStructure };
 
+const NormalizedEmbeddingSchema = z.preprocess((val) => {
+	if (typeof val === "string") {
+		try {
+			return JSON.parse(val);
+		} catch {
+			return undefined;
+		}
+	}
+	return val;
+}, z.array(z.number()).nullish());
+
 export const ChatbotKnowledgeEntrySchema = z.object({
 	id: z.string(),
 	content: z.string(),
-	embedding: z.array(z.number()).optional(),
+	embedding: NormalizedEmbeddingSchema,
 	metadata: z
 		.object({
 			category: KnowledgeCategorySchema,

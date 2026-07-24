@@ -1,4 +1,7 @@
 import { OpenAIEmbeddings } from "@langchain/openai";
+import { z } from "zod";
+
+export const VectorEmbeddingSchema = z.array(z.number()).min(1);
 
 /**
  * Shared OpenRouter embedding model.
@@ -20,9 +23,12 @@ export function getOpenRouterEmbeddings(): OpenAIEmbeddings {
  * between two embedding vectors.
  */
 export function cosineSimilarity(vecA: number[], vecB: number[]): number {
-	if (!vecA || !vecB || vecA.length !== vecB.length || vecA.length === 0) {
+	const validA = VectorEmbeddingSchema.safeParse(vecA);
+	const validB = VectorEmbeddingSchema.safeParse(vecB);
+
+	if (!validA.success || !validB.success || validA.data.length !== validB.data.length) {
 		return 0;
 	}
-	const dotProduct = vecA.reduce((acc, val, i) => acc + val * vecB[i], 0);
+	const dotProduct = validA.data.reduce((acc, val, i) => acc + val * validB.data[i], 0);
 	return Math.max(0, Math.min(1, dotProduct));
 }

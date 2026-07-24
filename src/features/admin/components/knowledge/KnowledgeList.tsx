@@ -19,6 +19,7 @@ export const KnowledgeList: React.FC = () => {
 	const t = useTranslations("Admin.chatbotKb");
 	const [entries, setEntries] = useState<ChatbotKnowledgeEntry[]>([]);
 	const [loading, setLoading] = useState(true);
+	const [fetchError, setFetchError] = useState<string | null>(null);
 	const [localeFilter, setLocaleFilter] = useState<SupportedLocale | "all">("all");
 	const [categoryFilter, setCategoryFilter] = useState<string>("all");
 	const [isWizardOpen, setIsWizardOpen] = useState(false);
@@ -27,38 +28,64 @@ export const KnowledgeList: React.FC = () => {
 	const [deleteConfirmId, setDeleteConfirmId] = useState<string | null>(null);
 
 	const fetchEntries = async () => {
-		const result = await getKnowledgeEntriesAction(localeFilter, categoryFilter);
-		if (result.success && result.data) {
-			setEntries(result.data);
+		try {
+			setLoading(true);
+			setFetchError(null);
+			const result = await getKnowledgeEntriesAction(localeFilter, categoryFilter);
+			if (result.success && result.data) {
+				setEntries(result.data);
+			} else {
+				setFetchError(result.error || "Failed to load entries");
+			}
+		} catch (err: unknown) {
+			setFetchError((err as Error).message || "Failed to load entries");
+		} finally {
+			setLoading(false);
 		}
-		setLoading(false);
 	};
 
 	useEffect(() => {
-		let isMounted = true;
-		getKnowledgeEntriesAction(localeFilter, categoryFilter).then((result) => {
-			if (isMounted) {
+		let isCurrent = true;
+
+		getKnowledgeEntriesAction(localeFilter, categoryFilter)
+			.then((result) => {
+				if (!isCurrent) return;
 				if (result.success && result.data) {
 					setEntries(result.data);
+				} else {
+					setFetchError(result.error || "Failed to load entries");
 				}
-				setLoading(false);
-			}
-		});
+			})
+			.catch((err: unknown) => {
+				if (!isCurrent) return;
+				setFetchError((err as Error).message || "Failed to load entries");
+			})
+			.finally(() => {
+				if (isCurrent) {
+					setLoading(false);
+				}
+			});
+
 		return () => {
-			isMounted = false;
+			isCurrent = false;
 		};
 	}, [localeFilter, categoryFilter]);
 
 	const handleDelete = async (id: string) => {
 		setIsDeleting(id);
-		const result = await deleteKnowledgeEntryAction(id);
-		if (result.success) {
-			await fetchEntries();
-		} else {
-			alert(result.error || t("deleteError"));
+		try {
+			const result = await deleteKnowledgeEntryAction(id);
+			if (result.success) {
+				await fetchEntries();
+			} else {
+				alert(result.error || t("deleteError"));
+			}
+		} catch (err: unknown) {
+			alert((err as Error).message || t("deleteError"));
+		} finally {
+			setIsDeleting(null);
+			setDeleteConfirmId(null);
 		}
-		setIsDeleting(null);
-		setDeleteConfirmId(null);
 	};
 
 	return (
@@ -113,6 +140,8 @@ export const KnowledgeList: React.FC = () => {
 			<div className="rounded-xl border border-neutral-800 bg-neutral-950 p-4 shadow-xl">
 				{loading ? (
 					<div className="py-12 text-center text-sm text-neutral-400">{t("loading")}</div>
+				) : fetchError ? (
+					<div className="py-8 text-center text-sm text-red-400">{fetchError}</div>
 				) : entries.length === 0 ? (
 					<div className="py-12 text-center text-sm text-neutral-500">{t("empty")}</div>
 				) : (

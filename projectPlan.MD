@@ -391,7 +391,7 @@
 - [x] **AI-Assisted Draft & Structuring Assistant (OpenAI / OpenRouter)**:
   - Input rough client notes/bullet points in any language
   - AI Structured Output (Zod Schema) to format self-contained, RAG-optimized knowledge blocks in 3 target locales: German (`de`), Greek (`el`), English (`en`)
-  - Support category classification (`services`, `business_hours`, `contact`, `booking_rules`, `faq`, `general`)
+  - Support category classification (`interior`, `exterior`, `paint_correction`, `headlights_special`, `company_policy`, `general`)
 - [x] **Admin Review & Multi-tab Preview Modal**:
   - Side-by-side or tabbed editor for `de`, `el`, `en` formatted chunks before vectorization
   - Customizable title, metadata tags, and content
@@ -402,7 +402,7 @@
   - List all knowledge entries with filters by language (`de`, `el`, `en`), category, and text search
   - Delete entry (with confirmation modal)
 - [x] **Semantic Search Diagnostic Tester**:
-  - Real-time RAG query simulator to test similarity matching against Supabase HNSW vector store (`match_chatbot_docs`)
+  - Real-time RAG query simulator to test vector similarity matching via Cosine similarity calculation against `chatbot_knowledge` vectors
 
 ### 11.6 Dashboard Overview
 

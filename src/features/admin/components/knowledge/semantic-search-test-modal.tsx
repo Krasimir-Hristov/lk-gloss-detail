@@ -3,8 +3,10 @@
 import { X, Search } from "lucide-react";
 import { useTranslations } from "next-intl";
 import React, { useState, useEffect } from "react";
+import { z } from "zod";
 
 import { testSemanticSearchAction } from "@/features/admin/actions/knowledge";
+import { SupportedLocaleSchema } from "@/features/admin/schemas/knowledge";
 import { formatTextValue } from "@/features/admin/utils/format";
 
 import type { SupportedLocale, VectorSearchResult } from "@/features/admin/types/knowledge";
@@ -12,6 +14,11 @@ import type { SupportedLocale, VectorSearchResult } from "@/features/admin/types
 interface SemanticSearchTestModalProps {
 	onClose: () => void;
 }
+
+const SemanticSearchQuerySchema = z.object({
+	query: z.string().trim().min(1),
+	locale: SupportedLocaleSchema,
+});
 
 export const SemanticSearchTestModal: React.FC<SemanticSearchTestModalProps> = ({ onClose }) => {
 	const t = useTranslations("Admin.chatbotKb.testModal");
@@ -31,18 +38,24 @@ export const SemanticSearchTestModal: React.FC<SemanticSearchTestModalProps> = (
 
 	const handleSearch = async (e: React.FormEvent) => {
 		e.preventDefault();
-		if (!query.trim()) return;
+		const parseResult = SemanticSearchQuerySchema.safeParse({ query, locale });
+		if (!parseResult.success) return;
 
 		setLoading(true);
 		setError(null);
 
-		const res = await testSemanticSearchAction(query, locale);
-		if (res.success && res.data) {
-			setResults(res.data);
-		} else {
-			setError(res.error || t("searchFailed"));
+		try {
+			const res = await testSemanticSearchAction(parseResult.data.query, parseResult.data.locale);
+			if (res.success && res.data) {
+				setResults(res.data);
+			} else {
+				setError(res.error || t("searchFailed"));
+			}
+		} catch (err: unknown) {
+			setError((err as Error).message || t("searchFailed"));
+		} finally {
+			setLoading(false);
 		}
-		setLoading(false);
 	};
 
 	return (
