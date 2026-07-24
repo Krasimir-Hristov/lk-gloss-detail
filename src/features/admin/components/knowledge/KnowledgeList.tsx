@@ -51,6 +51,14 @@ export function KnowledgeList() {
 	const [isDeleting, setIsDeleting] = useState<string | null>(null);
 	const [deleteConfirmId, setDeleteConfirmId] = useState<string | null>(null);
 
+	const fetchEntries = async () => {
+		const result = await getKnowledgeEntriesAction(localeFilter, categoryFilter);
+		if (result.success && result.data) {
+			setEntries(result.data);
+		}
+		setLoading(false);
+	};
+
 	useEffect(() => {
 		let isMounted = true;
 		getKnowledgeEntriesAction(localeFilter, categoryFilter).then((result) => {
@@ -70,8 +78,7 @@ export function KnowledgeList() {
 		setIsDeleting(id);
 		const result = await deleteKnowledgeEntryAction(id);
 		if (result.success) {
-			const res = await getKnowledgeEntriesAction(localeFilter, categoryFilter);
-			if (res.success && res.data) setEntries(res.data);
+			await fetchEntries();
 		} else {
 			alert(result.error || t("deleteError"));
 		}
