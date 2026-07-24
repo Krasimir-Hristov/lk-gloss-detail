@@ -2,12 +2,13 @@
 
 import { X, Sparkles, FileText, CheckCircle2, AlertTriangle, Building2 } from "lucide-react";
 import { useTranslations } from "next-intl";
-import { useState } from "react";
+import React, { useState, useEffect } from "react";
 
-import { aiAgentProcessAction, saveBatchKnowledgeAction } from "../../actions/knowledge";
+import { aiAgentProcessAction, saveBatchKnowledgeAction } from "@/features/admin/actions/knowledge";
+import { formatTextValue } from "@/features/admin/utils/format";
 
-import type { SupportedLocale } from "../../schemas/knowledge";
-import type { AiKnowledgeStructure } from "../../types/knowledge";
+import type { SupportedLocale } from "@/features/admin/schemas/knowledge";
+import type { AiKnowledgeStructure } from "@/features/admin/types/knowledge";
 
 interface AiKnowledgeWizardProps {
 	onClose: () => void;
@@ -16,35 +17,7 @@ interface AiKnowledgeWizardProps {
 
 type TabMode = "form" | "company";
 
-function formatTextValue(val: unknown, currentLocale: string = "de"): string {
-	if (val === null || val === undefined) return "";
-	if (typeof val === "string") {
-		const trimmed = val.trim();
-		if (trimmed.startsWith("{")) {
-			try {
-				const parsed = JSON.parse(trimmed);
-				return formatTextValue(parsed, currentLocale);
-			} catch {
-				return val;
-			}
-		}
-		return val;
-	}
-	if (typeof val === "number" || typeof val === "boolean") return String(val);
-	if (typeof val === "object" && val !== null) {
-		const obj = val as Record<string, unknown>;
-		if (obj[currentLocale] && typeof obj[currentLocale] === "string") return obj[currentLocale];
-		if (obj.de && typeof obj.de === "string") return obj.de;
-		if (obj.el && typeof obj.el === "string") return obj.el;
-		if (obj.en && typeof obj.en === "string") return obj.en;
-		if (obj.name) return formatTextValue(obj.name, currentLocale);
-		if (obj.title) return formatTextValue(obj.title, currentLocale);
-		return JSON.stringify(obj);
-	}
-	return String(val);
-}
-
-export function AiKnowledgeWizard({ onClose, onSuccess }: AiKnowledgeWizardProps) {
+export const AiKnowledgeWizard: React.FC<AiKnowledgeWizardProps> = ({ onClose, onSuccess }) => {
 	const t = useTranslations("Admin.chatbotKb.wizard");
 	const tCategories = useTranslations("Admin.chatbotKb.categories");
 	const [activeTab, setActiveTab] = useState<TabMode>("form");
@@ -69,6 +42,14 @@ export function AiKnowledgeWizard({ onClose, onSuccess }: AiKnowledgeWizardProps
 	const [generatedStructure, setGeneratedStructure] = useState<AiKnowledgeStructure | null>(null);
 	const [reviewLocale, setReviewLocale] = useState<SupportedLocale>("de");
 
+	useEffect(() => {
+		const handleKeyDown = (e: KeyboardEvent) => {
+			if (e.key === "Escape") onClose();
+		};
+		window.addEventListener("keydown", handleKeyDown);
+		return () => window.removeEventListener("keydown", handleKeyDown);
+	}, [onClose]);
+
 	const handleProcessWithAgent = async () => {
 		setError(null);
 		setIsProcessing(true);
@@ -77,11 +58,10 @@ export function AiKnowledgeWizard({ onClose, onSuccess }: AiKnowledgeWizardProps
 			let combinedPrompt = "";
 
 			if (activeTab === "form") {
-				if (!serviceTitle.trim()) throw new Error("Please enter a service title.");
-				if (!servicePrice.trim()) throw new Error("Please enter the price for this service.");
-				if (!serviceDuration.trim())
-					throw new Error("Please enter the estimated working duration.");
-				if (!description.trim()) throw new Error("Please enter a service description.");
+				if (!serviceTitle.trim()) throw new Error(t("errTitle"));
+				if (!servicePrice.trim()) throw new Error(t("errPrice"));
+				if (!serviceDuration.trim()) throw new Error(t("errDuration"));
+				if (!description.trim()) throw new Error(t("errDescription"));
 
 				combinedPrompt = `
 NEW SERVICE DETAILS:
@@ -93,8 +73,7 @@ NEW SERVICE DETAILS:
 ${requirements.trim() ? `- Special Rules & Conditions: ${requirements.trim()}` : ""}
 `.trim();
 			} else {
-				if (!companyInfoText.trim())
-					throw new Error("Please enter general company information or policy.");
+				if (!companyInfoText.trim()) throw new Error(t("errCompanyInfo"));
 				combinedPrompt = `
 COMPANY GENERAL INFORMATION / POLICY:
 Category: company_policy
@@ -107,7 +86,7 @@ Details: ${companyInfoText.trim()}
 
 			setGeneratedStructure(res.data as AiKnowledgeStructure);
 		} catch (err: unknown) {
-			setError((err as Error).message || "An error occurred");
+			setError((err as Error).message || t("genericError"));
 		} finally {
 			setIsProcessing(false);
 		}
@@ -124,22 +103,34 @@ Details: ${companyInfoText.trim()}
 				throw new Error(res.error);
 			}
 		} catch (err: unknown) {
-			setError((err as Error).message || "An error occurred");
+			setError((err as Error).message || t("genericError"));
 			setIsSaving(false);
 		}
 	};
 
 	return (
-		<div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4 backdrop-blur-sm">
-			<div className="flex max-h-[92vh] w-full max-w-3xl flex-col overflow-hidden rounded-xl border border-neutral-800 bg-neutral-950 shadow-2xl">
+		<div
+			role="dialog"
+			aria-modal="true"
+			aria-labelledby="ai-wizard-title"
+			onClick={onClose}
+			className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4 backdrop-blur-sm"
+		>
+			<div
+				onClick={(e) => e.stopPropagation()}
+				className="flex max-h-[92vh] w-full max-w-3xl flex-col overflow-hidden rounded-xl border border-neutral-800 bg-neutral-950 shadow-2xl"
+			>
 				{/* Header */}
 				<div className="flex shrink-0 items-center justify-between border-b border-neutral-800 p-4">
 					<div className="flex items-center gap-2">
 						<Sparkles className="h-5 w-5 text-purple-400" />
-						<h3 className="text-lg font-semibold text-white">{t("title")}</h3>
+						<h3 id="ai-wizard-title" className="text-lg font-semibold text-white">
+							{t("title")}
+						</h3>
 					</div>
 					<button
 						onClick={onClose}
+						aria-label="Close modal"
 						className="rounded-md p-1 text-neutral-400 hover:bg-neutral-800 hover:text-white"
 					>
 						<X className="h-5 w-5" />
@@ -316,7 +307,7 @@ Details: ${companyInfoText.trim()}
 						</div>
 					) : null}
 
-					{/* Right/Full Panel: Review & Save */}
+					{/* Right Panel: Review & Save */}
 					{generatedStructure ? (
 						<div className="flex w-full flex-col p-6">
 							<div className="mb-4 flex items-center justify-between">
@@ -431,4 +422,4 @@ Details: ${companyInfoText.trim()}
 			</div>
 		</div>
 	);
-}
+};

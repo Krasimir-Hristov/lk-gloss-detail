@@ -1,21 +1,28 @@
 "use server";
 
+// @ts-expect-error - community module export types
 import { SupabaseVectorStore } from "@langchain/community/vectorstores/supabase";
 import { Document } from "@langchain/core/documents";
 import { ChatOpenAI } from "@langchain/openai";
-// @ts-expect-error - community module export types
-
-import { getOpenRouterEmbeddings } from "@/lib/chatbot/embeddings";
-import { createServiceClient } from "@/lib/supabase/service";
+import { z } from "zod";
 
 import {
+	AiAgentInputSchema,
 	AiKnowledgeStructureSchema,
+	KnowledgeCategorySchema,
+	SupportedLocaleSchema,
 	type AiAgentInput,
-	type SupportedLocale,
 	type AiKnowledgeStructure,
-} from "../schemas/knowledge";
-
-import type { ChatbotKnowledgeEntry, VectorSearchResult } from "../types/knowledge";
+	type SupportedLocale,
+} from "@/features/admin/schemas/knowledge";
+import {
+	ChatbotKnowledgeEntrySchema,
+	VectorSearchResultSchema,
+	type ChatbotKnowledgeEntry,
+	type VectorSearchResult,
+} from "@/features/admin/types/knowledge";
+import { cosineSimilarity, getOpenRouterEmbeddings } from "@/lib/chatbot/embeddings";
+import { createServiceClient } from "@/lib/supabase/service";
 
 // ── 1. Get Knowledge Entries ───────────────────────────────────────────────
 
@@ -24,24 +31,30 @@ export async function getKnowledgeEntriesAction(
 	category?: string,
 ): Promise<{ success: boolean; data?: ChatbotKnowledgeEntry[]; error?: string }> {
 	try {
+		const validLocale = SupportedLocaleSchema.or(z.literal("all")).parse(locale);
+		const validCategory =
+			category && category !== "all" ? KnowledgeCategorySchema.parse(category) : undefined;
+
 		const supabase = createServiceClient();
 		let query = supabase
 			.from("chatbot_knowledge")
 			.select("*")
 			.order("created_at", { ascending: false });
 
-		if (locale !== "all") {
-			query = query.eq("language", locale);
+		if (validLocale !== "all") {
+			query = query.eq("language", validLocale);
 		}
 
-		if (category && category !== "all") {
-			query = query.contains("metadata", { category });
+		if (validCategory) {
+			query = query.contains("metadata", { category: validCategory });
 		}
 
 		const { data, error } = await query;
 		if (error) throw error;
 
-		return { success: true, data: data as ChatbotKnowledgeEntry[] };
+		const parsedData = z.array(ChatbotKnowledgeEntrySchema).parse(data || []);
+
+		return { success: true, data: parsedData };
 	} catch (error) {
 		console.error("Failed to fetch knowledge entries:", error);
 		return { success: false, error: "Failed to fetch entries" };
@@ -67,7 +80,7 @@ export async function getServicesListAction(): Promise<{
 
 		if (error) throw error;
 
-		return { success: true, data };
+		return { success: true, data: data as Array<Record<string, unknown>> };
 	} catch (error) {
 		console.error("Failed to fetch services:", error);
 		return { success: false, error: "Failed to fetch services" };
@@ -81,11 +94,14 @@ export async function aiAgentProcessAction(
 	contextData?: string,
 ): Promise<{ success: boolean; data?: AiKnowledgeStructure; error?: string }> {
 	try {
-		// Initialize Gemini 2.5 Flash via OpenRouter
+		const validInput = AiAgentInputSchema.parse(input);
+
+		// Initialize Gemini 2.5 Flash via OpenRouter with explicit 45s timeout
 		const model = new ChatOpenAI({
 			apiKey: process.env.OPENROUTER_API_KEY,
 			modelName: "google/gemini-2.5-flash",
-			temperature: 0.2, // Low temperature for factual structuring
+			temperature: 0.2,
+			timeout: 45000,
 			configuration: {
 				baseURL: "https://openrouter.ai/api/v1",
 			},
@@ -102,11 +118,11 @@ Make the text factual, concise, and highly semantic (include the business name o
 If the user's input is a Service but missing critical info (like price or duration), you may include a 'missingInfoPrompt'.
 `;
 
-		if (input.mode === "db_import" && contextData) {
+		if (validInput.mode === "db_import" && contextData) {
 			systemPrompt += `\nContext Data from DB Service:\n${contextData}\nIncorporate this data into the knowledge blocks.`;
 		}
 
-		const prompt = `${systemPrompt}\n\nUser Input: ${input.inputText}`;
+		const prompt = `${systemPrompt}\n\nUser Input: ${validInput.inputText}`;
 
 		const result = await structuredModel.invoke(prompt);
 
@@ -123,28 +139,28 @@ export async function saveBatchKnowledgeAction(
 	structure: AiKnowledgeStructure,
 ): Promise<{ success: boolean; error?: string }> {
 	try {
+		const validStructure = AiKnowledgeStructureSchema.parse(structure);
 		const supabase = createServiceClient();
 		const embeddings = getOpenRouterEmbeddings();
 
-		// Create LangChain VectorStore integration
-		const vectorStore = new SupabaseVectorStore(embeddings, {
-			client: supabase,
-			tableName: "chatbot_knowledge",
-			queryName: "match_chatbot_docs",
-		});
-
 		const docsToInsert: Document[] = [];
 
-		// Create a Document for each language
 		for (const locale of ["de", "el", "en"] as const) {
-			const entry = structure.entries[locale];
+			const entry = validStructure.entries[locale];
 			if (!entry) continue;
+
+			// Perform explicit delete / replacement by title & language to prevent duplicate vectors
+			await supabase
+				.from("chatbot_knowledge")
+				.delete()
+				.eq("language", locale)
+				.contains("metadata", { title: entry.title });
 
 			docsToInsert.push(
 				new Document({
 					pageContent: entry.content,
 					metadata: {
-						category: structure.category,
+						category: validStructure.category,
 						title: entry.title,
 						keywords: entry.keywords,
 						language: locale,
@@ -154,7 +170,12 @@ export async function saveBatchKnowledgeAction(
 			);
 		}
 
-		// Automatically embed and insert!
+		const vectorStore = new SupabaseVectorStore(embeddings, {
+			client: supabase,
+			tableName: "chatbot_knowledge",
+			queryName: "match_chatbot_docs",
+		});
+
 		await vectorStore.addDocuments(docsToInsert);
 
 		return { success: true };
@@ -170,8 +191,9 @@ export async function deleteKnowledgeEntryAction(
 	id: string,
 ): Promise<{ success: boolean; error?: string }> {
 	try {
+		const validId = z.string().uuid().parse(id);
 		const supabase = createServiceClient();
-		const { error } = await supabase.from("chatbot_knowledge").delete().eq("id", id);
+		const { error } = await supabase.from("chatbot_knowledge").delete().eq("id", validId);
 		if (error) throw error;
 		return { success: true };
 	} catch (error) {
@@ -187,19 +209,22 @@ export async function testSemanticSearchAction(
 	locale: SupportedLocale,
 ): Promise<{ success: boolean; data?: VectorSearchResult[]; error?: string }> {
 	try {
+		const validQuery = z.string().min(1).parse(query);
+		const validLocale = SupportedLocaleSchema.parse(locale);
+
 		const supabase = createServiceClient();
 		const embeddings = getOpenRouterEmbeddings();
 
 		// 1. Generate vector embedding for user query
-		const queryEmbedding = await embeddings.embedQuery(query);
+		const queryEmbedding = await embeddings.embedQuery(validQuery);
 
 		// 2. Fetch knowledge rows from database
 		let dbQuery = supabase
 			.from("chatbot_knowledge")
 			.select("id, content, metadata, language, embedding");
 
-		if (locale && (locale as string) !== "all") {
-			dbQuery = dbQuery.eq("language", locale);
+		if (validLocale && (validLocale as string) !== "all") {
+			dbQuery = dbQuery.eq("language", validLocale);
 		}
 
 		const { data: rows, error } = await dbQuery;
@@ -208,8 +233,8 @@ export async function testSemanticSearchAction(
 			return { success: true, data: [] };
 		}
 
-		// 3. Calculate exact Cosine Similarity (Dot Product)
-		const results: VectorSearchResult[] = rows
+		// 3. Calculate exact Cosine Similarity
+		const rawResults = rows
 			.map(
 				(row: {
 					id: string;
@@ -218,11 +243,10 @@ export async function testSemanticSearchAction(
 					language: string;
 					embedding: unknown;
 				}) => {
-					let sim = 0;
 					let vec: number[] | null = null;
 
 					if (Array.isArray(row.embedding)) {
-						vec = row.embedding;
+						vec = row.embedding as number[];
 					} else if (typeof row.embedding === "string") {
 						try {
 							vec = JSON.parse(row.embedding);
@@ -231,23 +255,23 @@ export async function testSemanticSearchAction(
 						}
 					}
 
-					if (vec && vec.length === queryEmbedding.length) {
-						sim = vec.reduce((acc, v, i) => acc + v * queryEmbedding[i], 0);
-					}
+					const similarity = vec ? cosineSimilarity(queryEmbedding, vec) : 0;
 
 					return {
 						id: row.id,
 						content: row.content,
-						metadata: row.metadata || {},
+						metadata: (row.metadata as Record<string, unknown>) || {},
 						language: row.language,
-						similarity: Math.max(0, Math.min(1, sim)),
+						similarity,
 					};
 				},
 			)
 			.sort((a, b) => b.similarity - a.similarity)
 			.slice(0, 5);
 
-		return { success: true, data: results };
+		const parsedResults = z.array(VectorSearchResultSchema).parse(rawResults);
+
+		return { success: true, data: parsedResults };
 	} catch (error: unknown) {
 		console.error("Failed to test semantic search:", error);
 		return { success: false, error: (error as Error)?.message || "Search simulation failed." };

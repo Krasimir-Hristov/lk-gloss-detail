@@ -388,21 +388,20 @@
 
 ### 11.4 RAG Knowledge Base Management (AI-Assisted Multi-lingual Hub)
 
-- [ ] **AI-Assisted Draft & Structuring Assistant (OpenAI / OpenRouter)**:
+- [x] **AI-Assisted Draft & Structuring Assistant (OpenAI / OpenRouter)**:
   - Input rough client notes/bullet points in any language
   - AI Structured Output (Zod Schema) to format self-contained, RAG-optimized knowledge blocks in 3 target locales: German (`de`), Greek (`el`), English (`en`)
   - Support category classification (`services`, `business_hours`, `contact`, `booking_rules`, `faq`, `general`)
-- [ ] **Admin Review & Multi-tab Preview Modal**:
+- [x] **Admin Review & Multi-tab Preview Modal**:
   - Side-by-side or tabbed editor for `de`, `el`, `en` formatted chunks before vectorization
   - Customizable title, metadata tags, and content
-- [ ] **Auto-Vectorization & Storage (`chatbot_knowledge`)**:
+- [x] **Auto-Vectorization & Storage (`chatbot_knowledge`)**:
   - Vectorize generated/edited text entries using `openai/text-embedding-3-small` (1536-dim vector)
-  - Insert/update records into Supabase `chatbot_knowledge` with metadata and language filters
-- [ ] **Knowledge Base Entry Management UI**:
+  - Insert/update records into Supabase `chatbot_knowledge` with metadata and language filters with stable entry identity duplicate prevention
+- [x] **Knowledge Base Entry Management UI**:
   - List all knowledge entries with filters by language (`de`, `el`, `en`), category, and text search
   - Delete entry (with confirmation modal)
-  - Re-embed single entry or batch re-embed
-- [ ] **Semantic Search Diagnostic Tester**:
+- [x] **Semantic Search Diagnostic Tester**:
   - Real-time RAG query simulator to test similarity matching against Supabase HNSW vector store (`match_chatbot_docs`)
 
 ### 11.6 Dashboard Overview

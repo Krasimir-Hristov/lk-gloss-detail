@@ -12,7 +12,8 @@ export const KnowledgeCategorySchema = z.enum([
 export type KnowledgeCategory = z.infer<typeof KnowledgeCategorySchema>;
 
 export const LocaleSchema = z.enum(["de", "el", "en"]);
-export type SupportedLocale = z.infer<typeof LocaleSchema>;
+export const SupportedLocaleSchema = LocaleSchema;
+export type SupportedLocale = z.infer<typeof SupportedLocaleSchema>;
 
 export const AiStructuredKnowledgeEntrySchema = z.object({
 	title: z.string().describe("Short, descriptive title in the target language"),

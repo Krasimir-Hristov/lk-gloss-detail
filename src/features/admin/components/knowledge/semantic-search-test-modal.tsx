@@ -2,39 +2,32 @@
 
 import { X, Search } from "lucide-react";
 import { useTranslations } from "next-intl";
-import { useState } from "react";
+import React, { useState, useEffect } from "react";
 
-import { testSemanticSearchAction } from "../../actions/knowledge";
+import { testSemanticSearchAction } from "@/features/admin/actions/knowledge";
+import { formatTextValue } from "@/features/admin/utils/format";
 
-import type { SupportedLocale, VectorSearchResult } from "../../types/knowledge";
+import type { SupportedLocale, VectorSearchResult } from "@/features/admin/types/knowledge";
 
 interface SemanticSearchTestModalProps {
 	onClose: () => void;
 }
 
-function formatTextValue(val: unknown, currentLocale: string = "de"): string {
-	if (val === null || val === undefined) return "";
-	if (typeof val === "string") return val;
-	if (typeof val === "number" || typeof val === "boolean") return String(val);
-	if (typeof val === "object" && val !== null) {
-		const obj = val as Record<string, unknown>;
-		if (obj[currentLocale] && typeof obj[currentLocale] === "string") return obj[currentLocale];
-		if (obj.de && typeof obj.de === "string") return obj.de;
-		if (obj.el && typeof obj.el === "string") return obj.el;
-		if (obj.en && typeof obj.en === "string") return obj.en;
-		if (obj.title && typeof obj.title === "string") return obj.title;
-		return JSON.stringify(obj);
-	}
-	return String(val);
-}
-
-export function SemanticSearchTestModal({ onClose }: SemanticSearchTestModalProps) {
+export const SemanticSearchTestModal: React.FC<SemanticSearchTestModalProps> = ({ onClose }) => {
 	const t = useTranslations("Admin.chatbotKb.testModal");
 	const [query, setQuery] = useState("");
 	const [locale, setLocale] = useState<SupportedLocale>("de");
 	const [loading, setLoading] = useState(false);
 	const [results, setResults] = useState<VectorSearchResult[]>([]);
 	const [error, setError] = useState<string | null>(null);
+
+	useEffect(() => {
+		const handleKeyDown = (e: KeyboardEvent) => {
+			if (e.key === "Escape") onClose();
+		};
+		window.addEventListener("keydown", handleKeyDown);
+		return () => window.removeEventListener("keydown", handleKeyDown);
+	}, [onClose]);
 
 	const handleSearch = async (e: React.FormEvent) => {
 		e.preventDefault();
@@ -47,13 +40,16 @@ export function SemanticSearchTestModal({ onClose }: SemanticSearchTestModalProp
 		if (res.success && res.data) {
 			setResults(res.data);
 		} else {
-			setError(res.error || "Search failed");
+			setError(res.error || t("searchFailed"));
 		}
 		setLoading(false);
 	};
 
 	return (
 		<div
+			role="dialog"
+			aria-modal="true"
+			aria-labelledby="semantic-search-test-title"
 			onClick={onClose}
 			className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 p-4 backdrop-blur-md"
 		>
@@ -63,9 +59,12 @@ export function SemanticSearchTestModal({ onClose }: SemanticSearchTestModalProp
 			>
 				{/* Header */}
 				<div className="flex shrink-0 items-center justify-between border-b border-neutral-800 p-4">
-					<h3 className="text-lg font-semibold text-white">{t("title")}</h3>
+					<h3 id="semantic-search-test-title" className="text-lg font-semibold text-white">
+						{t("title")}
+					</h3>
 					<button
 						onClick={onClose}
+						aria-label="Close modal"
 						className="rounded-md p-1.5 text-neutral-400 transition-colors hover:bg-neutral-800 hover:text-white"
 					>
 						<X className="h-5 w-5" />
@@ -165,10 +164,10 @@ export function SemanticSearchTestModal({ onClose }: SemanticSearchTestModalProp
 						onClick={onClose}
 						className="rounded-md border border-neutral-800 bg-neutral-900 px-5 py-2 text-sm font-medium text-neutral-300 transition-colors hover:bg-neutral-800 hover:text-white"
 					>
-						Close
+						{t("closeButton")}
 					</button>
 				</div>
 			</div>
 		</div>
 	);
-}
+};

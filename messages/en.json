@@ -522,14 +522,22 @@
 				"titleLabel": "Title",
 				"contentLabel": "Vector Knowledge Content",
 				"keywordsLabel": "Keywords",
-				"saveButton": "Save & Vectorize (DE, EL, EN)"
+				"saveButton": "Save & Vectorize (DE, EL, EN)",
+				"errTitle": "Please enter a service title.",
+				"errPrice": "Please enter the price for this service.",
+				"errDuration": "Please enter the estimated working duration.",
+				"errDescription": "Please enter a service description.",
+				"errCompanyInfo": "Please enter general company information or policy.",
+				"genericError": "An error occurred"
 			},
 			"testModal": {
 				"title": "Test RAG Semantic Search",
 				"placeholder": "Ask a question (e.g. When are you open on Saturday?)",
 				"searchButton": "Search",
 				"topMatches": "Top Vector Matches",
-				"noMatches": "No matching vectors found above threshold."
+				"noMatches": "No matching vectors found above threshold.",
+				"searchFailed": "Search failed",
+				"closeButton": "Close"
 			}
 		},
 		"loginTitle": "Admin Login",

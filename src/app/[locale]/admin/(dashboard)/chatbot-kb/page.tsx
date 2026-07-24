@@ -1,14 +1,24 @@
 import { getTranslations } from "next-intl/server";
+import React from "react";
 
 import { KnowledgeList } from "@/features/admin/components/knowledge/KnowledgeList";
 
 import type { Metadata } from "next";
 
-export const metadata: Metadata = {
-	title: "Chatbot Knowledge Base | Admin Dashboard",
-};
+interface ChatbotKbPageProps {
+	params: Promise<{ locale: string }>;
+}
 
-export default async function ChatbotKbPage() {
+export async function generateMetadata({ params }: ChatbotKbPageProps): Promise<Metadata> {
+	const { locale } = await params;
+	const t = await getTranslations({ locale, namespace: "Admin.chatbotKb" });
+
+	return {
+		title: `${t("pageTitle")} | Admin Dashboard`,
+	};
+}
+
+const ChatbotKbPage: React.FC<ChatbotKbPageProps> = async () => {
 	const t = await getTranslations("Admin.chatbotKb");
 
 	return (
@@ -23,4 +33,6 @@ export default async function ChatbotKbPage() {
 			</div>
 		</div>
 	);
-}
+};
+
+export default ChatbotKbPage;

@@ -3,7 +3,7 @@ import { ChatOpenAI } from "@langchain/openai";
 import { NextResponse } from "next/server";
 import { z } from "zod";
 
-import { getOpenRouterEmbeddings } from "@/lib/chatbot/embeddings";
+import { cosineSimilarity, getOpenRouterEmbeddings } from "@/lib/chatbot/embeddings";
 import { createServiceClient } from "@/lib/supabase/service";
 
 import type { NextRequest } from "next/server";
@@ -158,18 +158,26 @@ export async function POST(request: NextRequest) {
 			if (!error && data) {
 				contextChunks = data.filter((row) => row.similarity > 0.2).map((row) => row.content);
 			} else {
-				// Fallback: Fetch knowledge directly & compute exact cosine similarity
-				const { data: rows } = await supabase
+				if (error) {
+					console.warn("[chatbot] RPC match_chatbot_docs failed, using fallback query:", error);
+				}
+
+				// Fallback: Constrained fetch (limit 50) & compute exact cosine similarity
+				const { data: rows, error: fallbackError } = await supabase
 					.from("chatbot_knowledge")
 					.select("content, embedding, language")
-					.eq("language", locale);
+					.eq("language", locale)
+					.limit(50);
+
+				if (fallbackError) {
+					console.error("[chatbot] Fallback query failed:", fallbackError);
+				}
 
 				if (rows && rows.length > 0) {
 					contextChunks = rows
 						.map((row: { content: string; embedding: unknown; language: string }) => {
-							let sim = 0;
 							let vec: number[] | null = null;
-							if (Array.isArray(row.embedding)) vec = row.embedding;
+							if (Array.isArray(row.embedding)) vec = row.embedding as number[];
 							else if (typeof row.embedding === "string") {
 								try {
 									vec = JSON.parse(row.embedding);
@@ -177,10 +185,8 @@ export async function POST(request: NextRequest) {
 									vec = null;
 								}
 							}
-							if (vec && vec.length === embedding.length) {
-								sim = vec.reduce((acc, v, i) => acc + v * embedding[i], 0);
-							}
-							return { content: row.content, similarity: sim };
+							const similarity = vec ? cosineSimilarity(embedding, vec) : 0;
+							return { content: row.content, similarity };
 						})
 						.filter((r) => r.similarity > 0.2)
 						.sort((a, b) => b.similarity - a.similarity)

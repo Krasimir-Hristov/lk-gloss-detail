@@ -522,14 +522,22 @@
 				"titleLabel": "Titel",
 				"contentLabel": "Vektor-Wissensinhalt",
 				"keywordsLabel": "Schlüsselwörter",
-				"saveButton": "Speichern & Vektorisieren (DE, EL, EN)"
+				"saveButton": "Speichern & Vektorisieren (DE, EL, EN)",
+				"errTitle": "Bitte geben Sie einen Leistungstitel ein.",
+				"errPrice": "Bitte geben Sie den Preis ein.",
+				"errDuration": "Bitte geben Sie die Arbeitsdauer ein.",
+				"errDescription": "Bitte geben Sie eine Beschreibung ein.",
+				"errCompanyInfo": "Bitte geben Sie Unternehmensinformationen oder Richtlinien ein.",
+				"genericError": "Ein Fehler ist aufgetreten"
 			},
 			"testModal": {
 				"title": "RAG-Semantiksuche testen",
 				"placeholder": "Stellen Sie eine Frage (z.B. Wann habt ihr am Samstag geöffnet?)",
 				"searchButton": "Suchen",
 				"topMatches": "Beste Vektor-Übereinstimmungen",
-				"noMatches": "Keine passenden Vektoren über dem Schwellenwert gefunden."
+				"noMatches": "Keine passenden Vektoren über dem Schwellenwert gefunden.",
+				"searchFailed": "Suche fehlgeschlagen",
+				"closeButton": "Schließen"
 			}
 		},
 		"loginTitle": "Admin-Anmeldung",
