@@ -3,6 +3,7 @@
 import { motion } from "framer-motion";
 import { MessageCircle, X } from "lucide-react";
 import { useTranslations } from "next-intl";
+import React, { useEffect } from "react";
 
 import { ChatbotDrawer } from "@/features/chatbot/components/ChatbotDrawer";
 import { useChatbot } from "@/features/chatbot/hooks/useChatbot";
@@ -10,6 +11,10 @@ import { useChatbot } from "@/features/chatbot/hooks/useChatbot";
 export const ChatbotWidget = () => {
 	const t = useTranslations("Chatbot");
 	const { isOpen, toggleOpen } = useChatbot();
+
+	useEffect(() => {
+		useChatbot.persist.rehydrate();
+	}, []);
 
 	return (
 		<>

@@ -12,6 +12,7 @@ export function getOpenRouterEmbeddings(): OpenAIEmbeddings {
 	return new OpenAIEmbeddings({
 		apiKey: process.env.OPENROUTER_API_KEY,
 		modelName: "openai/text-embedding-3-small",
+		timeout: 45000,
 		configuration: {
 			baseURL: "https://openrouter.ai/api/v1",
 		},

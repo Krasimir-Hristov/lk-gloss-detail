@@ -1,6 +1,7 @@
 "use client";
 
 import { Bot, User } from "lucide-react";
+import NextLink from "next/link";
 import { useTranslations } from "next-intl";
 import ReactMarkdown from "react-markdown";
 
@@ -51,11 +52,14 @@ export const ChatMessageBubble = ({ message }: ChatMessageBubbleProps) => {
 							components={{
 								a: ({ href, children }: LinkProps) => {
 									if (!href) return <span>{children}</span>;
-									return (
-										<a
-											href={href}
-											onClick={(e) => {
-												if (href.includes("#")) {
+									const isHash = href.includes("#");
+									const isExternal = href.startsWith("http://") || href.startsWith("https://");
+
+									if (isHash) {
+										return (
+											<a
+												href={href}
+												onClick={(e) => {
 													e.preventDefault();
 													const hash = href.slice(href.indexOf("#"));
 													const element = document.querySelector(hash);
@@ -64,8 +68,30 @@ export const ChatMessageBubble = ({ message }: ChatMessageBubbleProps) => {
 													}
 													const cleanUrl = window.location.pathname + hash;
 													window.history.replaceState(null, "", cleanUrl);
-												}
-											}}
+												}}
+												className="font-semibold text-[#d1bcff] underline underline-offset-2 transition-colors hover:text-white"
+											>
+												{children}
+											</a>
+										);
+									}
+
+									if (!isExternal && href.startsWith("/")) {
+										return (
+											<NextLink
+												href={href}
+												className="font-semibold text-[#d1bcff] underline underline-offset-2 transition-colors hover:text-white"
+											>
+												{children}
+											</NextLink>
+										);
+									}
+
+									return (
+										<a
+											href={href}
+											target="_blank"
+											rel="noopener noreferrer"
 											className="font-semibold text-[#d1bcff] underline underline-offset-2 transition-colors hover:text-white"
 										>
 											{children}

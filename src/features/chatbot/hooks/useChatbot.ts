@@ -59,6 +59,7 @@ export const useChatbot = create<ChatbotState>()(
 		{
 			name: "lk_chatbot_history_v1",
 			storage: createJSONStorage(() => sessionStorage),
+			skipHydration: true,
 			partialize: (state) => ({
 				messages: state.messages,
 				isOpen: state.isOpen,

@@ -45,6 +45,7 @@ async function streamLLMResponse(messages: Array<{ role: string; content: string
 		modelName: "google/gemini-2.5-flash",
 		streaming: true,
 		temperature: 0.1,
+		timeout: 45000,
 		configuration: {
 			baseURL: "https://openrouter.ai/api/v1",
 		},
@@ -164,20 +165,22 @@ export async function POST(request: NextRequest) {
 			const supabase = createServiceClient();
 
 			// Fetch knowledge base rows for locale
-			// eslint-disable-next-line @typescript-eslint/no-explicit-any
-			const { data: rows, error: fetchError } = (await (supabase as any)
+			const { data: rows, error: fetchError } = (await supabase
 				.from("chatbot_knowledge")
 				.select("content, embedding, language")
 				.eq("language", locale)
-				.limit(50)) as { data: KnowledgeRow[] | null; error: Error | null };
+				.limit(50)) as unknown as { data: KnowledgeRow[] | null; error: Error | null };
 
 			let targetRows = rows;
 			if (fetchError || !targetRows || targetRows.length === 0) {
-				// eslint-disable-next-line @typescript-eslint/no-explicit-any
-				const { data: allRows } = (await (supabase as any)
+				console.warn(
+					`[chatbot] No rows for locale=${locale}, falling back to all languages. Error:`,
+					fetchError,
+				);
+				const { data: allRows } = (await supabase
 					.from("chatbot_knowledge")
 					.select("content, embedding, language")
-					.limit(50)) as { data: KnowledgeRow[] | null };
+					.limit(50)) as unknown as { data: KnowledgeRow[] | null };
 				targetRows = allRows;
 			}
 
@@ -238,6 +241,7 @@ export async function POST(request: NextRequest) {
 			},
 		});
 	} catch (err) {
+		console.error("[chatbot] POST handler error:", err);
 		const msg = err instanceof Error ? err.message : "Internal server error";
 		return NextResponse.json({ error: msg }, { status: 500 });
 	}

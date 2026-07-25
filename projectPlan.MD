@@ -412,8 +412,8 @@
   - Fixed anchor link formatting (`/#services`, `/booking`, `/assessment`, `/contact`) and link label localization per language
 
 > [!IMPORTANT]
-> **NEXT IMMEDIATE STEP (TOMORROW / NEXT SESSION)**:
-> 1. Check CodeRabbit PR review on branch `feature/chatbot-rag-fixes` after rate limit resets tomorrow (or push a minor commit to re-trigger if needed).
+> **NEXT IMMEDIATE STEP (UPON CODERABBIT RESET)**:
+> 1. Check CodeRabbit PR review on branch `feature/chatbot-rag-fixes` after the rate limit resets (or push a minor commit to re-trigger if needed).
 > 2. Merge `feature/chatbot-rag-fixes` into `main` and sync local `main`.
 > 3. Proceed with Phase 11.6 (Dashboard Overview widgets) & Phase 12 (SEO & Performance).
 
