@@ -3,7 +3,7 @@
 import { motion } from "framer-motion";
 import { MessageCircle, X } from "lucide-react";
 import { useTranslations } from "next-intl";
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 
 import { ChatbotDrawer } from "@/features/chatbot/components/ChatbotDrawer";
 import { useChatbot } from "@/features/chatbot/hooks/useChatbot";
@@ -11,18 +11,35 @@ import { useChatbot } from "@/features/chatbot/hooks/useChatbot";
 export const ChatbotWidget = () => {
 	const t = useTranslations("Chatbot");
 	const { isOpen, toggleOpen } = useChatbot();
+	const [hasHydrated, setHasHydrated] = useState(() => useChatbot.persist.hasHydrated());
 
 	useEffect(() => {
-		useChatbot.persist.rehydrate();
+		const unsubFinish = useChatbot.persist.onFinishHydration(() => {
+			setHasHydrated(true);
+		});
+
+		if (!useChatbot.persist.hasHydrated()) {
+			useChatbot.persist.rehydrate();
+		}
+
+		return () => {
+			unsubFinish();
+		};
 	}, []);
+
+	const handleToggle = () => {
+		if (!hasHydrated) return;
+		toggleOpen();
+	};
 
 	return (
 		<>
 			{/* Floating button */}
 			<motion.button
 				type="button"
-				onClick={toggleOpen}
-				className="fixed right-6 bottom-6 z-50 flex h-14 w-14 items-center justify-center rounded-full bg-linear-to-r from-[#7B2DFF] to-[#C026FF] text-white shadow-[0_0_15px_rgba(192,38,255,0.4)] transition-shadow hover:shadow-[0_0_25px_rgba(192,38,255,0.6)]"
+				onClick={handleToggle}
+				disabled={!hasHydrated}
+				className="fixed right-6 bottom-6 z-50 flex h-14 w-14 items-center justify-center rounded-full bg-linear-to-r from-[#7B2DFF] to-[#C026FF] text-white shadow-[0_0_15px_rgba(192,38,255,0.4)] transition-shadow hover:shadow-[0_0_25px_rgba(192,38,255,0.6)] disabled:opacity-80"
 				animate={{
 					boxShadow: isOpen
 						? "0 0 15px rgba(192,38,255,0.4)"
