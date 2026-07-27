@@ -3,7 +3,7 @@
 import { motion } from "framer-motion";
 import { MessageCircle, X } from "lucide-react";
 import { useTranslations } from "next-intl";
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 
 import { ChatbotDrawer } from "@/features/chatbot/components/ChatbotDrawer";
 import { useChatbot } from "@/features/chatbot/hooks/useChatbot";

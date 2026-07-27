@@ -1,7 +1,5 @@
 "use server";
 
-import { SupabaseVectorStore } from "@langchain/community/vectorstores/supabase";
-import { Document } from "@langchain/core/documents";
 import { ChatOpenAI } from "@langchain/openai";
 import { z } from "zod";
 
@@ -23,6 +21,15 @@ import {
 import { cosineSimilarity, getOpenRouterEmbeddings } from "@/lib/chatbot/embeddings";
 import { createServiceClient } from "@/lib/supabase/service";
 
+interface KnowledgeEntryRow {
+	id: string;
+	content: string;
+	embedding: unknown;
+	metadata: Record<string, unknown>;
+	language: string;
+	created_at: string;
+}
+
 // ── 1. Get Knowledge Entries ───────────────────────────────────────────────
 
 export async function getKnowledgeEntriesAction(
@@ -35,6 +42,30 @@ export async function getKnowledgeEntriesAction(
 			category && category !== "all" ? KnowledgeCategorySchema.parse(category) : undefined;
 
 		const supabase = createServiceClient();
+
+		// Auto-repair legacy rows where top-level language column doesn't match metadata.language
+		// eslint-disable-next-line @typescript-eslint/no-explicit-any
+		const { data: allEntries } = (await (supabase as any)
+			.from("chatbot_knowledge")
+			.select("id, metadata, language")) as { data: KnowledgeEntryRow[] | null };
+
+		if (allEntries && allEntries.length > 0) {
+			for (const row of allEntries) {
+				const metaLang = row.metadata?.language as string | undefined;
+				if (
+					metaLang &&
+					(metaLang === "de" || metaLang === "el" || metaLang === "en") &&
+					metaLang !== row.language
+				) {
+					// eslint-disable-next-line @typescript-eslint/no-explicit-any
+					await (supabase as any)
+						.from("chatbot_knowledge")
+						.update({ language: metaLang })
+						.eq("id", row.id);
+				}
+			}
+		}
+
 		let query = supabase
 			.from("chatbot_knowledge")
 			.select("*")
@@ -142,8 +173,6 @@ export async function saveBatchKnowledgeAction(
 		const supabase = createServiceClient();
 		const embeddings = getOpenRouterEmbeddings();
 
-		const docsToInsert: Document[] = [];
-
 		for (const locale of ["de", "el", "en"] as const) {
 			const entry = validStructure.entries[locale];
 			if (!entry) continue;
@@ -155,27 +184,34 @@ export async function saveBatchKnowledgeAction(
 				.eq("language", locale)
 				.contains("metadata", { title: entry.title });
 
-			docsToInsert.push(
-				new Document({
-					pageContent: entry.content,
-					metadata: {
-						category: validStructure.category,
-						title: entry.title,
-						keywords: entry.keywords,
-						language: locale,
-						source: "admin_ai_wizard",
-					},
-				}),
-			);
+			// Also delete if metadata language matches locale (safety against legacy rows)
+			await supabase
+				.from("chatbot_knowledge")
+				.delete()
+				.contains("metadata", { title: entry.title, language: locale });
+
+			// Generate vector embedding for entry.content
+			const [embedding] = await embeddings.embedDocuments([entry.content]);
+
+			// eslint-disable-next-line @typescript-eslint/no-explicit-any
+			const { error: insertError } = await (supabase as any).from("chatbot_knowledge").insert({
+				content: entry.content,
+				embedding: embedding,
+				language: locale,
+				metadata: {
+					category: validStructure.category,
+					title: entry.title,
+					keywords: entry.keywords,
+					language: locale,
+					source: "admin_ai_wizard",
+				},
+			});
+
+			if (insertError) {
+				console.error(`Failed to insert ${locale} knowledge entry:`, insertError);
+				throw insertError;
+			}
 		}
-
-		const vectorStore = new SupabaseVectorStore(embeddings, {
-			client: supabase,
-			tableName: "chatbot_knowledge",
-			queryName: "match_chatbot_docs",
-		});
-
-		await vectorStore.addDocuments(docsToInsert);
 
 		return { success: true };
 	} catch (error) {
@@ -259,20 +295,20 @@ export async function testSemanticSearchAction(
 					return {
 						id: row.id,
 						content: row.content,
-						metadata: (row.metadata as Record<string, unknown>) || {},
-						language: row.language,
+						metadata: row.metadata || {},
+						language: row.language as SupportedLocale,
 						similarity,
 					};
 				},
 			)
-			.sort((a, b) => b.similarity - a.similarity)
-			.slice(0, 5);
+			.filter((r) => r.similarity > 0)
+			.sort((a, b) => b.similarity - a.similarity);
 
 		const parsedResults = z.array(VectorSearchResultSchema).parse(rawResults);
 
 		return { success: true, data: parsedResults };
-	} catch (error: unknown) {
-		console.error("Failed to test semantic search:", error);
-		return { success: false, error: (error as Error)?.message || "Search simulation failed." };
+	} catch (error) {
+		console.error("Semantic search test failed:", error);
+		return { success: false, error: "Search test failed." };
 	}
 }
