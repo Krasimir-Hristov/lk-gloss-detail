@@ -419,10 +419,10 @@
 
 ### 11.6 Dashboard Overview
 
-- [ ] Today's appointments widget
-- [ ] Upcoming appointments (next 7 days)
-- [ ] Total assessments this month
-- [ ] Quick actions: block slot, add knowledge entry
+- [x] Today's appointments widget (`TodaysAppointmentsWidget.tsx`)
+- [x] Upcoming appointments (next 7 days) (`UpcomingAppointmentsWidget.tsx`)
+- [x] Total assessments & monthly inquiries metric card (`DashboardMetricsGrid.tsx`)
+- [x] Quick actions: block slot via URL parameter, add knowledge entry (`QuickActionsBar.tsx`)
 
 ---
 
