@@ -1,7 +1,10 @@
 import { CalendarCheck, Clock, User, Car } from "lucide-react";
 import React from "react";
 
-import { getLocalizedText } from "@/features/admin/types/services.types";
+import {
+	getAppointmentServiceNames,
+	statusColors,
+} from "@/features/admin/utils/appointmentHelpers";
 
 import type { AdminAppointment } from "@/features/admin/types/appointments.types";
 
@@ -10,13 +13,6 @@ interface TodaysAppointmentsWidgetProps {
 	locale: string;
 	t: (key: string) => string;
 }
-
-const statusColors: Record<string, string> = {
-	pending: "border-amber-500/30 bg-amber-500/10 text-amber-400",
-	confirmed: "border-emerald-500/30 bg-emerald-500/10 text-emerald-400",
-	completed: "border-blue-500/30 bg-blue-500/10 text-blue-400",
-	cancelled: "border-red-500/30 bg-red-500/10 text-red-400",
-};
 
 export const TodaysAppointmentsWidget: React.FC<TodaysAppointmentsWidgetProps> = ({
 	appointments,
@@ -45,10 +41,7 @@ export const TodaysAppointmentsWidget: React.FC<TodaysAppointmentsWidgetProps> =
 		) : (
 			<div className="space-y-3">
 				{appointments.map((apt) => {
-					const serviceName =
-						apt.services.length > 0
-							? apt.services.map((s) => getLocalizedText(s.name, locale)).join(", ")
-							: "—";
+					const serviceName = getAppointmentServiceNames(apt.services, locale);
 
 					return (
 						<div

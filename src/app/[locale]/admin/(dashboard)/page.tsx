@@ -34,6 +34,7 @@ const DashboardPage: React.FC<DashboardPageProps> = async ({ params }) => {
 	}
 
 	const { todaysAppointments, upcomingAppointments, metrics } = result.data;
+	const dt = (key: string) => t(`dashboard.${key}`);
 
 	return (
 		<div className="space-y-8">
@@ -54,24 +55,16 @@ const DashboardPage: React.FC<DashboardPageProps> = async ({ params }) => {
 				monthlySubmissions={metrics.monthlySubmissions}
 				activeServices={metrics.activeServices}
 				knowledgeChunks={metrics.knowledgeChunks}
-				t={(key: string) => t(`dashboard.${key}`)}
+				t={dt}
 			/>
 
 			{/* Quick Actions */}
-			<QuickActionsBar t={(key: string) => t(`dashboard.${key}`)} />
+			<QuickActionsBar t={dt} />
 
 			{/* Appointments Widgets */}
 			<div className="grid grid-cols-1 gap-6 xl:grid-cols-2">
-				<TodaysAppointmentsWidget
-					appointments={todaysAppointments}
-					locale={locale}
-					t={(key: string) => t(`dashboard.${key}`)}
-				/>
-				<UpcomingAppointmentsWidget
-					appointments={upcomingAppointments}
-					locale={locale}
-					t={(key: string) => t(`dashboard.${key}`)}
-				/>
+				<TodaysAppointmentsWidget appointments={todaysAppointments} locale={locale} t={dt} />
+				<UpcomingAppointmentsWidget appointments={upcomingAppointments} locale={locale} t={dt} />
 			</div>
 		</div>
 	);

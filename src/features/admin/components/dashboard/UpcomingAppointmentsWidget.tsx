@@ -1,7 +1,10 @@
 import { CalendarRange, User, Clock } from "lucide-react";
 import React from "react";
 
-import { getLocalizedText } from "@/features/admin/types/services.types";
+import {
+	getAppointmentServiceNames,
+	statusColors,
+} from "@/features/admin/utils/appointmentHelpers";
 
 import type { AdminAppointment } from "@/features/admin/types/appointments.types";
 
@@ -11,11 +14,10 @@ interface UpcomingAppointmentsWidgetProps {
 	t: (key: string) => string;
 }
 
-const statusColors: Record<string, string> = {
-	pending: "border-amber-500/30 bg-amber-500/10 text-amber-400",
-	confirmed: "border-emerald-500/30 bg-emerald-500/10 text-emerald-400",
-	completed: "border-blue-500/30 bg-blue-500/10 text-blue-400",
-	cancelled: "border-red-500/30 bg-red-500/10 text-red-400",
+const localeMap: Record<string, string> = {
+	de: "de-DE",
+	en: "en-US",
+	el: "el-GR",
 };
 
 export const UpcomingAppointmentsWidget: React.FC<UpcomingAppointmentsWidgetProps> = ({
@@ -32,6 +34,7 @@ export const UpcomingAppointmentsWidget: React.FC<UpcomingAppointmentsWidgetProp
 	}, {});
 
 	const sortedDates = Object.keys(grouped).sort();
+	const dateLocale = localeMap[locale] ?? "de-DE";
 
 	return (
 		<section
@@ -59,7 +62,7 @@ export const UpcomingAppointmentsWidget: React.FC<UpcomingAppointmentsWidgetProp
 				<div className="space-y-5">
 					{sortedDates.map((date) => {
 						const dateObj = new Date(date + "T00:00:00");
-						const dayLabel = dateObj.toLocaleDateString("de-DE", {
+						const dayLabel = dateObj.toLocaleDateString(dateLocale, {
 							weekday: "short",
 							day: "2-digit",
 							month: "short",
@@ -76,10 +79,7 @@ export const UpcomingAppointmentsWidget: React.FC<UpcomingAppointmentsWidgetProp
 								</div>
 								<div className="space-y-2">
 									{grouped[date].map((apt) => {
-										const serviceName =
-											apt.services.length > 0
-												? apt.services.map((s) => getLocalizedText(s.name, locale)).join(", ")
-												: "—";
+										const serviceName = getAppointmentServiceNames(apt.services, locale);
 
 										return (
 											<div

@@ -18,7 +18,7 @@ const actions = [
 	},
 	{
 		key: "blockSlot",
-		href: "/admin/appointments" as const,
+		href: "/admin/appointments?action=blockDate" as const,
 		icon: CalendarPlus,
 		color: "text-amber-400",
 		bg: "bg-amber-500/10 hover:bg-amber-500/20",

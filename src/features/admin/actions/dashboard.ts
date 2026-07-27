@@ -1,5 +1,7 @@
 "use server";
 
+import { z } from "zod";
+
 import { createClient } from "@/lib/supabase/server";
 
 import type {
@@ -7,19 +9,34 @@ import type {
 	AppointmentServiceItem,
 } from "@/features/admin/types/appointments.types";
 
-interface SupabaseServiceRecord {
-	id: string;
-	name: string | null;
-	price_small: number | null;
-	price_medium: number | null;
-	price_large: number | null;
-	price_suv: number | null;
-	duration_hours: number | null;
-}
+// ── Zod Validation Schemas for Supabase Rows ─────────────────────────────
 
-interface SupabaseAppointmentServiceJoin {
-	services: SupabaseServiceRecord | null;
-}
+const SupabaseServiceRecordSchema = z.object({
+	id: z.string(),
+	name: z.union([z.string(), z.record(z.string())]).nullable(),
+	price_small: z.number().nullable(),
+	price_medium: z.number().nullable(),
+	price_large: z.number().nullable(),
+	price_suv: z.number().nullable(),
+	duration_hours: z.number().nullable(),
+});
+
+const SupabaseAppointmentJoinSchema = z.object({
+	services: SupabaseServiceRecordSchema.nullable(),
+});
+
+const RawAppointmentRowSchema = z.object({
+	id: z.string(),
+	first_name: z.string(),
+	last_name: z.string(),
+	email: z.string(),
+	phone: z.string(),
+	car_description: z.string().nullable().optional(),
+	booking_date: z.string(),
+	status: z.enum(["pending", "confirmed", "completed", "cancelled"]),
+	created_at: z.string(),
+	appointment_services: z.array(SupabaseAppointmentJoinSchema).optional().nullable(),
+});
 
 export interface DashboardOverview {
 	todaysAppointments: AdminAppointment[];
@@ -35,6 +52,17 @@ export interface DashboardOverview {
 	};
 }
 
+/**
+ * Formats a Date object into a YYYY-MM-DD string in local business time,
+ * avoiding UTC date boundary shifts caused by toISOString().
+ */
+function formatLocalDate(d: Date): string {
+	const year = d.getFullYear();
+	const month = String(d.getMonth() + 1).padStart(2, "0");
+	const day = String(d.getDate()).padStart(2, "0");
+	return `${year}-${month}-${day}`;
+}
+
 export async function getDashboardOverviewAction(): Promise<{
 	success: boolean;
 	data?: DashboardOverview;
@@ -44,15 +72,13 @@ export async function getDashboardOverviewAction(): Promise<{
 		const supabase = await createClient();
 
 		const today = new Date();
-		const todayStr = today.toISOString().split("T")[0];
+		const todayStr = formatLocalDate(today);
 
 		const nextWeek = new Date(today);
 		nextWeek.setDate(nextWeek.getDate() + 7);
-		const nextWeekStr = nextWeek.toISOString().split("T")[0];
+		const nextWeekStr = formatLocalDate(nextWeek);
 
-		const monthStart = new Date(today.getFullYear(), today.getMonth(), 1)
-			.toISOString()
-			.split("T")[0];
+		const monthStart = formatLocalDate(new Date(today.getFullYear(), today.getMonth(), 1));
 
 		// Fetch all data in parallel
 		const [
@@ -105,45 +131,71 @@ export async function getDashboardOverviewAction(): Promise<{
 				.eq("status", "pending"),
 		]);
 
-		const mapAppointments = (rows: Array<Record<string, unknown>> | null): AdminAppointment[] => {
-			if (!rows) return [];
-			return rows.map((row) => {
-				const joinedServices = (
-					(row.appointment_services as SupabaseAppointmentServiceJoin[]) || []
-				)
-					.map((join) => join.services)
-					.filter((s): s is SupabaseServiceRecord => s !== null);
+		// Check for query errors across all responses
+		const queryError =
+			todaysRes.error ||
+			upcomingRes.error ||
+			totalAppointmentsRes.error ||
+			monthlyContactRes.error ||
+			activeServicesRes.error ||
+			knowledgeRes.error ||
+			pendingRes.error;
 
-				const services: AppointmentServiceItem[] = joinedServices.map((s) => ({
-					id: s.id,
-					name: s.name ?? "",
-					price_small: s.price_small ?? 0,
-					price_medium: s.price_medium ?? 0,
-					price_large: s.price_large ?? 0,
-					price_suv: s.price_suv ?? 0,
-					duration_hours: s.duration_hours ?? 0,
-				}));
+		if (queryError) {
+			console.error("[Dashboard] Database query error:", queryError.message);
+			return { success: false, error: queryError.message };
+		}
 
-				return {
-					id: row.id as string,
-					first_name: row.first_name as string,
-					last_name: row.last_name as string,
-					email: row.email as string,
-					phone: row.phone as string,
-					car_description: (row.car_description as string) ?? null,
-					booking_date: row.booking_date as string,
-					status: row.status as AdminAppointment["status"],
-					created_at: row.created_at as string,
+		const parseAndMapAppointments = (rows: unknown[] | null): AdminAppointment[] => {
+			if (!rows || rows.length === 0) return [];
+			const mapped: AdminAppointment[] = [];
+
+			for (const raw of rows) {
+				const parseResult = RawAppointmentRowSchema.safeParse(raw);
+				if (!parseResult.success) {
+					console.warn(
+						"[Dashboard] Appointment row validation failed:",
+						parseResult.error.flatten(),
+					);
+					continue;
+				}
+
+				const row = parseResult.data;
+				const joinedServices = row.appointment_services || [];
+
+				const services: AppointmentServiceItem[] = joinedServices
+					.map((j) => j.services)
+					.filter((s): s is z.infer<typeof SupabaseServiceRecordSchema> => s !== null)
+					.map((s) => ({
+						id: s.id,
+						name: s.name ?? "",
+						price_small: s.price_small ?? 0,
+						price_medium: s.price_medium ?? 0,
+						price_large: s.price_large ?? 0,
+						price_suv: s.price_suv ?? 0,
+						duration_hours: s.duration_hours ?? 0,
+					}));
+
+				mapped.push({
+					id: row.id,
+					first_name: row.first_name,
+					last_name: row.last_name,
+					email: row.email,
+					phone: row.phone,
+					car_description: row.car_description ?? null,
+					booking_date: row.booking_date,
+					status: row.status,
+					created_at: row.created_at,
 					services,
-				};
-			});
+				});
+			}
+
+			return mapped;
 		};
 
 		const data: DashboardOverview = {
-			todaysAppointments: mapAppointments(todaysRes.data as Array<Record<string, unknown>> | null),
-			upcomingAppointments: mapAppointments(
-				upcomingRes.data as Array<Record<string, unknown>> | null,
-			),
+			todaysAppointments: parseAndMapAppointments(todaysRes.data),
+			upcomingAppointments: parseAndMapAppointments(upcomingRes.data),
 			metrics: {
 				totalAppointments: totalAppointmentsRes.count ?? 0,
 				monthlySubmissions: monthlyContactRes.count ?? 0,
