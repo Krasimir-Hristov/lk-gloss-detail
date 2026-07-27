@@ -575,29 +575,60 @@
 			"subtitle": "Overview of appointments, services, and chatbot knowledge base.",
 			"error": {
 				"title": "Database Error",
-				"message": "Failed to load database statistics. Please verify database connection and that RLS migrations have been applied."
+				"message": "Failed to load dashboard data. Please verify database connection and try again."
 			},
 			"cards": {
 				"appointments": {
-					"title": "Appointments",
-					"desc": "Total bookings registered"
+					"title": "Total Appointments",
+					"desc": "All bookings registered"
+				},
+				"today": {
+					"title": "Today",
+					"desc": "Scheduled for today"
+				},
+				"pending": {
+					"title": "Pending",
+					"desc": "Awaiting confirmation"
+				},
+				"upcoming": {
+					"title": "Next 7 Days",
+					"desc": "Upcoming bookings"
 				},
 				"services": {
 					"title": "Active Services",
 					"desc": "Available catalog entries"
 				},
 				"contact": {
-					"title": "Contact Submissions",
-					"desc": "Total inquiries received"
+					"title": "Monthly Inquiries",
+					"desc": "Contact submissions this month"
 				},
 				"chatbot": {
-					"title": "Chatbot Knowledge",
-					"desc": "Vectorized QA pairs"
+					"title": "Knowledge Base",
+					"desc": "Vectorized knowledge chunks"
 				}
 			},
-			"overview": {
-				"title": "Dashboard Overview",
-				"text": "This admin panel allows you to monitor and manage all aspects of the LK Gloss & Detail website. In the next phases of development, you will be able to review booking calendars, modify service pricing tiers, and train the AI chatbot with new knowledge database entries directly."
+			"todaysAppointments": {
+				"title": "Today's Schedule",
+				"subtitle": "Appointments booked for today",
+				"empty": "No appointments scheduled for today."
+			},
+			"upcomingAppointments": {
+				"title": "Upcoming (Next 7 Days)",
+				"subtitle": "Bookings for the next week",
+				"empty": "No upcoming appointments in the next 7 days."
+			},
+			"quickActions": {
+				"title": "Quick Actions",
+				"appointments": "Appointments",
+				"blockSlot": "Block Slot",
+				"addKnowledge": "Add Knowledge",
+				"services": "Manage Services"
+			},
+			"status": {
+				"pending": "Pending",
+				"confirmed": "Confirmed",
+				"completed": "Completed",
+				"cancelled": "Cancelled"
 			},
 			"sidebar": {
 				"management": "Management",

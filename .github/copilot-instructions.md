@@ -39,7 +39,7 @@
 ### Code Style
 
 - **Imports**: Use `@/` path alias for all internal imports
-- **Components**: `kebab-case` for files, `PascalCase` for component names
+- **Components**: `PascalCase` for React component files (e.g. `DashboardMetricsGrid.tsx`), `camelCase` for logic/utility files — NEVER `kebab-case`
 - **Functions**: `camelCase` for utilities, `PascalCase` for components/classes
 - **Component syntax**: Arrow functions (`const Foo = () => {}`) for all React components — never `function Foo() {}`
 - **File structure**: Feature-based organization under `src/features/`

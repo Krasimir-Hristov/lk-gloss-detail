@@ -2,6 +2,7 @@
 
 import { motion } from "framer-motion";
 import { Calendar, List, CalendarOff, RefreshCw, AlertCircle } from "lucide-react";
+import { useSearchParams, usePathname } from "next/navigation";
 import { useTranslations } from "next-intl";
 import React, { useState, useEffect, useCallback } from "react";
 
@@ -37,6 +38,9 @@ export const AppointmentsManager: React.FC<AppointmentsManagerProps> = ({
 	const t = useTranslations("Admin.appointments");
 	const tConfirm = useTranslations("ConfirmModal");
 
+	const searchParams = useSearchParams();
+	const pathname = usePathname();
+
 	const [appointments, setAppointments] = useState<AdminAppointment[]>(initialAppointments);
 	const [blockedDates, setBlockedDates] = useState<BlockedDateItem[]>(initialBlockedDates);
 	const [availableServices, setAvailableServices] = useState<AppointmentServiceItem[]>([]);
@@ -48,7 +52,16 @@ export const AppointmentsManager: React.FC<AppointmentsManagerProps> = ({
 	// Modals state
 	const [detailAppointment, setDetailAppointment] = useState<AdminAppointment | null>(null);
 	const [editAppointment, setEditAppointment] = useState<AdminAppointment | null>(null);
-	const [isBlockModalOpen, setIsBlockModalOpen] = useState(false);
+	const [isBlockModalOpen, setIsBlockModalOpen] = useState(
+		() => searchParams.get("action") === "blockDate",
+	);
+
+	const handleCloseBlockModal = useCallback(() => {
+		setIsBlockModalOpen(false);
+		if (searchParams.get("action") === "blockDate") {
+			window.history.replaceState(null, "", pathname);
+		}
+	}, [searchParams, pathname]);
 
 	// Confirmation modal state for deletion
 	const [deletingId, setDeletingId] = useState<string | null>(null);
@@ -246,7 +259,7 @@ export const AppointmentsManager: React.FC<AppointmentsManagerProps> = ({
 			<BlockDateModal
 				isOpen={isBlockModalOpen}
 				blockedDates={blockedDates}
-				onClose={() => setIsBlockModalOpen(false)}
+				onClose={handleCloseBlockModal}
 				onBlockedDatesUpdated={refreshData}
 			/>
 

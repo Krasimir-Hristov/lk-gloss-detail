@@ -575,29 +575,60 @@
 			"subtitle": "Übersicht über Termine, Leistungen und die Chatbot-Wissensdatenbank.",
 			"error": {
 				"title": "Datenbankfehler",
-				"message": "Fehler beim Laden der Datenbankstatistiken. Bitte überprüfen Sie die Verbindung zur Datenbank und ob die RLS-Migrationen angewendet wurden."
+				"message": "Fehler beim Laden der Dashboard-Daten. Bitte überprüfen Sie die Datenbankverbindung und versuchen Sie es erneut."
 			},
 			"cards": {
 				"appointments": {
-					"title": "Termine",
-					"desc": "Registrierte Buchungen insgesamt"
+					"title": "Termine gesamt",
+					"desc": "Alle registrierten Buchungen"
+				},
+				"today": {
+					"title": "Heute",
+					"desc": "Für heute geplant"
+				},
+				"pending": {
+					"title": "Ausstehend",
+					"desc": "Warten auf Bestätigung"
+				},
+				"upcoming": {
+					"title": "Nächste 7 Tage",
+					"desc": "Kommende Buchungen"
 				},
 				"services": {
 					"title": "Aktive Leistungen",
 					"desc": "Verfügbare Katalogeinträge"
 				},
 				"contact": {
-					"title": "Kontaktanfragen",
-					"desc": "Erhaltene Anfragen insgesamt"
+					"title": "Monatliche Anfragen",
+					"desc": "Kontaktanfragen diesen Monat"
 				},
 				"chatbot": {
-					"title": "Chatbot-Wissen",
-					"desc": "Vektorisierte Q&A-Paare"
+					"title": "Wissensdatenbank",
+					"desc": "Vektorisierte Wissensblöcke"
 				}
 			},
-			"overview": {
-				"title": "Dashboard-Übersicht",
-				"text": "Dieses Admin-Panel ermöglicht es Ihnen, alle Aspekte der LK Gloss & Detail-Website zu überwachen und zu verwalten. In den nächsten Entwicklungsphasen können Sie Buchungskalender einsehen, Preisklassen für Dienstleistungen anpassen und die KI-Wissensdatenbank direkt trainieren."
+			"todaysAppointments": {
+				"title": "Heutiger Zeitplan",
+				"subtitle": "Für heute gebuchte Termine",
+				"empty": "Keine Termine für heute geplant."
+			},
+			"upcomingAppointments": {
+				"title": "Kommende (Nächste 7 Tage)",
+				"subtitle": "Buchungen für die nächste Woche",
+				"empty": "Keine anstehenden Termine in den nächsten 7 Tagen."
+			},
+			"quickActions": {
+				"title": "Schnellaktionen",
+				"appointments": "Termine",
+				"blockSlot": "Termin blockieren",
+				"addKnowledge": "Wissen hinzufügen",
+				"services": "Leistungen verwalten"
+			},
+			"status": {
+				"pending": "Ausstehend",
+				"confirmed": "Bestätigt",
+				"completed": "Abgeschlossen",
+				"cancelled": "Storniert"
 			},
 			"sidebar": {
 				"management": "Verwaltung",
