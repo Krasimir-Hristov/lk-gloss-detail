@@ -13,7 +13,7 @@ import type {
 
 const SupabaseServiceRecordSchema = z.object({
 	id: z.string(),
-	name: z.union([z.string(), z.record(z.string())]).nullable(),
+	name: z.union([z.string(), z.record(z.string(), z.string())]).nullable(),
 	price_small: z.number().nullable(),
 	price_medium: z.number().nullable(),
 	price_large: z.number().nullable(),
