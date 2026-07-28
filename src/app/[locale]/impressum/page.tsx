@@ -1,6 +1,7 @@
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import * as React from "react";
 
+import { CONTACT_INFO } from "@/constants/contact";
 import { routing } from "@/i18n/routing";
 
 import type { Metadata } from "next";
@@ -101,8 +102,11 @@ const ImpressumPage = async ({ params }: { params: Promise<Params> }) => {
 									TODO: Replace with actual business telephone number if it changes.
 								*/}
 								<p className="mt-1 text-base text-white">
-									<a href="tel:+4915112345678" className="transition-colors hover:text-[#d1bcff]">
-										+49 151 12345678
+									<a
+										href={`tel:${CONTACT_INFO.phoneRaw}`}
+										className="transition-colors hover:text-[#d1bcff]"
+									>
+										{CONTACT_INFO.phone}
 									</a>
 								</p>
 							</div>
@@ -113,10 +117,10 @@ const ImpressumPage = async ({ params }: { params: Promise<Params> }) => {
 								</h3>
 								<p className="mt-1 text-base text-white">
 									<a
-										href="mailto:info@lkglossanddetail.de"
+										href={`mailto:${CONTACT_INFO.email}`}
 										className="transition-colors hover:text-[#d1bcff]"
 									>
-										info@lkglossanddetail.de
+										{CONTACT_INFO.email}
 									</a>
 								</p>
 							</div>

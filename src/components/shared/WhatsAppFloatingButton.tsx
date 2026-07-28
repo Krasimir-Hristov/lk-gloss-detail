@@ -1,10 +1,12 @@
 import { getTranslations } from "next-intl/server";
 import * as React from "react";
 
+import { CONTACT_INFO } from "@/constants/contact";
+
 export const WhatsAppFloatingButton = async () => {
 	const t = await getTranslations("Contact");
 	const message = t("whatsappMessage");
-	const whatsappUrl = `https://wa.me/4915112345678?text=${encodeURIComponent(message)}`;
+	const whatsappUrl = `https://wa.me/${CONTACT_INFO.whatsappRaw}?text=${encodeURIComponent(message)}`;
 
 	return (
 		<a

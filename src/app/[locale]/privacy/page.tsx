@@ -1,6 +1,7 @@
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import * as React from "react";
 
+import { CONTACT_INFO } from "@/constants/contact";
 import { routing } from "@/i18n/routing";
 
 import type { Metadata } from "next";
@@ -126,16 +127,13 @@ const PrivacyPage = async ({ params }: { params: Promise<Params> }) => {
 							</p>
 							<p className="mt-2 text-[#ccc3d9]">
 								Telefon:{" "}
-								<a href="tel:+4915112345678" className="text-[#d1bcff] hover:underline">
-									+49 151 12345678
+								<a href={`tel:${CONTACT_INFO.phoneRaw}`} className="text-[#d1bcff] hover:underline">
+									{CONTACT_INFO.phone}
 								</a>
 								<br />
 								E-Mail:{" "}
-								<a
-									href="mailto:info@lkglossanddetail.de"
-									className="text-[#d1bcff] hover:underline"
-								>
-									info@lkglossanddetail.de
+								<a href={`mailto:${CONTACT_INFO.email}`} className="text-[#d1bcff] hover:underline">
+									{CONTACT_INFO.email}
 								</a>
 							</p>
 						</div>

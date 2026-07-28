@@ -1,3 +1,5 @@
+import { CONTACT_INFO } from "@/constants/contact";
+
 const safeJsonLd = (data: Record<string, unknown>): string => {
 	return JSON.stringify(data).replace(/<\/script>/gi, "<\\/script>");
 };
@@ -39,7 +41,8 @@ export const LocalBusinessJsonLd = ({ locale }: LocalBusinessJsonLdProps) => {
 		name: names[locale] ?? names.de,
 		description: descriptions[locale] ?? descriptions.de,
 		url: "https://lkglossanddetail.de",
-		telephone: "+49",
+		telephone: CONTACT_INFO.phone,
+		email: CONTACT_INFO.email,
 		address: {
 			"@type": "PostalAddress",
 			addressLocality: "Neuhausen auf den Fildern",

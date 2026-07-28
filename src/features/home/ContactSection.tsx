@@ -1,9 +1,11 @@
 import { Mail, Phone, MessageCircle } from "lucide-react";
 import { useTranslations } from "next-intl";
+import * as React from "react";
 
+import { CONTACT_INFO } from "@/constants/contact";
 import { ContactForm } from "@/features/contact";
 
-export const ContactSection = () => {
+export const ContactSection: React.FC = () => {
 	const t = useTranslations("Contact");
 
 	return (
@@ -24,7 +26,7 @@ export const ContactSection = () => {
 					{/* Contact details */}
 					<div className="flex flex-col gap-6">
 						<a
-							href="tel:+491234567890"
+							href={`tel:${CONTACT_INFO.phoneRaw}`}
 							className="flex items-center gap-4 rounded-xl border border-[#353534] bg-[#201f1f] p-6 transition-all hover:border-[#7b2dff]/30"
 						>
 							<div className="flex h-12 w-12 items-center justify-center rounded-xl bg-[#7b2dff]/15">
@@ -32,11 +34,11 @@ export const ContactSection = () => {
 							</div>
 							<div>
 								<p className="text-sm font-bold text-[#e5e2e1]">{t("details.phone")}</p>
-								<p className="text-sm text-[#ccc3d9]">+49 123 456 7890</p>
+								<p className="text-sm text-[#ccc3d9]">{CONTACT_INFO.phone}</p>
 							</div>
 						</a>
 						<a
-							href="mailto:info@lkglossanddetail.de"
+							href={`mailto:${CONTACT_INFO.email}`}
 							className="flex items-center gap-4 rounded-xl border border-[#353534] bg-[#201f1f] p-6 transition-all hover:border-[#7b2dff]/30"
 						>
 							<div className="flex h-12 w-12 items-center justify-center rounded-xl bg-[#7b2dff]/15">
@@ -44,11 +46,11 @@ export const ContactSection = () => {
 							</div>
 							<div>
 								<p className="text-sm font-bold text-[#e5e2e1]">{t("details.email")}</p>
-								<p className="text-sm text-[#ccc3d9]">info@lkglossanddetail.de</p>
+								<p className="text-sm text-[#ccc3d9]">{CONTACT_INFO.email}</p>
 							</div>
 						</a>
 						<a
-							href="https://wa.me/491234567890"
+							href={CONTACT_INFO.whatsappUrl}
 							target="_blank"
 							rel="noopener noreferrer"
 							className="flex items-center gap-4 rounded-xl border border-[#353534] bg-[#201f1f] p-6 transition-all hover:border-[#7b2dff]/30"

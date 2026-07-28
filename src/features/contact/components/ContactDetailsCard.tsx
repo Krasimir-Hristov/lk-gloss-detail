@@ -3,6 +3,8 @@
 import { useTranslations } from "next-intl";
 import * as React from "react";
 
+import { CONTACT_INFO } from "@/constants/contact";
+
 export const ContactDetailsCard: React.FC = () => {
 	const t = useTranslations("Contact.details");
 
@@ -11,7 +13,7 @@ export const ContactDetailsCard: React.FC = () => {
 			<h3 className="mb-4 text-lg font-semibold text-white">{t("title")}</h3>
 			<div className="space-y-4">
 				<a
-					href="tel:+4915112345678"
+					href={`tel:${CONTACT_INFO.phoneRaw}`}
 					className="flex items-center gap-3 text-[#ccc3d9] transition-colors hover:text-[#d1bcff]"
 					aria-label={t("phone")}
 				>
@@ -32,7 +34,7 @@ export const ContactDetailsCard: React.FC = () => {
 				</a>
 
 				<a
-					href="mailto:info@lkglossanddetail.de"
+					href={`mailto:${CONTACT_INFO.email}`}
 					className="flex items-center gap-3 text-[#ccc3d9] transition-colors hover:text-[#d1bcff]"
 					aria-label={t("email")}
 				>
@@ -53,7 +55,7 @@ export const ContactDetailsCard: React.FC = () => {
 				</a>
 
 				<a
-					href="https://wa.me/4915112345678"
+					href={CONTACT_INFO.whatsappUrl}
 					target="_blank"
 					rel="noopener noreferrer"
 					className="flex items-center gap-3 text-[#ccc3d9] transition-colors hover:text-[#25D366]"
