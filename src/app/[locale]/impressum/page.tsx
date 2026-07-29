@@ -71,32 +71,28 @@ const ImpressumPage = async ({ params }: { params: Promise<Params> }) => {
 
 					{/* Warning Banner explaining placeholder data */}
 					<div className="mb-10 border-l-4 border-[#7b2dff] bg-[#1a1528] p-4 text-[#ccc3d9] shadow-sm">
-						<p className="text-sm font-semibold text-[#d1bcff]">Hinweis / Notice:</p>
-						<p className="mt-1 text-xs">
-							Die Angaben auf dieser Seite enthalten vorübergehend Musterdaten, da die Firma noch in
-							Gründung/Registrierung ist. Sobald die Registrierung abgeschlossen ist, müssen diese
-							durch die realen Firmendaten ersetzt werden.
-						</p>
+						<p className="text-sm font-semibold text-[#d1bcff]">{t("noticeTitle")}</p>
+						<p className="mt-1 text-xs">{t("noticeText")}</p>
 					</div>
 
 					<div className="space-y-10 text-[#ccc3d9]">
 						{/* --- Section 1: Angaben gemäß § 5 TMG --- */}
 						<article className="rounded-2xl border border-[#4a4456] bg-[#1a1a2e] p-6 shadow-md md:p-8">
 							<h2 className="mb-4 border-b border-[#4a4456] pb-2 text-xl font-bold text-white">
-								Angaben gemäß § 5 TMG
+								{t("tmgTitle")}
 							</h2>
 
 							<div className="space-y-4">
 								<div>
 									<h3 className="text-xs font-bold tracking-wider text-[#d1bcff] uppercase">
-										Name des Diensteanbieters / Owner
+										{t("ownerTitle")}
 									</h3>
 									<p className="mt-1 text-base text-white">Lulezim Kodhimaj</p>
 								</div>
 
 								<div>
 									<h3 className="text-xs font-bold tracking-wider text-[#d1bcff] uppercase">
-										Anschrift / Address
+										{t("addressTitle")}
 									</h3>
 									<p className="mt-1 text-base text-white">
 										Musterstraße 123
@@ -112,13 +108,13 @@ const ImpressumPage = async ({ params }: { params: Promise<Params> }) => {
 						{/* --- Section 2: Kontakt --- */}
 						<article className="rounded-2xl border border-[#4a4456] bg-[#1a1a2e] p-6 shadow-md md:p-8">
 							<h2 className="mb-4 border-b border-[#4a4456] pb-2 text-xl font-bold text-white">
-								Kontakt
+								{t("contactTitle")}
 							</h2>
 
 							<div className="space-y-4">
 								<div>
 									<h3 className="text-xs font-bold tracking-wider text-[#d1bcff] uppercase">
-										Telefon
+										{t("phoneTitle")}
 									</h3>
 									<p className="mt-1 text-base text-white">
 										<a
@@ -132,7 +128,7 @@ const ImpressumPage = async ({ params }: { params: Promise<Params> }) => {
 
 								<div>
 									<h3 className="text-xs font-bold tracking-wider text-[#d1bcff] uppercase">
-										E-Mail
+										{t("emailTitle")}
 									</h3>
 									<p className="mt-1 text-base text-white">
 										<a
@@ -149,12 +145,12 @@ const ImpressumPage = async ({ params }: { params: Promise<Params> }) => {
 						{/* --- Section 3: Umsatzsteuer-ID / Steuernummer --- */}
 						<article className="rounded-2xl border border-[#4a4456] bg-[#1a1a2e] p-6 shadow-md md:p-8">
 							<h2 className="mb-4 border-b border-[#4a4456] pb-2 text-xl font-bold text-white">
-								Umsatzsteuer-ID / Steuernummer
+								{t("taxTitle")}
 							</h2>
 
 							<div>
 								<h3 className="text-xs font-bold tracking-wider text-[#d1bcff] uppercase">
-									Umsatzsteuer-Identifikationsnummer gemäß § 27 a Umsatzsteuergesetz
+									{t("taxSub")}
 								</h3>
 								<p className="mt-1 text-base text-white">
 									Steuernummer: 99/999/99999 (In Gründung)
@@ -165,26 +161,22 @@ const ImpressumPage = async ({ params }: { params: Promise<Params> }) => {
 						{/* --- Section 4: Berufsbezeichnung --- */}
 						<article className="rounded-2xl border border-[#4a4456] bg-[#1a1a2e] p-6 shadow-md md:p-8">
 							<h2 className="mb-4 border-b border-[#4a4456] pb-2 text-xl font-bold text-white">
-								Berufsbezeichnung & Regelungen
+								{t("professionTitle")}
 							</h2>
 
 							<div className="space-y-4">
 								<div>
 									<h3 className="text-xs font-bold tracking-wider text-[#d1bcff] uppercase">
-										Berufsbezeichnung
+										{t("professionTitle")}
 									</h3>
-									<p className="mt-1 text-base text-white">
-										Autopflege / Fahrzeugaufbereitung (Deutschland)
-									</p>
+									<p className="mt-1 text-base text-white">{t("profession")}</p>
 								</div>
 
 								<div>
 									<h3 className="text-xs font-bold tracking-wider text-[#d1bcff] uppercase">
 										Aufsichtsbehörde
 									</h3>
-									<p className="mt-1 text-sm">
-										Zuständige IHK / Handwerkskammer (wird nach Registrierung eingetragen)
-									</p>
+									<p className="mt-1 text-sm">{t("authority")}</p>
 								</div>
 							</div>
 						</article>
@@ -192,12 +184,11 @@ const ImpressumPage = async ({ params }: { params: Promise<Params> }) => {
 						{/* --- Section 5: Streitschlichtung --- */}
 						<article className="rounded-2xl border border-[#4a4456] bg-[#1a1a2e] p-6 shadow-md md:p-8">
 							<h2 className="mb-4 border-b border-[#4a4456] pb-2 text-xl font-bold text-white">
-								Verbraucherstreitbeilegung
+								{t("disputeTitle")}
 							</h2>
 
 							<p className="text-sm leading-relaxed">
-								Die Europäische Kommission stellt eine Plattform zur Online-Streitbeilegung (OS)
-								bereit:{" "}
+								{t("disputeText")}{" "}
 								<a
 									href="https://ec.europa.eu/consumers/odr"
 									target="_blank"
@@ -206,68 +197,30 @@ const ImpressumPage = async ({ params }: { params: Promise<Params> }) => {
 								>
 									https://ec.europa.eu/consumers/odr
 								</a>
-								.<br />
-								Unsere E-Mail-Adresse finden Sie oben im Impressum.
 							</p>
-							<p className="mt-4 text-sm leading-relaxed">
-								Wir sind nicht bereit oder verpflichtet, an Streitbeilegungsverfahren vor einer
-								Verbraucherschlichtungsstelle teilzunehmen.
-							</p>
+							<p className="mt-4 text-sm leading-relaxed">{t("disputeNotice")}</p>
 						</article>
 
 						{/* --- Section 6: Haftung & Urheberrecht --- */}
 						<article className="rounded-2xl border border-[#4a4456] bg-[#1a1a2e] p-6 shadow-md md:p-8">
 							<h2 className="mb-4 border-b border-[#4a4456] pb-2 text-xl font-bold text-white">
-								Rechtliche Hinweise
+								{t("legalTitle")}
 							</h2>
 
 							<div className="space-y-6 text-sm leading-relaxed">
 								<div>
-									<h3 className="mb-2 font-semibold text-white">Haftung für Inhalte</h3>
-									<p>
-										Als Diensteanbieter sind wir gemäß § 7 Abs.1 TMG für eigene Inhalte auf diesen
-										Seiten nach den allgemeinen Gesetzen verantwortlich. Nach §§ 8 bis 10 TMG sind
-										wir als Diensteanbieter jedoch nicht verpflichtet, übermittelte oder
-										gespeicherte fremde Informationen zu überwachen oder nach Umständen zu forschen,
-										die auf eine rechtswidrige Tätigkeit hinweisen. Verpflichtungen zur Entfernung
-										oder Sperrung der Nutzung von Informationen nach den allgemeinen Gesetzen
-										bleiben hiervon unberührt. Eine diesbezügliche Haftung ist jedoch erst ab dem
-										Zeitpunkt der Kenntnis einer konkreten Rechtsverletzung möglich. Bei
-										Bekanntwerden von entsprechenden Rechtsverletzungen werden wir diese Inhalte
-										umgehend entfernen.
-									</p>
+									<h3 className="mb-2 font-semibold text-white">{t("liabilityContentTitle")}</h3>
+									<p>{t("liabilityContentText")}</p>
 								</div>
 
 								<div>
-									<h3 className="mb-2 font-semibold text-white">Haftung für Links</h3>
-									<p>
-										Unser Angebot enthält Links zu externen Websites Dritter, auf deren Inhalte wir
-										keinen Einfluss haben. Deshalb können wir für diese fremden Inhalte auch keine
-										Gewähr übernehmen. Für die Inhalte der verlinkten Seiten ist stets der jeweilige
-										Anbieter oder Betreiber der Seiten verantwortlich. Die verlinkten Seiten wurden
-										zum Zeitpunkt der Verlinkung auf mögliche Rechtsverstöße überprüft.
-										Rechtswidrige Inhalte waren zum Zeitpunkt der Verlinkung nicht erkennbar. Eine
-										permanente inhaltliche Kontrolle der verlinkten Seiten ist jedoch ohne concrete
-										Anhaltspunkte einer Rechtsverletzung nicht zumutbar. Bei Bekanntwerden von
-										Rechtsverletzungen werden wir derartige Links umgehend entfernen.
-									</p>
+									<h3 className="mb-2 font-semibold text-white">{t("liabilityLinksTitle")}</h3>
+									<p>{t("liabilityLinksText")}</p>
 								</div>
 
 								<div>
-									<h3 className="mb-2 font-semibold text-white">Urheberrecht</h3>
-									<p>
-										Die durch die Seitenbetreiber erstellten Inhalte und Werke auf diesen Seiten
-										unterliegen dem deutschen Urheberrecht. Die Vervielfältigung, Bearbeitung,
-										Verbreitung und jede Art der Verwertung außerhalb der Grenzen des Urheberrechtes
-										bedürfen der schriftlichen Zustimmung des jeweiligen Autors bzw. Erstellers.
-										Downloads und Kopien dieser Seite sind nur für den privaten, nicht kommerziellen
-										Gebrauch gestattet. Soweit die Inhalte auf dieser Seite nicht vom Betreiber
-										erstellt wurden, werden die Urheberrechte Dritter beachtet. Insbesondere werden
-										Inhalte Dritter als solche gekennzeichnet. Sollten Sie trotzdem auf eine
-										Urheberrechtsverletzung aufmerksam werden, bitten wir um einen entsprechenden
-										Hinweis. Bei Bekanntwerden von Rechtsverletzungen werden wir derartige Inhalte
-										umgehend entfernen.
-									</p>
+									<h3 className="mb-2 font-semibold text-white">{t("copyrightTitle")}</h3>
+									<p>{t("copyrightText")}</p>
 								</div>
 							</div>
 						</article>
