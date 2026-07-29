@@ -1,4 +1,5 @@
 import { CONTACT_INFO } from "@/constants/contact";
+import { getBaseUrl } from "@/constants/site";
 
 const safeJsonLd = (data: Record<string, unknown>): string => {
 	return JSON.stringify(data).replace(/<\/script>/gi, "<\\/script>");
@@ -17,6 +18,8 @@ type LocalBusinessJsonLdProps = {
 };
 
 export const LocalBusinessJsonLd = ({ locale }: LocalBusinessJsonLdProps) => {
+	const baseUrl = getBaseUrl();
+
 	const names: Record<string, string> = {
 		de: "LK Gloss & Detail",
 		en: "LK Gloss & Detail",
@@ -40,7 +43,7 @@ export const LocalBusinessJsonLd = ({ locale }: LocalBusinessJsonLdProps) => {
 		"@type": "AutomotiveBusiness",
 		name: names[locale] ?? names.de,
 		description: descriptions[locale] ?? descriptions.de,
-		url: "https://lkglossanddetail.de",
+		url: baseUrl,
 		telephone: CONTACT_INFO.phone,
 		email: CONTACT_INFO.email,
 		address: {
@@ -62,6 +65,57 @@ export const LocalBusinessJsonLd = ({ locale }: LocalBusinessJsonLdProps) => {
 		priceRange: "€€",
 		openingHours: "Mo-Sa 08:00-18:00",
 		inLanguage: locale,
+	};
+
+	return <JsonLd data={jsonLd} />;
+};
+
+type BreadcrumbItem = {
+	name: string;
+	url: string;
+};
+
+type BreadcrumbJsonLdProps = {
+	items: BreadcrumbItem[];
+};
+
+export const BreadcrumbJsonLd = ({ items }: BreadcrumbJsonLdProps) => {
+	const jsonLd = {
+		"@context": "https://schema.org",
+		"@type": "BreadcrumbList",
+		itemListElement: items.map((item, index) => ({
+			"@type": "ListItem",
+			position: index + 1,
+			name: item.name,
+			item: item.url,
+		})),
+	};
+
+	return <JsonLd data={jsonLd} />;
+};
+
+type WebPageJsonLdProps = {
+	name: string;
+	description: string;
+	url: string;
+	locale: string;
+};
+
+export const WebPageJsonLd = ({ name, description, url, locale }: WebPageJsonLdProps) => {
+	const baseUrl = getBaseUrl();
+
+	const jsonLd = {
+		"@context": "https://schema.org",
+		"@type": "WebPage",
+		name,
+		description,
+		url,
+		inLanguage: locale,
+		publisher: {
+			"@type": "Organization",
+			name: "LK Gloss & Detail",
+			url: baseUrl,
+		},
 	};
 
 	return <JsonLd data={jsonLd} />;

@@ -159,6 +159,7 @@
 	},
 	"Booking": {
 		"title": "Book Appointment",
+		"description": "Book your mobile car detailing appointment online with LK Gloss & Detail",
 		"subtitle": "Choose your services and preferred date",
 		"progress": {
 			"step1": "Your Details",
@@ -235,6 +236,7 @@
 	},
 	"Contact": {
 		"title": "Contact",
+		"description": "Contact LK Gloss & Detail for mobile car care inquiries in Neuhausen auf den Fildern",
 		"mapTitle": "Our Location",
 		"whatsappMessage": "Hello! I have a question about your services.",
 		"whatsappAria": "Contact us on WhatsApp",
@@ -300,13 +302,39 @@
 		"errorFallback": "Sorry, something went wrong. Please try again."
 	},
 	"Impressum": {
-		"title": "Impressum"
+		"title": "Impressum",
+		"description": "Impressum and legal information of LK Gloss & Detail",
+		"noticeTitle": "Notice:",
+		"noticeText": "The information on this page temporarily contains sample data while the company registration is pending. Once registered, this must be replaced with real business details.",
+		"tmgTitle": "Information pursuant to § 5 TMG",
+		"ownerTitle": "Service Provider / Owner",
+		"addressTitle": "Address",
+		"contactTitle": "Contact",
+		"phoneTitle": "Phone",
+		"emailTitle": "Email",
+		"taxTitle": "VAT ID / Tax Number",
+		"taxSub": "VAT Identification Number pursuant to § 27 a German VAT Act",
+		"professionTitle": "Professional Designation & Regulations",
+		"profession": "Car Care / Vehicle Detailing (Germany)",
+		"authority": "Competent Chamber of Commerce (IHK/Handwerkskammer - to be entered upon registration)",
+		"disputeTitle": "Dispute Resolution",
+		"disputeText": "The European Commission provides a platform for online dispute resolution (OS): https://ec.europa.eu/consumers/odr . Our email address can be found in the impressum above.",
+		"disputeNotice": "We are not willing or obliged to participate in dispute resolution proceedings before a consumer arbitration board.",
+		"legalTitle": "Legal Notices",
+		"liabilityContentTitle": "Liability for Content",
+		"liabilityContentText": "As a service provider, we are responsible for our own content on these pages in accordance with general legislation (§ 7 Abs.1 TMG). According to §§ 8 to 10 TMG, however, we are not obligated to monitor transmitted or stored third-party information or to investigate circumstances that indicate illegal activity. Obligations to remove or block the use of information under general laws remain unaffected. However, liability in this regard is only possible from the point of knowledge of a specific infringement. Upon notification of corresponding infringements, we will remove this content immediately.",
+		"liabilityLinksTitle": "Liability for Links",
+		"liabilityLinksText": "Our offer contains links to external third-party websites over whose content we have no influence. Therefore, we cannot accept any liability for this external content. The respective provider or operator of the pages is always responsible for the content of the linked pages. The linked pages were checked for possible legal violations at the time of linking. Illegal content was not recognizable at the time of linking. However, permanent monitoring of the content of linked pages is not reasonable without specific indications of a legal infringement. Upon notification of rights violations, we will remove such links immediately.",
+		"copyrightTitle": "Copyright",
+		"copyrightText": "The content and works created by the page operators on these pages are subject to German copyright law. Duplication, processing, distribution and any kind of exploitation outside the limits of copyright law require the written consent of the respective author or creator. Downloads and copies of this site are only permitted for private, non-commercial use. Insofar as the content on this site was not created by the operator, the copyrights of third parties are respected. In particular, third-party content is marked as such. Should you nevertheless become aware of a copyright infringement, please inform us accordingly. Upon notification of legal violations, we will remove such content immediately."
 	},
 	"Privacy": {
-		"title": "Privacy Policy"
+		"title": "Privacy Policy",
+		"description": "Privacy policy and GDPR information of LK Gloss & Detail"
 	},
 	"Assessment": {
 		"title": "AI Photo Analysis",
+		"description": "Free AI vehicle assessment & condition estimate for your car care",
 		"steps": {
 			"front": "Front view",
 			"rear": "Rear view",

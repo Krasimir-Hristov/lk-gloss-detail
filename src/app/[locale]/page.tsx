@@ -3,7 +3,8 @@ import { useTranslations } from "next-intl";
 import { setRequestLocale } from "next-intl/server";
 import { z } from "zod";
 
-import { LocalBusinessJsonLd } from "@/components/shared/JsonLd";
+import { LocalBusinessJsonLd, WebPageJsonLd } from "@/components/shared/JsonLd";
+import { getBaseUrl } from "@/constants/site";
 import {
 	B2BSection,
 	ContactSection,
@@ -16,6 +17,8 @@ import {
 import { getPublicServices } from "@/features/services/actions/get-public-services";
 
 import type { PublicService } from "@/features/services/actions/get-public-services";
+
+export const revalidate = 3600;
 
 // ── Zod schemas for i18n payload validation ──────────────────────────────
 
@@ -59,6 +62,7 @@ export default HomePage;
 
 const HomePageContent = ({ locale, services }: { locale: string; services: PublicService[] }) => {
 	const t = useTranslations("HomePage");
+	const tMeta = useTranslations("Metadata");
 
 	return (
 		<div className="flex flex-1 flex-col bg-[#131313]">
@@ -204,6 +208,12 @@ const HomePageContent = ({ locale, services }: { locale: string; services: Publi
 
 			{/* ── Structured Data ── */}
 			<LocalBusinessJsonLd locale={locale} />
+			<WebPageJsonLd
+				name={tMeta("title")}
+				description={tMeta("description")}
+				url={`${getBaseUrl()}/${locale}`}
+				locale={locale}
+			/>
 		</div>
 	);
 };
