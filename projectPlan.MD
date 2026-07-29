@@ -430,22 +430,22 @@
 
 ### 12.1 SEO Global Config
 
-- [ ] Add `opengraph-image.tsx` (dynamic OG image generation)
-- [ ] Add `robots.ts` (allow all, sitemap URL)
-- [ ] Add `sitemap.ts` (all pages × 3 locales)
-- [ ] Add `manifest.ts` (PWA manifest with LK favicon/icons)
-- [ ] Add `<JsonLd>` component for LocalBusiness schema markup
+- [x] Add `opengraph-image.tsx` (dynamic OG image generation)
+- [x] Add `robots.ts` (allow all, sitemap URL)
+- [x] Add `sitemap.ts` (all pages × 3 locales)
+- [x] Add `manifest.ts` (PWA manifest with LK favicon/icons)
+- [x] Add `<JsonLd>` component for LocalBusiness schema markup
 
 ### 12.2 Performance & Audits
 
-- [ ] Audit Lighthouse score (target: 95+ all categories)
-- [ ] Add `loading="lazy"` + `sizes` to all images
-- [ ] Implement ISR for static-ish pages (gallery, services)
-- [ ] Add structured data for every page type
-- [ ] Verify `sitemap.xml` covers all locales × pages
-- [ ] Submit sitemap to Google Search Console (when domain ready)
-- [ ] Test Core Web Vitals (LCP < 2.5s, CLS < 0.1, FID < 100ms)
-- [ ] Add `<link rel="preconnect">` for Supabase + OpenRouter
+- [x] Audit Lighthouse score (target: 95+ all categories)
+- [x] Add `loading="lazy"` + `sizes` to all images
+- [x] Implement ISR for static-ish pages (gallery, services)
+- [x] Add structured data for every page type
+- [x] Verify `sitemap.xml` covers all locales × pages
+- [x] Submit sitemap to Google Search Console (when domain ready)
+- [x] Test Core Web Vitals (LCP < 2.5s, CLS < 0.1, FID < 100ms)
+- [x] Add `<link rel="preconnect">` for Supabase + OpenRouter
 
 ---
 

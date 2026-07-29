@@ -10,6 +10,7 @@ import { Providers } from "@/components/providers";
 import { CookieConsentBanner } from "@/components/shared/CookieConsentBanner";
 import ScrollToTop from "@/components/shared/ScrollToTop";
 import { WhatsAppFloatingButton } from "@/components/shared/WhatsAppFloatingButton";
+import { getBaseUrl } from "@/constants/site";
 import { ChatbotWidget } from "@/features/chatbot";
 import { routing } from "@/i18n/routing";
 
@@ -39,8 +40,10 @@ export function generateStaticParams() {
 export const generateMetadata = async ({ params }: Omit<Props, "children">): Promise<Metadata> => {
 	const { locale } = await params;
 	const t = await getTranslations({ locale, namespace: "Metadata" });
+	const baseUrl = getBaseUrl();
 
 	return {
+		metadataBase: new URL(baseUrl),
 		title: {
 			default: t("title"),
 			template: t("template"),
@@ -48,10 +51,10 @@ export const generateMetadata = async ({ params }: Omit<Props, "children">): Pro
 		description: t("description"),
 		alternates: {
 			languages: {
-				de: "https://lkglossanddetail.de/de",
-				en: "https://lkglossanddetail.de/en",
-				el: "https://lkglossanddetail.de/el",
-				"x-default": "https://lkglossanddetail.de/de",
+				de: `${baseUrl}/de`,
+				en: `${baseUrl}/en`,
+				el: `${baseUrl}/el`,
+				"x-default": `${baseUrl}/de`,
 			},
 		},
 	};
@@ -78,6 +81,12 @@ const LocaleLayout = async ({ children, params }: Props) => {
 			className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
 		>
 			<head>
+				<link rel="preconnect" href="https://fonts.googleapis.com" />
+				<link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+				<link rel="preconnect" href="https://openrouter.ai" />
+				{process.env.NEXT_PUBLIC_SUPABASE_URL ? (
+					<link rel="preconnect" href={process.env.NEXT_PUBLIC_SUPABASE_URL} />
+				) : null}
 				<link
 					rel="stylesheet"
 					href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=swap"

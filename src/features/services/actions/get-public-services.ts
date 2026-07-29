@@ -1,4 +1,6 @@
-import { createClient } from "@/lib/supabase/server";
+import { unstable_cache } from "next/cache";
+
+import { createServiceClient } from "@/lib/supabase/service";
 
 export interface PublicService {
 	id: string;
@@ -14,24 +16,28 @@ export interface PublicService {
 	duration_hours: number;
 }
 
-export const getPublicServices = async (): Promise<PublicService[]> => {
-	try {
-		const supabase = await createClient();
+export const getPublicServices = unstable_cache(
+	async (): Promise<PublicService[]> => {
+		try {
+			const supabase = createServiceClient();
 
-		const { data, error } = await supabase
-			.from("services")
-			.select("*")
-			.eq("active", true)
-			.order("sort_order", { ascending: true });
+			const { data, error } = await supabase
+				.from("services")
+				.select("*")
+				.eq("active", true)
+				.order("sort_order", { ascending: true });
 
-		if (error) {
-			console.error("[getPublicServices] DB error:", error.message);
+			if (error) {
+				console.error("[getPublicServices] DB error:", error.message);
+				return [];
+			}
+
+			return data as PublicService[];
+		} catch (err) {
+			console.error("[getPublicServices] Uncaught error:", err);
 			return [];
 		}
-
-		return data as PublicService[];
-	} catch (err) {
-		console.error("[getPublicServices] Uncaught error:", err);
-		return [];
-	}
-};
+	},
+	["public-services-list"],
+	{ revalidate: 3600, tags: ["services"] },
+);
