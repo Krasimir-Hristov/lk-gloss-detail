@@ -159,6 +159,7 @@
 	},
 	"Booking": {
 		"title": "Book Appointment",
+		"description": "Book your mobile car detailing appointment online with LK Gloss & Detail",
 		"subtitle": "Choose your services and preferred date",
 		"progress": {
 			"step1": "Your Details",
@@ -235,6 +236,7 @@
 	},
 	"Contact": {
 		"title": "Contact",
+		"description": "Contact LK Gloss & Detail for mobile car care inquiries in Neuhausen auf den Fildern",
 		"mapTitle": "Our Location",
 		"whatsappMessage": "Hello! I have a question about your services.",
 		"whatsappAria": "Contact us on WhatsApp",
@@ -300,13 +302,16 @@
 		"errorFallback": "Sorry, something went wrong. Please try again."
 	},
 	"Impressum": {
-		"title": "Impressum"
+		"title": "Impressum",
+		"description": "Impressum and legal information of LK Gloss & Detail"
 	},
 	"Privacy": {
-		"title": "Privacy Policy"
+		"title": "Privacy Policy",
+		"description": "Privacy policy and GDPR information of LK Gloss & Detail"
 	},
 	"Assessment": {
 		"title": "AI Photo Analysis",
+		"description": "Free AI vehicle assessment & condition estimate for your car care",
 		"steps": {
 			"front": "Front view",
 			"rear": "Rear view",

@@ -24,16 +24,12 @@ export const generateMetadata = async ({
 
 	return {
 		title: t("title"),
-		description:
-			locale === "de"
-				? "Buchen Sie jetzt Ihren mobilen Autopflege-Termin online bei LK Gloss & Detail"
-				: locale === "el"
-					? "Κάντε κράτηση για την περιποίηση του αυτοκινήτου σας online"
-					: "Book your mobile car detailing appointment online with LK Gloss & Detail",
+		description: t("description"),
 		alternates: {
+			canonical: `${baseUrl}/${locale}/booking`,
 			languages: {
 				...alternates,
-				"x-default": `${baseUrl}/de/booking`,
+				"x-default": `${baseUrl}/${routing.defaultLocale}/booking`,
 			},
 		},
 	};
@@ -43,22 +39,24 @@ const BookingPage = async ({ params }: { params: Promise<Params> }) => {
 	const { locale } = await params;
 	setRequestLocale(locale);
 	const t = await getTranslations({ locale, namespace: "Booking" });
+	const tNav = await getTranslations({ locale, namespace: "Navigation" });
 
 	const baseUrl = getBaseUrl();
 	const localeUrl = `${baseUrl}/${locale}`;
 	const pageTitle = t("title");
+	const pageDescription = t("description");
 
 	return (
 		<>
 			<BreadcrumbJsonLd
 				items={[
-					{ name: "Home", url: localeUrl },
+					{ name: tNav("home"), url: localeUrl },
 					{ name: pageTitle, url: `${localeUrl}/booking` },
 				]}
 			/>
 			<WebPageJsonLd
 				name={`${pageTitle} | LK Gloss & Detail`}
-				description="Online Mobile Car Detailing Booking System"
+				description={pageDescription}
 				url={`${localeUrl}/booking`}
 				locale={locale}
 			/>

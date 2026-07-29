@@ -27,11 +27,12 @@ export const generateMetadata = async ({
 
 	return {
 		title: t("title"),
-		description: "Impressum und rechtliche Angaben von LK Gloss & Detail",
+		description: t("description"),
 		alternates: {
+			canonical: `${baseUrl}/${locale}/impressum`,
 			languages: {
 				...alternates,
-				"x-default": `${baseUrl}/de/impressum`,
+				"x-default": `${baseUrl}/${routing.defaultLocale}/impressum`,
 			},
 		},
 	};
@@ -41,22 +42,24 @@ const ImpressumPage = async ({ params }: { params: Promise<Params> }) => {
 	const { locale } = await params;
 	setRequestLocale(locale);
 	const t = await getTranslations({ locale, namespace: "Impressum" });
+	const tNav = await getTranslations({ locale, namespace: "Navigation" });
 
 	const baseUrl = getBaseUrl();
 	const localeUrl = `${baseUrl}/${locale}`;
 	const pageTitle = t("title");
+	const pageDescription = t("description");
 
 	return (
 		<>
 			<BreadcrumbJsonLd
 				items={[
-					{ name: "Home", url: localeUrl },
+					{ name: tNav("home"), url: localeUrl },
 					{ name: pageTitle, url: `${localeUrl}/impressum` },
 				]}
 			/>
 			<WebPageJsonLd
 				name={`${pageTitle} | LK Gloss & Detail`}
-				description="Impressum und rechtliche Hinweise"
+				description={pageDescription}
 				url={`${localeUrl}/impressum`}
 				locale={locale}
 			/>
@@ -244,7 +247,7 @@ const ImpressumPage = async ({ params }: { params: Promise<Params> }) => {
 										Anbieter oder Betreiber der Seiten verantwortlich. Die verlinkten Seiten wurden
 										zum Zeitpunkt der Verlinkung auf mögliche Rechtsverstöße überprüft.
 										Rechtswidrige Inhalte waren zum Zeitpunkt der Verlinkung nicht erkennbar. Eine
-										permanente inhaltliche Kontrolle der verlinkten Seiten ist jedoch ohne konkrete
+										permanente inhaltliche Kontrolle der verlinkten Seiten ist jedoch ohne concrete
 										Anhaltspunkte einer Rechtsverletzung nicht zumutbar. Bei Bekanntwerden von
 										Rechtsverletzungen werden wir derartige Links umgehend entfernen.
 									</p>

@@ -159,6 +159,7 @@
 	},
 	"Booking": {
 		"title": "Termin buchen",
+		"description": "Buchen Sie jetzt Ihren mobilen Autopflege-Termin online bei LK Gloss & Detail",
 		"subtitle": "Wählen Sie Ihre Leistungen und Ihren Wunschtermin",
 		"progress": {
 			"step1": "Ihre Daten",
@@ -235,6 +236,8 @@
 	},
 	"Contact": {
 		"title": "Kontakt",
+		"description": "Kontaktieren Sie LK Gloss & Detail für mobile Autopflege und Anfragen in Neuhausen auf den Fildern",
+		"subtitle": "Haben Sie Fragen oder möchten Sie einen speziellen Termin vereinbaren? Schreiben Sie uns oder rufen Sie uns direkt an.",
 		"mapTitle": "Unser Standort",
 		"whatsappMessage": "Hallo! Ich habe eine Frage zu Ihren Dienstleistungen.",
 		"whatsappAria": "WhatsApp Kontakt",
@@ -300,13 +303,16 @@
 		"errorFallback": "Entschuldigung, etwas ist schiefgelaufen. Bitte versuchen Sie es erneut."
 	},
 	"Impressum": {
-		"title": "Impressum"
+		"title": "Impressum",
+		"description": "Impressum und rechtliche Angaben von LK Gloss & Detail"
 	},
 	"Privacy": {
-		"title": "Datenschutzerklärung"
+		"title": "Datenschutzerklärung",
+		"description": "Datenschutzerklärung und DSGVO-Informationen von LK Gloss & Detail"
 	},
 	"Assessment": {
 		"title": "KI-Fotoanalyse",
+		"description": "Kostenlose KI-Fahrzeugbewertung & Zustandsschätzung für Ihre Autopflege",
 		"steps": {
 			"front": "Frontansicht",
 			"rear": "Rückansicht",

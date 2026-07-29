@@ -24,16 +24,12 @@ export const generateMetadata = async ({
 
 	return {
 		title: t("title"),
-		description:
-			locale === "de"
-				? "Kostenlose KI-Fahrzeugbewertung & Zustandsschätzung für Ihre Autopflege"
-				: locale === "el"
-					? "Δωρεάν ανάλυση οχήματος με τεχνητή νοημοσύνη για την περιποίηση του αυτοκινήτου σας"
-					: "Free AI vehicle assessment & condition estimate for your car care",
+		description: t("description"),
 		alternates: {
+			canonical: `${baseUrl}/${locale}/assessment`,
 			languages: {
 				...alternates,
-				"x-default": `${baseUrl}/de/assessment`,
+				"x-default": `${baseUrl}/${routing.defaultLocale}/assessment`,
 			},
 		},
 	};
@@ -43,22 +39,24 @@ const AssessmentPage = async ({ params }: { params: Promise<Params> }) => {
 	const { locale } = await params;
 	setRequestLocale(locale);
 	const t = await getTranslations({ locale, namespace: "Assessment" });
+	const tNav = await getTranslations({ locale, namespace: "Navigation" });
 
 	const baseUrl = getBaseUrl();
 	const localeUrl = `${baseUrl}/${locale}`;
 	const pageTitle = t("title");
+	const pageDescription = t("description");
 
 	return (
 		<>
 			<BreadcrumbJsonLd
 				items={[
-					{ name: "Home", url: localeUrl },
+					{ name: tNav("home"), url: localeUrl },
 					{ name: pageTitle, url: `${localeUrl}/assessment` },
 				]}
 			/>
 			<WebPageJsonLd
 				name={`${pageTitle} | LK Gloss & Detail`}
-				description="AI-Powered Vehicle Assessment & Price Calculator"
+				description={pageDescription}
 				url={`${localeUrl}/assessment`}
 				locale={locale}
 			/>

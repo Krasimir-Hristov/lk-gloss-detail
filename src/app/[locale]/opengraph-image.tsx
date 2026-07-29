@@ -1,6 +1,5 @@
 import { ImageResponse } from "next/og";
-
-export const runtime = "edge";
+import { getTranslations } from "next-intl/server";
 
 export const alt = "LK Gloss & Detail — Mobile Autopflege & Detailing";
 export const size = {
@@ -16,21 +15,11 @@ type Props = {
 
 const OpengraphImage = async ({ params }: Props) => {
 	const { locale } = await params;
+	const tMeta = await getTranslations({ locale, namespace: "Metadata" });
+	const tHero = await getTranslations({ locale, namespace: "HomePage.hero" });
 
-	const titles: Record<string, string> = {
-		de: "Mobile Autopflege & Detailing",
-		en: "Mobile Auto Care & Detailing",
-		el: "Κινητή Περιποίηση Αυτοκινήτου & Detailing",
-	};
-
-	const subtitles: Record<string, string> = {
-		de: "KI-gestützte Analyse • Professionelle Aufbereitung vor Ort",
-		en: "AI-Powered Analysis • Professional On-Site Detailing",
-		el: "Ανάλυση με AI • Επαγγελματική Περιποίηση στον Χώρο σας",
-	};
-
-	const titleText = titles[locale] ?? titles.de;
-	const subtitleText = subtitles[locale] ?? subtitles.de;
+	const titleText = tMeta("title");
+	const subtitleText = tHero("subtitle");
 
 	return new ImageResponse(
 		<div

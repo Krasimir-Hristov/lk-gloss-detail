@@ -27,11 +27,12 @@ export const generateMetadata = async ({
 
 	return {
 		title: t("title"),
-		description: "Datenschutzerklärung und DSGVO-Informationen von LK Gloss & Detail",
+		description: t("description"),
 		alternates: {
+			canonical: `${baseUrl}/${locale}/privacy`,
 			languages: {
 				...alternates,
-				"x-default": `${baseUrl}/de/privacy`,
+				"x-default": `${baseUrl}/${routing.defaultLocale}/privacy`,
 			},
 		},
 	};
@@ -41,22 +42,24 @@ const PrivacyPage = async ({ params }: { params: Promise<Params> }) => {
 	const { locale } = await params;
 	setRequestLocale(locale);
 	const t = await getTranslations({ locale, namespace: "Privacy" });
+	const tNav = await getTranslations({ locale, namespace: "Navigation" });
 
 	const baseUrl = getBaseUrl();
 	const localeUrl = `${baseUrl}/${locale}`;
 	const pageTitle = t("title");
+	const pageDescription = t("description");
 
 	return (
 		<>
 			<BreadcrumbJsonLd
 				items={[
-					{ name: "Home", url: localeUrl },
+					{ name: tNav("home"), url: localeUrl },
 					{ name: pageTitle, url: `${localeUrl}/privacy` },
 				]}
 			/>
 			<WebPageJsonLd
 				name={`${pageTitle} | LK Gloss & Detail`}
-				description="Datenschutzerklärung und DSGVO-Informationen"
+				description={pageDescription}
 				url={`${localeUrl}/privacy`}
 				locale={locale}
 			/>
@@ -232,7 +235,11 @@ const PrivacyPage = async ({ params }: { params: Promise<Params> }) => {
 								inklusive der von Ihnen dort angegebenen Kontaktdaten (Name, E-Mail-Adresse,
 								Telefonnummer, Fahrzeugdetails, Wunschtermin) zur Bearbeitung der Anfrage und für
 								den Fall von Anschlussfragen bei uns gespeichert. Diese Daten werden in unserer
-								sicheren Datenbank (Supabase) gespeichert.
+								sicheren Datenbank (Supabase) gespeichert. Zur Versendung von
+								E-Mail-Benachrichtigungen werden die Daten an den E-Mail-Dienstanbieter{" "}
+								<strong>Resend Inc.</strong> (601 Marshall St, Redwood City, CA 94063, USA)
+								übermittelt. Die Verarbeitung dieser Daten erfolgt auf Grundlage von Art. 6 Abs. 1
+								lit. b DSGVO zur Durchführung vorvertraglicher Maßnahmen oder zur Vertragserfüllung.
 							</p>
 
 							<h3 className="mt-6 font-semibold text-white">KI-Fahrzeugbewertung & Fotoanalyse</h3>
@@ -292,6 +299,10 @@ const PrivacyPage = async ({ params }: { params: Promise<Params> }) => {
 								<li>
 									Widerspruch gegen die Verarbeitung Ihrer Daten aufgrund berechtigter Interessen
 									(Art. 21 DSGVO)
+								</li>
+								<li>
+									Recht auf Beschwerde bei einer zuständigen Datenschutz-Aufsichtsbehörde (Art. 77
+									DSGVO)
 								</li>
 							</ul>
 							<p className="mt-4">

@@ -1,7 +1,7 @@
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import * as React from "react";
 
-import { BreadcrumbJsonLd, WebPageJsonLd } from "@/components/shared/JsonLd";
+import { BreadcrumbJsonLd, JsonLd, WebPageJsonLd } from "@/components/shared/JsonLd";
 import { getBaseUrl } from "@/constants/site";
 import { ContactForm, ContactDetailsCard, GoogleMapsEmbed } from "@/features/contact";
 import { routing } from "@/i18n/routing";
@@ -25,16 +25,12 @@ export const generateMetadata = async ({
 
 	return {
 		title: t("title"),
-		description:
-			locale === "de"
-				? "Kontaktieren Sie LK Gloss & Detail für mobile Autopflege und Anfragen in Neuhausen auf den Fildern"
-				: locale === "el"
-					? "Επικοινωνήστε με την LK Gloss & Detail για απορίες και υπηρεσίες περιποίησης"
-					: "Contact LK Gloss & Detail for mobile car care inquiries in Neuhausen auf den Fildern",
+		description: t("description"),
 		alternates: {
+			canonical: `${baseUrl}/${locale}/contact`,
 			languages: {
 				...alternates,
-				"x-default": `${baseUrl}/de/contact`,
+				"x-default": `${baseUrl}/${routing.defaultLocale}/contact`,
 			},
 		},
 	};
@@ -44,12 +40,14 @@ const ContactPage = async ({ params }: { params: Promise<Params> }) => {
 	const { locale } = await params;
 	setRequestLocale(locale);
 	const t = await getTranslations({ locale, namespace: "Contact" });
+	const tNav = await getTranslations({ locale, namespace: "Navigation" });
 
 	const baseUrl = getBaseUrl();
 	const localeUrl = `${baseUrl}/${locale}`;
 	const pageTitle = t("title");
+	const pageDescription = t("description");
 
-	const jsonLd = {
+	const organizationJsonLd = {
 		"@context": "https://schema.org",
 		"@type": "Organization",
 		name: "LK Gloss & Detail",
@@ -63,19 +61,16 @@ const ContactPage = async ({ params }: { params: Promise<Params> }) => {
 
 	return (
 		<>
-			<script
-				type="application/ld+json"
-				dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
-			/>
+			<JsonLd data={organizationJsonLd} />
 			<BreadcrumbJsonLd
 				items={[
-					{ name: "Home", url: localeUrl },
+					{ name: tNav("home"), url: localeUrl },
 					{ name: pageTitle, url: `${localeUrl}/contact` },
 				]}
 			/>
 			<WebPageJsonLd
 				name={`${pageTitle} | LK Gloss & Detail`}
-				description="Contact LK Gloss & Detail Mobile Car Care"
+				description={pageDescription}
 				url={`${localeUrl}/contact`}
 				locale={locale}
 			/>
@@ -83,7 +78,7 @@ const ContactPage = async ({ params }: { params: Promise<Params> }) => {
 				<div className="mx-auto max-w-6xl px-4 md:px-8">
 					<div className="grid grid-cols-1 gap-10 lg:grid-cols-2">
 						<div>
-							<h2 className="mb-6 text-3xl font-bold text-[#e5e2e1]">{t("title")}</h2>
+							<h2 className="mb-6 text-3xl font-bold text-[#e5e2e1]">{pageTitle}</h2>
 							<ContactForm />
 						</div>
 

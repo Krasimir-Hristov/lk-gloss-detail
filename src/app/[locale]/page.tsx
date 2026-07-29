@@ -62,6 +62,7 @@ export default HomePage;
 
 const HomePageContent = ({ locale, services }: { locale: string; services: PublicService[] }) => {
 	const t = useTranslations("HomePage");
+	const tMeta = useTranslations("Metadata");
 
 	return (
 		<div className="flex flex-1 flex-col bg-[#131313]">
@@ -208,8 +209,8 @@ const HomePageContent = ({ locale, services }: { locale: string; services: Publi
 			{/* ── Structured Data ── */}
 			<LocalBusinessJsonLd locale={locale} />
 			<WebPageJsonLd
-				name="LK Gloss & Detail — Mobile Autopflege & Detailing"
-				description="Mobile Autopflege & Detailing mit KI-gestützter Analyse"
+				name={tMeta("title")}
+				description={tMeta("description")}
 				url={`${getBaseUrl()}/${locale}`}
 				locale={locale}
 			/>
