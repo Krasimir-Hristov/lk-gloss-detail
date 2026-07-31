@@ -1,7 +1,8 @@
 # LK Gloss & Detail — Project Plan
 
 > Mobile Autopflege & Detailing | DE / EN / EL
-> Last updated: 2026-06-23
+> Last updated: 2026-07-31
+<!-- test commit: git integration test -->
 
 ---
 
