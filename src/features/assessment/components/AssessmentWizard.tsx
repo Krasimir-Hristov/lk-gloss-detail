@@ -169,7 +169,10 @@ export const AssessmentWizard = () => {
 		.map((p) => p.carDescription!);
 
 	return (
-		<div className="bg-surface flex min-h-screen flex-col items-center justify-center px-4 py-12">
+		<div
+			data-testid="assessment-wizard"
+			className="bg-surface flex min-h-screen flex-col items-center justify-center px-4 py-12"
+		>
 			<div className="w-full max-w-2xl">
 				{isPhotoStep ? (
 					<div className="mb-8">

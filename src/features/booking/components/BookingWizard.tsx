@@ -33,7 +33,7 @@ const BookingWizardContent = () => {
 	};
 
 	return (
-		<div className="mx-auto w-full max-w-2xl px-4 py-8">
+		<div data-testid="booking-wizard" className="mx-auto w-full max-w-2xl px-4 py-8">
 			<div className="mb-6 text-center">
 				<h1 className="font-['Montserrat'] text-3xl font-bold text-white sm:text-4xl">
 					{t("title")}
