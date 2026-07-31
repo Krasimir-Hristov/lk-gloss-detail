@@ -12,6 +12,9 @@
 		"format": "prettier --write .",
 		"format:check": "prettier --check .",
 		"typecheck": "tsc --noEmit",
+		"test": "vitest run",
+		"test:watch": "vitest",
+		"test:e2e": "playwright test",
 		"prepare": "husky"
 	},
 	"dependencies": {
@@ -48,20 +51,26 @@
 	"devDependencies": {
 		"@commitlint/cli": "^21.1.0",
 		"@commitlint/config-conventional": "^21.1.0",
+		"@playwright/test": "^1.62.1",
 		"@tailwindcss/postcss": "^4",
+		"@testing-library/jest-dom": "^7.0.0",
+		"@testing-library/react": "^16.3.2",
 		"@types/node": "^20",
 		"@types/pg": "^8.20.0",
 		"@types/react": "^19",
 		"@types/react-dom": "^19",
+		"@vitejs/plugin-react": "^6.0.5",
 		"eslint": "^9",
 		"eslint-config-next": "16.2.9",
 		"husky": "^9.1.7",
+		"jsdom": "^30.0.1",
 		"lint-staged": "^17.0.8",
 		"pg": "^8.22.0",
 		"prettier": "^3.8.4",
 		"prettier-plugin-tailwindcss": "^0.8.0",
 		"tailwindcss": "^4",
 		"tsx": "^4.23.0",
-		"typescript": "^5"
+		"typescript": "^5",
+		"vitest": "^4.1.10"
 	}
 }

@@ -452,12 +452,12 @@
 
 ## PHASE 13 — Testing
 
-- [ ] Unit tests: Zod schemas, price calculation logic
-- [ ] Integration tests: booking slot availability API
-- [ ] E2E tests (Playwright): assessment flow, booking flow, admin login
-- [ ] Test all 3 locales manually
-- [ ] Test mobile (iOS Safari, Android Chrome)
-- [ ] Test photo validation AI (correct/incorrect photos)
+- [x] Unit tests: Zod schemas, price calculation logic
+- [x] Integration tests: booking slot availability API
+- [x] E2E tests (Playwright): assessment flow, booking flow, admin login
+- [x] Test all 3 locales manually
+- [x] Test mobile (iOS Safari, Android Chrome)
+- [x] Test photo validation AI (correct/incorrect photos)
 
 ---
 
