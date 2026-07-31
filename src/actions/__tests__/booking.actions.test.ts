@@ -9,6 +9,9 @@ vi.mock("@/lib/supabase/service", () => ({
 			if (params.p_booking_date === "2026-08-01") {
 				return Promise.resolve({ data: null, error: { message: "DATE_TAKEN" } });
 			}
+			if (params.p_booking_date === "2026-08-02") {
+				return Promise.resolve({ data: null, error: { message: "DB_FAILURE" } });
+			}
 			return Promise.resolve({ data: "appointment-uuid-123", error: null });
 		}),
 		from: vi.fn((table: string) => {
@@ -87,6 +90,23 @@ describe("Booking Server Actions Integration", () => {
 			expect(result).toEqual({
 				success: false,
 				error: "DATE_TAKEN",
+			});
+		});
+
+		it("returns INTERNAL_ERROR error when RPC fails with generic database error", async () => {
+			const failedBooking = {
+				firstName: "Jane",
+				lastName: "Smith",
+				email: "jane@example.com",
+				phone: "+4915999999999",
+				selectedServiceIds: ["123e4567-e89b-12d3-a456-426614174000"],
+				bookingDate: "2026-08-02",
+			};
+
+			const result = await createBooking(failedBooking);
+			expect(result).toEqual({
+				success: false,
+				error: "INTERNAL_ERROR",
 			});
 		});
 
