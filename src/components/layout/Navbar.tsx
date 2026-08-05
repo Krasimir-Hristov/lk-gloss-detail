@@ -208,8 +208,8 @@ const Navbar = () => {
 			<nav className="mx-auto flex h-20 max-w-7xl items-center justify-between px-4 md:px-16">
 				{/* ----- Logo ----- */}
 				<Link href="/" className="flex items-center">
-					<div className="md:col-span-2">
-						<div className="mb-4 text-xl font-extrabold tracking-tighter text-[#d1bcff] uppercase">
+					<div>
+						<div className="text-lg font-extrabold tracking-tighter text-[#d1bcff] uppercase sm:text-xl">
 							LK Gloss <span className="text-[#7b2dff]">&</span> Detail
 						</div>
 					</div>

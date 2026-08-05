@@ -131,13 +131,13 @@ export const ChatbotDrawer = () => {
 					animate={{ opacity: 1, y: 0, scale: 1 }}
 					exit={{ opacity: 0, y: 20, scale: 0.95 }}
 					transition={{ duration: 0.25, ease: "easeOut" }}
-					className="fixed right-6 bottom-24 z-50 flex w-95 max-w-[calc(100vw-3rem)] flex-col overflow-hidden rounded-2xl border border-white/10 shadow-[0_0_30px_rgba(123,45,255,0.15)]"
+					className="fixed right-3 bottom-20 left-3 z-50 flex flex-col overflow-hidden rounded-2xl border border-white/10 shadow-[0_0_30px_rgba(123,45,255,0.15)] sm:right-6 sm:left-auto sm:w-95"
 					style={{
 						background: "rgba(26, 26, 26, 0.85)",
 						backdropFilter: "blur(20px)",
 						WebkitBackdropFilter: "blur(20px)",
-						height: "520px",
-						maxHeight: "calc(100vh - 140px)",
+						height: "500px",
+						maxHeight: "calc(100vh - 110px)",
 					}}
 				>
 					{/* Header */}

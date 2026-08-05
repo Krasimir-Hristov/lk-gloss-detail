@@ -235,7 +235,7 @@ export const ServiceSwipeDeck = ({ onCompleteAction }: ServiceSwipeDeckProps) =>
 			{/* Card stack container */}
 			{!isComplete ? (
 				<>
-					<div className="relative mx-auto h-130 w-full max-w-95">
+					<div className="max-w-340px xs:max-w-95 relative mx-auto h-125 w-full sm:h-130">
 						{dbServices.map((service, index) => {
 							const isBehind = index < currentIndex;
 							if (isBehind) return null;
@@ -257,7 +257,7 @@ export const ServiceSwipeDeck = ({ onCompleteAction }: ServiceSwipeDeckProps) =>
 					</div>
 
 					{/* Progress indicator */}
-					<div className="mt-24 flex items-center gap-2">
+					<div className="mt-20 flex items-center justify-center gap-1.5 sm:mt-24 sm:gap-2">
 						{dbServices.map((_, index) => (
 							<div
 								key={index}

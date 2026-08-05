@@ -188,22 +188,22 @@ export const ServiceSwipeCard = ({
 				</div>
 
 				{/* Content */}
-				<div className="relative z-10 flex flex-col px-6 pt-4 pb-6">
+				<div className="relative z-10 flex flex-col px-4 pt-3 pb-4 sm:px-6 sm:pt-4 sm:pb-6">
 					{/* Category tag */}
 					<span className="mb-2 inline-block w-fit rounded-full border border-[#7b2dff]/30 bg-[#7b2dff]/20 px-2 py-0.5 text-[10px] font-bold tracking-tighter text-[#d1bcff] uppercase">
 						{displayCategory ?? service.category}
 					</span>
 
-					<h2 className="text-2xl font-bold text-white">{displayName}</h2>
+					<h2 className="text-xl font-bold text-white sm:text-2xl">{displayName}</h2>
 					<p className="mt-1 text-sm text-[#d1bcff]">{displayDescription}</p>
 
 					{/* Price range */}
-					<div className="mt-4 flex items-center gap-2">
-						<span className="text-lg font-bold text-white">{priceText}</span>
+					<div className="mt-3 flex items-center gap-2 sm:mt-4">
+						<span className="text-base font-bold text-white sm:text-lg">{priceText}</span>
 					</div>
 
 					{/* Duration badge */}
-					<div className="mt-3 flex items-center gap-1 text-xs text-[#ccc3d9]">
+					<div className="mt-2 flex items-center gap-1 text-xs text-[#ccc3d9] sm:mt-3">
 						<span className="flex items-center gap-1 rounded-full bg-white/5 px-2 py-1">
 							<Clock className="h-3.5 w-3.5" />
 							{durationText}
@@ -240,7 +240,7 @@ export const ServiceSwipeCard = ({
 
 			{/* Action buttons */}
 			{isTop && !isExiting ? (
-				<div className="absolute -bottom-20 left-1/2 z-30 flex -translate-x-1/2 gap-6">
+				<div className="absolute -bottom-16 left-1/2 z-30 flex -translate-x-1/2 gap-4 sm:-bottom-20 sm:gap-6">
 					{/* Reject button */}
 					<button
 						onClick={handleReject}

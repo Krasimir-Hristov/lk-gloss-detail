@@ -33,12 +33,12 @@ export const ProgressIndicator = ({ currentStep, completedSteps }: ProgressIndic
 										? "rgb(123, 45, 255)"
 										: "rgb(42, 42, 42)",
 							}}
-							className="z-10 flex h-10 w-10 items-center justify-center rounded-full text-sm font-medium text-white"
+							className="z-10 flex h-8 w-8 items-center justify-center rounded-full text-xs font-medium text-white sm:h-10 sm:w-10 sm:text-sm"
 						>
-							{isCompleted ? <Check className="h-5 w-5" /> : <span>{index + 1}</span>}
+							{isCompleted ? <Check className="h-4 w-4 sm:h-5 sm:w-5" /> : <span>{index + 1}</span>}
 						</motion.div>
 						{hasMoreSteps(index) ? (
-							<div className="relative w-12">
+							<div className="relative w-6 sm:w-12">
 								<div className="bg-surface-container-high absolute top-1/2 left-0 h-0.5 w-full -translate-y-1/2" />
 								<motion.div
 									initial={false}

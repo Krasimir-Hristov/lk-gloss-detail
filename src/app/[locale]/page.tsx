@@ -93,14 +93,14 @@ const HomePageContent = ({ locale, services }: { locale: string; services: Publi
 						</div>
 
 						{/* Right: Feature cards 2x2 */}
-						<div className="grid grid-cols-2 gap-4">
+						<div className="grid grid-cols-1 gap-3 sm:grid-cols-2 sm:gap-4">
 							{MOBILE_FEATURE_ICONS.map(({ key, icon: Icon }) => {
 								const rawFeature = t.raw(`mobileService.features.${key}`);
 								const feature = MobileFeatureSchema.parse(rawFeature);
 								return (
 									<div
 										key={key}
-										className="rounded-xl border border-[#353534] bg-[#201f1f]/80 p-5 backdrop-blur-sm transition-all hover:border-[#7b2dff]/30"
+										className="rounded-xl border border-[#353534] bg-[#201f1f]/80 p-4 backdrop-blur-sm transition-all hover:border-[#7b2dff]/30 sm:p-5"
 									>
 										<Icon className="mb-3 h-6 w-6 text-[#d1bcff]" />
 										<h4 className="mb-1 text-sm font-bold text-[#e5e2e1]">{feature.title}</h4>
@@ -114,11 +114,11 @@ const HomePageContent = ({ locale, services }: { locale: string; services: Publi
 			</section>
 
 			{/* ── AI Valuation Section ── */}
-			<section className="px-4 py-20 md:px-16 md:py-28">
+			<section className="px-4 py-12 sm:py-20 md:px-16 md:py-28">
 				<div className="mx-auto max-w-7xl">
-					<div className="grid items-center gap-12 lg:grid-cols-2 lg:gap-16">
+					<div className="grid items-center gap-8 lg:grid-cols-2 lg:gap-16">
 						{/* Left: Mock form UI */}
-						<div className="rounded-2xl border border-[#353534] bg-[#201f1f] p-8">
+						<div className="rounded-2xl border border-[#353534] bg-[#201f1f] p-5 sm:p-8">
 							<div className="mb-6 flex items-center gap-3">
 								<div className="flex h-10 w-10 items-center justify-center rounded-lg bg-[#7b2dff]/20">
 									<Sparkles className="h-5 w-5 text-[#d1bcff]" />
@@ -160,25 +160,25 @@ const HomePageContent = ({ locale, services }: { locale: string; services: Publi
 						</div>
 
 						{/* Right: Text + Stats */}
-						<div className="flex flex-col gap-8">
-							<h2 className="text-3xl font-bold text-[#e5e2e1] md:text-4xl">
+						<div className="flex flex-col gap-6 sm:gap-8">
+							<h2 className="text-2xl font-bold text-[#e5e2e1] sm:text-3xl md:text-4xl">
 								{t("aiValuation.title")}
 							</h2>
-							<p className="max-w-md text-lg leading-relaxed text-[#ccc3d9]">
+							<p className="max-w-md text-base leading-relaxed text-[#ccc3d9] sm:text-lg">
 								{t("aiValuation.description")}
 							</p>
 
 							{/* Stats grid */}
-							<div className="grid grid-cols-3 gap-4 pt-4">
+							<div className="grid grid-cols-1 gap-3 pt-2 sm:grid-cols-3 sm:gap-4">
 								{STAT_KEYS.map((key) => {
 									const rawStat = t.raw(`aiValuation.stats.${key}`);
 									const stat = ValuationStatSchema.parse(rawStat);
 									return (
 										<div
 											key={key}
-											className="rounded-xl border border-[#353534] bg-[#201f1f] p-5 text-center"
+											className="rounded-xl border border-[#353534] bg-[#201f1f] p-4 text-center sm:p-5"
 										>
-											<p className="text-2xl font-extrabold text-[#d1bcff] md:text-3xl">
+											<p className="text-xl font-extrabold text-[#d1bcff] sm:text-2xl md:text-3xl">
 												{stat.value}
 											</p>
 											<p className="mt-1 text-xs text-[#ccc3d9]">{stat.label}</p>
