@@ -4,6 +4,7 @@ import React from "react";
 
 import { LanguageSwitcher } from "@/components/shared/LanguageSwitcher";
 import { logoutAdmin } from "@/features/admin/actions/auth";
+import { AdminMobileHeader } from "@/features/admin/components/AdminMobileHeader";
 import { AdminSidebarNav } from "@/features/admin/components/AdminSidebarNav";
 import { isAdminUser } from "@/features/admin/utils/auth";
 import { createClient } from "@/lib/supabase/server";
@@ -39,9 +40,20 @@ const AdminLayout: React.FC<AdminLayoutProps> = async ({ children, params }) => 
 	];
 
 	return (
-		<div className="flex h-screen overflow-hidden bg-black font-sans text-white">
-			{/* Sidebar */}
-			<aside className="flex h-screen w-64 shrink-0 flex-col justify-between border-r border-neutral-800 bg-neutral-950 p-6">
+		<div className="flex min-h-screen flex-col bg-black font-sans text-white md:h-screen md:flex-row md:overflow-hidden">
+			{/* Mobile Header & Drawer */}
+			<AdminMobileHeader
+				title="LK GLOSS & DETAIL"
+				subtitle={t("dashboard.title")}
+				managementLabel={t("dashboard.sidebar.management")}
+				items={navItems}
+				userEmail={user?.email}
+				logoutAction={handleLogout}
+				logoutLabel={t("logoutButton")}
+			/>
+
+			{/* Desktop Sidebar */}
+			<aside className="hidden h-screen w-64 shrink-0 flex-col justify-between border-r border-neutral-800 bg-neutral-950 p-6 md:flex">
 				<div className="overflow-y-auto">
 					<div className="mb-8">
 						<h2 className="Montserrat text-xl font-bold tracking-wider text-purple-400">
@@ -74,7 +86,9 @@ const AdminLayout: React.FC<AdminLayoutProps> = async ({ children, params }) => 
 			</aside>
 
 			{/* Main Content Area */}
-			<main className="flex-1 overflow-y-auto bg-neutral-950 p-10">{children}</main>
+			<main className="flex-1 overflow-y-auto bg-neutral-950 p-4 pt-20 sm:p-6 md:p-10 md:pt-10">
+				{children}
+			</main>
 		</div>
 	);
 };

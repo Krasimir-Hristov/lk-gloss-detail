@@ -46,7 +46,7 @@ export const TodaysAppointmentsWidget: React.FC<TodaysAppointmentsWidgetProps> =
 					return (
 						<div
 							key={apt.id}
-							className="flex items-center justify-between rounded-lg border border-neutral-800 bg-neutral-950 px-4 py-3 transition-colors hover:border-neutral-700"
+							className="flex flex-col gap-3 rounded-lg border border-neutral-800 bg-neutral-950 p-4 transition-colors hover:border-neutral-700 sm:flex-row sm:items-center sm:justify-between sm:px-4 sm:py-3"
 						>
 							<div className="flex items-center gap-4">
 								<div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-purple-500/10">
@@ -56,7 +56,7 @@ export const TodaysAppointmentsWidget: React.FC<TodaysAppointmentsWidgetProps> =
 									<p className="text-sm font-semibold text-white">
 										{apt.first_name} {apt.last_name}
 									</p>
-									<div className="mt-0.5 flex items-center gap-3 text-xs text-neutral-500">
+									<div className="mt-0.5 flex flex-wrap items-center gap-3 text-xs text-neutral-500">
 										<span className="flex items-center gap-1">
 											<Clock className="h-3 w-3" />
 											{serviceName}
@@ -71,7 +71,7 @@ export const TodaysAppointmentsWidget: React.FC<TodaysAppointmentsWidgetProps> =
 								</div>
 							</div>
 							<span
-								className={`rounded-full border px-3 py-1 text-xs font-medium ${statusColors[apt.status] ?? statusColors.pending}`}
+								className={`w-fit rounded-full border px-3 py-1 text-xs font-medium ${statusColors[apt.status] ?? statusColors.pending}`}
 							>
 								{t(`status.${apt.status}`)}
 							</span>

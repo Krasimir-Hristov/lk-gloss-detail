@@ -102,7 +102,7 @@ export const BlockDateModal: React.FC<BlockDateModalProps> = ({
 						animate={{ opacity: 1, scale: 1, y: 0 }}
 						exit={{ opacity: 0, scale: 0.95, y: 20 }}
 						transition={{ duration: 0.2 }}
-						className="relative w-full max-w-md overflow-hidden rounded-xl border border-neutral-800 bg-neutral-900 p-6 shadow-2xl"
+						className="relative max-h-[90vh] w-full max-w-md overflow-y-auto rounded-xl border border-neutral-800 bg-neutral-900 p-4 shadow-2xl sm:p-6"
 					>
 						{/* Close Button */}
 						<button

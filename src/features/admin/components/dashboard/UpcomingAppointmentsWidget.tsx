@@ -84,7 +84,7 @@ export const UpcomingAppointmentsWidget: React.FC<UpcomingAppointmentsWidgetProp
 										return (
 											<div
 												key={apt.id}
-												className="flex items-center justify-between rounded-lg border border-neutral-800 bg-neutral-950 px-4 py-3 transition-colors hover:border-neutral-700"
+												className="flex flex-col gap-2 rounded-lg border border-neutral-800 bg-neutral-950 p-3 transition-colors hover:border-neutral-700 sm:flex-row sm:items-center sm:justify-between sm:px-4 sm:py-3"
 											>
 												<div className="flex items-center gap-3">
 													<div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-emerald-500/10">
@@ -101,7 +101,7 @@ export const UpcomingAppointmentsWidget: React.FC<UpcomingAppointmentsWidgetProp
 													</div>
 												</div>
 												<span
-													className={`rounded-full border px-2.5 py-0.5 text-xs font-medium ${statusColors[apt.status] ?? statusColors.pending}`}
+													className={`w-fit rounded-full border px-2.5 py-0.5 text-xs font-medium ${statusColors[apt.status] ?? statusColors.pending}`}
 												>
 													{t(`status.${apt.status}`)}
 												</span>
