@@ -79,7 +79,7 @@ export const ServicesTable: React.FC<ServicesTableProps> = ({
 										<div>
 											<p className="font-medium text-white">{nameStr}</p>
 											{descStr ? (
-												<p className="max-w- truncate text-xs text-neutral-500">{descStr}</p>
+												<p className="max-w-xs truncate text-xs text-neutral-500">{descStr}</p>
 											) : null}
 										</div>
 									</div>

@@ -13,9 +13,14 @@ export type AdminNavItem = {
 type AdminSidebarNavProps = {
 	managementLabel: string;
 	items: AdminNavItem[];
+	onItemClickAction?: () => void;
 };
 
-export const AdminSidebarNav: React.FC<AdminSidebarNavProps> = ({ managementLabel, items }) => {
+export const AdminSidebarNav: React.FC<AdminSidebarNavProps> = ({
+	managementLabel,
+	items,
+	onItemClickAction,
+}) => {
 	const pathname = usePathname();
 
 	return (
@@ -33,6 +38,7 @@ export const AdminSidebarNav: React.FC<AdminSidebarNavProps> = ({ managementLabe
 					<Link
 						key={item.href}
 						href={item.href}
+						onClick={onItemClickAction}
 						className={cn(
 							"block rounded-md px-3 py-2 text-sm font-medium transition-colors",
 							isActive
