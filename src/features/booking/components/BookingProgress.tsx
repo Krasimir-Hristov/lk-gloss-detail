@@ -24,7 +24,7 @@ export const BookingProgress = ({ currentStep }: BookingProgressProps) => {
 					<div key={stepNumber} className="relative flex flex-1 flex-col items-center gap-2">
 						<div
 							className={cn(
-								"flex h-10 w-10 items-center justify-center rounded-full border-2 font-bold transition-colors",
+								"flex h-8 w-8 items-center justify-center rounded-full border-2 text-xs font-bold transition-colors sm:h-10 sm:w-10 sm:text-base",
 								isActive && "border-[#7b2dff] bg-[#7b2dff] text-white",
 								isCompleted && "border-[#7b2dff] bg-[#7b2dff]/20 text-[#7b2dff]",
 								!isActive && !isCompleted && "border-white/20 text-white/50",
@@ -34,7 +34,7 @@ export const BookingProgress = ({ currentStep }: BookingProgressProps) => {
 						</div>
 						<span
 							className={cn(
-								"text-center text-xs font-medium",
+								"text-center text-[10px] leading-tight font-medium sm:text-xs",
 								isActive ? "text-white" : "text-white/50",
 							)}
 						>

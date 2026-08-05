@@ -127,11 +127,22 @@ export const StepSummary = () => {
 				<p className="text-center text-sm font-medium text-red-500">{t(submitError)}</p>
 			) : null}
 
-			<div className="flex justify-between gap-5">
-				<Button variant="outline" onClick={prevStep} disabled={isSubmitting}>
+			<div className="flex gap-3">
+				<Button
+					type="button"
+					variant="outline"
+					onClick={prevStep}
+					disabled={isSubmitting}
+					className="flex-1 border-white/20 bg-transparent py-6 text-white hover:bg-white/10"
+				>
 					{t("back")}
 				</Button>
-				<Button onClick={handleSubmit} disabled={isSubmitting}>
+				<Button
+					type="button"
+					onClick={handleSubmit}
+					disabled={isSubmitting}
+					className="flex-1 bg-linear-to-r from-[#7b2dff] to-[#b303f2] py-6 text-lg font-bold text-white hover:shadow-[0_0_30px_rgba(123,45,255,0.5)] disabled:opacity-50"
+				>
 					{isSubmitting ? t("submitting") : t("confirm")}
 				</Button>
 			</div>

@@ -54,7 +54,7 @@ export const AssessmentReport = ({ result }: AssessmentReportProps) => {
 				<div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-linear-to-br from-[#7b2dff] to-[#b303f2] shadow-[0_0_30px_rgba(123,45,255,0.3)]">
 					<Sparkles className="h-8 w-8 text-white" />
 				</div>
-				<h1 className="font-['Montserrat'] text-[40px] leading-tight font-bold text-white">
+				<h1 className="font-['Montserrat'] text-[28px] leading-tight font-bold text-white sm:text-[40px]">
 					{t("report.title")}
 				</h1>
 				<p className="text-on-surface-variant mt-2 text-sm">

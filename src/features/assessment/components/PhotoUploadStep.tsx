@@ -157,13 +157,17 @@ export const PhotoUploadStep = ({
 						<div
 							onDrop={handleDrop}
 							onDragOver={(e) => e.preventDefault()}
-							className="bg-surface-container hover:bg-surface-container-high flex flex-col items-center justify-center rounded-2xl border-2 border-dashed border-purple-500/50 p-12 transition-colors hover:border-purple-500"
+							className="bg-surface-container hover:bg-surface-container-high flex flex-col items-center justify-center rounded-2xl border-2 border-dashed border-purple-500/50 p-6 text-center transition-colors hover:border-purple-500 sm:p-12"
 						>
-							<Upload className="mb-4 h-12 w-12 text-purple-400" />
-							<p className="mb-2 text-lg font-medium text-white">{t("upload.dragDrop")}</p>
-							<p className="text-on-surface-variant mb-6 text-sm">{t("upload.orClick")}</p>
+							<Upload className="mb-4 h-10 w-10 text-purple-400 sm:h-12 sm:w-12" />
+							<p className="mb-2 text-base font-medium text-white sm:text-lg">
+								{t("upload.dragDrop")}
+							</p>
+							<p className="text-on-surface-variant mb-6 text-xs sm:text-sm">
+								{t("upload.orClick")}
+							</p>
 
-							<div className="flex gap-3">
+							<div className="flex w-full flex-col gap-3 sm:w-auto sm:flex-row">
 								<button
 									onClick={() => fileInputRef.current?.click()}
 									className="bg-primary text-on-primary hover:bg-primary/90 rounded-lg px-6 py-3 font-medium transition-colors"
@@ -171,7 +175,7 @@ export const PhotoUploadStep = ({
 									{t("upload.chooseFile")}
 								</button>
 								{isMobile ? (
-									<label className="bg-secondary text-on-secondary hover:bg-secondary/90 cursor-pointer rounded-lg px-6 py-3 font-medium transition-colors">
+									<label className="bg-secondary text-on-secondary hover:bg-secondary/90 flex cursor-pointer items-center justify-center rounded-lg px-6 py-3 font-medium transition-colors">
 										<Camera className="mr-2 inline h-5 w-5" />
 										{t("upload.takePhoto")}
 										<input

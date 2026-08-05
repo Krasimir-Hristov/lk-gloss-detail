@@ -21,19 +21,21 @@ export const ServicesSection: React.FC<ServicesSectionProps> = ({ services }) =>
 	const displayServices = services;
 
 	return (
-		<section id="services" className="px-4 py-20 md:px-16 md:py-28">
+		<section id="services" className="px-4 py-12 sm:py-20 md:px-16 md:py-28">
 			<div className="mx-auto max-w-7xl">
 				{/* Section header */}
-				<div className="mb-16 text-center">
+				<div className="mb-10 text-center sm:mb-16">
 					<div className="mx-auto mb-4 h-1 w-16 rounded-full bg-linear-to-r from-[#7b2dff] to-[#d8b4fe]" />
-					<h2 className="text-3xl font-bold text-[#e5e2e1] md:text-4xl">
+					<h2 className="text-2xl font-bold text-[#e5e2e1] sm:text-3xl md:text-4xl">
 						{t("servicesPreview.title")}
 					</h2>
-					<p className="mt-3 text-lg text-[#ccc3d9]">{t("servicesPreview.description")}</p>
+					<p className="mt-3 text-base text-[#ccc3d9] sm:text-lg">
+						{t("servicesPreview.description")}
+					</p>
 				</div>
 
 				{/* Service cards grid */}
-				<div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+				<div className="grid gap-4 sm:grid-cols-2 sm:gap-6 lg:grid-cols-3">
 					{displayServices.map((service) => {
 						const IconComponent = getIcon(service.icon);
 						const serviceName = getLocalizedText(service.name, locale);

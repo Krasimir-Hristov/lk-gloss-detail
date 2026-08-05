@@ -23,8 +23,8 @@ const Footer: React.FC = () => {
 	}));
 
 	return (
-		<footer className="w-full border-t border-[#4a4456] bg-black py-16 md:py-28">
-			<div className="mx-auto grid max-w-7xl grid-cols-1 gap-8 px-4 md:grid-cols-4 md:px-16">
+		<footer className="w-full border-t border-[#4a4456] bg-black py-12 md:py-28">
+			<div className="mx-auto grid max-w-7xl grid-cols-1 gap-8 px-6 sm:grid-cols-2 md:grid-cols-4 md:px-16">
 				{/* --- Column 1: Brand --- */}
 				<div className="md:col-span-1">
 					<div className="mb-4 text-xl font-extrabold tracking-tighter text-[#d1bcff] uppercase">
