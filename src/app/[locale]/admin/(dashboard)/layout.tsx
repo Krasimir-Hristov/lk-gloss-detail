@@ -4,8 +4,8 @@ import React from "react";
 
 import { LanguageSwitcher } from "@/components/shared/LanguageSwitcher";
 import { logoutAdmin } from "@/features/admin/actions/auth";
+import { AdminSidebarNav } from "@/features/admin/components/AdminSidebarNav";
 import { isAdminUser } from "@/features/admin/utils/auth";
-import { Link } from "@/i18n/routing";
 import { createClient } from "@/lib/supabase/server";
 
 interface AdminLayoutProps {
@@ -31,6 +31,13 @@ const AdminLayout: React.FC<AdminLayoutProps> = async ({ children, params }) => 
 
 	const handleLogout = logoutAdmin.bind(null, locale);
 
+	const navItems = [
+		{ href: "/admin", label: t("dashboard.sidebar.overview") },
+		{ href: "/admin/appointments", label: t("dashboard.sidebar.appointments") },
+		{ href: "/admin/services", label: t("dashboard.sidebar.servicesCrud") },
+		{ href: "/admin/chatbot-kb", label: t("dashboard.sidebar.chatbotKb") },
+	];
+
 	return (
 		<div className="flex h-screen overflow-hidden bg-black font-sans text-white">
 			{/* Sidebar */}
@@ -46,35 +53,7 @@ const AdminLayout: React.FC<AdminLayoutProps> = async ({ children, params }) => 
 						</div>
 					</div>
 
-					<nav className="space-y-2">
-						<div className="px-3 py-2 text-xs font-semibold tracking-wider text-neutral-500 uppercase">
-							{t("dashboard.sidebar.management")}
-						</div>
-						<Link
-							href="/admin"
-							className="block rounded-md border border-purple-500/20 bg-neutral-900 px-3 py-2 text-sm font-medium text-purple-300 transition-colors hover:bg-neutral-800"
-						>
-							{t("dashboard.sidebar.overview")}
-						</Link>
-						<Link
-							href="/admin/appointments"
-							className="block rounded-md px-3 py-2 text-sm font-medium text-neutral-400 transition-colors hover:bg-neutral-900 hover:text-white"
-						>
-							{t("dashboard.sidebar.appointments")}
-						</Link>
-						<Link
-							href="/admin/services"
-							className="block rounded-md px-3 py-2 text-sm font-medium text-neutral-400 transition-colors hover:bg-neutral-900 hover:text-white"
-						>
-							{t("dashboard.sidebar.servicesCrud")}
-						</Link>
-						<Link
-							href="/admin/chatbot-kb"
-							className="block rounded-md px-3 py-2 text-sm font-medium text-neutral-400 transition-colors hover:bg-neutral-900 hover:text-white"
-						>
-							{t("dashboard.sidebar.chatbotKb")}
-						</Link>
-					</nav>
+					<AdminSidebarNav managementLabel={t("dashboard.sidebar.management")} items={navItems} />
 				</div>
 
 				<div className="shrink-0 border-t border-neutral-800 pt-4">
