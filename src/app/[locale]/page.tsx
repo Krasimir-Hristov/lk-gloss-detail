@@ -1,4 +1,4 @@
-import { Sparkles, Truck, MapPin, Clock, ThumbsUp } from "lucide-react";
+import { Sparkles, Truck, MapPin, Clock, ThumbsUp, ArrowRight } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { setRequestLocale } from "next-intl/server";
 import { z } from "zod";
@@ -15,6 +15,7 @@ import {
 	WhyLKSection,
 } from "@/features/home";
 import { getPublicServices } from "@/features/services/actions/get-public-services";
+import { Link } from "@/i18n/routing";
 
 import type { PublicService } from "@/features/services/actions/get-public-services";
 
@@ -113,72 +114,56 @@ const HomePageContent = ({ locale, services }: { locale: string; services: Publi
 				</div>
 			</section>
 
-			{/* ── AI Valuation Section ── */}
+			{/* ── AI Assessment Banner CTA Section ── */}
 			<section className="px-4 py-12 sm:py-20 md:px-16 md:py-28">
 				<div className="mx-auto max-w-7xl">
-					<div className="grid items-center gap-8 lg:grid-cols-2 lg:gap-16">
-						{/* Left: Mock form UI */}
-						<div className="rounded-2xl border border-[#353534] bg-[#201f1f] p-5 sm:p-8">
-							<div className="mb-6 flex items-center gap-3">
-								<div className="flex h-10 w-10 items-center justify-center rounded-lg bg-[#7b2dff]/20">
-									<Sparkles className="h-5 w-5 text-[#d1bcff]" />
-								</div>
-								<h3 className="text-lg font-bold text-[#e5e2e1]">{t("aiValuation.formTitle")}</h3>
+					<div className="relative overflow-hidden rounded-3xl border border-[#7b2dff]/40 bg-linear-to-br from-[#1c0b3b] via-[#131313] to-[#160630] px-6 py-12 text-center shadow-[0_0_60px_rgba(123,45,255,0.2)] sm:px-12 sm:py-16 md:px-20 md:py-20">
+						{/* Ambient glows */}
+						<div className="pointer-events-none absolute -top-24 left-1/2 h-96 w-96 -translate-x-1/2 rounded-full bg-[#7b2dff]/25 blur-3xl" />
+						<div className="pointer-events-none absolute right-1/4 -bottom-24 h-80 w-80 rounded-full bg-[#c026ff]/15 blur-3xl" />
+
+						<div className="relative mx-auto flex max-w-3xl flex-col items-center gap-6">
+							{/* Glowing Pill Tag */}
+							<div className="inline-flex items-center gap-2 rounded-full border border-[#7b2dff]/40 bg-[#7b2dff]/15 px-4 py-1.5 backdrop-blur-md">
+								<Sparkles className="h-4 w-4 text-[#d1bcff]" />
+								<span className="text-xs font-bold tracking-wider text-[#d1bcff] uppercase">
+									{t("aiValuation.formTitle")}
+								</span>
 							</div>
 
-							{/* Mock input fields */}
-							<div className="space-y-4">
-								<div>
-									<label className="mb-2 block text-xs font-semibold tracking-wider text-[#ccc3d9] uppercase">
-										{t("aiValuation.labels.model")}
-									</label>
-									<div className="rounded-lg border border-[#353534] bg-[#131313] px-4 py-3 text-sm text-[#e5e2e1]">
-										{t("aiValuation.mockValues.model")}
-									</div>
-								</div>
-								<div>
-									<label className="mb-2 block text-xs font-semibold tracking-wider text-[#ccc3d9] uppercase">
-										{t("aiValuation.labels.year")}
-									</label>
-									<div className="rounded-lg border border-[#353534] bg-[#131313] px-4 py-3 text-sm text-[#e5e2e1]">
-										{t("aiValuation.mockValues.year")}
-									</div>
-								</div>
-								<div>
-									<label className="mb-2 block text-xs font-semibold tracking-wider text-[#ccc3d9] uppercase">
-										{t("aiValuation.labels.condition")}
-									</label>
-									<div className="rounded-lg border border-[#353534] bg-[#131313] px-4 py-3 text-sm text-[#e5e2e1]">
-										{t("aiValuation.mockValues.condition")}
-									</div>
-								</div>
-								<button className="mt-2 flex w-full items-center justify-center gap-2 rounded-lg bg-[#7b2dff] px-6 py-4 text-base font-semibold text-white transition-all hover:bg-[#7b2dff]/90">
-									<Sparkles className="h-4 w-4" />
-									{t("aiValuation.ctaButton")}
-								</button>
-							</div>
-						</div>
-
-						{/* Right: Text + Stats */}
-						<div className="flex flex-col gap-6 sm:gap-8">
-							<h2 className="text-2xl font-bold text-[#e5e2e1] sm:text-3xl md:text-4xl">
+							{/* Title */}
+							<h2 className="text-3xl font-extrabold text-[#e5e2e1] sm:text-4xl md:text-5xl">
 								{t("aiValuation.title")}
 							</h2>
-							<p className="max-w-md text-base leading-relaxed text-[#ccc3d9] sm:text-lg">
+
+							{/* Subtitle */}
+							<p className="max-w-2xl text-base leading-relaxed text-[#ccc3d9] sm:text-lg md:text-xl">
 								{t("aiValuation.description")}
 							</p>
 
-							{/* Stats grid */}
-							<div className="grid grid-cols-1 gap-3 pt-2 sm:grid-cols-3 sm:gap-4">
+							{/* Main Action Button */}
+							<div className="mt-4 flex w-full flex-col items-center justify-center gap-4 sm:flex-row">
+								<Link
+									href="/assessment"
+									className="group inline-flex w-full items-center justify-center gap-3 rounded-xl bg-linear-to-r from-[#7b2dff] to-[#c026ff] px-8 py-4.5 text-lg font-bold text-white shadow-[0_0_25px_rgba(123,45,255,0.4)] transition-all hover:scale-105 hover:shadow-[0_0_40px_rgba(192,38,255,0.6)] active:scale-95 sm:w-auto sm:px-10"
+								>
+									<Sparkles className="h-5 w-5 text-white transition-transform group-hover:rotate-12" />
+									<span>{t("aiValuation.ctaButton")}</span>
+									<ArrowRight className="h-5 w-5 transition-transform group-hover:translate-x-1" />
+								</Link>
+							</div>
+
+							{/* Integrated Stats Bar */}
+							<div className="mt-8 grid w-full grid-cols-1 gap-4 border-t border-white/10 pt-8 sm:grid-cols-3">
 								{STAT_KEYS.map((key) => {
 									const rawStat = t.raw(`aiValuation.stats.${key}`);
 									const stat = ValuationStatSchema.parse(rawStat);
 									return (
 										<div
 											key={key}
-											className="rounded-xl border border-[#353534] bg-[#201f1f] p-4 text-center sm:p-5"
+											className="flex flex-col items-center rounded-xl border border-white/5 bg-[#201f1f]/60 p-4 backdrop-blur-sm"
 										>
-											<p className="text-xl font-extrabold text-[#d1bcff] sm:text-2xl md:text-3xl">
+											<p className="text-2xl font-extrabold text-[#d1bcff] sm:text-3xl">
 												{stat.value}
 											</p>
 											<p className="mt-1 text-xs text-[#ccc3d9]">{stat.label}</p>
