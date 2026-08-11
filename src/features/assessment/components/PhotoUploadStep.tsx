@@ -7,6 +7,7 @@ import { useCallback, useRef, useState, useEffect } from "react";
 import { v4 as uuidv4 } from "uuid";
 
 import { useValidatePhoto } from "@/features/assessment/hooks/use-assessment";
+import { compressImage } from "@/features/assessment/utils/image-compressor";
 
 import type { PhotoAngle } from "@/features/assessment/schemas/assessment.schema";
 
@@ -53,7 +54,8 @@ export const PhotoUploadStep = ({
 
 	const handleFileSelect = useCallback(
 		async (file: File) => {
-			if (!file.type.startsWith("image/")) {
+			const isImage = file.type.startsWith("image/") || /\.(jpe?g|png|webp|heic|heif|bmp)$/i.test(file.name);
+			if (!isImage) {
 				setStatus("invalid");
 				setValidationReason(t("upload.error"));
 				onPhotoInvalidAction("Not an image file", t("upload.error"));
@@ -62,45 +64,41 @@ export const PhotoUploadStep = ({
 
 			// Generate photo ID upfront so it matches the store
 			const photoId = uuidv4();
+			setStatus("uploading");
 
-			// Single FileReader for both preview and API
-			const reader = new FileReader();
-			reader.onload = async (e) => {
-				const base64 = e.target?.result as string;
+			try {
+				// Compress and normalize image (JPEG format, max 1920px) to prevent Vercel 4.5MB payload limit
+				const base64 = await compressImage(file);
 				setPreview(base64);
-				setStatus("uploading");
 
-				try {
-					const result = await validatePhoto.mutateAsync({
-						imageBase64: base64,
-						expectedAngle: angle,
-						previousCarDescriptions,
-						locale,
-					});
+				const result = await validatePhoto.mutateAsync({
+					imageBase64: base64,
+					expectedAngle: angle,
+					previousCarDescriptions,
+					locale,
+				});
 
-					if (result.valid) {
-						setStatus("valid");
-						setValidationReason(result.userMessage || result.reason || "");
-						onPhotoValidatedAction(
-							photoId,
-							base64,
-							result.carSize ?? undefined,
-							result.dirtLevel ?? undefined,
-							result.carDescription ?? undefined,
-						);
-					} else {
-						setStatus("invalid");
-						setValidationReason(result.userMessage || result.reason || "");
-						onPhotoInvalidAction(result.reason || "", result.userMessage ?? undefined);
-					}
-				} catch (err: unknown) {
-					const errorMessage = err instanceof Error ? err.message : "Validation failed";
+				if (result.valid) {
+					setStatus("valid");
+					setValidationReason(result.userMessage || result.reason || "");
+					onPhotoValidatedAction(
+						photoId,
+						base64,
+						result.carSize ?? undefined,
+						result.dirtLevel ?? undefined,
+						result.carDescription ?? undefined,
+					);
+				} else {
 					setStatus("invalid");
-					setValidationReason(errorMessage);
-					onPhotoInvalidAction(errorMessage);
+					setValidationReason(result.userMessage || result.reason || "");
+					onPhotoInvalidAction(result.reason || "", result.userMessage ?? undefined);
 				}
-			};
-			reader.readAsDataURL(file);
+			} catch (err: unknown) {
+				const errorMessage = err instanceof Error ? err.message : "Validation failed";
+				setStatus("invalid");
+				setValidationReason(errorMessage);
+				onPhotoInvalidAction(errorMessage);
+			}
 		},
 		[
 			angle,

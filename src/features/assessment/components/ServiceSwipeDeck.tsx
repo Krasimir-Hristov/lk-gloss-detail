@@ -13,8 +13,8 @@ import type { ServiceSelection } from "@/features/assessment/schemas/assessment.
 
 type DbService = {
 	id: string;
-	name: string;
-	short_description: string | null;
+	name: Record<string, string> | string;
+	short_description: Record<string, string> | string | null;
 	icon: string;
 	image_url: string | null;
 	category: string;

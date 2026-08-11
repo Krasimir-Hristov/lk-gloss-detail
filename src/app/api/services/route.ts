@@ -2,11 +2,12 @@ import { NextResponse } from "next/server";
 import { z } from "zod";
 
 import { createClient } from "@/lib/supabase/server";
+import { createServiceClient } from "@/lib/supabase/service";
 
 const ServiceResponseSchema = z.object({
 	id: z.string(),
-	name: z.string(),
-	short_description: z.string().nullable(),
+	name: z.union([z.string(), z.record(z.string(), z.string())]),
+	short_description: z.union([z.string(), z.record(z.string(), z.string())]).nullable(),
 	icon: z.string(),
 	image_url: z.string().nullable(),
 	category: z.string(),
@@ -20,32 +21,58 @@ const ServiceResponseSchema = z.object({
 
 export const GET = async () => {
 	try {
-		const supabase = await createClient();
+		let data: unknown[] | null = null;
+		let error: { message: string } | null = null;
 
-		const { data, error } = await supabase
-			.from("services")
-			.select(
-				"id, name, short_description, icon, image_url, category, price_small, price_medium, price_large, price_suv, duration_hours, sort_order",
-			)
-			.eq("active", true)
-			.order("sort_order", { ascending: true });
+		try {
+			const supabase = await createClient();
+			const res = await supabase
+				.from("services")
+				.select(
+					"id, name, short_description, icon, image_url, category, price_small, price_medium, price_large, price_suv, duration_hours, sort_order",
+				)
+				.eq("active", true)
+				.order("sort_order", { ascending: true });
+			data = res.data;
+			error = res.error;
+		} catch (clientErr) {
+			console.warn("[services API] Standard server client failed, trying service client:", clientErr);
+		}
+
+		// Fallback to service client if standard client returned an error or failed
+		if ((error || !data) && process.env.NEXT_PUBLIC_SUPABASE_URL) {
+			try {
+				const serviceClient = createServiceClient();
+				const res = await serviceClient
+					.from("services")
+					.select(
+						"id, name, short_description, icon, image_url, category, price_small, price_medium, price_large, price_suv, duration_hours, sort_order",
+					)
+					.eq("active", true)
+					.order("sort_order", { ascending: true });
+				data = res.data;
+				error = res.error;
+			} catch (serviceErr) {
+				console.error("[services API] Service client failed as well:", serviceErr);
+			}
+		}
 
 		if (error) {
 			console.error("[services API] Error fetching services:", error.message);
-			return NextResponse.json({ error: "Failed to fetch services" }, { status: 500 });
+			return NextResponse.json({ error: "Failed to fetch services", details: error.message }, { status: 500 });
 		}
 
 		// Validate each row with Zod
 		const validated = z.array(ServiceResponseSchema).safeParse(data ?? []);
 		if (!validated.success) {
-			console.error("[services API] Invalid response shape:", validated.error.issues);
-			return NextResponse.json({ error: "Invalid service data" }, { status: 500 });
+			console.error("[services API] Invalid response shape:", JSON.stringify(validated.error.issues, null, 2));
+			return NextResponse.json({ error: "Invalid service data", issues: validated.error.issues }, { status: 500 });
 		}
 
 		return NextResponse.json(validated.data);
 	} catch (err: unknown) {
 		const message = err instanceof Error ? err.message : "Internal Server Error";
-		console.error("[services API] Error:", message);
-		return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });
+		console.error("[services API] Uncaught Error:", message);
+		return NextResponse.json({ error: "Internal Server Error", details: message }, { status: 500 });
 	}
 };

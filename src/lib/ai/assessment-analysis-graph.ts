@@ -3,8 +3,10 @@ import { StateGraph, START, END } from "@langchain/langgraph";
 import { ChatOpenAI } from "@langchain/openai";
 import { z } from "zod";
 
+import { getLocalizedText } from "@/features/admin/types/services.types";
 import { AssessmentDiagnosticSchema } from "@/features/assessment/schemas/assessment.schema";
 import { createClient } from "@/lib/supabase/server";
+import { createServiceClient } from "@/lib/supabase/service";
 
 // ── State Schema ────────────────────────────────────────────────────────────
 
@@ -19,7 +21,7 @@ const AnalysisState = z.object({
 		.array(
 			z.object({
 				id: z.string(),
-				name: z.string(),
+				name: z.union([z.string(), z.record(z.string(), z.string())]),
 				price_small: z.number(),
 				price_medium: z.number(),
 				price_large: z.number(),
@@ -86,12 +88,38 @@ const fetchDbPricing = async (state: AnalysisStateType): Promise<Partial<Analysi
 			return { servicesPricing: [] };
 		}
 
-		const supabase = await createClient();
+		let data: any[] | null = null;
+		let error: { message: string } | null = null;
 
-		const { data, error } = await supabase
-			.from("services")
-			.select("id, name, price_small, price_medium, price_large, price_suv, duration_hours")
-			.in("id", state.acceptedServiceIds);
+		try {
+			const supabase = await createClient();
+			const res = await supabase
+				.from("services")
+				.select("id, name, price_small, price_medium, price_large, price_suv, duration_hours")
+				.in("id", state.acceptedServiceIds);
+			data = res.data;
+			error = res.error;
+		} catch (clientErr) {
+			console.warn(
+				"[analysis-graph] Standard server client failed, trying service client:",
+				clientErr,
+			);
+		}
+
+		// Fallback to service client if standard client returned error or no data
+		if ((error || !data) && process.env.NEXT_PUBLIC_SUPABASE_URL) {
+			try {
+				const serviceClient = createServiceClient();
+				const res = await serviceClient
+					.from("services")
+					.select("id, name, price_small, price_medium, price_large, price_suv, duration_hours")
+					.in("id", state.acceptedServiceIds);
+				data = res.data;
+				error = res.error;
+			} catch (serviceErr) {
+				console.error("[analysis-graph] Service client failed as well:", serviceErr);
+			}
+		}
 
 		if (error) throw new Error(`DB query failed: ${error.message}`);
 
@@ -109,7 +137,7 @@ const fetchDbPricing = async (state: AnalysisStateType): Promise<Partial<Analysi
 			"[analysis-graph] Fetched pricing for",
 			data?.length ?? 0,
 			"services:",
-			data?.map((s) => s.name),
+			data?.map((s) => getLocalizedText(s.name, state.locale)),
 		);
 
 		return { servicesPricing: data ?? [] };
@@ -209,7 +237,7 @@ const generateLocalizedSummary = async (
 			el: "Greek",
 		};
 
-		const serviceNames = servicesPricing.map((s) => s.name).join(", ");
+		const serviceNames = servicesPricing.map((s) => getLocalizedText(s.name, locale)).join(", ");
 
 		const messages = [
 			new SystemMessage(SUMMARY_SYSTEM_PROMPT),

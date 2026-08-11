@@ -39,7 +39,7 @@ export async function POST(request: NextRequest) {
 		if (result.error) {
 			console.error("[analyze] Analysis failed:", result.error);
 			return NextResponse.json(
-				{ error: "Analysis could not be completed. Please try again." },
+				{ error: result.error || "Analysis could not be completed. Please try again." },
 				{ status: 500 },
 			);
 		}
@@ -61,7 +61,7 @@ export async function POST(request: NextRequest) {
 		const message = err instanceof Error ? err.message : "Internal Server Error";
 		console.error("[analyze] Error:", message);
 		return NextResponse.json(
-			{ error: "An unexpected error occurred. Please try again." },
+			{ error: message || "An unexpected error occurred. Please try again." },
 			{ status: 500 },
 		);
 	}

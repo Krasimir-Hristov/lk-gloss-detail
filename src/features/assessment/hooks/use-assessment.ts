@@ -19,7 +19,17 @@ export const useValidatePhoto = () => {
 			});
 
 			if (!response.ok) {
-				throw new Error(`Validation API error: ${response.statusText}`);
+				const errorPayload = (await response.json().catch(() => null)) as {
+					userMessage?: string;
+					reason?: string;
+					error?: string;
+				} | null;
+				const errorMessage =
+					errorPayload?.userMessage ||
+					errorPayload?.reason ||
+					errorPayload?.error ||
+					`Validation API error (${response.status}${response.statusText ? ` ${response.statusText}` : ""})`;
+				throw new Error(errorMessage);
 			}
 
 			return response.json();
