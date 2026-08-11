@@ -7,6 +7,7 @@ import { useCallback, useRef, useState, useEffect } from "react";
 import { v4 as uuidv4 } from "uuid";
 
 import { useValidatePhoto } from "@/features/assessment/hooks/use-assessment";
+import { compressImage } from "@/features/assessment/utils/image-compressor";
 
 import type { PhotoAngle } from "@/features/assessment/schemas/assessment.schema";
 
@@ -36,6 +37,7 @@ export const PhotoUploadStep = ({
 	const [validationReason, setValidationReason] = useState<string>("");
 	const [isMobile, setIsMobile] = useState(false);
 	const fileInputRef = useRef<HTMLInputElement>(null);
+	const uploadGenerationRef = useRef<number>(0);
 
 	useEffect(() => {
 		const checkMobile = () => {
@@ -51,56 +53,80 @@ export const PhotoUploadStep = ({
 
 	const validatePhoto = useValidatePhoto();
 
+	const getLocalizedError = useCallback(
+		(errorCode: string) => {
+			const knownCodes = [
+				"FILE_INVALID",
+				"FILE_READ_FAILED",
+				"IMAGE_DECODE_FAILED",
+				"CANVAS_CONTEXT_FAILED",
+				"FILE_TOO_LARGE",
+				"VALIDATION_FAILED",
+			];
+			if (knownCodes.includes(errorCode)) {
+				return t(`upload.errors.${errorCode}`);
+			}
+			return errorCode || t("upload.errors.VALIDATION_FAILED");
+		},
+		[t],
+	);
+
 	const handleFileSelect = useCallback(
 		async (file: File) => {
-			if (!file.type.startsWith("image/")) {
+			const generation = ++uploadGenerationRef.current;
+			const isImage = file.type.startsWith("image/") || /\.(jpe?g|png|webp|heic|heif|bmp)$/i.test(file.name);
+			if (!isImage) {
+				if (generation !== uploadGenerationRef.current) return;
+				const invalidMsg = getLocalizedError("FILE_INVALID");
 				setStatus("invalid");
-				setValidationReason(t("upload.error"));
-				onPhotoInvalidAction("Not an image file", t("upload.error"));
+				setValidationReason(invalidMsg);
+				onPhotoInvalidAction("Not an image file", invalidMsg);
 				return;
 			}
 
 			// Generate photo ID upfront so it matches the store
 			const photoId = uuidv4();
+			if (generation !== uploadGenerationRef.current) return;
+			setStatus("uploading");
 
-			// Single FileReader for both preview and API
-			const reader = new FileReader();
-			reader.onload = async (e) => {
-				const base64 = e.target?.result as string;
+			try {
+				// Compress and normalize image (JPEG format, max 1920px, max 3MB payload)
+				const base64 = await compressImage(file);
+				if (generation !== uploadGenerationRef.current) return;
 				setPreview(base64);
-				setStatus("uploading");
 
-				try {
-					const result = await validatePhoto.mutateAsync({
-						imageBase64: base64,
-						expectedAngle: angle,
-						previousCarDescriptions,
-						locale,
-					});
+				const result = await validatePhoto.mutateAsync({
+					imageBase64: base64,
+					expectedAngle: angle,
+					previousCarDescriptions,
+					locale,
+				});
 
-					if (result.valid) {
-						setStatus("valid");
-						setValidationReason(result.userMessage || result.reason || "");
-						onPhotoValidatedAction(
-							photoId,
-							base64,
-							result.carSize ?? undefined,
-							result.dirtLevel ?? undefined,
-							result.carDescription ?? undefined,
-						);
-					} else {
-						setStatus("invalid");
-						setValidationReason(result.userMessage || result.reason || "");
-						onPhotoInvalidAction(result.reason || "", result.userMessage ?? undefined);
-					}
-				} catch (err: unknown) {
-					const errorMessage = err instanceof Error ? err.message : "Validation failed";
+				if (generation !== uploadGenerationRef.current) return;
+
+				if (result.valid) {
+					setStatus("valid");
+					setValidationReason(result.userMessage || result.reason || "");
+					onPhotoValidatedAction(
+						photoId,
+						base64,
+						result.carSize ?? undefined,
+						result.dirtLevel ?? undefined,
+						result.carDescription ?? undefined,
+					);
+				} else {
 					setStatus("invalid");
-					setValidationReason(errorMessage);
-					onPhotoInvalidAction(errorMessage);
+					setValidationReason(result.userMessage || result.reason || "");
+					onPhotoInvalidAction(result.reason || "", result.userMessage ?? undefined);
 				}
-			};
-			reader.readAsDataURL(file);
+			} catch (err: unknown) {
+				if (generation !== uploadGenerationRef.current) return;
+				const rawError = err instanceof Error ? err.message : "VALIDATION_FAILED";
+				const userFacingError = getLocalizedError(rawError);
+				setStatus("invalid");
+				setValidationReason(userFacingError);
+				onPhotoInvalidAction(rawError, userFacingError);
+			}
 		},
 		[
 			angle,
@@ -109,7 +135,7 @@ export const PhotoUploadStep = ({
 			validatePhoto,
 			previousCarDescriptions,
 			locale,
-			t,
+			getLocalizedError,
 		],
 	);
 
@@ -131,6 +157,7 @@ export const PhotoUploadStep = ({
 	);
 
 	const reset = () => {
+		uploadGenerationRef.current++;
 		setPreview(null);
 		setStatus("idle");
 		setValidationReason("");

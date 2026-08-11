@@ -350,7 +350,15 @@
 			"chooseFile": "Datei wählen",
 			"takePhoto": "Foto aufnehmen",
 			"validating": "Foto wird überprüft...",
-			"error": "Dieses Foto entspricht nicht dem erwarteten Winkel. Bitte versuchen Sie es erneut."
+			"error": "Dieses Foto entspricht nicht dem erwarteten Winkel. Bitte versuchen Sie es erneut.",
+			"errors": {
+				"FILE_INVALID": "Ungültiges Bilddateiformat.",
+				"FILE_READ_FAILED": "Bilddatei konnte nicht gelesen werden.",
+				"IMAGE_DECODE_FAILED": "Bild konnte nicht dekodiert werden.",
+				"CANVAS_CONTEXT_FAILED": "Bildverarbeitung fehlgeschlagen.",
+				"FILE_TOO_LARGE": "Bilddatei ist zu groß. Bitte laden Sie ein kleineres Foto hoch.",
+				"VALIDATION_FAILED": "Fotovalidierung fehlgeschlagen. Bitte versuchen Sie es erneut."
+			}
 		},
 		"validation": {
 			"validating": "Foto wird überprüft...",

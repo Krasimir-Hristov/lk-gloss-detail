@@ -6,3 +6,5 @@ export { AssessmentWizard } from "@/features/assessment/components/AssessmentWiz
 export { AssessmentReport } from "@/features/assessment/components/AssessmentReport";
 export { PhotoUploadStep } from "@/features/assessment/components/PhotoUploadStep";
 export { ProgressIndicator } from "@/features/assessment/components/ProgressIndicator";
+export { compressImage } from "@/features/assessment/utils/image-compressor";
+

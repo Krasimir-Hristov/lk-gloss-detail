@@ -1,11 +1,18 @@
 "use client";
 
 import { useMutation } from "@tanstack/react-query";
+import { z } from "zod";
 
 import type {
 	PhotoValidationRequest,
 	PhotoValidationResponse,
 } from "@/features/assessment/schemas/photo-validation.schema";
+
+const ErrorResponseSchema = z.object({
+	userMessage: z.string().optional(),
+	reason: z.string().optional(),
+	error: z.string().optional(),
+});
 
 // ── Photo Validation Hook ──────────────────────────────────────────────────
 
@@ -19,7 +26,15 @@ export const useValidatePhoto = () => {
 			});
 
 			if (!response.ok) {
-				throw new Error(`Validation API error: ${response.statusText}`);
+				const json = await response.json().catch(() => null);
+				const parsed = ErrorResponseSchema.safeParse(json);
+				const payload = parsed.success ? parsed.data : null;
+				const errorMessage =
+					payload?.userMessage ||
+					payload?.reason ||
+					payload?.error ||
+					`Validation API error (${response.status}${response.statusText ? ` ${response.statusText}` : ""})`;
+				throw new Error(errorMessage);
 			}
 
 			return response.json();
@@ -51,8 +66,10 @@ export const useAnalyzeAssessment = () => {
 			});
 
 			if (!res.ok) {
-				const err = (await res.json()) as { error?: string };
-				throw new Error(err.error ?? "Analysis failed");
+				const json = await res.json().catch(() => null);
+				const parsed = ErrorResponseSchema.safeParse(json);
+				const errorMessage = parsed.success && parsed.data.error ? parsed.data.error : "Analysis failed";
+				throw new Error(errorMessage);
 			}
 
 			return res.json();
