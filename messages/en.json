@@ -349,7 +349,15 @@
 			"chooseFile": "Choose File",
 			"takePhoto": "Take Photo",
 			"validating": "Validating photo...",
-			"error": "This photo does not match the expected angle. Please try again."
+			"error": "This photo does not match the expected angle. Please try again.",
+			"errors": {
+				"FILE_INVALID": "Invalid image file format.",
+				"FILE_READ_FAILED": "Failed to read image file.",
+				"IMAGE_DECODE_FAILED": "Failed to decode image.",
+				"CANVAS_CONTEXT_FAILED": "Image processing failed.",
+				"FILE_TOO_LARGE": "Image file is too large. Please upload a smaller photo.",
+				"VALIDATION_FAILED": "Photo validation failed. Please try again."
+			}
 		},
 		"validation": {
 			"validating": "Validating photo...",

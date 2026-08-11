@@ -8,6 +8,20 @@ import { AssessmentDiagnosticSchema } from "@/features/assessment/schemas/assess
 import { createClient } from "@/lib/supabase/server";
 import { createServiceClient } from "@/lib/supabase/service";
 
+// ── Pricing Schema ─────────────────────────────────────────────────────────
+
+const PricingRowSchema = z.object({
+	id: z.string(),
+	name: z.union([z.string(), z.record(z.string(), z.string())]),
+	price_small: z.number(),
+	price_medium: z.number(),
+	price_large: z.number(),
+	price_suv: z.number(),
+	duration_hours: z.number(),
+});
+
+type PricingRow = z.infer<typeof PricingRowSchema>;
+
 // ── State Schema ────────────────────────────────────────────────────────────
 
 const AnalysisState = z.object({
@@ -17,19 +31,7 @@ const AnalysisState = z.object({
 	carSize: z.enum(["small", "medium", "large", "suv"]).nullable().default(null),
 	dirtLevel: z.enum(["light", "moderate", "heavy"]).nullable().default(null),
 	brand: z.string().nullable().default(null),
-	servicesPricing: z
-		.array(
-			z.object({
-				id: z.string(),
-				name: z.union([z.string(), z.record(z.string(), z.string())]),
-				price_small: z.number(),
-				price_medium: z.number(),
-				price_large: z.number(),
-				price_suv: z.number(),
-				duration_hours: z.number(),
-			}),
-		)
-		.default([]),
+	servicesPricing: z.array(PricingRowSchema).default([]),
 	priceMin: z.number().default(0),
 	priceMax: z.number().default(0),
 	durationHours: z.number().default(0),
@@ -88,7 +90,7 @@ const fetchDbPricing = async (state: AnalysisStateType): Promise<Partial<Analysi
 			return { servicesPricing: [] };
 		}
 
-		let data: any[] | null = null;
+		let rawData: unknown[] | null = null;
 		let error: { message: string } | null = null;
 
 		try {
@@ -97,7 +99,7 @@ const fetchDbPricing = async (state: AnalysisStateType): Promise<Partial<Analysi
 				.from("services")
 				.select("id, name, price_small, price_medium, price_large, price_suv, duration_hours")
 				.in("id", state.acceptedServiceIds);
-			data = res.data;
+			rawData = res.data;
 			error = res.error;
 		} catch (clientErr) {
 			console.warn(
@@ -107,14 +109,14 @@ const fetchDbPricing = async (state: AnalysisStateType): Promise<Partial<Analysi
 		}
 
 		// Fallback to service client if standard client returned error or no data
-		if ((error || !data) && process.env.NEXT_PUBLIC_SUPABASE_URL) {
+		if ((error || !rawData) && process.env.NEXT_PUBLIC_SUPABASE_URL) {
 			try {
 				const serviceClient = createServiceClient();
 				const res = await serviceClient
 					.from("services")
 					.select("id, name, price_small, price_medium, price_large, price_suv, duration_hours")
 					.in("id", state.acceptedServiceIds);
-				data = res.data;
+				rawData = res.data;
 				error = res.error;
 			} catch (serviceErr) {
 				console.error("[analysis-graph] Service client failed as well:", serviceErr);
@@ -123,8 +125,10 @@ const fetchDbPricing = async (state: AnalysisStateType): Promise<Partial<Analysi
 
 		if (error) throw new Error(`DB query failed: ${error.message}`);
 
+		const parsedRows: PricingRow[] = z.array(PricingRowSchema).parse(rawData ?? []);
+
 		// Validate that every requested service ID was found
-		const foundIds = (data ?? []).map((s) => s.id);
+		const foundIds = parsedRows.map((s) => s.id);
 		const missingIds = state.acceptedServiceIds.filter((id) => !foundIds.includes(id));
 
 		if (missingIds.length > 0) {
@@ -135,12 +139,12 @@ const fetchDbPricing = async (state: AnalysisStateType): Promise<Partial<Analysi
 
 		console.log(
 			"[analysis-graph] Fetched pricing for",
-			data?.length ?? 0,
+			parsedRows.length,
 			"services:",
-			data?.map((s) => getLocalizedText(s.name, state.locale)),
+			parsedRows.map((s) => getLocalizedText(s.name, state.locale)),
 		);
 
-		return { servicesPricing: data ?? [] };
+		return { servicesPricing: parsedRows ?? [] };
 	} catch (err) {
 		const message = err instanceof Error ? err.message : "Failed to fetch pricing";
 		console.error("[analysis-graph] fetch_db_pricing error:", message);

@@ -40,7 +40,7 @@ export const GET = async () => {
 		}
 
 		// Fallback to service client if standard client returned an error or failed
-		if ((error || !data) && process.env.NEXT_PUBLIC_SUPABASE_URL) {
+		if ((error || data === null) && process.env.NEXT_PUBLIC_SUPABASE_URL) {
 			try {
 				const serviceClient = createServiceClient();
 				const res = await serviceClient
@@ -57,22 +57,23 @@ export const GET = async () => {
 			}
 		}
 
-		if (error) {
-			console.error("[services API] Error fetching services:", error.message);
-			return NextResponse.json({ error: "Failed to fetch services", details: error.message }, { status: 500 });
+		if (error || data === null) {
+			if (error) console.error("[services API] Error fetching services:", error.message);
+			else console.error("[services API] Error: Database returned null data result");
+			return NextResponse.json({ error: "Failed to fetch services" }, { status: 500 });
 		}
 
 		// Validate each row with Zod
-		const validated = z.array(ServiceResponseSchema).safeParse(data ?? []);
+		const validated = z.array(ServiceResponseSchema).safeParse(data);
 		if (!validated.success) {
 			console.error("[services API] Invalid response shape:", JSON.stringify(validated.error.issues, null, 2));
-			return NextResponse.json({ error: "Invalid service data", issues: validated.error.issues }, { status: 500 });
+			return NextResponse.json({ error: "Invalid service data" }, { status: 500 });
 		}
 
 		return NextResponse.json(validated.data);
 	} catch (err: unknown) {
 		const message = err instanceof Error ? err.message : "Internal Server Error";
 		console.error("[services API] Uncaught Error:", message);
-		return NextResponse.json({ error: "Internal Server Error", details: message }, { status: 500 });
+		return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });
 	}
 };

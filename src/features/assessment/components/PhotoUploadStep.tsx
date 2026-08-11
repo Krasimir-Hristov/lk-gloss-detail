@@ -37,6 +37,7 @@ export const PhotoUploadStep = ({
 	const [validationReason, setValidationReason] = useState<string>("");
 	const [isMobile, setIsMobile] = useState(false);
 	const fileInputRef = useRef<HTMLInputElement>(null);
+	const uploadGenerationRef = useRef<number>(0);
 
 	useEffect(() => {
 		const checkMobile = () => {
@@ -52,23 +53,46 @@ export const PhotoUploadStep = ({
 
 	const validatePhoto = useValidatePhoto();
 
+	const getLocalizedError = useCallback(
+		(errorCode: string) => {
+			const knownCodes = [
+				"FILE_INVALID",
+				"FILE_READ_FAILED",
+				"IMAGE_DECODE_FAILED",
+				"CANVAS_CONTEXT_FAILED",
+				"FILE_TOO_LARGE",
+				"VALIDATION_FAILED",
+			];
+			if (knownCodes.includes(errorCode)) {
+				return t(`upload.errors.${errorCode}`);
+			}
+			return errorCode || t("upload.errors.VALIDATION_FAILED");
+		},
+		[t],
+	);
+
 	const handleFileSelect = useCallback(
 		async (file: File) => {
+			const generation = ++uploadGenerationRef.current;
 			const isImage = file.type.startsWith("image/") || /\.(jpe?g|png|webp|heic|heif|bmp)$/i.test(file.name);
 			if (!isImage) {
+				if (generation !== uploadGenerationRef.current) return;
+				const invalidMsg = getLocalizedError("FILE_INVALID");
 				setStatus("invalid");
-				setValidationReason(t("upload.error"));
-				onPhotoInvalidAction("Not an image file", t("upload.error"));
+				setValidationReason(invalidMsg);
+				onPhotoInvalidAction("Not an image file", invalidMsg);
 				return;
 			}
 
 			// Generate photo ID upfront so it matches the store
 			const photoId = uuidv4();
+			if (generation !== uploadGenerationRef.current) return;
 			setStatus("uploading");
 
 			try {
-				// Compress and normalize image (JPEG format, max 1920px) to prevent Vercel 4.5MB payload limit
+				// Compress and normalize image (JPEG format, max 1920px, max 3MB payload)
 				const base64 = await compressImage(file);
+				if (generation !== uploadGenerationRef.current) return;
 				setPreview(base64);
 
 				const result = await validatePhoto.mutateAsync({
@@ -77,6 +101,8 @@ export const PhotoUploadStep = ({
 					previousCarDescriptions,
 					locale,
 				});
+
+				if (generation !== uploadGenerationRef.current) return;
 
 				if (result.valid) {
 					setStatus("valid");
@@ -94,10 +120,12 @@ export const PhotoUploadStep = ({
 					onPhotoInvalidAction(result.reason || "", result.userMessage ?? undefined);
 				}
 			} catch (err: unknown) {
-				const errorMessage = err instanceof Error ? err.message : "Validation failed";
+				if (generation !== uploadGenerationRef.current) return;
+				const rawError = err instanceof Error ? err.message : "VALIDATION_FAILED";
+				const userFacingError = getLocalizedError(rawError);
 				setStatus("invalid");
-				setValidationReason(errorMessage);
-				onPhotoInvalidAction(errorMessage);
+				setValidationReason(userFacingError);
+				onPhotoInvalidAction(rawError, userFacingError);
 			}
 		},
 		[
@@ -107,7 +135,7 @@ export const PhotoUploadStep = ({
 			validatePhoto,
 			previousCarDescriptions,
 			locale,
-			t,
+			getLocalizedError,
 		],
 	);
 
@@ -129,6 +157,7 @@ export const PhotoUploadStep = ({
 	);
 
 	const reset = () => {
+		uploadGenerationRef.current++;
 		setPreview(null);
 		setStatus("idle");
 		setValidationReason("");
