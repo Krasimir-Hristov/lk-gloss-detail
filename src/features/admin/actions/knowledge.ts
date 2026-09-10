@@ -18,7 +18,9 @@ import {
 	type ChatbotKnowledgeEntry,
 	type VectorSearchResult,
 } from "@/features/admin/types/knowledge";
+import { isAdminUser } from "@/features/admin/utils/auth";
 import { cosineSimilarity, getOpenRouterEmbeddings } from "@/lib/chatbot/embeddings";
+import { createClient } from "@/lib/supabase/server";
 import { createServiceClient } from "@/lib/supabase/service";
 
 interface KnowledgeEntryRow {
@@ -30,6 +32,21 @@ interface KnowledgeEntryRow {
 	created_at: string;
 }
 
+const verifyAdmin = async (): Promise<boolean> => {
+	try {
+		const supabase = await createClient();
+		const {
+			data: { user },
+			error: authError,
+		} = await supabase.auth.getUser();
+
+		if (authError || !user) return false;
+		return await isAdminUser(supabase, user.id);
+	} catch {
+		return false;
+	}
+};
+
 // ── 1. Get Knowledge Entries ───────────────────────────────────────────────
 
 export async function getKnowledgeEntriesAction(
@@ -37,6 +54,10 @@ export async function getKnowledgeEntriesAction(
 	category?: string,
 ): Promise<{ success: boolean; data?: ChatbotKnowledgeEntry[]; error?: string }> {
 	try {
+		if (!(await verifyAdmin())) {
+			return { success: false, error: "Unauthorized" };
+		}
+
 		const validLocale = SupportedLocaleSchema.or(z.literal("all")).parse(locale);
 		const validCategory =
 			category && category !== "all" ? KnowledgeCategorySchema.parse(category) : undefined;
@@ -99,6 +120,10 @@ export async function getServicesListAction(): Promise<{
 	error?: string;
 }> {
 	try {
+		if (!(await verifyAdmin())) {
+			return { success: false, error: "Unauthorized" };
+		}
+
 		const supabase = createServiceClient();
 		const { data, error } = await supabase
 			.from("services")
@@ -124,6 +149,10 @@ export async function aiAgentProcessAction(
 	contextData?: string,
 ): Promise<{ success: boolean; data?: AiKnowledgeStructure; error?: string }> {
 	try {
+		if (!(await verifyAdmin())) {
+			return { success: false, error: "Unauthorized" };
+		}
+
 		const validInput = AiAgentInputSchema.parse(input);
 
 		// Initialize Gemini 2.5 Flash via OpenRouter with explicit 45s timeout
@@ -169,6 +198,10 @@ export async function saveBatchKnowledgeAction(
 	structure: AiKnowledgeStructure,
 ): Promise<{ success: boolean; error?: string }> {
 	try {
+		if (!(await verifyAdmin())) {
+			return { success: false, error: "Unauthorized" };
+		}
+
 		const validStructure = AiKnowledgeStructureSchema.parse(structure);
 		const supabase = createServiceClient();
 		const embeddings = getOpenRouterEmbeddings();
@@ -226,6 +259,10 @@ export async function deleteKnowledgeEntryAction(
 	id: string,
 ): Promise<{ success: boolean; error?: string }> {
 	try {
+		if (!(await verifyAdmin())) {
+			return { success: false, error: "Unauthorized" };
+		}
+
 		const validId = z.string().uuid().parse(id);
 		const supabase = createServiceClient();
 		const { error } = await supabase.from("chatbot_knowledge").delete().eq("id", validId);
@@ -244,6 +281,10 @@ export async function testSemanticSearchAction(
 	locale: SupportedLocale,
 ): Promise<{ success: boolean; data?: VectorSearchResult[]; error?: string }> {
 	try {
+		if (!(await verifyAdmin())) {
+			return { success: false, error: "Unauthorized" };
+		}
+
 		const validQuery = z.string().min(1).parse(query);
 		const validLocale = SupportedLocaleSchema.parse(locale);
 

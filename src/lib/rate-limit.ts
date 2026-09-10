@@ -39,3 +39,8 @@ export const ASSESSMENT_RATE_LIMIT = {
 	validatePhoto: { interval: 60_000, maxRequests: 10 }, // 10/min
 	analyze: { interval: 300_000, maxRequests: 3 }, // 3/5min
 } as const;
+
+// Chatbot-specific limits
+export const CHATBOT_RATE_LIMIT = {
+	message: { interval: 60_000, maxRequests: 15 }, // 15 requests per minute
+} as const;
