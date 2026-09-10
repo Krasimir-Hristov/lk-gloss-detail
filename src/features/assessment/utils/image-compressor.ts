@@ -3,7 +3,11 @@ import { z } from "zod";
 export const CompressOptionsSchema = z.object({
 	maxDimension: z.number().positive().finite().default(1920),
 	quality: z.number().min(0).max(1).default(0.8),
-	maxSizeBytes: z.number().positive().finite().default(3 * 1024 * 1024), // 3MB limit
+	maxSizeBytes: z
+		.number()
+		.positive()
+		.finite()
+		.default(3 * 1024 * 1024), // 3MB limit
 });
 
 export type CompressOptions = z.infer<typeof CompressOptionsSchema>;
@@ -49,7 +53,7 @@ export async function compressImage(
 
 			img.onload = () => {
 				let { width, height } = img;
-				let currentMaxDim = options.maxDimension;
+				const currentMaxDim = options.maxDimension;
 
 				if (width > currentMaxDim || height > currentMaxDim) {
 					if (width > height) {

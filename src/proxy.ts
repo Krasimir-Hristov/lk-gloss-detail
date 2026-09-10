@@ -3,7 +3,7 @@ import { NextRequest, NextResponse } from "next/server";
 import createMiddleware from "next-intl/middleware";
 
 import { isAdminUser } from "@/features/admin/utils/auth";
-import { rateLimit, ASSESSMENT_RATE_LIMIT } from "@/lib/rate-limit";
+import { rateLimit, ASSESSMENT_RATE_LIMIT, CHATBOT_RATE_LIMIT } from "@/lib/rate-limit";
 
 import { routing } from "./i18n/routing";
 
@@ -133,6 +133,29 @@ export default async function proxy(request: NextRequest) {
 		});
 	}
 
+	// ── Rate limit chatbot API routes ─────────────────────────────────
+	if (pathname.startsWith("/api/chatbot/")) {
+		const key = `${ip}:${pathname}`;
+		const result = rateLimit(key, CHATBOT_RATE_LIMIT.message);
+
+		if (!result.success) {
+			const retryAfter = Math.ceil(result.resetIn / 1000);
+			return NextResponse.json(
+				{ error: "Too many requests. Please slow down.", retryAfter },
+				{
+					status: 429,
+					headers: { "Retry-After": String(retryAfter) },
+				},
+			);
+		}
+
+		return NextResponse.next({
+			request: {
+				headers: currentRequest.headers,
+			},
+		});
+	}
+
 	// ── Delegate to next-intl for all other routes ────────────────────
 	const response = intlMiddleware(currentRequest);
 	response.headers.set("x-pathname", pathname);
@@ -143,6 +166,8 @@ export const config = {
 	matcher: [
 		// Match assessment API routes for rate limiting
 		"/api/assessment/:path*",
+		// Match chatbot API routes for rate limiting
+		"/api/chatbot/:path*",
 		// Match all non-static routes for i18n
 		"/((?!api|trpc|_next|_vercel|.*\\..*).*)",
 	],
