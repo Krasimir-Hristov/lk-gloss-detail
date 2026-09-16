@@ -6,7 +6,7 @@ import { getMessages, getTranslations, setRequestLocale } from "next-intl/server
 
 import Footer from "@/components/layout/Footer";
 import Navbar from "@/components/layout/Navbar";
-import { Providers } from "@/components/providers";
+import { Providers } from "@/components/Providers";
 import { CookieConsentBanner } from "@/components/shared/CookieConsentBanner";
 import ScrollToTop from "@/components/shared/ScrollToTop";
 import { WhatsAppFloatingButton } from "@/components/shared/WhatsAppFloatingButton";

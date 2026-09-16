@@ -5,9 +5,10 @@ import { format, parseISO } from "date-fns";
 import { useTranslations } from "next-intl";
 
 import { getUnavailableDates } from "@/actions/booking";
-import { Button } from "@/components/ui/button";
-import { Calendar } from "@/components/ui/calendar";
-import { useBookingStore } from "@/features/booking/stores/booking-store";
+import { Button } from "@/components/ui/Button";
+import { Calendar } from "@/components/ui/Calendar";
+import { BookingErrorCard } from "@/features/booking/components/BookingErrorCard";
+import { useBookingStore } from "@/features/booking/stores/bookingStore";
 
 export const StepDatePicker = () => {
 	const t = useTranslations("Booking.step3");
@@ -17,6 +18,7 @@ export const StepDatePicker = () => {
 		data: unavailableDates = [],
 		isLoading,
 		error: fetchError,
+		refetch,
 	} = useQuery<string[]>({
 		queryKey: ["unavailable-dates"],
 		queryFn: getUnavailableDates,
@@ -40,7 +42,21 @@ export const StepDatePicker = () => {
 	}
 
 	if (fetchError) {
-		return <p className="text-red-400">{t("loadingError")}</p>;
+		return (
+			<div className="flex flex-col gap-5">
+				<BookingErrorCard onRetry={() => refetch()} />
+				<div className="flex gap-3">
+					<Button
+						type="button"
+						variant="outline"
+						onClick={prevStep}
+						className="flex-1 border-white/20 bg-transparent py-6 text-white hover:bg-white/10"
+					>
+						{t("back")}
+					</Button>
+				</div>
+			</div>
+		);
 	}
 
 	return (

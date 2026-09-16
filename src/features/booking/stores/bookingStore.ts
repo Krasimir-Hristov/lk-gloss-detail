@@ -7,13 +7,13 @@ import {
 	BookingDateSchema,
 	BookingServicesSchema,
 	PreselectedServicesSchema,
-} from "@/features/booking/schemas/booking.schema";
+} from "@/features/booking/schemas/bookingSchema";
 
 import type {
 	BookingClientInfo,
 	BookingDate,
 	BookingServices,
-} from "@/features/booking/schemas/booking.schema";
+} from "@/features/booking/schemas/bookingSchema";
 
 type BookingStep = 1 | 2 | 3 | 4;
 

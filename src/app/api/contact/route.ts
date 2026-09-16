@@ -1,8 +1,8 @@
 import { NextResponse } from "next/server";
 
 import { submitContact } from "@/actions/contact";
-import { ContactFormSchema } from "@/features/contact/schemas/contact.schema";
-import { rateLimit } from "@/lib/rate-limit";
+import { ContactFormSchema } from "@/features/contact/schemas/contactSchema";
+import { rateLimit } from "@/lib/rateLimit";
 
 const CONTACT_RATE_LIMIT = {
 	interval: 300_000, // 5 minutes

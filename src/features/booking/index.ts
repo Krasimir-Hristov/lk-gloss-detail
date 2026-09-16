@@ -1,5 +1,6 @@
 export { BookingWizard } from "./components/BookingWizard";
-export { useBookingStore } from "./stores/booking-store";
+export { BookingErrorCard } from "./components/BookingErrorCard";
+export { useBookingStore } from "./stores/bookingStore";
 export {
 	BookingClientInfoSchema,
 	BookingServicesSchema,
@@ -9,4 +10,4 @@ export {
 	type BookingServices,
 	type BookingDate,
 	type BookingFormData,
-} from "./schemas/booking.schema";
+} from "./schemas/bookingSchema";

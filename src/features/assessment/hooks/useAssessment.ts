@@ -6,7 +6,7 @@ import { z } from "zod";
 import type {
 	PhotoValidationRequest,
 	PhotoValidationResponse,
-} from "@/features/assessment/schemas/photo-validation.schema";
+} from "@/features/assessment/schemas/photoValidationSchema";
 
 const ErrorResponseSchema = z.object({
 	userMessage: z.string().optional(),
@@ -68,7 +68,8 @@ export const useAnalyzeAssessment = () => {
 			if (!res.ok) {
 				const json = await res.json().catch(() => null);
 				const parsed = ErrorResponseSchema.safeParse(json);
-				const errorMessage = parsed.success && parsed.data.error ? parsed.data.error : "Analysis failed";
+				const errorMessage =
+					parsed.success && parsed.data.error ? parsed.data.error : "Analysis failed";
 				throw new Error(errorMessage);
 			}
 

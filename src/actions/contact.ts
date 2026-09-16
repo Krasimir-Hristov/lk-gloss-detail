@@ -1,10 +1,10 @@
 "use server";
 
-import { ContactFormSchema } from "@/features/contact/schemas/contact.schema";
+import { ContactFormSchema } from "@/features/contact/schemas/contactSchema";
 import { getResend } from "@/lib/resend";
 import { createServiceClient } from "@/lib/supabase/service";
 
-import type { ContactFormData } from "@/features/contact/schemas/contact.schema";
+import type { ContactFormData } from "@/features/contact/schemas/contactSchema";
 
 type ContactResult =
 	| { success: true }

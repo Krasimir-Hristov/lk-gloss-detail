@@ -3,9 +3,9 @@
 import { motion } from "framer-motion";
 import { Check } from "lucide-react";
 
-import { PHOTO_STEPS } from "@/features/assessment/schemas/assessment.schema";
+import { PHOTO_STEPS } from "@/features/assessment/schemas/assessmentSchema";
 
-import type { WizardStep } from "@/features/assessment/schemas/assessment.schema";
+import type { WizardStep } from "@/features/assessment/schemas/assessmentSchema";
 
 type ProgressIndicatorProps = {
 	currentStep: WizardStep;

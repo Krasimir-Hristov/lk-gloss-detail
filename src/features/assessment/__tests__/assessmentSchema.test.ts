@@ -7,7 +7,7 @@ import {
 	ServiceSelectionSchema,
 	WIZARD_STEPS,
 	WizardStep,
-} from "@/features/assessment/schemas/assessment.schema";
+} from "@/features/assessment/schemas/assessmentSchema";
 
 describe("Assessment Schemas", () => {
 	describe("PhotoAngleSchema", () => {

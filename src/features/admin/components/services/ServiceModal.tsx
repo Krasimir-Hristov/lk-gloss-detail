@@ -6,8 +6,8 @@ import React, { useState, useRef } from "react";
 import { useForm } from "react-hook-form";
 
 import { uploadServiceImage } from "@/features/admin/actions/services";
-import { ServiceInputSchema, type ServiceInput } from "@/features/admin/schemas/services.schema";
-import { getLocalizedText, type AdminServiceItem } from "@/features/admin/types/services.types";
+import { ServiceInputSchema, type ServiceInput } from "@/features/admin/schemas/servicesSchema";
+import { getLocalizedText, type AdminServiceItem } from "@/features/admin/types/servicesTypes";
 
 interface ServiceModalProps {
 	isOpen: boolean;

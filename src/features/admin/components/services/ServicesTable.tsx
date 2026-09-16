@@ -3,10 +3,10 @@ import Image from "next/image";
 import { useLocale, useTranslations } from "next-intl";
 import React from "react";
 
-import { getLocalizedText } from "@/features/admin/types/services.types";
-import { getIcon } from "@/lib/icon-map";
+import { getLocalizedText } from "@/features/admin/types/servicesTypes";
+import { getIcon } from "@/lib/iconMap";
 
-import type { AdminServiceItem } from "@/features/admin/types/services.types";
+import type { AdminServiceItem } from "@/features/admin/types/servicesTypes";
 
 interface ServicesTableProps {
 	services: AdminServiceItem[];

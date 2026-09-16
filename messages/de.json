@@ -741,5 +741,41 @@
 				}
 			}
 		}
+	},
+	"Errors": {
+		"technicalDifficulties": "Technische Probleme, bitte versuchen Sie es später erneut.",
+		"servicesUnavailable": {
+			"title": "Dienstleistungen vorübergehend nicht verfügbar",
+			"description": "Aufgrund technischer Wartungsarbeiten kann unser Leistungskatalog momentan nicht geladen werden. Bitte versuchen Sie es später erneut.",
+			"contactCallout": "Wir sind dennoch persönlich für Sie da! Rufen Sie uns an, schreiben Sie uns eine E-Mail oder hinterlassen Sie Ihre Kontaktdaten in unserem Kontaktformular:",
+			"phone": "Jetzt anrufen",
+			"email": "E-Mail senden",
+			"leaveNumber": "Zur Kontaktanfrage"
+		},
+		"bookingUnavailable": {
+			"title": "Buchungssystem vorübergehend nicht verfügbar",
+			"description": "Aufgrund technischer Probleme kann der Buchungskalender im Moment nicht geladen werden. Bitte versuchen Sie es in Kürze erneut.",
+			"retry": "Erneut versuchen",
+			"callUs": "Telefonisch buchen",
+			"emailUs": "Per E-Mail anfragen",
+			"submitError": "Aufgrund eines technischen Problems konnte Ihr Termin nicht gespeichert werden. Ihre Eingaben sind erhalten geblieben. Bitte versuchen Sie es gleich erneut oder kontaktieren Sie uns direkt."
+		},
+		"aiUnavailable": {
+			"title": "KI-Analyse vorübergehend nicht verfügbar",
+			"description": "Unser KI-System verzeichnet derzeit eine hohe Auslastung oder befindet sich in einer kurzen Wartung. Bitte versuchen Sie es in wenigen Minuten erneut.",
+			"retry": "Erneut versuchen",
+			"serverError": "Technischer Fehler bei der KI-Verarbeitung. Bitte versuchen Sie es später erneut."
+		},
+		"global": {
+			"title": "Technisches Problem aufgetreten",
+			"description": "Wir entschuldigen uns für die Unannehmlichkeiten. Bitte versuchen Sie, die Seite neu zu laden, oder kehren Sie zur Startseite zurück.",
+			"retry": "Seite neu laden",
+			"backHome": "Zur Startseite"
+		},
+		"notFound": {
+			"title": "Seite nicht gefunden",
+			"description": "Die von Ihnen angeforderte Seite existiert leider nicht oder wurde verschoben.",
+			"backHome": "Zur Startseite"
+		}
 	}
 }

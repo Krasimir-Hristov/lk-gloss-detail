@@ -23,7 +23,7 @@ import {
 import { useTranslations, useLocale } from "next-intl";
 import React, { useState } from "react";
 
-import type { AdminAppointment, BlockedDateItem } from "@/features/admin/types/appointments.types";
+import type { AdminAppointment, BlockedDateItem } from "@/features/admin/types/appointmentsTypes";
 
 const localesMap = {
 	de,

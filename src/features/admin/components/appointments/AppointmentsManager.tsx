@@ -12,7 +12,7 @@ import {
 	getAdminAppointments,
 	getAvailableServices,
 } from "@/features/admin/actions/appointments";
-import { getBlockedDates } from "@/features/admin/actions/blocked-dates";
+import { getBlockedDates } from "@/features/admin/actions/blockedDates";
 import { AppointmentDetailModal } from "@/features/admin/components/appointments/AppointmentDetailModal";
 import { AppointmentsCalendarView } from "@/features/admin/components/appointments/AppointmentsCalendarView";
 import { AppointmentsListView } from "@/features/admin/components/appointments/AppointmentsListView";
@@ -24,7 +24,7 @@ import type {
 	AppointmentServiceItem,
 	AppointmentStatus,
 	BlockedDateItem,
-} from "@/features/admin/types/appointments.types";
+} from "@/features/admin/types/appointmentsTypes";
 
 interface AppointmentsManagerProps {
 	initialAppointments: AdminAppointment[];

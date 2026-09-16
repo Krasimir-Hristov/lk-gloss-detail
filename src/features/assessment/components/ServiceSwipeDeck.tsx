@@ -5,9 +5,9 @@ import { useTranslations } from "next-intl";
 import { useCallback, useEffect, useRef, useState } from "react";
 
 import { ServiceSwipeCard } from "@/features/assessment/components/ServiceSwipeCard";
-import { useAssessmentStore } from "@/features/assessment/stores/assessment-store";
+import { useAssessmentStore } from "@/features/assessment/stores/assessmentStore";
 
-import type { ServiceSelection } from "@/features/assessment/schemas/assessment.schema";
+import type { ServiceSelection } from "@/features/assessment/schemas/assessmentSchema";
 
 // ── DB Service shape ────────────────────────────────────────────────────────
 
@@ -60,14 +60,20 @@ export const ServiceSwipeDeck = ({ onCompleteAction }: ServiceSwipeDeckProps) =>
 		currentIndexRef.current = currentIndex;
 	}, [currentIndex]);
 
+	const tErrors = useTranslations("Errors");
+
+	const [retryTrigger, setRetryTrigger] = useState(0);
+
 	// Fetch services from DB
 	useEffect(() => {
-		const fetchServices = async () => {
+		let isCancelled = false;
+		const loadServices = async () => {
 			let data: DbService[] = [];
 			try {
 				const res = await fetch("/api/services");
 				if (!res.ok) throw new Error("Failed to fetch services");
 				data = (await res.json()) as DbService[];
+				if (isCancelled) return;
 				setDbServices(data);
 
 				// Initialize services in store
@@ -77,20 +83,35 @@ export const ServiceSwipeDeck = ({ onCompleteAction }: ServiceSwipeDeckProps) =>
 				}));
 				setServices(selections);
 				devLog("[ServiceSwipeDeck] ✅ Loaded", data.length, "services from DB");
+
+				if (data.length === 0) {
+					setIsComplete(true);
+				}
 			} catch (err) {
+				if (isCancelled) return;
 				const errorMsg = err instanceof Error ? err.message : "Failed to load services";
 				console.error("[ServiceSwipeDeck] Failed to load services:", errorMsg);
 				setFetchError(errorMsg);
 			} finally {
-				// Allow proceeding even if fetch fails or returns empty
-				if (data.length === 0) {
-					setIsComplete(true);
+				if (!isCancelled) {
+					setIsLoading(false);
 				}
-				setIsLoading(false);
 			}
 		};
-		fetchServices();
-	}, [setServices]);
+
+		loadServices();
+		return () => {
+			isCancelled = true;
+		};
+	}, [setServices, retryTrigger]);
+
+	const handleRetry = () => {
+		setIsLoading(true);
+		setFetchError(null);
+		setIsComplete(false);
+		setCurrentIndex(0);
+		setRetryTrigger((prev) => prev + 1);
+	};
 
 	// ── Log final assessment state ──────────────────────────────────────────
 
@@ -198,11 +219,21 @@ export const ServiceSwipeDeck = ({ onCompleteAction }: ServiceSwipeDeckProps) =>
 
 	if (fetchError) {
 		return (
-			<div className="flex flex-col items-center justify-center py-20">
-				<p className="mb-4 text-sm text-red-400">{t("loadingError")}</p>
+			<div
+				role="alert"
+				aria-live="assertive"
+				className="flex flex-col items-center justify-center rounded-2xl border border-amber-500/30 bg-[#201f1f] p-8 text-center"
+			>
+				<p className="mb-2 text-base font-semibold text-white">
+					{tErrors("servicesUnavailable.title")}
+				</p>
+				<p className="mb-6 max-w-md text-sm text-[#ccc3d9]">
+					{tErrors("servicesUnavailable.description")}
+				</p>
 				<button
-					onClick={() => window.location.reload()}
-					className="rounded-lg bg-[#7b2dff] px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-[#7b2dff]/80"
+					type="button"
+					onClick={handleRetry}
+					className="rounded-xl bg-linear-to-r from-[#7b2dff] to-[#b303f2] px-6 py-3 text-sm font-bold text-white transition-all hover:shadow-[0_0_20px_rgba(123,45,255,0.4)] active:scale-95"
 				>
 					{t("retry")}
 				</button>

@@ -1,13 +1,15 @@
 "use client";
 
 import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { Phone } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useFormatter, useLocale, useTranslations } from "next-intl";
 
 import { createBooking } from "@/actions/booking";
-import { Button } from "@/components/ui/button";
-import { getLocalizedText } from "@/features/admin/types/services.types";
-import { useBookingStore } from "@/features/booking/stores/booking-store";
+import { Button } from "@/components/ui/Button";
+import { CONTACT_INFO } from "@/constants/contact";
+import { getLocalizedText } from "@/features/admin/types/servicesTypes";
+import { useBookingStore } from "@/features/booking/stores/bookingStore";
 
 type Service = {
 	id: string;
@@ -16,6 +18,7 @@ type Service = {
 
 export const StepSummary = () => {
 	const t = useTranslations("Booking.step4");
+	const tErrors = useTranslations("Errors");
 	const locale = useLocale();
 	const format = useFormatter();
 	const router = useRouter();
@@ -124,7 +127,30 @@ export const StepSummary = () => {
 			</div>
 
 			{submitError ? (
-				<p className="text-center text-sm font-medium text-red-500">{t(submitError)}</p>
+				submitError === "dateTaken" ? (
+					<div className="rounded-xl border border-amber-500/30 bg-amber-500/10 p-4 text-center">
+						<p className="text-sm font-medium text-amber-400">{t("dateTaken")}</p>
+					</div>
+				) : (
+					<div
+						role="alert"
+						aria-live="assertive"
+						className="flex flex-col items-center gap-3 rounded-xl border border-red-500/30 bg-red-500/10 p-4 text-center"
+					>
+						<p className="text-sm font-medium text-red-400">
+							{tErrors("bookingUnavailable.submitError")}
+						</p>
+						<a
+							href={`tel:${CONTACT_INFO.phoneRaw}`}
+							className="inline-flex items-center gap-2 text-xs font-semibold text-[#d1bcff] underline underline-offset-4 hover:text-white"
+						>
+							<Phone className="h-3.5 w-3.5" aria-hidden="true" />
+							<span>
+								{tErrors("bookingUnavailable.callUs")}: {CONTACT_INFO.phone}
+							</span>
+						</a>
+					</div>
+				)
 			) : null}
 
 			<div className="flex gap-3">

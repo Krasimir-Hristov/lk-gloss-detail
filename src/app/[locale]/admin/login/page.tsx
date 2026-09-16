@@ -8,16 +8,16 @@ import * as React from "react";
 import { useForm } from "react-hook-form";
 
 import ErrorBoundary from "@/components/shared/ErrorBoundary";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
+import { Button } from "@/components/ui/Button";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/Card";
+import { Input } from "@/components/ui/Input";
+import { Label } from "@/components/ui/Label";
 import { loginAdmin } from "@/features/admin/actions/auth";
 import {
 	LoginSchema,
 	type AuthErrorType,
 	type LoginFormValues,
-} from "@/features/admin/schemas/auth.schema";
+} from "@/features/admin/schemas/authSchema";
 
 const AdminLoginPage: React.FC = () => {
 	const t = useTranslations("Admin");

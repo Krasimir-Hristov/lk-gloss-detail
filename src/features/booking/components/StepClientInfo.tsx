@@ -4,15 +4,15 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useTranslations } from "next-intl";
 import { useForm } from "react-hook-form";
 
-import { Button } from "@/components/ui/button";
-import { Checkbox } from "@/components/ui/checkbox";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
-import { BookingClientInfoSchema } from "@/features/booking/schemas/booking.schema";
-import { useBookingStore } from "@/features/booking/stores/booking-store";
+import { Button } from "@/components/ui/Button";
+import { Checkbox } from "@/components/ui/Checkbox";
+import { Input } from "@/components/ui/Input";
+import { Label } from "@/components/ui/Label";
+import { Textarea } from "@/components/ui/Textarea";
+import { BookingClientInfoSchema } from "@/features/booking/schemas/bookingSchema";
+import { useBookingStore } from "@/features/booking/stores/bookingStore";
 
-import type { BookingClientInfo } from "@/features/booking/schemas/booking.schema";
+import type { BookingClientInfo } from "@/features/booking/schemas/bookingSchema";
 
 export const StepClientInfo = () => {
 	const t = useTranslations("Booking.step1");

@@ -14,9 +14,9 @@ import {
 import { DeleteServiceModal } from "@/features/admin/components/services/DeleteServiceModal";
 import { ServiceModal } from "@/features/admin/components/services/ServiceModal";
 import { ServicesTable } from "@/features/admin/components/services/ServicesTable";
-import { getLocalizedText, type AdminServiceItem } from "@/features/admin/types/services.types";
+import { getLocalizedText, type AdminServiceItem } from "@/features/admin/types/servicesTypes";
 
-import type { ServiceInput } from "@/features/admin/schemas/services.schema";
+import type { ServiceInput } from "@/features/admin/schemas/servicesSchema";
 
 interface ServicesManagerProps {
 	initialServices: AdminServiceItem[];

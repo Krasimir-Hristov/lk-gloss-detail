@@ -6,7 +6,7 @@ import {
 	statusColors,
 } from "@/features/admin/utils/appointmentHelpers";
 
-import type { AdminAppointment } from "@/features/admin/types/appointments.types";
+import type { AdminAppointment } from "@/features/admin/types/appointmentsTypes";
 
 interface UpcomingAppointmentsWidgetProps {
 	appointments: AdminAppointment[];

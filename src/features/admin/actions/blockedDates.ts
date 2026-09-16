@@ -2,13 +2,13 @@
 
 import { revalidatePath } from "next/cache";
 
-import { BlockDateSchema, type BlockDateInput } from "@/features/admin/schemas/appointments.schema";
+import { BlockDateSchema, type BlockDateInput } from "@/features/admin/schemas/appointmentsSchema";
 import { isAdminUser } from "@/features/admin/utils/auth";
 import { routing } from "@/i18n/routing";
 import { createClient } from "@/lib/supabase/server";
 
 import type { ActionResult } from "@/features/admin/actions/appointments";
-import type { BlockedDateItem } from "@/features/admin/types/appointments.types";
+import type { BlockedDateItem } from "@/features/admin/types/appointmentsTypes";
 
 const revalidateAdminAppointments = () => {
 	for (const loc of routing.locales) {

@@ -1,7 +1,7 @@
 import React from "react";
 
 import { getAdminAppointments } from "@/features/admin/actions/appointments";
-import { getBlockedDates } from "@/features/admin/actions/blocked-dates";
+import { getBlockedDates } from "@/features/admin/actions/blockedDates";
 import { AppointmentsManager } from "@/features/admin/components/appointments/AppointmentsManager";
 
 const AdminAppointmentsPage = async () => {

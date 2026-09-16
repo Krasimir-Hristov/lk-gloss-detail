@@ -3,8 +3,8 @@ import { StateGraph, START, END } from "@langchain/langgraph";
 import { ChatOpenAI } from "@langchain/openai";
 import { z } from "zod";
 
-import { getLocalizedText } from "@/features/admin/types/services.types";
-import { AssessmentDiagnosticSchema } from "@/features/assessment/schemas/assessment.schema";
+import { getLocalizedText } from "@/features/admin/types/servicesTypes";
+import { AssessmentDiagnosticSchema } from "@/features/assessment/schemas/assessmentSchema";
 import { createClient } from "@/lib/supabase/server";
 import { createServiceClient } from "@/lib/supabase/service";
 

@@ -14,10 +14,10 @@ import {
 	ServicesSection,
 	WhyLKSection,
 } from "@/features/home";
-import { getPublicServices } from "@/features/services/actions/get-public-services";
+import { getPublicServices } from "@/features/services/actions/getPublicServices";
 import { Link } from "@/i18n/routing";
 
-import type { PublicService } from "@/features/services/actions/get-public-services";
+import type { PublicService } from "@/features/services/actions/getPublicServices";
 
 export const revalidate = 3600;
 

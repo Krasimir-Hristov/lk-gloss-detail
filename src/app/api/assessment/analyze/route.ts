@@ -3,7 +3,7 @@ import { randomUUID } from "crypto";
 import { type NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
 
-import { assessmentAnalysisGraph } from "@/lib/ai/assessment-analysis-graph";
+import { assessmentAnalysisGraph } from "@/lib/ai/assessmentAnalysisGraph";
 
 const AnalyzeRequestSchema = z.object({
 	acceptedServiceIds: z.array(z.string()),

@@ -2,7 +2,7 @@ import { CheckCircle } from "lucide-react";
 import Link from "next/link";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 
-import { Button } from "@/components/ui/button";
+import { Button } from "@/components/ui/Button";
 import { createServiceClient } from "@/lib/supabase/service";
 
 import type { Metadata } from "next";

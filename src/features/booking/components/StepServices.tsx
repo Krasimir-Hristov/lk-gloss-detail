@@ -3,11 +3,12 @@
 import { useQuery } from "@tanstack/react-query";
 import { useLocale, useTranslations } from "next-intl";
 
-import { Button } from "@/components/ui/button";
-import { Checkbox } from "@/components/ui/checkbox";
-import { Label } from "@/components/ui/label";
-import { getLocalizedText } from "@/features/admin/types/services.types";
-import { useBookingStore } from "@/features/booking/stores/booking-store";
+import { Button } from "@/components/ui/Button";
+import { Checkbox } from "@/components/ui/Checkbox";
+import { Label } from "@/components/ui/Label";
+import { getLocalizedText } from "@/features/admin/types/servicesTypes";
+import { BookingErrorCard } from "@/features/booking/components/BookingErrorCard";
+import { useBookingStore } from "@/features/booking/stores/bookingStore";
 
 type Service = {
 	id: string;
@@ -25,6 +26,7 @@ export const StepServices = () => {
 		data: services,
 		isLoading,
 		error,
+		refetch,
 	} = useQuery<Service[]>({
 		queryKey: ["services"],
 		queryFn: async () => {
@@ -49,8 +51,22 @@ export const StepServices = () => {
 		return <p className="text-white/70">{t("loading")}</p>;
 	}
 
-	if (error) {
-		return <p className="text-red-400">{t("loadingError")}</p>;
+	if (error || (!isLoading && (!services || services.length === 0))) {
+		return (
+			<div className="flex flex-col gap-5">
+				<BookingErrorCard onRetry={() => refetch()} />
+				<div className="flex gap-3">
+					<Button
+						type="button"
+						variant="outline"
+						onClick={prevStep}
+						className="flex-1 border-white/20 bg-transparent py-6 text-white hover:bg-white/10"
+					>
+						{t("back")}
+					</Button>
+				</div>
+			</div>
+		);
 	}
 
 	return (

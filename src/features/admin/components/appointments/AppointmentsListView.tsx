@@ -4,12 +4,9 @@ import { Search, Eye, Edit, Trash2, Calendar, Mail, Phone } from "lucide-react";
 import { useTranslations } from "next-intl";
 import React, { useState } from "react";
 
-import { getLocalizedText } from "@/features/admin/types/services.types";
+import { getLocalizedText } from "@/features/admin/types/servicesTypes";
 
-import type {
-	AdminAppointment,
-	AppointmentStatus,
-} from "@/features/admin/types/appointments.types";
+import type { AdminAppointment, AppointmentStatus } from "@/features/admin/types/appointmentsTypes";
 
 interface AppointmentsListViewProps {
 	appointments: AdminAppointment[];
