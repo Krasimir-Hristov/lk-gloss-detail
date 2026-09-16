@@ -75,12 +75,14 @@ export const getUnavailableDates = async (): Promise<string[]> => {
 				"[booking/unavailable-dates] Appointments query error:",
 				appointmentsError.message,
 			);
+			throw new Error(`Failed to fetch appointments: ${appointmentsError.message}`);
 		}
 		if (blockedDatesError) {
 			console.error(
 				"[booking/unavailable-dates] Blocked dates query error:",
 				blockedDatesError.message,
 			);
+			throw new Error(`Failed to fetch blocked dates: ${blockedDatesError.message}`);
 		}
 
 		const appointmentDates = ((appointments ?? []) as { booking_date: string }[]).map(
@@ -91,7 +93,7 @@ export const getUnavailableDates = async (): Promise<string[]> => {
 		return Array.from(new Set([...appointmentDates, ...blocked]));
 	} catch (err: unknown) {
 		const msg = err instanceof Error ? err.message : "Unknown error";
-		console.error("[booking/unavailable-dates] Error connecting to database:", msg);
-		return [];
+		console.error("[booking/unavailable-dates] Error fetching unavailable dates:", msg);
+		throw err instanceof Error ? err : new Error(msg);
 	}
 };

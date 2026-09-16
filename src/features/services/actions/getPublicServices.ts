@@ -19,37 +19,42 @@ export const PublicServiceSchema = z.object({
 
 export type PublicService = z.infer<typeof PublicServiceSchema>;
 
-export const getPublicServices = unstable_cache(
-	async (): Promise<PublicService[]> => {
-		try {
-			const supabase = createServiceClient();
+const fetchPublicServices = async (): Promise<PublicService[]> => {
+	const supabase = createServiceClient();
 
-			const { data, error } = await supabase
-				.from("services")
-				.select(
-					"id, name, short_description, icon, image_url, category, price_small, price_medium, price_large, price_suv, duration_hours",
-				)
-				.eq("active", true)
-				.order("sort_order", { ascending: true });
+	const { data, error } = await supabase
+		.from("services")
+		.select(
+			"id, name, short_description, icon, image_url, category, price_small, price_medium, price_large, price_suv, duration_hours",
+		)
+		.eq("active", true)
+		.order("sort_order", { ascending: true });
 
-			if (error) {
-				console.error("[getPublicServices] DB error:", error.message);
-				return [];
-			}
+	if (error) {
+		console.error("[getPublicServices] DB error:", error.message);
+		throw new Error(`Database error fetching services: ${error.message}`);
+	}
 
-			const parsed = PublicServiceSchema.array().safeParse(data);
-			if (!parsed.success) {
-				console.error("[getPublicServices] Zod schema validation error:", parsed.error.format());
-				return [];
-			}
+	const parsed = PublicServiceSchema.array().safeParse(data);
+	if (!parsed.success) {
+		console.error("[getPublicServices] Zod schema validation error:", parsed.error.format());
+		throw new Error("Services data failed schema validation");
+	}
 
-			return parsed.data;
-		} catch (err: unknown) {
-			const msg = err instanceof Error ? err.message : "Unknown error";
-			console.error("[getPublicServices] Unexpected error connecting to database:", msg);
-			return [];
-		}
-	},
-	["public-services-list"],
-	{ revalidate: 3600, tags: ["services"] },
-);
+	return parsed.data;
+};
+
+const cachedFetchPublicServices = unstable_cache(fetchPublicServices, ["public-services-list"], {
+	revalidate: 3600,
+	tags: ["services"],
+});
+
+export const getPublicServices = async (): Promise<PublicService[]> => {
+	try {
+		return await cachedFetchPublicServices();
+	} catch (err: unknown) {
+		const msg = err instanceof Error ? err.message : "Unknown error";
+		console.error("[getPublicServices] Unexpected error fetching services:", msg);
+		return [];
+	}
+};

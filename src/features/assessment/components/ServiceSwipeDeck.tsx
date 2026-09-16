@@ -83,6 +83,10 @@ export const ServiceSwipeDeck = ({ onCompleteAction }: ServiceSwipeDeckProps) =>
 				}));
 				setServices(selections);
 				devLog("[ServiceSwipeDeck] ✅ Loaded", data.length, "services from DB");
+
+				if (data.length === 0) {
+					setIsComplete(true);
+				}
 			} catch (err) {
 				if (isCancelled) return;
 				const errorMsg = err instanceof Error ? err.message : "Failed to load services";
@@ -90,10 +94,6 @@ export const ServiceSwipeDeck = ({ onCompleteAction }: ServiceSwipeDeckProps) =>
 				setFetchError(errorMsg);
 			} finally {
 				if (!isCancelled) {
-					// Allow proceeding even if fetch fails or returns empty
-					if (data.length === 0) {
-						setIsComplete(true);
-					}
 					setIsLoading(false);
 				}
 			}
@@ -108,6 +108,8 @@ export const ServiceSwipeDeck = ({ onCompleteAction }: ServiceSwipeDeckProps) =>
 	const handleRetry = () => {
 		setIsLoading(true);
 		setFetchError(null);
+		setIsComplete(false);
+		setCurrentIndex(0);
 		setRetryTrigger((prev) => prev + 1);
 	};
 

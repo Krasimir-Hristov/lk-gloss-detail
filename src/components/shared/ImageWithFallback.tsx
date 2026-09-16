@@ -10,6 +10,7 @@ import type { ImageProps } from "next/image";
 interface ImageWithFallbackProps extends Omit<ImageProps, "onError"> {
 	fallbackIcon?: React.ReactNode;
 	fallbackClassName?: string;
+	fallbackAriaLabel?: string;
 }
 
 export const ImageWithFallback: React.FC<ImageWithFallbackProps> = ({
@@ -18,9 +19,16 @@ export const ImageWithFallback: React.FC<ImageWithFallbackProps> = ({
 	className,
 	fallbackIcon,
 	fallbackClassName,
+	fallbackAriaLabel,
 	...rest
 }) => {
+	const [prevSrc, setPrevSrc] = useState(src);
 	const [hasError, setHasError] = useState(false);
+
+	if (prevSrc !== src) {
+		setPrevSrc(src);
+		setHasError(false);
+	}
 
 	if (hasError || !src) {
 		return (
@@ -31,7 +39,7 @@ export const ImageWithFallback: React.FC<ImageWithFallbackProps> = ({
 					className,
 				)}
 				role="img"
-				aria-label={alt || "Image placeholder"}
+				aria-label={fallbackAriaLabel ?? (alt || "Image")}
 			>
 				{fallbackIcon ? (
 					fallbackIcon
