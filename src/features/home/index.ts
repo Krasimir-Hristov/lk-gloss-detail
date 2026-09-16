@@ -5,3 +5,4 @@ export { WhyLKSection } from "@/features/home/WhyLKSection";
 export { HowItWorksSection } from "@/features/home/HowItWorksSection";
 export { B2BSection } from "@/features/home/B2BSection";
 export { CtaBanner } from "@/features/home/CtaBanner";
+export { ServicesFallback } from "@/features/home/components/ServicesFallback";

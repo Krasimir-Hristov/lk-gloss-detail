@@ -2,12 +2,12 @@
 
 import { motion, useMotionValue, useTransform, type PanInfo } from "framer-motion";
 import { Clock, Sparkles } from "lucide-react";
-import Image from "next/image";
 import { useLocale, useTranslations } from "next-intl";
 import { createElement, useRef, useState } from "react";
 
-import { getLocalizedText } from "@/features/admin/types/services.types";
-import { getIcon } from "@/lib/icon-map";
+import { ImageWithFallback } from "@/components/shared/ImageWithFallback";
+import { getLocalizedText } from "@/features/admin/types/servicesTypes";
+import { getIcon } from "@/lib/iconMap";
 
 // ── DB Service shape ────────────────────────────────────────────────────────
 
@@ -158,7 +158,7 @@ export const ServiceSwipeCard = ({
 				{/* Image */}
 				<div className="relative h-[55%] w-full overflow-hidden">
 					{service.image_url ? (
-						<Image
+						<ImageWithFallback
 							src={service.image_url}
 							alt={displayName ?? "Service image"}
 							fill

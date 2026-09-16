@@ -7,9 +7,9 @@ import {
 	LoginSchema,
 	type LoginFormValues,
 	type AuthResult,
-} from "@/features/admin/schemas/auth.schema";
+} from "@/features/admin/schemas/authSchema";
 import { isAdminUser } from "@/features/admin/utils/auth";
-import { rateLimit } from "@/lib/rate-limit";
+import { rateLimit } from "@/lib/rateLimit";
 import { createClient } from "@/lib/supabase/server";
 
 /**

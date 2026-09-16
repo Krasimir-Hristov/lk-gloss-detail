@@ -18,12 +18,9 @@ import { useTranslations } from "next-intl";
 import React, { useState, useEffect } from "react";
 
 import { updateAppointmentStatus } from "@/features/admin/actions/appointments";
-import { getLocalizedText } from "@/features/admin/types/services.types";
+import { getLocalizedText } from "@/features/admin/types/servicesTypes";
 
-import type {
-	AdminAppointment,
-	AppointmentStatus,
-} from "@/features/admin/types/appointments.types";
+import type { AdminAppointment, AppointmentStatus } from "@/features/admin/types/appointmentsTypes";
 
 interface AppointmentDetailModalProps {
 	appointment: AdminAppointment | null;

@@ -1,6 +1,6 @@
 import { beforeEach, describe, expect, it } from "vitest";
 
-import { useBookingStore } from "@/features/booking/stores/booking-store";
+import { useBookingStore } from "@/features/booking/stores/bookingStore";
 
 describe("useBookingStore", () => {
 	beforeEach(() => {

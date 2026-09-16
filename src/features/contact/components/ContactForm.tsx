@@ -6,12 +6,12 @@ import { useTranslations } from "next-intl";
 import * as React from "react";
 import { Controller, useForm } from "react-hook-form";
 
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { ContactFormSchema } from "@/features/contact/schemas/contact.schema";
+import { Button } from "@/components/ui/Button";
+import { Input } from "@/components/ui/Input";
+import { Label } from "@/components/ui/Label";
+import { ContactFormSchema } from "@/features/contact/schemas/contactSchema";
 
-import type { ContactFormData } from "@/features/contact/schemas/contact.schema";
+import type { ContactFormData } from "@/features/contact/schemas/contactSchema";
 
 export const ContactForm: React.FC = () => {
 	const t = useTranslations("Contact.form");

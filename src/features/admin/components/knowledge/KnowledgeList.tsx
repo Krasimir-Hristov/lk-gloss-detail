@@ -9,8 +9,8 @@ import {
 	getKnowledgeEntriesAction,
 	deleteKnowledgeEntryAction,
 } from "@/features/admin/actions/knowledge";
-import { AiKnowledgeWizard } from "@/features/admin/components/knowledge/ai-knowledge-wizard";
-import { SemanticSearchTestModal } from "@/features/admin/components/knowledge/semantic-search-test-modal";
+import { AiKnowledgeWizard } from "@/features/admin/components/knowledge/AiKnowledgeWizard";
+import { SemanticSearchTestModal } from "@/features/admin/components/knowledge/SemanticSearchTestModal";
 import { formatTextValue } from "@/features/admin/utils/format";
 
 import type { ChatbotKnowledgeEntry, SupportedLocale } from "@/features/admin/types/knowledge";

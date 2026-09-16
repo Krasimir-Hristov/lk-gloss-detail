@@ -5,7 +5,7 @@ import {
 	BookingDateSchema,
 	BookingFormSchema,
 	BookingServicesSchema,
-} from "@/features/booking/schemas/booking.schema";
+} from "@/features/booking/schemas/bookingSchema";
 
 describe("Booking Schemas", () => {
 	describe("BookingClientInfoSchema", () => {

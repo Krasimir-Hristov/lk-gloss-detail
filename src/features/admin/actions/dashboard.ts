@@ -7,7 +7,7 @@ import { createClient } from "@/lib/supabase/server";
 import type {
 	AdminAppointment,
 	AppointmentServiceItem,
-} from "@/features/admin/types/appointments.types";
+} from "@/features/admin/types/appointmentsTypes";
 
 // ── Zod Validation Schemas for Supabase Rows ─────────────────────────────
 

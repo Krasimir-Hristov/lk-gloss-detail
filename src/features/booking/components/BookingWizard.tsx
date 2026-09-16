@@ -10,7 +10,7 @@ import { StepClientInfo } from "@/features/booking/components/StepClientInfo";
 import { StepDatePicker } from "@/features/booking/components/StepDatePicker";
 import { StepServices } from "@/features/booking/components/StepServices";
 import { StepSummary } from "@/features/booking/components/StepSummary";
-import { useBookingStore } from "@/features/booking/stores/booking-store";
+import { useBookingStore } from "@/features/booking/stores/bookingStore";
 
 const BookingWizardContent = () => {
 	const t = useTranslations("Booking");

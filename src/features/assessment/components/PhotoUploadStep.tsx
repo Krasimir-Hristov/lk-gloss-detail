@@ -6,10 +6,10 @@ import { useTranslations, useLocale } from "next-intl";
 import { useCallback, useRef, useState, useEffect } from "react";
 import { v4 as uuidv4 } from "uuid";
 
-import { useValidatePhoto } from "@/features/assessment/hooks/use-assessment";
-import { compressImage } from "@/features/assessment/utils/image-compressor";
+import { useValidatePhoto } from "@/features/assessment/hooks/useAssessment";
+import { compressImage } from "@/features/assessment/utils/imageCompressor";
 
-import type { PhotoAngle } from "@/features/assessment/schemas/assessment.schema";
+import type { PhotoAngle } from "@/features/assessment/schemas/assessmentSchema";
 
 type PhotoUploadStepProps = {
 	angle: PhotoAngle;
@@ -31,6 +31,7 @@ export const PhotoUploadStep = ({
 	onPhotoInvalidAction,
 }: PhotoUploadStepProps) => {
 	const t = useTranslations("Assessment");
+	const tErrors = useTranslations("Errors");
 	const locale = useLocale();
 	const [preview, setPreview] = useState<string | null>(null);
 	const [status, setStatus] = useState<"idle" | "uploading" | "valid" | "invalid">("idle");
@@ -74,7 +75,8 @@ export const PhotoUploadStep = ({
 	const handleFileSelect = useCallback(
 		async (file: File) => {
 			const generation = ++uploadGenerationRef.current;
-			const isImage = file.type.startsWith("image/") || /\.(jpe?g|png|webp|heic|heif|bmp)$/i.test(file.name);
+			const isImage =
+				file.type.startsWith("image/") || /\.(jpe?g|png|webp|heic|heif|bmp)$/i.test(file.name);
 			if (!isImage) {
 				if (generation !== uploadGenerationRef.current) return;
 				const invalidMsg = getLocalizedError("FILE_INVALID");
@@ -122,7 +124,15 @@ export const PhotoUploadStep = ({
 			} catch (err: unknown) {
 				if (generation !== uploadGenerationRef.current) return;
 				const rawError = err instanceof Error ? err.message : "VALIDATION_FAILED";
-				const userFacingError = getLocalizedError(rawError);
+				const isServerError =
+					rawError.includes("500") ||
+					rawError.includes("API error") ||
+					rawError.includes("Internal Server Error") ||
+					rawError.includes("Failed to fetch") ||
+					rawError.includes("NetworkError");
+				const userFacingError = isServerError
+					? tErrors("technicalDifficulties")
+					: getLocalizedError(rawError);
 				setStatus("invalid");
 				setValidationReason(userFacingError);
 				onPhotoInvalidAction(rawError, userFacingError);
@@ -136,6 +146,7 @@ export const PhotoUploadStep = ({
 			previousCarDescriptions,
 			locale,
 			getLocalizedError,
+			tErrors,
 		],
 	);
 

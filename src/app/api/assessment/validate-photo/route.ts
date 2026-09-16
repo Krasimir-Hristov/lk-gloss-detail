@@ -3,8 +3,8 @@ import { type NextRequest, NextResponse } from "next/server";
 import {
 	PhotoValidationRequestSchema,
 	PhotoValidationResponseSchema,
-} from "@/features/assessment/schemas/photo-validation.schema";
-import { assessmentValidationGraph } from "@/lib/ai/assessment-validation-graph";
+} from "@/features/assessment/schemas/photoValidationSchema";
+import { assessmentValidationGraph } from "@/lib/ai/assessmentValidationGraph";
 
 export async function POST(request: NextRequest) {
 	try {

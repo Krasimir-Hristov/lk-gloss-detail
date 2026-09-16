@@ -5,9 +5,9 @@ import { Euro, Clock, ShieldCheck, Sparkles, MessageSquareQuote, ArrowRight } fr
 import Link from "next/link";
 import { useTranslations, useFormatter } from "next-intl";
 
-import { useAssessmentStore } from "@/features/assessment/stores/assessment-store";
+import { useAssessmentStore } from "@/features/assessment/stores/assessmentStore";
 
-import type { AssessmentResult } from "@/features/assessment/schemas/assessment.schema";
+import type { AssessmentResult } from "@/features/assessment/schemas/assessmentSchema";
 
 type AssessmentReportProps = {
 	result: AssessmentResult;

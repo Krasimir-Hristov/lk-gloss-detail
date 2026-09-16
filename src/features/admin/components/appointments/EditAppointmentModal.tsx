@@ -6,13 +6,13 @@ import { useLocale, useTranslations } from "next-intl";
 import React, { useState, useEffect } from "react";
 
 import { editAppointment } from "@/features/admin/actions/appointments";
-import { getLocalizedText } from "@/features/admin/types/services.types";
+import { getLocalizedText } from "@/features/admin/types/servicesTypes";
 
 import type {
 	AdminAppointment,
 	AppointmentServiceItem,
 	AppointmentStatus,
-} from "@/features/admin/types/appointments.types";
+} from "@/features/admin/types/appointmentsTypes";
 
 interface EditAppointmentModalProps {
 	appointment: AdminAppointment | null;

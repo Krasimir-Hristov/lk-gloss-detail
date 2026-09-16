@@ -1,9 +1,9 @@
-import { getLocalizedText } from "@/features/admin/types/services.types";
+import { getLocalizedText } from "@/features/admin/types/servicesTypes";
 
 import type {
 	AppointmentServiceItem,
 	AppointmentStatus,
-} from "@/features/admin/types/appointments.types";
+} from "@/features/admin/types/appointmentsTypes";
 
 export const statusColors: Record<AppointmentStatus, string> = {
 	pending: "border-amber-500/30 bg-amber-500/10 text-amber-400",

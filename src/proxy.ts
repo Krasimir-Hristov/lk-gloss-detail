@@ -3,7 +3,7 @@ import { NextRequest, NextResponse } from "next/server";
 import createMiddleware from "next-intl/middleware";
 
 import { isAdminUser } from "@/features/admin/utils/auth";
-import { rateLimit, ASSESSMENT_RATE_LIMIT, CHATBOT_RATE_LIMIT } from "@/lib/rate-limit";
+import { rateLimit, ASSESSMENT_RATE_LIMIT, CHATBOT_RATE_LIMIT } from "@/lib/rateLimit";
 
 import { routing } from "./i18n/routing";
 

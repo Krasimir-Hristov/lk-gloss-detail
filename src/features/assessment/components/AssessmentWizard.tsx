@@ -1,10 +1,11 @@
 "use client";
 
 import { motion, AnimatePresence } from "framer-motion";
-import { ArrowLeft, Loader2, AlertCircle } from "lucide-react";
+import { ArrowLeft, Loader2, AlertCircle, Phone } from "lucide-react";
 import { useTranslations, useLocale } from "next-intl";
 import { useCallback } from "react";
 
+import { CONTACT_INFO } from "@/constants/contact";
 import { AssessmentReport } from "@/features/assessment/components/AssessmentReport";
 import { PhotoUploadStep } from "@/features/assessment/components/PhotoUploadStep";
 import { ProgressIndicator } from "@/features/assessment/components/ProgressIndicator";
@@ -12,13 +13,14 @@ import { ServiceSwipeDeck } from "@/features/assessment/components/ServiceSwipeD
 import {
 	PHOTO_STEPS,
 	AssessmentResultSchema,
-} from "@/features/assessment/schemas/assessment.schema";
-import { useAssessmentStore } from "@/features/assessment/stores/assessment-store";
+} from "@/features/assessment/schemas/assessmentSchema";
+import { useAssessmentStore } from "@/features/assessment/stores/assessmentStore";
 
-import type { PhotoAngle, WizardStep } from "@/features/assessment/schemas/assessment.schema";
+import type { PhotoAngle, WizardStep } from "@/features/assessment/schemas/assessmentSchema";
 
 export const AssessmentWizard = () => {
 	const t = useTranslations("Assessment");
+	const tErrors = useTranslations("Errors");
 	const locale = useLocale();
 	const {
 		currentStep,
@@ -233,22 +235,42 @@ export const AssessmentWizard = () => {
 						>
 							{error ? (
 								// Error state
-								<div className="flex flex-col items-center gap-4 text-center">
-									<div className="flex h-16 w-16 items-center justify-center rounded-full bg-red-500/20">
-										<AlertCircle className="h-8 w-8 text-red-400" />
+								<div
+									role="alert"
+									aria-live="assertive"
+									className="flex flex-col items-center gap-4 text-center"
+								>
+									<div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-amber-500/15 text-amber-400">
+										<AlertCircle className="h-8 w-8" aria-hidden="true" />
 									</div>
-									<h2 className="text-2xl font-bold text-white">{t("results.errorTitle")}</h2>
-									<p className="text-on-surface-variant max-w-md text-sm">{error}</p>
-									<button
-										onClick={() => {
-											setError(null);
-											setIsAnalyzing(false);
-											goToStep("services");
-										}}
-										className="mt-4 rounded-lg bg-[#7b2dff] px-6 py-3 font-medium text-white transition-colors hover:bg-[#7b2dff]/80"
-									>
-										{t("results.retry")}
-									</button>
+									<h2 className="text-2xl font-bold text-white">
+										{tErrors("aiUnavailable.title")}
+									</h2>
+									<p className="max-w-md text-sm text-[#ccc3d9]">
+										{tErrors("aiUnavailable.description")}
+									</p>
+									<div className="mt-4 flex w-full flex-col justify-center gap-3 sm:w-auto sm:flex-row">
+										<button
+											type="button"
+											onClick={() => {
+												setError(null);
+												setIsAnalyzing(false);
+												goToStep("services");
+											}}
+											className="rounded-xl bg-linear-to-r from-[#7b2dff] to-[#b303f2] px-6 py-3.5 font-bold text-white shadow-lg shadow-[#7b2dff]/25 transition-all hover:bg-[#7b2dff]/90 active:scale-95"
+										>
+											{t("results.retry")}
+										</button>
+										<a
+											href={`tel:${CONTACT_INFO.phoneRaw}`}
+											className="inline-flex items-center justify-center gap-2 rounded-xl border border-white/20 px-5 py-3.5 text-sm font-semibold text-white transition-colors hover:bg-white/10"
+										>
+											<Phone className="h-4 w-4 text-[#d1bcff]" aria-hidden="true" />
+											<span>
+												{tErrors("bookingUnavailable.callUs")}: {CONTACT_INFO.phone}
+											</span>
+										</a>
+									</div>
 								</div>
 							) : result ? (
 								// Success state — use the AssessmentReport component

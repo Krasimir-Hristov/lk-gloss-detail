@@ -7,7 +7,7 @@ import {
 	UpdateStatusSchema,
 	type EditAppointmentInput,
 	type UpdateStatusInput,
-} from "@/features/admin/schemas/appointments.schema";
+} from "@/features/admin/schemas/appointmentsSchema";
 import { isAdminUser } from "@/features/admin/utils/auth";
 import { routing } from "@/i18n/routing";
 import { createClient } from "@/lib/supabase/server";
@@ -16,7 +16,7 @@ import type {
 	AdminAppointment,
 	AppointmentServiceItem,
 	AppointmentStatus,
-} from "@/features/admin/types/appointments.types";
+} from "@/features/admin/types/appointmentsTypes";
 
 export type ActionResult<T> = { success: true; data: T } | { success: false; error: string };
 

@@ -5,9 +5,9 @@ import { X, CalendarOff, Trash2, Plus, AlertCircle } from "lucide-react";
 import { useTranslations } from "next-intl";
 import React, { useState, useEffect } from "react";
 
-import { blockDate, unblockDate } from "@/features/admin/actions/blocked-dates";
+import { blockDate, unblockDate } from "@/features/admin/actions/blockedDates";
 
-import type { BlockedDateItem } from "@/features/admin/types/appointments.types";
+import type { BlockedDateItem } from "@/features/admin/types/appointmentsTypes";
 
 interface BlockDateModalProps {
 	isOpen: boolean;

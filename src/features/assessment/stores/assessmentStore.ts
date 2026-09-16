@@ -3,7 +3,7 @@
 import { v4 as uuidv4 } from "uuid";
 import { create } from "zustand";
 
-import { WIZARD_STEPS } from "@/features/assessment/schemas/assessment.schema";
+import { WIZARD_STEPS } from "@/features/assessment/schemas/assessmentSchema";
 
 import type {
 	AssessmentPhoto,
@@ -11,7 +11,7 @@ import type {
 	AssessmentState,
 	ServiceSelection,
 	WizardStep,
-} from "@/features/assessment/schemas/assessment.schema";
+} from "@/features/assessment/schemas/assessmentSchema";
 
 type AssessmentActions = {
 	setPhoto: (angle: AssessmentPhoto["angle"], previewUrl: string, existingId?: string) => void;

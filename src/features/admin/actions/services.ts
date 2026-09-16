@@ -3,13 +3,13 @@
 import { revalidatePath } from "next/cache";
 import { v4 as uuidv4 } from "uuid";
 
-import { ServiceInputSchema, type ServiceInput } from "@/features/admin/schemas/services.schema";
+import { ServiceInputSchema, type ServiceInput } from "@/features/admin/schemas/servicesSchema";
 import { isAdminUser } from "@/features/admin/utils/auth";
 import { routing } from "@/i18n/routing";
 import { translateServiceText } from "@/lib/ai/translation";
 import { createClient } from "@/lib/supabase/server";
 
-import type { AdminServiceItem } from "@/features/admin/types/services.types";
+import type { AdminServiceItem } from "@/features/admin/types/servicesTypes";
 
 export type ActionResult<T> = { success: true; data: T } | { success: false; error: string };
 

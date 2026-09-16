@@ -58,36 +58,40 @@ export const createBooking = async (
 };
 
 export const getUnavailableDates = async (): Promise<string[]> => {
-	const supabase = createServiceClient();
-	const today = new Date().toISOString().slice(0, 10);
+	try {
+		const supabase = createServiceClient();
+		const today = new Date().toISOString().slice(0, 10);
 
-	const [
-		{ data: appointments, error: appointmentsError },
-		{ data: blockedDates, error: blockedDatesError },
-	] = await Promise.all([
-		supabase.from("appointments").select("booking_date").gte("booking_date", today),
-		supabase.from("blocked_dates").select("blocked_date").gte("blocked_date", today),
-	]);
+		const [
+			{ data: appointments, error: appointmentsError },
+			{ data: blockedDates, error: blockedDatesError },
+		] = await Promise.all([
+			supabase.from("appointments").select("booking_date").gte("booking_date", today),
+			supabase.from("blocked_dates").select("blocked_date").gte("blocked_date", today),
+		]);
 
-	if (appointmentsError) {
-		console.error(
-			"[booking/unavailable-dates] Appointments query error:",
-			appointmentsError.message,
+		if (appointmentsError) {
+			console.error(
+				"[booking/unavailable-dates] Appointments query error:",
+				appointmentsError.message,
+			);
+		}
+		if (blockedDatesError) {
+			console.error(
+				"[booking/unavailable-dates] Blocked dates query error:",
+				blockedDatesError.message,
+			);
+		}
+
+		const appointmentDates = ((appointments ?? []) as { booking_date: string }[]).map(
+			(a) => a.booking_date,
 		);
-		throw new Error("Failed to fetch unavailable dates");
-	}
-	if (blockedDatesError) {
-		console.error(
-			"[booking/unavailable-dates] Blocked dates query error:",
-			blockedDatesError.message,
-		);
-		throw new Error("Failed to fetch unavailable dates");
-	}
+		const blocked = ((blockedDates ?? []) as { blocked_date: string }[]).map((b) => b.blocked_date);
 
-	const appointmentDates = ((appointments ?? []) as { booking_date: string }[]).map(
-		(a) => a.booking_date,
-	);
-	const blocked = ((blockedDates ?? []) as { blocked_date: string }[]).map((b) => b.blocked_date);
-
-	return Array.from(new Set([...appointmentDates, ...blocked]));
+		return Array.from(new Set([...appointmentDates, ...blocked]));
+	} catch (err: unknown) {
+		const msg = err instanceof Error ? err.message : "Unknown error";
+		console.error("[booking/unavailable-dates] Error connecting to database:", msg);
+		return [];
+	}
 };
