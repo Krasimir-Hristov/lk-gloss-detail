@@ -1,294 +1,173 @@
-# Phase 6.1 — AI Car Assessment: Multi-step Photo Upload Flow
+# 📸 AI Car Assessment Workflow (`/assessment`)
 
-> **TL;DR**: Users upload 4 car photos (front, rear, side, interior). Each photo is validated by Gemini 2.5 Pro via OpenRouter. If valid, data about the car (size, dirt level, description) is stored in Zustand and the wizard advances. If invalid, the user sees a localized error message and can retry.
-
----
-
-## 🧩 Architecture Overview
-
-```
-User clicks "Choose File" or "Take Photo"
-        │
-        ▼
-┌─────────────────────────────────────┐
-│     PhotoUploadStep (Client)        │
-│  • Reads file → creates preview     │
-│  • Detects mobile/tablet for camera │
-│  • Calls validatePhoto mutation     │
-└──────────────┬──────────────────────┘
-               │ POST /api/assessment/validate-photo
-               ▼
-┌─────────────────────────────────────┐
-│  validate-photo/route.ts (API)      │
-│  • Parses request with Zod          │
-│  • Sends image + prompt to Gemini   │
-│  • Returns validated JSON response  │
-└──────────────┬──────────────────────┘
-               │ response
-               ▼
-┌─────────────────────────────────────┐
-│     AssessmentWizard (Client)       │
-│  • Receives AI result               │
-│  • Updates Zustand store            │
-│  • Advances to next step (if valid) │
-│  • Shows error (if invalid)         │
-└─────────────────────────────────────┘
-```
+> **Executive Summary**: The AI Car Assessment flow allows customers to upload 4 vehicle photos (front, rear, side, interior). A multi-modal LangGraph workflow validates photo angles in real time using `google/gemini-2.5-pro`. Customers then swipe on recommended detailing services via an interactive deck. Finally, an AI analysis graph computes a deterministic price and time estimate based on vehicle size and dirt level, delivering structured diagnostics and an instant booking transition.
 
 ---
 
-## 📁 File Map
+## 🧩 End-to-End Architecture Overview
 
-| File | Purpose |
-|------|---------|
-| `src/features/assessment/schemas/assessment.schema.ts` | All Zod schemas + TypeScript types for the entire assessment flow |
-| `src/features/assessment/schemas/photo-validation.schema.ts` | Zod schemas for API request/response validation |
-| `src/features/assessment/stores/assessment-store.ts` | Zustand store — manages wizard state, photos, services, result |
-| `src/features/assessment/hooks/use-assessment.ts` | TanStack Query hooks (`useValidatePhoto`, `useAnalyzeAssessment`, `useServices`) |
-| `src/app/api/assessment/validate-photo/route.ts` | API route that calls Gemini 2.5 Pro via OpenRouter |
-| `src/features/assessment/components/assessment-wizard.tsx` | Main orchestrator — controls step flow and data flow |
-| `src/features/assessment/components/photo-upload-step.tsx` | Photo upload UI with drag-drop, file picker, and mobile camera |
-| `src/features/assessment/components/progress-indicator.tsx` | Visual progress bar (1 → 2 → 3 → 4) with animated lines |
-| `src/features/assessment/index.ts` | Barrel exports for clean imports |
-| `src/lib/rate-limit.ts` | In-memory rate limiter (10 req/min for validation, 3 req/5min for analysis) |
-| `src/proxy.ts` | Next.js proxy that applies rate limiting before forwarding to API routes |
-| `src/app/[locale]/assessment/page.tsx` | Assessment page — renders `AssessmentWizard` |
+```mermaid
+sequenceDiagram
+    autonumber
+    actor User as Customer (Browser)
+    participant UI as AssessmentWizard (Client UI)
+    participant Store as Zustand (RAM Memory)
+    participant ValAPI as /api/assessment/validate-photo
+    participant ValGraph as LangGraph (Gemini 2.5 Pro)
+    participant Deck as ServiceSwipeDeck (Client UI)
+    participant AnaAPI as /api/assessment/analyze
+    participant AnaGraph as LangGraph (GPT-4o-mini + DB)
+    participant DB as Supabase PostgreSQL
+    participant Report as AssessmentReport (Client UI)
 
----
+    %% Step 1: Upload & Validate
+    Note over User, UI: Phase 1: Multi-Step Photo Upload
+    User->>UI: Selects or captures photo (Front, Rear, Side, Interior)
+    UI->>UI: Compress image via HTML5 Canvas (imageCompressor.ts)
+    UI->>ValAPI: POST imageBase64, expectedAngle, previousDescriptions
+    ValAPI->>ValGraph: Execute assessmentValidationGraph
+    ValGraph-->>ValAPI: { valid, carSize, dirtLevel, carDescription, userMessage }
+    ValAPI-->>UI: Validation result
+    alt Invalid Angle or Mismatched Car
+        UI->>User: Display localized error message & retry prompt
+    else Valid Photo
+        UI->>Store: Store photo preview & metadata in RAM
+        UI->>UI: Auto-advance to next required angle
+    end
 
-## 🔄 Data Flow (Step by Step)
+    %% Step 2: Swipe Deck
+    Note over User, Deck: Phase 2: Tinder-Style Service Selection
+    UI->>Deck: Display active services catalog (from Supabase)
+    User->>Deck: Swipe Right (Accept) / Swipe Left (Skip)
+    Deck->>Store: Save acceptedServiceIds in RAM
 
-### 1. User Interaction
+    %% Step 3: LangGraph Analysis
+    Note over User, AnaAPI: Phase 3: AI Estimation & Analysis
+    UI->>AnaAPI: POST acceptedServiceIds, carSize, dirtLevel, locale
+    AnaAPI->>AnaGraph: Execute assessmentAnalysisGraph
+    AnaGraph->>DB: Query exact pricing from 'services' table
+    DB-->>AnaGraph: Services pricing rows (small/medium/large/suv, duration)
+    AnaGraph->>AnaGraph: Deterministic pricing & duration calculation
+    AnaGraph->>AnaGraph: Generate localized diagnostics & expert verdict
+    AnaGraph-->>AnaAPI: Final Assessment Result JSON
+    AnaAPI-->>UI: Return pricing range, duration, diagnostics
 
-The user is presented with a step-by-step wizard starting at "Frontansicht" (or equivalent in their locale).
-
-**States:**
-- **idle**: Upload area visible (drag-drop zone + buttons)
-- **uploading**: Spinner overlay while AI validates
-- **valid**: Green checkmark, auto-advance after 1 second
-- **invalid**: Red X, error message shown, "Try Again" button
-
-### 2. File Selection
-
-`photo-upload-step.tsx` handles file input via:
-- **Drag & drop** — `onDrop` handler
-- **Click to browse** — hidden `<input type="file">`
-- **Camera** (mobile/tablet only) — `<input capture="environment">` with `isMobile` detection via userAgent + screen width
-
-### 3. AI Validation Request
-
-The component creates a `FileReader` to get base64 data, then calls `useValidatePhoto().mutateAsync()`.
-
-**Request payload:**
-```json
-{
-  "imageBase64": "data:image/jpeg;base64,...",
-  "expectedAngle": "front" | "rear" | "side" | "interior",
-  "previousCarDescriptions": ["black Mercedes C-Class", ...],
-  "locale": "de" | "en" | "el"
-}
-```
-
-### 4. API Route Processing
-
-`route.ts` does the following:
-1. Parses body with `PhotoValidationRequestSchema` (Zod)
-2. Builds a LangChain message array: `SystemMessage` (expert prompt) + `HumanMessage` (with image URL + text instructions)
-3. Calls `ChatOpenAI` configured for `google/gemini-2.5-pro` via OpenRouter
-4. Extracts JSON from the response using a regex match
-5. Validates the response with `PhotoValidationResponseSchema` (Zod)
-6. Returns the validated response
-
-**AI Prompt design:**
-- **System prompt**: Defines the expected angles, strictness rules, consistency check requirement, and JSON output format
-- **Human message**: Includes the locale instruction (`Language for userMessage: ${locale}`) so the AI responds in the correct language
-- **Temperature**: 0 (deterministic, no creativity needed)
-
-### 5. AI Response
-
-```json
-{
-  "valid": true,
-  "reason": "Photo clearly shows front of car with headlights and grille",
-  "userMessage": "✅ Frontansicht erkannt! Das Foto zeigt die Vorderseite des Fahrzeugs.",
-  "carSize": "medium",
-  "dirtLevel": "moderate",
-  "carDescription": "Black Mercedes C-Class"
-}
-```
-
-### 6. Store Update
-
-`AssessmentWizard.handlePhotoValidatedAction` calls `setPhotoValidation()` which updates the Zustand store:
-
-```typescript
-// Store structure
-{
-  currentStep: "front" | "rear" | "side" | "interior" | "services" | "analyzing" | "results",
-  photos: [{
-    id: "uuid",
-    angle: "front",
-    previewUrl: "data:...",
-    validationStatus: "valid",
-    carSize: "medium",
-    dirtLevel: "moderate",
-    carDescription: "Black Mercedes C-Class"
-  }, ...],
-  services: [],
-  result: null,
-  isAnalyzing: false,
-  error: null
-}
-```
-
-After updating the store, the wizard auto-advances to the next step after 1 second via `setTimeout(() => nextStep(), 1000)`.
-
-### 7. Car Consistency Check
-
-The AI checks car consistency across photos:
-- `previousCarDescriptions` is built from all previously validated photos
-- The AI receives these descriptions and verifies the current photo matches (same color, make/model)
-- This prevents the user from uploading photos of different cars
-
----
-
-## 📐 Zod Schemas
-
-### Assessment State (`assessment.schema.ts`)
-
-```typescript
-// Core enums
-PhotoAngle: "front" | "rear" | "side" | "interior"
-PhotoValidationStatus: "idle" | "uploading" | "valid" | "invalid"
-WizardStep: PhotoAngle | "services" | "analyzing" | "results"
-
-// Photo object
-AssessmentPhoto {
-  id: string (uuid)
-  angle: PhotoAngle
-  previewUrl: string (url)
-  uploadedUrl?: string (url)
-  validationStatus: "pending" | "validating" | "valid" | "invalid"
-  validationReason?: string
-  carSize?: "small" | "medium" | "large" | "suv"
-  dirtLevel?: "light" | "moderate" | "heavy"
-  carDescription?: string
-}
-
-// Full store shape
-AssessmentState {
-  currentStep: WizardStep
-  photos: AssessmentPhoto[]
-  services: ServiceSelection[]
-  result: AssessmentResult | null
-  isAnalyzing: boolean
-  error: string | null
-}
-```
-
-### Photo Validation API (`photo-validation.schema.ts`)
-
-```typescript
-// Request
-PhotoValidationRequest {
-  imageBase64: string
-  expectedAngle: "front" | "rear" | "side" | "interior"
-  previousCarDescriptions?: string[]
-  locale?: string
-}
-
-// Response
-PhotoValidationResponse {
-  valid: boolean
-  reason: string
-  userMessage: string | null    // Localized message for the UI
-  carSize: "small" | "medium" | "large" | "suv" | null
-  dirtLevel: "light" | "moderate" | "heavy" | null
-  carDescription: string | null
-}
+    %% Step 4: Report & Memory Wipe
+    Note over UI, Report: Phase 4: Assessment Report & Handover
+    UI->>Report: Render Diagnostics, Verdict & Investment Range
+    Report->>Store: Wipe all base64 photos from RAM (Privacy Guarantee)
+    User->>Report: Clicks "Termin verbindlich buchen"
+    Report->>User: Route to /booking?services=uuid1,uuid2
 ```
 
 ---
 
-## 🎨 UI Component Details
+## 📁 File & Module Reference
 
-### ProgressIndicator
-
-Shows steps 1–4 with animated connecting lines:
-- **Completed step**: Green circle with checkmark + line fully green
-- **Current step**: Purple circle (animated pulse at 1.1x scale)
-- **Incomplete step**: Dark gray circle + dark gray line
-- Lines animate width from 0% to 100% when a step is completed
-
-### PhotoUploadStep
-
-- **Upload area**: Dashed border container with drag-drop support
-- **File button**: Always visible, opens system file picker
-- **Camera button**: Only on mobile/tablet (`isMobile` detected via userAgent + `window.innerWidth < 1024`), uses `capture="environment"` to open rear camera
-- **Preview**: Shows uploaded image with status overlay
-- **Error state**: Shows `userMessage` from AI (localized), has "Try Again" button
-
-### AssessmentWizard
-
-- Orchestrates the 4 photo steps + services placeholder
-- Uses `AnimatePresence` + `motion.div` for slide transitions between steps
-- `previousCarDescriptions` is computed from validated photos and passed to each `PhotoUploadStep`
+| File                                                       | Purpose                                                                                 |
+| :--------------------------------------------------------- | :-------------------------------------------------------------------------------------- |
+| `src/features/assessment/components/AssessmentWizard.tsx`  | Main flow orchestrator managing steps, transitions, and loading states                  |
+| `src/features/assessment/components/PhotoUploadStep.tsx`   | Drag-and-drop file upload, preview, and mobile camera capture (`capture="environment"`) |
+| `src/features/assessment/components/ServiceSwipeDeck.tsx`  | Tinder-style swipe container using Framer Motion physics                                |
+| `src/features/assessment/components/ServiceSwipeCard.tsx`  | Individual gesture card supporting swipe left (reject) / swipe right (accept)           |
+| `src/features/assessment/components/AssessmentReport.tsx`  | Visual summary report presenting AI diagnostics, verdict, and price range               |
+| `src/features/assessment/stores/assessmentStore.ts`        | Typed Zustand store managing client-side wizard state and RAM-only photo cache          |
+| `src/features/assessment/hooks/useAssessment.ts`           | TanStack Query mutations (`useValidatePhoto`, `useAnalyzeAssessment`)                   |
+| `src/features/assessment/schemas/photoValidationSchema.ts` | Zod validation schemas for photo validation requests and LLM structured responses       |
+| `src/features/assessment/schemas/assessmentSchema.ts`      | Core domain types and schemas for assessment reports and diagnostics                    |
+| `src/features/assessment/utils/imageCompressor.ts`         | Client-side Canvas utility resizing large camera photos to under 1.5MB                  |
+| `src/lib/ai/assessmentValidationGraph.ts`                  | LangGraph StateGraph validating photo angles with `google/gemini-2.5-pro`               |
+| `src/lib/ai/assessmentAnalysisGraph.ts`                    | LangGraph StateGraph calculating pricing and generating structured diagnostics          |
+| `src/app/api/assessment/validate-photo/route.ts`           | API route handler applying rate limiting and executing the validation graph             |
+| `src/app/api/assessment/analyze/route.ts`                  | API route handler executing the analysis graph and pricing calculator                   |
 
 ---
 
-## 🛡️ Rate Limiting
+## 🔄 Detailed Phase Breakdown
 
-The proxy (`src/proxy.ts`) applies rate limiting to assessment endpoints:
+### Phase 1: Multi-Step Photo Intake & Validation
 
-| Endpoint | Limit |
-|----------|-------|
-| `/api/assessment/validate-photo` | 10 requests per minute |
-| `/api/assessment/analyze` | 3 requests per 5 minutes |
-
-The rate limiter is a simple in-memory map keyed by IP address. Exceeding the limit returns a 429 response.
-
----
-
-## 📝 Logging
-
-Console logs are placed at key points for debugging:
-
-- **`route.ts`**: `[validate-photo] AI Response for ${expectedAngle} (locale: ${locale}):` — shows raw AI response
-- **`AssessmentWizard`**: `[AssessmentWizard] Updating store with validated photo:` — shows data written to store
-- **`AssessmentWizard`**: `[AssessmentWizard] Photo invalid:` — shows error details
-- **`route.ts` error handler**: `[validate-photo] Error:` — catches and logs API errors
-
----
-
-## 🌐 i18n Strings
-
-All user-facing strings in `messages/{de,en,el}.json` under the `Assessment` key:
-
-- `steps.front`, `steps.rear`, `steps.side`, `steps.interior` — step titles
-- `upload.dragDrop`, `upload.orClick`, `upload.chooseFile`, `upload.takePhoto` — upload UI
-- `validation.validating`, `validation.valid`, `validation.invalid`, `validation.tryAgain`, `validation.uploadDifferent` — validation states
-- `navigation.back`, `navigation.skip` — navigation buttons
-- `progress.step`, `progress.of` — progress indicator text
-
-The AI `userMessage` is returned already translated by Gemini (prompted with the `locale` parameter).
+1. **Target Perspectives**:
+   - `front`: Car front end showing headlights, grille, and bumper.
+   - `rear`: Rear perspective showing tail lights and trunk.
+   - `side`: Side profile view (slight 3/4 angles permitted).
+   - `interior`: Vehicle cabin, dashboard, or upholstery.
+2. **Client-Side Image Optimization**:
+   Photos taken by modern smartphones can exceed 15MB. Before sending to the API, `imageCompressor.ts` resizes the image via HTML5 `<canvas>` to a maximum dimension of 1600px and 80% JPEG quality, ensuring payloads remain comfortably below Next.js body limits.
+3. **AI Validation Graph (`assessmentValidationGraph.ts`)**:
+   - Model: `google/gemini-2.5-pro` via OpenRouter.
+   - Utilizes LangChain `.withStructuredOutput()` enforcing the following Zod schema:
+     ```typescript
+     const ValidationOutputSchema = z.object({
+     	valid: z.boolean(),
+     	reason: z.string(),
+     	userMessage: z.string().nullable(),
+     	carSize: z.enum(["small", "medium", "large", "suv"]).nullable(),
+     	dirtLevel: z.enum(["light", "moderate", "heavy"]).nullable(),
+     	carDescription: z.string().nullable(),
+     });
+     ```
+   - **Cross-Photo Consistency**: The API receives previous photo descriptions (e.g., "Silver BMW 3 Series"). If a subsequent photo displays a different vehicle (e.g., "Red Volkswagen Golf"), the model flags the mismatch and asks the user to provide photos of the same car.
 
 ---
 
-## 🧪 Testing Checklist
+### Phase 2: Tinder-Style Service Swipe Deck
 
-- [ ] Upload a front photo of a car → should validate and advance to step 2
-- [ ] Upload a rear photo when step asks for front → should show error in selected language
-- [ ] Upload a non-car photo → should be rejected
-- [ ] Upload photos from different cars → AI should detect mismatch
-- [ ] Test all 3 locales (de, en, el) — both UI text and AI messages
-- [ ] Test on mobile — camera button should appear and open camera
-- [ ] Test on desktop — camera button should be hidden
-- [ ] Test rate limiting — exceed 10 requests/minute → should return 429
+1. **Service Cards Presentation**:
+   - Queries active services from the Supabase database.
+   - Displays luxury imagery, localized titles, short descriptions, and base prices.
+2. **Gestures & Controls**:
+   - **Swipe Right / Accept Button**: Adds the service ID to `acceptedServiceIds` in `assessmentStore.ts`.
+   - **Swipe Left / Skip Button**: Excludes the service and advances to the next card.
+   - Card deck uses spring physics via Framer Motion with rotation and opacity transitions.
 
 ---
 
-## 📌 Connection to Next Phases
+### Phase 3: LangGraph Analysis & Pricing Calculation
 
-- **Phase 6.2** (Service Selection): Store's `photos[]` already contains `carSize` and `dirtLevel`. These drive the Tinder-style service cards.
-- **Phase 6.3** (AI Agent): The LangGraph agent will receive `carSize`, `dirtLevel`, `carDescription` + selected services → calculates final price.
-- **Phase 6.4** (Results): The store's `result` field (to be populated by Phase 6.3) holds the complete assessment output.
+Once photos are validated and services selected, `AssessmentWizard` calls `/api/assessment/analyze` running `assessmentAnalysisGraph.ts`:
+
+1. **Node 1 (`vision_car_analysis`)**:
+   Reads detected `carSize` and `dirtLevel` from the validation phase.
+2. **Node 2 (`fetch_db_pricing`)**:
+   Queries Supabase `services` table for exact pricing matching `acceptedServiceIds`:
+   ```sql
+   SELECT id, name, price_small, price_medium, price_large, price_suv, duration_hours
+   FROM services WHERE id = ANY(accepted_service_ids);
+   ```
+3. **Node 3 (`deterministic_calculator`)**:
+   - Computes base prices according to detected vehicle size (`price_small`, `price_medium`, `price_large`, or `price_suv`).
+   - Applies dirt level multiplier to duration:
+     - `light`: $1.0\times$ base hours
+     - `moderate`: $1.2\times$ base hours
+     - `heavy`: $1.4\times$ base hours
+   - Sets estimated investment range: $\text{priceMin} = \text{basePrice}$, $\text{priceMax} = \text{basePrice} \times 1.15$ (to allow for on-site edge cases).
+4. **Node 4 (`generate_localized_summary`)**:
+   - Model: `openai/gpt-4o-mini` with temperature 0.7.
+   - Generates 3–5 structured diagnostic bullets (`diagnostics[]`) explaining specific vehicle care recommendations in the user's language (`de`, `en`, `el`).
+   - Produces an authoritative expert verdict quote box.
+
+---
+
+### Phase 4: Assessment Report & Handover to Booking
+
+1. **Report UI Components (`AssessmentReport.tsx`)**:
+   - Vehicle Overview Header with car brand and detected size badge.
+   - AI Diagnostics Section (detailed bullet points).
+   - Expert Verdict Card with glowing purple accent border.
+   - Investment Card displaying estimated price range (`€XXX – €YYY`).
+   - Estimated timeline in hours.
+2. **Data Destruction Guarantee (Privacy First)**:
+   ```typescript
+   useEffect(() => {
+   	// Wipe all raw photo base64 strings from memory immediately upon report load
+   	clearPhotosFromMemory();
+   }, []);
+   ```
+   Vehicle photos are never saved to long-term storage or database records. Once analysis is complete, all image data is immediately purged from the browser's memory.
+3. **Pre-Filled Booking Link**:
+   The primary call to action directs to:
+   ```
+   /booking?services=<serviceId1>,<serviceId2>
+   ```
+   The booking wizard detects these query parameters and automatically pre-selects the services while skipping redundant selection steps.

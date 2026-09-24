@@ -1,72 +1,115 @@
-# Phase 7 — Full-Day Booking (`/booking`)
+# 📅 Concurrency-Safe Booking Flow (`/booking`)
 
-> **TL;DR**: 4-step wizard (Client Info → Services → Date → Summary). Direct booking to Supabase via Server Action with UNIQUE constraint on `booking_date` — one confirmed booking per day. No email confirmation.
-
----
-
-## 📁 File Map — What Every File Does
-
-| File                                                           | What it does                                                                                                                                                                                                                              |
-| -------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `src/features/booking/schemas/booking.schema.ts`               | Zod schemas for validating each wizard step and preselected services. Error messages are i18n keys.                                                                                                                                       |
-| `src/features/booking/stores/booking-store.ts`                 | Zustand store holding all wizard state: step number, client info fields, selected service IDs, booking date, submit state, field errors. `setPreselectedServices()` validates via Zod, reads `?services=` from URL and auto-skips Step 2. |
-| `src/features/booking/components/booking-wizard.tsx`           | **Outer:** `<Suspense>` wrapper (required because `useSearchParams()` triggers CSR bailout). **Inner:** `BookingWizardContent` reads `?services=` URL param, preselects services, renders current step with animated transitions.         |
-| `src/features/booking/components/booking-progress.tsx`         | 4-step progress bar with relative-positioned connector lines. Current step glows purple, completed steps show filled indicators.                                                                                                          |
-| `src/features/booking/components/step-client-info.tsx`         | **Step 1.** Form with firstName, lastName, email, phone, carDescription (optional), GDPR checkbox. Local `formData` state for performance. Validates with `step1Schema` — field errors shown as red text.                                 |
-| `src/features/booking/components/step-services.tsx`            | **Step 2.** Fetches services from `/api/services` via TanStack Query. Renders checkbox cards with deduplicated toggle handling. Validates at least 1 selected. Shows loading/error states. **Skipped if `?services=` was provided.**      |
-| `src/features/booking/components/step-date-picker.tsx`         | **Step 3.** Fetches unavailable dates from `GET /api/booking/unavailable-dates`. Renders shadcn `<Calendar>`. Disables past dates + unavailable dates. Shows error state on fetch failure.                                                |
-| `src/features/booking/components/step-summary.tsx`             | **Step 4.** 3 glass-morphism cards: client data, selected services (fetches names), date. Submit calls `createBooking` Server Action. Handles 409 (date taken), 201 (success → redirect with appointment ID).                             |
-| `src/features/booking/index.ts`                                | Barrel file re-exporting `BookingWizard` for clean imports.                                                                                                                                                                               |
-| `src/app/[locale]/booking/page.tsx`                            | Next.js page component. Server-rendered with `generateMetadata` (await params). Renders `<BookingWizard />`.                                                                                                                              |
-| `src/app/[locale]/booking/success/page.tsx`                    | Success page. Server component that fetches contact info server-side by appointment ID (no PII in URL). Purple checkmark icon, success message, contact info, "Back to Home" button.                                                      |
-| `src/app/api/booking/unavailable-dates/route.ts`               | `GET` API. Queries `appointments.booking_date` and `blocked_dates.blocked_date` in parallel, filtered to future dates only. Uses direct DATE strings (no date-fns re-parse). Deduplicates, returns JSON array.                            |
-| `src/actions/booking.ts`                                       | `"use server"` action. Zod validation, pre-check date availability (captures query errors), INSERT with UNIQUE constraint (race condition guard), INSERT junction records. Cleans up orphaned appointment on junction failure.            |
-| `supabase/migrations/20240709000001_create_booking_tables.sql` | Migration creating 4 tables: `profiles`, `blocked_dates`, `appointments`, `appointment_services` with RLS policies (admin-only SELECT on appointments) and indexes.                                                                       |
+> **Executive Summary**: The booking system implements a streamlined 4-step wizard (Client Info $\rightarrow$ Services Selection $\rightarrow$ Date Picker $\rightarrow$ Summary). Appointments represent exclusive full-day bookings. Submissions are processed via Next.js Server Actions with a PostgreSQL `UNIQUE(booking_date)` constraint to eliminate race conditions and guarantee zero double-bookings.
 
 ---
 
-## 🔄 Full User Flow
+## 🧩 Architecture & Data Flow
 
-1. **Entry**: User arrives from Assessment Report → URL is `/booking?services=uuid1,uuid2`
-2. **Wizard reads URL**: `BookingWizardContent` via `useSearchParams()` calls `setPreselectedServices()` (Zod-validated) → skips Step 2
-3. **Step 1** — Client fills: name, email, phone, car description, checks GDPR → Next
-4. **Step 2** — If no `?services=`, user selects from checkbox cards. If preselected, auto-skipped.
-5. **Step 3** — Calendar shows available dates. Unavailable dates (booked + admin-blocked, future-only) are disabled. User picks a date → Next
-6. **Step 4** — Summary shows all data. User clicks "Termin verbindlich buchen" → calls `createBooking` Server Action
-7. **Success** → Redirect to `/booking/success?id=<appointmentId>` (no PII in URL)
-8. **Error** → If date was taken (409), error message shown in Step 4
+```mermaid
+sequenceDiagram
+    autonumber
+    actor Customer as User (Browser)
+    participant Wizard as BookingWizard (Client UI)
+    participant Store as Zustand (bookingStore)
+    participant ServerAction as Server Action (src/actions/booking.ts)
+    participant DB as Supabase PostgreSQL
+    participant Success as /booking/success?id=... (RSC)
+
+    %% Step 1: Intake & Auto-skip
+    Note over Customer, Wizard: Initialization & URL Params
+    Customer->>Wizard: Visits /booking?services=uuid1,uuid2
+    Wizard->>Store: setPreselectedServices([uuid1, uuid2])
+    Note over Wizard: Auto-skips Step 2 when services are preselected!
+
+    %% Step 1: Info Form
+    Note over Customer, Wizard: Step 1: Client Information
+    Customer->>Wizard: Enters Name, Email, Phone, Car Description, Accepts GDPR
+    Wizard->>Store: Validates with step1Schema & stores client info
+
+    %% Step 2: Services
+    Note over Customer, Wizard: Step 2: Service Selection (if not skipped)
+    Customer->>Wizard: Selects services from database catalog
+
+    %% Step 3: Date Picker
+    Note over Customer, Wizard: Step 3: Full-Day Date Selection
+    Wizard->>ServerAction: Calls getUnavailableDates()
+    ServerAction->>DB: Query confirmed appointments & blocked_dates
+    DB-->>ServerAction: Return busy dates array
+    ServerAction-->>Wizard: Array of ISO date strings ['2026-10-01', ...]
+    Wizard->>Wizard: Renders Calendar; disables past & unavailable dates
+    Customer->>Wizard: Selects available future date
+
+    %% Step 4: Summary & Submit
+    Note over Customer, Wizard: Step 4: Review & Final Confirmation
+    Wizard->>Customer: Displays Glassmorphism Summary Card
+    Customer->>Wizard: Clicks "Termin verbindlich buchen"
+    Wizard->>ServerAction: Calls createBooking(formData)
+
+    alt Date was taken in race condition (Conflict)
+        ServerAction->>DB: INSERT INTO appointments ...
+        DB-->>ServerAction: Error 23505 (Unique violation)
+        ServerAction-->>Wizard: { success: false, error: 'DATE_ALREADY_BOOKED' }
+        Wizard->>Customer: Displays Conflict Notification & prompts new date
+    else Successful Booking
+        ServerAction->>DB: INSERT INTO appointments ... RETURNING id
+        ServerAction->>DB: INSERT INTO appointment_services (appointment_id, service_id)
+        ServerAction-->>Wizard: { success: true, appointmentId }
+        Wizard->>Success: Redirect to /booking/success?id=<appointmentId>
+        Success->>DB: Fetch appointment server-side (Server Component)
+        Success->>Customer: Render confirmation screen with booking details
+    end
+```
 
 ---
 
-## 🗄️ Database Tables
+## 📁 File Map & Component Responsibilities
 
-### `profiles` — Admin identification
-
-`id` (UUID PK → auth.users), `role` (TEXT, default 'admin'), `created_at`
-
-### `blocked_dates` — Admin blocks whole days
-
-`id`, `blocked_date` (DATE UNIQUE), `reason`, `created_at`
-
-### `appointments` — Confirmed bookings
-
-`id`, `first_name`, `last_name`, `email`, `phone`, `car_description`, **`booking_date` (DATE UNIQUE)**, `status` (default 'confirmed'), `created_at`
-
-RLS: only admins can SELECT full appointment details (PII), anon/authenticated can INSERT.
-
-### `appointment_services` — Junction table
-
-Composite PK `(appointment_id, service_id)`, both FK with ON DELETE CASCADE
+| File                                                   | Type                           | Responsibility                                                                                        |
+| :----------------------------------------------------- | :----------------------------- | :---------------------------------------------------------------------------------------------------- |
+| `src/features/booking/components/BookingWizard.tsx`    | Client Component               | Top-level orchestrator; reads `?services=` query params, synchronizes steps, and provides transitions |
+| `src/features/booking/components/BookingProgress.tsx`  | Client Component               | 4-step progress indicator with interactive status indicators and glowing purple connectors            |
+| `src/features/booking/components/StepClientInfo.tsx`   | Client Component               | **Step 1**: Collects customer contact details and mandatory GDPR consent with Zod validation          |
+| `src/features/booking/components/StepServices.tsx`     | Client Component               | **Step 2**: Service checkbox selection from Supabase catalog (auto-skipped if preselected)            |
+| `src/features/booking/components/StepDatePicker.tsx`   | Client Component               | **Step 3**: Interactive shadcn Calendar; queries unavailable dates via Server Action                  |
+| `src/features/booking/components/StepSummary.tsx`      | Client Component               | **Step 4**: Glassmorphism overview of selected details with Server Action submission trigger          |
+| `src/features/booking/components/BookingErrorCard.tsx` | Client Component               | User-friendly error alert card with retry triggers for failed operations                              |
+| `src/features/booking/stores/bookingStore.ts`          | Zustand Store                  | Wizard state management (current step, client fields, selected services, selected date, errors)       |
+| `src/features/booking/schemas/bookingSchema.ts`        | Zod Schemas                    | Strict runtime validation schemas for each wizard step and submission payloads                        |
+| `src/actions/booking.ts`                               | Server Action (`"use server"`) | `getUnavailableDates` and `createBooking` execution with concurrency safeguards                       |
+| `src/app/[locale]/booking/page.tsx`                    | Server Component               | Page entry point; handles dynamic metadata generation and Suspense boundary                           |
+| `src/app/[locale]/booking/success/page.tsx`            | Server Component               | Post-booking confirmation page; fetches booking summary securely server-side                          |
 
 ---
 
-## 🌐 i18n
+## 🛡️ Concurrency Safeguards & Race Condition Defense
 
-All strings under `Booking.*` in `messages/{de,en,el}.json`: title, subtitle, progress step labels, form labels, validation messages, success page, error states.
+1. **Database Constraint as Primary Shield**:
+   Unlike simple client-side checks that can be circumvented during simultaneous checkout attempts, the `appointments` table enforces a strict unique constraint at the database engine level:
+   ```sql
+   ALTER TABLE appointments ADD CONSTRAINT appointments_booking_date_key UNIQUE (booking_date);
+   ```
+2. **Atomic Submission Handling (`createBooking`)**:
+   - The Server Action first performs a pre-check query against `appointments` and `blocked_dates`.
+   - If an edge-case race condition occurs where another customer completes checkout milliseconds prior, the database rejects the duplicate `INSERT` with PostgreSQL error code `23505` (`unique_violation`).
+   - The Server Action catches this violation and cleanly returns:
+     ```json
+     {
+     	"success": false,
+     	"error": "This date was just reserved by another customer. Please choose another date."
+     }
+     ```
+   - Step 4 displays this message immediately, allowing the customer to return to Step 3 and select an alternative date without losing their entered contact information.
+3. **Orphaned Record Cleanup**:
+   If inserting junction records into `appointment_services` fails after the parent appointment has been inserted, the Server Action automatically rolls back by deleting the newly created appointment record, preventing orphaned entries.
 
 ---
 
-## 🔗 Integration
+## 🔒 Privacy & Server-Side Security
 
-- **Phase 6 (Assessment)**: `assessment-report.tsx` reads `useAssessmentStore().services`, builds `/booking?services=...` link
-- **Phase 11 (Admin Dashboard)**: Will manage `appointments` and `blocked_dates`
+- **No PII in URLs**: When redirecting to the success page, the application routes to:
+  ```
+  /booking/success?id=<appointmentId>
+  ```
+  Customer names, phone numbers, and emails are never passed as URL parameters or logged in browser history.
+- **Server Component Authorization**: The `/booking/success` page runs entirely as a React Server Component. It queries the database using an internal service client to retrieve the appointment confirmation by ID, rendering the details securely without exposing database queries to the client bundle.

@@ -1,303 +1,316 @@
-# LK Gloss & Detail — Database Documentation
+# 🗄️ LK Gloss & Detail — Database & Storage Documentation
 
-> **Project**: Mobile Autopflege & Detailing  
-> **DB Engine**: PostgreSQL 15 + pgvector  
-> **Host**: Supabase (`kiiicrywgildyumibdow`)  
-> **Last Updated**: 2026-06-24
+> **DB Engine**: PostgreSQL 15 + `pgvector` extension  
+> **Host**: Supabase (`eu-central-1` Frankfurt)  
+> **Access Layer**: Supabase SSR Client (`@supabase/ssr`), Admin Service Client (`@supabase/supabase-js`), Server Actions  
+> **Last Updated**: 2026-09-24
 
 ---
 
-## 📐 Schema Overview
+## 📐 Entity Relationship (ER) Diagram
 
+```mermaid
+erDiagram
+    PROFILES ||--o{ APPOINTMENTS : manages
+    SERVICES ||--o{ APPOINTMENT_SERVICES : included_in
+    APPOINTMENTS ||--o{ APPOINTMENT_SERVICES : contains
+    CAR_ASSESSMENTS ||--o{ APPOINTMENTS : references_optional
+
+    PROFILES {
+        uuid id PK "Links to auth.users.id"
+        text role "Default 'admin'"
+        text display_name
+        text avatar_url
+        timestamptz created_at
+    }
+
+    SERVICES {
+        uuid id PK
+        jsonb name "Multilingual {de, en, el}"
+        jsonb short_description "Multilingual {de, en, el}"
+        text category "exterior | interior | paint | protection"
+        numeric price_small "Price for small vehicles"
+        numeric price_medium "Price for medium vehicles"
+        numeric price_large "Price for large vehicles"
+        numeric price_suv "Price for SUV / XL"
+        numeric duration_hours "Estimated work duration"
+        text icon "Lucide icon identifier"
+        text image_url "Supabase storage public URL"
+        boolean active "Visibility toggle"
+        integer sort_order "Display order index"
+        timestamptz created_at
+    }
+
+    BLOCKED_DATES {
+        uuid id PK
+        date blocked_date UK "Unique full-day block"
+        text reason "Admin block description"
+        timestamptz created_at
+    }
+
+    APPOINTMENTS {
+        uuid id PK
+        text first_name
+        text last_name
+        text email
+        text phone
+        text car_description
+        date booking_date UK "Unique full-day booking guard"
+        text status "confirmed | pending | completed | cancelled"
+        text notes
+        timestamptz created_at
+    }
+
+    APPOINTMENT_SERVICES {
+        uuid appointment_id PK, FK
+        uuid service_id PK, FK
+    }
+
+    CHATBOT_KNOWLEDGE {
+        uuid id PK
+        text content "Knowledge chunk"
+        vector_1536 embedding "text-embedding-3-small vector"
+        jsonb metadata "Category, tags, source"
+        text language "de | en | el"
+        timestamptz created_at
+    }
+
+    CONTACT_SUBMISSIONS {
+        uuid id PK
+        text name
+        text email
+        text phone
+        text service_interest
+        text message
+        text status "new | contacted | archived"
+        timestamptz created_at
+    }
+
+    GALLERY_IMAGES {
+        uuid id PK
+        text url
+        jsonb title
+        text category
+        text before_url
+        text after_url
+        integer sort_order
+        timestamptz created_at
+    }
 ```
-┌─────────────────────────────────────────────────────────────┐
-│                    LK GLOSS & DETAIL DB                     │
-├─────────────────────────────────────────────────────────────┤
-│                                                             │
-│  profiles ◄─── auth.users (Supabase Auth)                   │
-│                                                             │
-│  services ◄─────────────────────────────────────────────────│
-│    ↑                                                       │
-│    └── service_vectors (embeddings for AI RAG)             │
-│                                                             │
-│  car_assessments                                            │
-│    ↑                                                       │
-│    └── appointments    (FK: car_assessment_id)             │
-│                                                             │
-│  blocked_slots (admin time blocks)                          │
-│  gallery_images (before/after portfolio)                    │
-│  contact_submissions (form entries)                         │
-│                                                             │
-│  chatbot_knowledge (FAQ + embeddings for chatbot)           │
-│                                                             │
-│  STORAGE BUCKETS:                                           │
-│    car-assessment-images (private)                          │
-│    gallery (public)                                         │
-└─────────────────────────────────────────────────────────────┘
-```
 
 ---
 
-## 📋 Tables
+## 📋 Table Specifications
 
-### 1. `profiles` — Admin Users
+### 1. `profiles` (Admin Authorization)
 
-| Column         | Type        | Constraints                                     | Notes                  |
-| -------------- | ----------- | ----------------------------------------------- | ---------------------- |
-| `id`           | UUID        | PK, `gen_random_uuid()`                         |                        |
-| `user_id`      | UUID        | UNIQUE, FK → `auth.users(id)` ON DELETE CASCADE | Links to Supabase Auth |
-| `display_name` | TEXT        |                                                 | Admin's display name   |
-| `avatar_url`   | TEXT        |                                                 | Profile picture        |
-| `created_at`   | TIMESTAMPTZ | `DEFAULT now()`                                 |                        |
+Stores elevated role permissions for authenticated Supabase users.
 
-**RLS**: `authenticated` users can only manage their own profile (`auth.uid() = user_id`).  
-**Purpose**: Identifies admin user(s) for authorization checks across all other tables.
+| Column         | Type          | Constraints                                                  | Description                       |
+| :------------- | :------------ | :----------------------------------------------------------- | :-------------------------------- |
+| `id`           | `UUID`        | `PRIMARY KEY`, `REFERENCES auth.users(id) ON DELETE CASCADE` | Identity ID from Supabase Auth    |
+| `role`         | `TEXT`        | `NOT NULL`, `DEFAULT 'admin'`                                | User role for permission checks   |
+| `display_name` | `TEXT`        | `NULLABLE`                                                   | Display name of the administrator |
+| `avatar_url`   | `TEXT`        | `NULLABLE`                                                   | Profile picture avatar URL        |
+| `created_at`   | `TIMESTAMPTZ` | `DEFAULT now()`                                              | Record creation timestamp         |
 
----
-
-### 2. `services` — Detailing Services Catalog
-
-| Column              | Type          | Constraints                                                  | Notes                                     |
-| ------------------- | ------------- | ------------------------------------------------------------ | ----------------------------------------- |
-| `id`                | UUID          | PK, `gen_random_uuid()`                                      |                                           |
-| `name`              | JSONB         | NOT NULL                                                     | `{"de": "...", "en": "...", "el": "..."}` |
-| `description`       | JSONB         |                                                              | Full description in 3 languages           |
-| `short_description` | JSONB         |                                                              | Brief description for cards               |
-| `icon`              | TEXT          |                                                              | Material icon name or URL                 |
-| `image_url`         | TEXT          |                                                              | Hero image for Tinder-style cards         |
-| `category`          | TEXT          | `DEFAULT 'exterior'`                                         | exterior, interior, paint, protection     |
-| `price_min`         | NUMERIC(10,2) | NOT NULL, CHECK ≥ 0                                          | Base min price                            |
-| `price_max`         | NUMERIC(10,2) | NOT NULL, CHECK ≥ price_min                                  | Base max price                            |
-| `duration_minutes`  | INTEGER       | NOT NULL, CHECK > 0                                          | Estimated duration                        |
-| `multipliers`       | JSONB         | `DEFAULT {"small":1.0, "medium":1.3, "large":1.6, "xl":2.0}` | Vehicle size multipliers                  |
-| `active`            | BOOLEAN       | `DEFAULT true`                                               | Toggle visibility                         |
-| `sort_order`        | INTEGER       | `DEFAULT 0`                                                  | Display ordering                          |
-| `created_at`        | TIMESTAMPTZ   | `DEFAULT now()`                                              |                                           |
-
-**RLS**: SELECT for everyone (active only), ALL for admin.  
-**Indexes**: `idx_services_active`, `idx_services_sort`  
-**Purpose**: Central catalog used by Homepage preview, Services page, AI Assessment swipe cards, and price calculation.
+- **Security & RLS**:
+  - `SELECT`: Only authenticated users can read their own profile (`auth.uid() = id`).
+  - `ALL`: Admin role verification handled through database functions and `src/proxy.ts`.
 
 ---
 
-### 3. `car_assessments` — AI Analysis Results
+### 2. `services` (DetaiIing Services Catalog)
 
-| Column                 | Type          | Constraints             | Notes                                         |
-| ---------------------- | ------------- | ----------------------- | --------------------------------------------- |
-| `id`                   | UUID          | PK, `gen_random_uuid()` |                                               |
-| `session_token`        | TEXT          |                         | Anonymous session (no auth needed for upload) |
-| `image_urls`           | TEXT[]        | NOT NULL                | Array of 5 uploaded car photo URLs            |
-| `ai_result`            | JSONB         |                         | Raw output from AI agent                      |
-| `selected_service_ids` | UUID[]        |                         | Services user swiped "yes" on                 |
-| `price_min`            | NUMERIC(10,2) |                         | Calculated min price                          |
-| `price_max`            | NUMERIC(10,2) |                         | Calculated max price                          |
-| `duration_minutes`     | INTEGER       |                         | Total estimated duration                      |
-| `summary_text`         | JSONB         |                         | `{"de": "...", "en": "...", "el": "..."}`     |
-| `services_breakdown`   | JSONB         |                         | Per-service breakdown                         |
-| `vehicle_size`         | TEXT          |                         | small, medium, large, xl (from AI vision)     |
-| `dirt_level`           | TEXT          |                         | low, medium, high (from AI vision)            |
-| `locale`               | TEXT          | `DEFAULT 'de'`          | Language used during assessment               |
-| `created_at`           | TIMESTAMPTZ   | `DEFAULT now()`         |                                               |
+Central service definitions featuring per-car-size pricing and JSONB multilingual content.
 
-**RLS**: Admin only (full access).  
-**Indexes**: `idx_car_assessments_session`  
-**Purpose**: Stores AI assessment results for later reference, booking linking, and admin review.
+| Column              | Type            | Constraints                                | Description                                               |
+| :------------------ | :-------------- | :----------------------------------------- | :-------------------------------------------------------- |
+| `id`                | `UUID`          | `PRIMARY KEY`, `DEFAULT gen_random_uuid()` | Unique service identifier                                 |
+| `name`              | `JSONB`         | `NOT NULL`                                 | Localized title: `{"de":"...", "en":"...", "el":"..."}`   |
+| `short_description` | `JSONB`         | `NULLABLE`                                 | Localized summary: `{"de":"...", "en":"...", "el":"..."}` |
+| `category`          | `TEXT`          | `NOT NULL`, `DEFAULT 'exterior'`           | Service category (`exterior`, `interior`, etc.)           |
+| `price_small`       | `NUMERIC(10,2)` | `NOT NULL`, `DEFAULT 0`                    | Price in EUR for compact/small cars                       |
+| `price_medium`      | `NUMERIC(10,2)` | `NOT NULL`, `DEFAULT 0`                    | Price in EUR for medium/sedan cars                        |
+| `price_large`       | `NUMERIC(10,2)` | `NOT NULL`, `DEFAULT 0`                    | Price in EUR for large/estate cars                        |
+| `price_suv`         | `NUMERIC(10,2)` | `NOT NULL`, `DEFAULT 0`                    | Price in EUR for SUVs and vans                            |
+| `duration_hours`    | `NUMERIC(4,2)`  | `NOT NULL`, `DEFAULT 1`                    | Estimated work duration in hours                          |
+| `icon`              | `TEXT`          | `NULLABLE`                                 | Lucide icon name (e.g., `Car`, `Sparkles`, `Shield`)      |
+| `image_url`         | `TEXT`          | `NULLABLE`                                 | Public URL from `services` storage bucket                 |
+| `active`            | `BOOLEAN`       | `DEFAULT true`                             | If `false`, hidden from client selection                  |
+| `sort_order`        | `INTEGER`       | `DEFAULT 0`                                | Presentation sort priority                                |
+| `created_at`        | `TIMESTAMPTZ`   | `DEFAULT now()`                            | Record creation timestamp                                 |
 
----
-
-### 4. `appointments` — Client Bookings
-
-| Column              | Type        | Constraints                                                                           | Notes                  |
-| ------------------- | ----------- | ------------------------------------------------------------------------------------- | ---------------------- |
-| `id`                | UUID        | PK, `gen_random_uuid()`                                                               |                        |
-| `car_assessment_id` | UUID        | FK → `car_assessments(id)` ON DELETE SET NULL                                         | Links to AI assessment |
-| `client_name`       | TEXT        | NOT NULL                                                                              | Customer name          |
-| `client_email`      | TEXT        | NOT NULL                                                                              | Customer email         |
-| `client_phone`      | TEXT        |                                                                                       | Customer phone         |
-| `vehicle`           | TEXT        |                                                                                       | e.g. "Porsche 911 GT3" |
-| `date`              | DATE        | NOT NULL                                                                              | Appointment date       |
-| `time`              | TIME        | NOT NULL                                                                              | Appointment time       |
-| `status`            | TEXT        | NOT NULL, DEFAULT 'pending', CHECK IN ('pending','confirmed','completed','cancelled') | Booking status         |
-| `notes`             | TEXT        |                                                                                       | Internal notes         |
-| `created_at`        | TIMESTAMPTZ | `DEFAULT now()`                                                                       |                        |
-
-**RLS**: INSERT for anyone (public booking form), ALL for admin.  
-**Indexes**: `idx_appointments_date`, `idx_appointments_status`  
-**Purpose**: Central booking system. Used by admin dashboard for calendar view and status management.
+- **Security & RLS**:
+  - `SELECT`: Public access allowed for records where `active = true`.
+  - `ALL`: Unrestricted access granted to administrators (`profiles.role = 'admin'`).
 
 ---
 
-### 5. `blocked_slots` — Admin Time Blocks
+### 3. `blocked_dates` (Manual Calendar Exclusions)
 
-| Column       | Type        | Constraints             | Notes               |
-| ------------ | ----------- | ----------------------- | ------------------- |
-| `id`         | UUID        | PK, `gen_random_uuid()` |                     |
-| `date`       | DATE        | NOT NULL                | Blocked date        |
-| `time`       | TIME        | NOT NULL                | Blocked time        |
-| `reason`     | TEXT        |                         | Reason for blocking |
-| `created_at` | TIMESTAMPTZ | `DEFAULT now()`         |                     |
+Dates blocked manually by the business owner (holidays, personal days, full capacity).
 
-**RLS**: SELECT for everyone, ALL for admin.  
-**Indexes**: `idx_blocked_slots_date`  
-**Purpose**: Prevents booking on unavailable slots. Queried alongside appointments for availability logic.
+| Column         | Type          | Constraints                                | Description                                         |
+| :------------- | :------------ | :----------------------------------------- | :-------------------------------------------------- |
+| `id`           | `UUID`        | `PRIMARY KEY`, `DEFAULT gen_random_uuid()` | Unique record ID                                    |
+| `blocked_date` | `DATE`        | `NOT NULL`, `UNIQUE`                       | Blocked calendar date (`YYYY-MM-DD`)                |
+| `reason`       | `TEXT`        | `NULLABLE`                                 | Optional note (e.g., "Urlaub", "Equipment Wartung") |
+| `created_at`   | `TIMESTAMPTZ` | `DEFAULT now()`                            | Record creation timestamp                           |
 
----
-
-### 6. `gallery_images` — Before/After Portfolio
-
-| Column       | Type        | Constraints             | Notes                                                 |
-| ------------ | ----------- | ----------------------- | ----------------------------------------------------- |
-| `id`         | UUID        | PK, `gen_random_uuid()` |                                                       |
-| `url`        | TEXT        | NOT NULL                | Main image URL                                        |
-| `title`      | JSONB       |                         | `{"de": "...", "en": "...", "el": "..."}`             |
-| `category`   | TEXT        | NOT NULL                | interior, exterior, paint_correction, ceramic_coating |
-| `before_url` | TEXT        |                         | "Before" image for comparison slider                  |
-| `after_url`  | TEXT        |                         | "After" image for comparison slider                   |
-| `sort_order` | INTEGER     | `DEFAULT 0`             | Display ordering                                      |
-| `created_at` | TIMESTAMPTZ | `DEFAULT now()`         |                                                       |
-
-**RLS**: SELECT for everyone, ALL for admin.  
-**Indexes**: `idx_gallery_images_category`, `idx_gallery_images_sort`  
-**Purpose**: Powers the gallery page with filterable categories and before/after comparison sliders.
+- **Indexes**: `idx_blocked_dates_blocked_date` on `(blocked_date)`.
+- **Security & RLS**:
+  - `SELECT`: Public access (needed by the booking calendar to disable dates).
+  - `INSERT / UPDATE / DELETE`: Restricted to administrators.
 
 ---
 
-### 7. `contact_submissions` — Contact Form Entries
+### 4. `appointments` (Customer Bookings)
 
-| Column             | Type        | Constraints             | Notes                              |
-| ------------------ | ----------- | ----------------------- | ---------------------------------- |
-| `id`               | UUID        | PK, `gen_random_uuid()` |                                    |
-| `name`             | TEXT        | NOT NULL                | Sender name                        |
-| `email`            | TEXT        | NOT NULL                | Sender email                       |
-| `phone`            | TEXT        |                         | Sender phone                       |
-| `service_interest` | TEXT        |                         | Which service they're asking about |
-| `message`          | TEXT        |                         | Their message                      |
-| `created_at`       | TIMESTAMPTZ | `DEFAULT now()`         |                                    |
+Customer appointments representing guaranteed single-day detailing bookings.
 
-**RLS**: INSERT for anyone, SELECT for admin.  
-**Purpose**: Stores contact form submissions for admin to review and respond.
+| Column            | Type          | Constraints                                | Description                                              |
+| :---------------- | :------------ | :----------------------------------------- | :------------------------------------------------------- |
+| `id`              | `UUID`        | `PRIMARY KEY`, `DEFAULT gen_random_uuid()` | Unique appointment reference                             |
+| `first_name`      | `TEXT`        | `NOT NULL`                                 | Customer first name                                      |
+| `last_name`       | `TEXT`        | `NOT NULL`                                 | Customer last name                                       |
+| `email`           | `TEXT`        | `NOT NULL`                                 | Customer email address                                   |
+| `phone`           | `TEXT`        | `NOT NULL`                                 | Customer telephone contact                               |
+| `car_description` | `TEXT`        | `NULLABLE`                                 | Make, model, and year notes                              |
+| `booking_date`    | `DATE`        | `NOT NULL`, `UNIQUE`                       | **Concurrency Guard**: One confirmed appointment per day |
+| `status`          | `TEXT`        | `DEFAULT 'confirmed'`                      | Status: `confirmed`, `pending`, `completed`, `cancelled` |
+| `notes`           | `TEXT`        | `NULLABLE`                                 | Internal admin notes or customer requests                |
+| `created_at`      | `TIMESTAMPTZ` | `DEFAULT now()`                            | Booking submission timestamp                             |
 
----
-
-### 8. `chatbot_knowledge` — FAQ / RAG Knowledge Base
-
-| Column       | Type         | Constraints             | Notes                                      |
-| ------------ | ------------ | ----------------------- | ------------------------------------------ |
-| `id`         | UUID         | PK, `gen_random_uuid()` |                                            |
-| `content`    | TEXT         | NOT NULL                | FAQ content or business info               |
-| `embedding`  | VECTOR(1536) |                         | OpenAI-compatible embedding                |
-| `metadata`   | JSONB        |                         | `{"source": "faq", "category": "pricing"}` |
-| `language`   | TEXT         | `DEFAULT 'de'`          | de, en, el                                 |
-| `created_at` | TIMESTAMPTZ  | `DEFAULT now()`         |                                            |
-
-**RLS**: SELECT for everyone, ALL for admin.  
-**Index**: HNSW on `embedding` (`vector_cosine_ops`, m=16, ef_construction=200)  
-**Purpose**: Powers the RAG chatbot. Queried via `match_chatbot_docs()` for cosine similarity search.
+- **Indexes**: `idx_appointments_booking_date` on `(booking_date)`.
+- **Security & RLS**:
+  - `INSERT`: Public (anonymous or authenticated) can submit a booking.
+  - `SELECT (Client)`: Anonymous users can only query date availability via Server Actions (`getUnavailableDates`). Direct PII access is forbidden.
+  - `SELECT / ALL (Admin)`: Full access granted to administrators.
 
 ---
 
-### 9. `service_vectors` — Service Embeddings for AI
+### 5. `appointment_services` (Junction Table)
 
-| Column       | Type         | Constraints                                     | Notes                       |
-| ------------ | ------------ | ----------------------------------------------- | --------------------------- |
-| `id`         | UUID         | PK, `gen_random_uuid()`                         |                             |
-| `service_id` | UUID         | NOT NULL, FK → `services(id)` ON DELETE CASCADE | Linked service              |
-| `content`    | TEXT         | NOT NULL                                        | Service description text    |
-| `embedding`  | VECTOR(1536) |                                                 | OpenAI-compatible embedding |
-| `metadata`   | JSONB        |                                                 | Extra metadata              |
-| `language`   | TEXT         | `DEFAULT 'de'`                                  | de, en, el                  |
-| `created_at` | TIMESTAMPTZ  | `DEFAULT now()`                                 |                             |
+Many-to-many relationship linking appointments with ordered detailing services.
 
-**RLS**: SELECT for everyone, ALL for admin.  
-**Index**: HNSW on `embedding` (`vector_cosine_ops`, m=16, ef_construction=200)  
-**Purpose**: Used by the AI assessment agent to semantically search service descriptions during price estimation.
+| Column           | Type   | Constraints                                | Description               |
+| :--------------- | :----- | :----------------------------------------- | :------------------------ |
+| `appointment_id` | `UUID` | `FK -> appointments(id) ON DELETE CASCADE` | Linked appointment ID     |
+| `service_id`     | `UUID` | `FK -> services(id) ON DELETE CASCADE`     | Linked service catalog ID |
+
+- **Primary Key**: Composite `(appointment_id, service_id)`.
 
 ---
 
-## 🔍 Search Functions
+### 6. `chatbot_knowledge` (Vector RAG Knowledge Base)
 
-### `match_chatbot_docs`
+Multilingual domain knowledge chunks for the AI FAQ assistant.
+
+| Column       | Type           | Constraints                                | Description                                         |
+| :----------- | :------------- | :----------------------------------------- | :-------------------------------------------------- |
+| `id`         | `UUID`         | `PRIMARY KEY`, `DEFAULT gen_random_uuid()` | Knowledge chunk ID                                  |
+| `content`    | `TEXT`         | `NOT NULL`                                 | Raw informational text chunk                        |
+| `embedding`  | `vector(1536)` | `NULLABLE`                                 | Vector representation from `text-embedding-3-small` |
+| `metadata`   | `JSONB`        | `DEFAULT '{}'`                             | Metadata tags: category, title, source              |
+| `language`   | `TEXT`         | `DEFAULT 'de'`                             | Language code (`de`, `en`, `el`)                    |
+| `created_at` | `TIMESTAMPTZ`  | `DEFAULT now()`                            | Record creation timestamp                           |
+
+- **Vector Index**:
+  ```sql
+  CREATE INDEX idx_chatbot_knowledge_embedding
+  ON chatbot_knowledge
+  USING hnsw (embedding vector_cosine_ops);
+  ```
+
+---
+
+### 7. `contact_submissions` (General Inquiries)
+
+Messages submitted through the public contact form (`/contact`).
+
+| Column             | Type          | Constraints                                | Description                                       |
+| :----------------- | :------------ | :----------------------------------------- | :------------------------------------------------ |
+| `id`               | `UUID`        | `PRIMARY KEY`, `DEFAULT gen_random_uuid()` | Submission ID                                     |
+| `name`             | `TEXT`        | `NOT NULL`                                 | Sender's full name                                |
+| `email`            | `TEXT`        | `NOT NULL`                                 | Sender's email address                            |
+| `phone`            | `TEXT`        | `NULLABLE`                                 | Sender's contact number                           |
+| `service_interest` | `TEXT`        | `NULLABLE`                                 | Service category of interest                      |
+| `message`          | `TEXT`        | `NOT NULL`                                 | Message body                                      |
+| `status`           | `TEXT`        | `DEFAULT 'new'`                            | Processing status: `new`, `contacted`, `archived` |
+| `created_at`       | `TIMESTAMPTZ` | `DEFAULT now()`                            | Submission timestamp                              |
+
+---
+
+## ⚙️ PostgreSQL Functions & RPCs
+
+### `match_chatbot_docs` (Cosine Similarity Retrieval)
+
+Performs vector similarity search against the knowledge base filtered by language:
 
 ```sql
-match_chatbot_docs(
-  query_embedding VECTOR(1536),    -- Embedding of user question
-  match_threshold FLOAT,           -- Similarity threshold (e.g., 0.7)
-  match_count INT,                 -- Max results (e.g., 5)
-  filter_language TEXT DEFAULT NULL -- Optional language filter
+CREATE OR REPLACE FUNCTION match_chatbot_docs (
+    query_embedding vector(1536),
+    match_threshold float,
+    match_count int,
+    filter_language text DEFAULT 'de'
 )
-RETURNS TABLE (id UUID, content TEXT, metadata JSONB, language TEXT, similarity FLOAT)
+RETURNS TABLE (
+    id uuid,
+    content text,
+    metadata jsonb,
+    similarity float
+)
+LANGUAGE plpgsql
+SECURITY DEFINER
+SET search_path = public, extensions
+AS $$
+BEGIN
+    RETURN QUERY
+    SELECT
+        chatbot_knowledge.id,
+        chatbot_knowledge.content,
+        chatbot_knowledge.metadata,
+        1 - (chatbot_knowledge.embedding <=> query_embedding) AS similarity
+    FROM chatbot_knowledge
+    WHERE
+        (chatbot_knowledge.language = filter_language OR filter_language IS NULL)
+        AND 1 - (chatbot_knowledge.embedding <=> query_embedding) > match_threshold
+    ORDER BY chatbot_knowledge.embedding <=> query_embedding
+    LIMIT match_count;
+END;
+$$;
 ```
 
-### `match_service_vectors`
+---
 
-```sql
-match_service_vectors(
-  query_embedding VECTOR(1536),    -- Embedding of search query
-  match_threshold FLOAT,           -- Similarity threshold
-  match_count INT,                 -- Max results
-  filter_language TEXT DEFAULT NULL -- Optional language filter
-)
-RETURNS TABLE (id UUID, service_id UUID, content TEXT, metadata JSONB, language TEXT, similarity FLOAT)
+## 🪣 Supabase Storage Buckets
+
+| Bucket Name             | Public Access    | File Size Limit | Allowed MIME Types                      | Purpose                                                  |
+| :---------------------- | :--------------- | :-------------- | :-------------------------------------- | :------------------------------------------------------- |
+| `services`              | **Yes** (Public) | 10 MB           | `image/jpeg`, `image/png`, `image/webp` | Detailing service card images and marketing photos       |
+| `gallery`               | **Yes** (Public) | 15 MB           | `image/jpeg`, `image/png`, `image/webp` | Portfolio Before / After detailing transformation photos |
+| `car-assessment-images` | **No** (Private) | 10 MB           | `image/jpeg`, `image/png`, `image/webp` | Ephemeral customer vehicle assessment photos (RAM-first) |
+
+### Storage RLS Policies
+
+- `services` & `gallery`:
+  - `SELECT`: Public access (`bucket_id = 'services'`).
+  - `INSERT / UPDATE / DELETE`: Only authenticated users with `profiles.role = 'admin'`.
+
+---
+
+## 🔄 Running Migrations
+
+Database migrations are located in `supabase/migrations/` and version-controlled.
+
+```bash
+# Link local project with Supabase cloud instance
+npx supabase link --project-ref <your-supabase-ref>
+
+# Push pending SQL migrations
+npx supabase db push
+
+# Generate fresh TypeScript database types
+npx supabase gen types typescript --local > src/types/supabase.ts
 ```
-
----
-
-## 🗄️ Storage Buckets
-
-### `car-assessment-images`
-
-| Property               | Value                                          |
-| ---------------------- | ---------------------------------------------- |
-| **Public**             | ❌ No (private)                                |
-| **Max file size**      | 10 MB                                          |
-| **Allowed MIME types** | image/jpeg, image/png, image/webp              |
-| **RLS**                | Admin only (select, insert, delete)            |
-| **Purpose**            | Store uploaded car photos during AI assessment |
-
-### `gallery`
-
-| Property               | Value                                    |
-| ---------------------- | ---------------------------------------- |
-| **Public**             | ✅ Yes                                   |
-| **Max file size**      | 50 MB                                    |
-| **Allowed MIME types** | image/jpeg, image/png, image/webp        |
-| **RLS**                | Anyone can read, admin can upload/delete |
-| **Purpose**            | Store portfolio before/after images      |
-
----
-
-## 🔗 RLS Policies Summary
-
-| Table                 | Public SELECT    | Public INSERT | Admin Access        |
-| --------------------- | ---------------- | ------------- | ------------------- |
-| `profiles`            | ❌               | ❌            | ✅ Own profile only |
-| `services`            | ✅ (active only) | ❌            | ✅ Full CRUD        |
-| `car_assessments`     | ❌               | ❌            | ✅ Full CRUD        |
-| `appointments`        | ❌               | ✅ Anyone     | ✅ Full CRUD        |
-| `blocked_slots`       | ✅               | ❌            | ✅ Full CRUD        |
-| `gallery_images`      | ✅               | ❌            | ✅ Full CRUD        |
-| `contact_submissions` | ❌               | ✅ Anyone     | ✅ SELECT           |
-| `chatbot_knowledge`   | ✅               | ❌            | ✅ Full CRUD        |
-| `service_vectors`     | ✅               | ❌            | ✅ Full CRUD        |
-
----
-
-## 🏗️ Migrations History
-
-| #   | File                                    | Date       | Description                                                                                      |
-| --- | --------------------------------------- | ---------- | ------------------------------------------------------------------------------------------------ |
-| 1   | `20240624000001_enable_pgvector.sql`    | 2024-06-24 | Enable pgvector extension                                                                        |
-| 2   | `20240624000002_create_core_tables.sql` | 2024-06-24 | All core tables (profiles, services, assessments, appointments, blocked_slots, gallery, contact) |
-| 3   | `20240624000003_create_rag_tables.sql`  | 2024-06-24 | RAG tables (chatbot_knowledge, service_vectors), search functions, HNSW indexes                  |
-
----
-
-## 🔄 DB Migration Guide
-
-If migrating away from Supabase:
-
-1. **Auth**: Replace `auth.users` → your own users table. `profiles.user_id` will need remapping.
-2. **Vector search**: `match_chatbot_docs()` and `match_service_vectors()` are pure PostgreSQL — portable to any Postgres 15+ with pgvector.
-3. **Storage**: `car-assessment-images` and `gallery` buckets → your own file storage (S3, CloudFlare R2, etc.).
-4. **RLS**: Replace with application-level middleware checks.
-5. **HNSW indexes**: Supported in pgvector — same syntax works anywhere.
