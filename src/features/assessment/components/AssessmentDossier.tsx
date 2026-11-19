@@ -67,9 +67,9 @@ export const AssessmentDossier: React.FC = () => {
 				<span className="pointer-events-none absolute top-2.5 right-2.5 h-3.5 w-3.5 border-t border-r border-[#d8b4fe]/60" />
 
 				{/* Top Brand & Live Status */}
-				<div className="absolute top-3.5 right-3.5 left-3.5 flex items-center justify-between gap-2">
-					<div className="flex items-center gap-2 rounded-full border border-white/12 bg-black/65 px-2.5 py-1 backdrop-blur-xl">
-						<div className="relative h-4 w-4 overflow-hidden rounded border border-[#7b2dff]/55 bg-black">
+				<div className="absolute top-3 right-3 left-3 flex items-center justify-between gap-1.5 sm:top-3.5 sm:right-3.5 sm:left-3.5 sm:gap-2">
+					<div className="flex shrink-0 items-center gap-1.5 rounded-full border border-white/12 bg-black/65 px-2 py-1 backdrop-blur-xl sm:gap-2 sm:px-2.5">
+						<div className="relative h-4 w-4 shrink-0 overflow-hidden rounded border border-[#7b2dff]/55 bg-black">
 							<Image
 								src={lkLogo}
 								alt="LK Gloss & Detail"
@@ -78,38 +78,38 @@ export const AssessmentDossier: React.FC = () => {
 								className="h-full w-full scale-105 object-cover"
 							/>
 						</div>
-						<span className="font-mono text-[10px] font-semibold tracking-[0.16em] text-[#e5e2e1] uppercase">
+						<span className="font-mono text-[9px] font-semibold tracking-[0.14em] text-[#e5e2e1] uppercase min-[390px]:text-[10px] sm:tracking-[0.16em]">
 							LK Vision
 						</span>
 					</div>
 
-					<div className="inline-flex items-center gap-1.5 rounded-full border border-[#a855f7]/40 bg-black/65 px-2.5 py-1 backdrop-blur-xl">
-						<span className="relative flex h-2 w-2">
+					<div className="inline-flex min-w-0 items-center gap-1.5 rounded-full border border-[#a855f7]/40 bg-black/65 px-2 py-1 backdrop-blur-xl sm:px-2.5">
+						<span className="relative flex h-2 w-2 shrink-0">
 							<span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-75" />
 							<span className="relative inline-flex h-2 w-2 rounded-full bg-emerald-400" />
 						</span>
-						<span className="font-mono text-[10px] font-semibold tracking-[0.14em] text-[#e9d5ff] uppercase">
+						<span className="truncate font-mono text-[9px] font-semibold tracking-[0.1em] text-[#e9d5ff] uppercase min-[390px]:text-[10px] sm:tracking-[0.14em]">
 							{validatedCount > 0 ? tDossier("statusActive") : tDossier("statusLive")}
 						</span>
 					</div>
 				</div>
 
 				{/* Bottom Header Title & Counter */}
-				<div className="absolute right-5 bottom-4 left-5 flex items-end justify-between gap-3">
-					<div className="flex items-center gap-2">
-						<ScanLine className="h-4 w-4 text-[#d8b4fe]" aria-hidden="true" />
-						<h2 className="font-display text-lg font-extrabold tracking-tight text-white sm:text-xl">
+				<div className="absolute right-4 bottom-3.5 left-4 flex items-end justify-between gap-2.5 sm:right-5 sm:bottom-4 sm:left-5 sm:gap-3">
+					<div className="flex min-w-0 items-center gap-2">
+						<ScanLine className="h-4 w-4 shrink-0 text-[#d8b4fe]" aria-hidden="true" />
+						<h2 className="font-display text-sm leading-tight font-extrabold tracking-tight text-white min-[390px]:text-base sm:text-xl">
 							{tDossier("title")}
 						</h2>
 					</div>
-					<span className="rounded-lg border border-white/12 bg-black/60 px-2.5 py-1 font-mono text-[11px] font-bold tracking-widest text-[#d8b4fe] backdrop-blur-md">
+					<span className="shrink-0 rounded-lg border border-white/12 bg-black/60 px-2.5 py-1 font-mono text-[11px] font-bold tracking-widest text-[#d8b4fe] backdrop-blur-md">
 						{progressBadge}
 					</span>
 				</div>
 			</div>
 
 			{/* Dossier Body */}
-			<div className="space-y-4 p-5 sm:p-6">
+			<div className="space-y-4 p-4 sm:p-6">
 				<DossierAngleGrid currentStep={currentStep} validPhotos={validPhotos} />
 
 				{/* Live Detected Vehicle Telemetry */}

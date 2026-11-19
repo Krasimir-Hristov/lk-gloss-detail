@@ -28,7 +28,7 @@ export const WhyLKSection = () => {
 							03
 						</span>
 					</div>
-					<h2 className="font-display text-3xl font-extrabold tracking-[-0.02em] sm:text-4xl md:text-5xl">
+					<h2 className="font-display text-2xl font-extrabold tracking-[-0.02em] break-words sm:text-4xl md:text-5xl">
 						<span className="metallic-text">{t("whyLK.title")}</span>
 					</h2>
 				</RevealSection>
@@ -36,8 +36,8 @@ export const WhyLKSection = () => {
 				{/* Asymmetric 5/7 Manifesto Split */}
 				<div className="grid items-stretch gap-6 lg:grid-cols-12 lg:gap-7">
 					{/* Left: Macro Hydrophobic Paint Showcase */}
-					<RevealSection className="lg:col-span-5">
-						<div className="obsidian-card group relative h-full min-h-[300px] overflow-hidden rounded-3xl sm:min-h-[380px]">
+					<RevealSection className="min-w-0 lg:col-span-5">
+						<div className="obsidian-card group relative h-full min-h-[260px] overflow-hidden rounded-3xl sm:min-h-[380px]">
 							<Image
 								src={paintGlossMacro}
 								alt={t("whyLK.title")}
@@ -48,8 +48,8 @@ export const WhyLKSection = () => {
 							/>
 							<div className="pointer-events-none absolute inset-0 bg-linear-to-t from-[#07070a]/90 via-[#07070a]/20 to-transparent" />
 
-							<div className="absolute right-5 bottom-5 left-5">
-								<div className="glass-panel inline-flex items-center rounded-2xl px-4 py-3">
+							<div className="absolute right-4 bottom-4 left-4 sm:right-5 sm:bottom-5 sm:left-5">
+								<div className="glass-panel inline-flex max-w-full items-center rounded-2xl px-3.5 py-2.5 sm:px-4 sm:py-3">
 									<BrandLogo size="sm" />
 								</div>
 							</div>
@@ -57,7 +57,7 @@ export const WhyLKSection = () => {
 					</RevealSection>
 
 					{/* Right: 3 Sculpted Obsidian Manifesto Pillars */}
-					<div className="flex flex-col justify-between gap-4 sm:gap-5 lg:col-span-7">
+					<div className="flex min-w-0 flex-col justify-between gap-4 sm:gap-5 lg:col-span-7">
 						{USP_ICONS.map(({ key, icon: Icon }, index) => {
 							const title = t(`whyLK.${key}`);
 							const desc = t(`whyLK.${key}Desc`);
@@ -65,19 +65,19 @@ export const WhyLKSection = () => {
 
 							return (
 								<RevealSection key={key} delay={index * 0.07}>
-									<article className="obsidian-card group relative flex items-start gap-5 overflow-hidden rounded-2xl p-6 transition-all duration-400 hover:-translate-y-0.5 hover:border-[#a855f7]/50 hover:shadow-[0_18px_45px_-16px_rgba(123,45,255,0.3)] sm:p-7">
+									<article className="obsidian-card group relative flex items-start gap-3.5 overflow-hidden rounded-2xl p-4 transition-all duration-400 hover:-translate-y-0.5 hover:border-[#a855f7]/50 hover:shadow-[0_18px_45px_-16px_rgba(123,45,255,0.3)] sm:gap-5 sm:p-7">
 										<div className="pointer-events-none absolute top-0 right-8 left-8 h-px bg-linear-to-r from-transparent via-[#c026ff]/70 to-transparent opacity-0 transition-opacity duration-400 group-hover:opacity-100" />
 
-										<div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl border border-[#7b2dff]/35 bg-[#7b2dff]/12 text-[#d8b4fe] transition-all duration-300 group-hover:border-[#c026ff]/70 group-hover:bg-[#7b2dff] group-hover:text-white group-hover:shadow-[0_0_24px_rgba(123,45,255,0.45)]">
-											<Icon className="h-6 w-6" aria-hidden="true" />
+										<div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl border border-[#7b2dff]/35 bg-[#7b2dff]/12 text-[#d8b4fe] transition-all duration-300 group-hover:border-[#c026ff]/70 group-hover:bg-[#7b2dff] group-hover:text-white group-hover:shadow-[0_0_24px_rgba(123,45,255,0.45)] sm:h-14 sm:w-14 sm:rounded-2xl">
+											<Icon className="h-5 w-5 sm:h-6 sm:w-6" aria-hidden="true" />
 										</div>
 
-										<div className="min-w-0 flex-1 space-y-2">
-											<div className="flex items-center justify-between gap-3">
-												<h3 className="font-display text-lg font-bold tracking-tight text-white sm:text-xl">
+										<div className="min-w-0 flex-1 space-y-1.5 sm:space-y-2">
+											<div className="flex items-start justify-between gap-3">
+												<h3 className="font-display text-base font-bold tracking-tight text-white sm:text-xl">
 													{title}
 												</h3>
-												<span className="font-mono text-xs font-bold tracking-widest text-white/25 transition-colors group-hover:text-[#d8b4fe]">
+												<span className="shrink-0 font-mono text-xs font-bold tracking-widest text-white/25 transition-colors group-hover:text-[#d8b4fe]">
 													{num}
 												</span>
 											</div>

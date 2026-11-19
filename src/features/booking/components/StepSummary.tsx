@@ -145,7 +145,7 @@ export const StepSummary: React.FC = () => {
 					onClick={prevStep}
 					disabled={isSubmitting}
 					aria-label={t("back")}
-					className="font-display h-13 flex-1 cursor-pointer gap-2 rounded-xl border-white/12 bg-white/[0.03] text-sm font-bold text-[#e5e2e1] transition-all hover:border-white/25 hover:bg-white/[0.08] hover:text-white disabled:opacity-45"
+					className="font-display h-13 w-full cursor-pointer gap-2 rounded-xl border-white/12 bg-white/[0.03] text-sm font-bold text-[#e5e2e1] transition-all hover:border-white/25 hover:bg-white/[0.08] hover:text-white disabled:opacity-45 sm:flex-1"
 				>
 					<ArrowLeft className="h-4 w-4" aria-hidden="true" />
 					<span>{t("back")}</span>
@@ -155,7 +155,7 @@ export const StepSummary: React.FC = () => {
 					onClick={handleSubmit}
 					disabled={isSubmitting}
 					aria-label={isSubmitting ? t("submitting") : t("confirm")}
-					className="group font-display h-13 flex-1 cursor-pointer gap-2.5 rounded-xl bg-linear-to-r from-[#7b2dff] via-[#9c2bff] to-[#c026ff] text-base font-bold tracking-wide text-white shadow-[inset_0_1px_0_rgba(255,255,255,0.28),0_14px_38px_-8px_rgba(123,45,255,0.65)] transition-all duration-300 hover:scale-[1.01] hover:shadow-[0_18px_48px_-6px_rgba(192,38,255,0.72)] hover:brightness-110 active:scale-[0.99] disabled:opacity-50"
+					className="group font-display h-13 w-full cursor-pointer gap-2 rounded-xl bg-linear-to-r from-[#7b2dff] via-[#9c2bff] to-[#c026ff] px-4 text-sm font-bold tracking-wide text-white shadow-[inset_0_1px_0_rgba(255,255,255,0.28),0_14px_38px_-8px_rgba(123,45,255,0.65)] transition-all duration-300 hover:scale-[1.01] hover:shadow-[0_18px_48px_-6px_rgba(192,38,255,0.72)] hover:brightness-110 active:scale-[0.99] disabled:opacity-50 sm:flex-1 sm:gap-2.5 sm:px-6 sm:text-base"
 				>
 					{isSubmitting ? (
 						<Loader2 className="h-4 w-4 animate-spin" aria-hidden="true" />

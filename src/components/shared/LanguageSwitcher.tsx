@@ -39,7 +39,7 @@ export const LanguageSwitcher = () => {
 			<button
 				type="button"
 				onClick={() => setIsOpen(!isOpen)}
-				className="flex items-center gap-2 rounded-xl border border-white/10 bg-white/[0.04] px-3 py-2 font-mono text-xs font-medium text-[#d5d0e3] transition-all hover:border-[#7b2dff]/50 hover:bg-white/[0.08] hover:text-white"
+				className="flex cursor-pointer items-center gap-1.5 rounded-xl border border-white/10 bg-white/[0.04] px-2.5 py-2 font-mono text-xs font-medium text-[#d5d0e3] transition-all hover:border-[#7b2dff]/50 hover:bg-white/[0.08] hover:text-white sm:gap-2 sm:px-3"
 				aria-label={t("label")}
 				aria-expanded={isOpen}
 			>
@@ -66,7 +66,7 @@ export const LanguageSwitcher = () => {
 									key={loc}
 									onClick={() => handleChange(loc)}
 									disabled={isNavigating || isActive}
-									className={`block w-full rounded-lg px-3 py-2 text-left font-mono text-xs transition-colors ${
+									className={`block w-full cursor-pointer rounded-lg px-3 py-2 text-left font-mono text-xs transition-colors ${
 										isActive
 											? "bg-linear-to-r from-[#7b2dff] to-[#a855f7] font-bold text-white"
 											: "text-[#ccc3d9] hover:bg-white/[0.06] hover:text-white"

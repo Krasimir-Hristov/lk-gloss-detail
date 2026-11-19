@@ -28,20 +28,20 @@ export const HeroSection = ({ locale }: HeroSectionProps) => {
 			<div className="relative mx-auto max-w-7xl">
 				<div className="grid items-center gap-10 lg:grid-cols-12 lg:gap-12">
 					{/* Left: Editorial Display Typography & Actions */}
-					<div className="flex flex-col gap-6 lg:col-span-6">
+					<div className="flex min-w-0 flex-col gap-5 sm:gap-6 lg:col-span-6">
 						{/* Studio Pill Badge */}
-						<div className="inline-flex w-fit items-center gap-2.5 rounded-full border border-[#7b2dff]/35 bg-[#7b2dff]/10 px-4 py-1.5 backdrop-blur-md">
-							<span className="relative flex h-2 w-2">
+						<div className="inline-flex w-fit max-w-full items-center gap-2 rounded-full border border-[#7b2dff]/35 bg-[#7b2dff]/10 px-3.5 py-1.5 backdrop-blur-md sm:gap-2.5 sm:px-4">
+							<span className="relative flex h-2 w-2 shrink-0">
 								<span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-[#c026ff] opacity-75" />
 								<span className="relative inline-flex h-2 w-2 rounded-full bg-[#d8b4fe]" />
 							</span>
-							<span className="font-mono text-[11px] font-semibold tracking-[0.16em] text-[#e5d4ff] uppercase">
+							<span className="truncate font-mono text-[10px] font-semibold tracking-[0.14em] text-[#e5d4ff] uppercase min-[390px]:text-[11px] sm:tracking-[0.16em]">
 								{t("hero.badgeTitle")} · {t("hero.badgeSubtitle")}
 							</span>
 						</div>
 
 						{/* Monumental Headline */}
-						<h1 className="font-display text-3xl leading-[1.06] font-black tracking-[-0.03em] sm:text-5xl lg:text-[3.35rem] xl:text-6xl">
+						<h1 className="font-display text-[1.75rem] leading-[1.08] font-black tracking-[-0.03em] break-words min-[390px]:text-3xl sm:text-5xl lg:text-[3.35rem] xl:text-6xl">
 							<span className="metallic-text">{t("hero.title")}</span>
 						</h1>
 
@@ -90,14 +90,14 @@ export const HeroSection = ({ locale }: HeroSectionProps) => {
 					</div>
 
 					{/* Right: Rim-Lit Showroom Photography Showcase */}
-					<div className="relative mx-auto w-full max-w-2xl lg:col-span-6 lg:mx-0 lg:max-w-none">
+					<div className="relative mx-auto w-full max-w-2xl min-w-0 lg:col-span-6 lg:mx-0 lg:max-w-none">
 						{/* Ambient rim glow behind visual */}
 						<div className="pointer-events-none absolute -inset-3 rounded-[32px] bg-linear-to-tr from-[#7b2dff]/25 via-transparent to-[#c026ff]/20 opacity-80 blur-2xl" />
 
 						{/* Precision Chamfered Obsidian Frame */}
 						<div className="relative rounded-[26px] bg-linear-to-b from-[#c026ff]/45 via-white/15 to-white/[0.04] p-px shadow-[0_30px_90px_-20px_rgba(0,0,0,0.95)]">
 							<div className="group relative overflow-hidden rounded-[25px] bg-[#0b0b10]">
-								<div className="relative aspect-[16/11] w-full sm:aspect-[16/10] lg:aspect-[4/3]">
+								<div className="relative aspect-[4/3] w-full sm:aspect-[16/10] lg:aspect-[4/3]">
 									<Image
 										src={heroShowroom}
 										alt={t("hero.imageAlt")}
@@ -113,7 +113,7 @@ export const HeroSection = ({ locale }: HeroSectionProps) => {
 								</div>
 
 								{/* Top Brand Watermark Crest */}
-								<div className="absolute top-4 left-4 flex items-center gap-2 rounded-full border border-white/12 bg-black/65 px-3 py-1.5 backdrop-blur-xl">
+								<div className="absolute top-3 left-3 flex items-center gap-2 rounded-full border border-white/12 bg-black/65 px-2.5 py-1 backdrop-blur-xl sm:top-4 sm:left-4 sm:px-3 sm:py-1.5">
 									<div className="relative h-5 w-5 overflow-hidden rounded-md border border-[#7b2dff]/50 bg-black">
 										<Image
 											src={lkLogo}
@@ -123,22 +123,22 @@ export const HeroSection = ({ locale }: HeroSectionProps) => {
 											className="h-full w-full scale-105 object-cover"
 										/>
 									</div>
-									<span className="font-mono text-[10px] font-semibold tracking-[0.18em] text-[#e5e2e1] uppercase">
+									<span className="font-mono text-[10px] font-semibold tracking-[0.16em] text-[#e5e2e1] uppercase sm:tracking-[0.18em]">
 										LK Gloss &amp; Detail
 									</span>
 								</div>
 
 								{/* Floating Smoked-Glass Certification Card */}
-								<div className="absolute right-4 bottom-4 left-4 sm:right-auto sm:max-w-sm">
-									<div className="glass-panel flex items-center gap-3.5 rounded-2xl px-4 py-3 shadow-[0_20px_45px_rgba(0,0,0,0.75)]">
-										<div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-linear-to-br from-[#7b2dff] to-[#c026ff] text-white shadow-[0_0_20px_rgba(123,45,255,0.5)]">
+								<div className="absolute right-3 bottom-3 left-3 sm:right-auto sm:bottom-4 sm:left-4 sm:max-w-sm">
+									<div className="glass-panel flex items-center gap-3 rounded-2xl px-3.5 py-2.5 shadow-[0_20px_45px_rgba(0,0,0,0.75)] sm:gap-3.5 sm:px-4 sm:py-3">
+										<div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-linear-to-br from-[#7b2dff] to-[#c026ff] text-white shadow-[0_0_20px_rgba(123,45,255,0.5)] sm:h-11 sm:w-11">
 											<ShieldCheck className="h-5 w-5" aria-hidden="true" />
 										</div>
 										<div className="min-w-0 flex-1">
-											<p className="font-display truncate text-sm font-bold text-white">
+											<p className="font-display truncate text-xs font-bold text-white sm:text-sm">
 												{t("hero.badgeTitle")}
 											</p>
-											<p className="truncate font-mono text-xs text-[#d1bcff]">
+											<p className="truncate font-mono text-[11px] text-[#d1bcff] sm:text-xs">
 												{t("hero.badgeSubtitle")}
 											</p>
 										</div>

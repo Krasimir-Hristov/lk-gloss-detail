@@ -101,6 +101,20 @@
 	html {
 		@apply font-sans;
 	}
+	button:not(:disabled),
+	[role="button"]:not([aria-disabled="true"]),
+	[role="checkbox"]:not([aria-disabled="true"]),
+	input[type="button"]:not(:disabled),
+	input[type="submit"]:not(:disabled),
+	input[type="reset"]:not(:disabled),
+	summary {
+		cursor: pointer;
+	}
+	button:disabled,
+	[role="button"][aria-disabled="true"],
+	[role="checkbox"][aria-disabled="true"] {
+		cursor: not-allowed;
+	}
 }
 
 /* ── LK Gloss & Detail — Custom Utilities ─────────────────────────────── */

@@ -25,10 +25,10 @@ const Footer: React.FC = () => {
 	}));
 
 	return (
-		<footer className="relative w-full overflow-hidden border-t border-white/[0.08] bg-[#050508] pt-16 pb-12 md:pt-24 md:pb-16">
+		<footer className="relative w-full overflow-hidden border-t border-white/[0.08] bg-[#050508] pt-16 pb-32 md:pt-24 md:pb-16">
 			{/* Top hairline violet accent */}
 			<div className="pointer-events-none absolute top-0 left-1/2 h-px w-2/3 -translate-x-1/2 bg-linear-to-r from-transparent via-[#7b2dff]/70 to-transparent" />
-			<div className="pointer-events-none absolute -top-24 left-1/2 h-48 w-96 -translate-x-1/2 rounded-full bg-[#7b2dff]/10 blur-3xl" />
+			<div className="pointer-events-none absolute -top-24 left-1/2 h-48 w-full max-w-96 -translate-x-1/2 rounded-full bg-[#7b2dff]/10 blur-3xl" />
 
 			<div className="relative mx-auto max-w-7xl px-4 md:px-12">
 				<div className="grid grid-cols-1 gap-10 sm:grid-cols-2 lg:grid-cols-12 lg:gap-8">

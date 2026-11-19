@@ -29,7 +29,7 @@ export const AssessmentAnalyzing: React.FC = () => {
 			transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
 			className="mx-auto w-full max-w-2xl"
 		>
-			<div className="obsidian-card relative overflow-hidden rounded-3xl px-6 py-12 text-center sm:px-12 sm:py-16">
+			<div className="obsidian-card relative overflow-hidden rounded-3xl px-5 py-9 text-center sm:px-12 sm:py-16">
 				{/* Specular top strip & laser scanline */}
 				<div className="pointer-events-none absolute top-0 right-12 left-12 h-px bg-linear-to-r from-transparent via-[#c026ff]/80 to-transparent" />
 				<div className="scanline-beam pointer-events-none absolute inset-x-0 top-0 h-1/2 opacity-50" />
@@ -37,18 +37,18 @@ export const AssessmentAnalyzing: React.FC = () => {
 
 				<div className="relative flex flex-col items-center">
 					{/* Status badge */}
-					<div className="mb-8 inline-flex items-center gap-2 rounded-full border border-[#a855f7]/40 bg-[#7b2dff]/15 px-4 py-1.5 backdrop-blur-md">
-						<span className="relative flex h-2 w-2">
+					<div className="mb-7 inline-flex max-w-full items-center gap-2 rounded-full border border-[#a855f7]/40 bg-[#7b2dff]/15 px-3.5 py-1.5 backdrop-blur-md sm:mb-8 sm:px-4">
+						<span className="relative flex h-2 w-2 shrink-0">
 							<span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-[#c026ff] opacity-75" />
 							<span className="relative inline-flex h-2 w-2 rounded-full bg-[#e9d5ff]" />
 						</span>
-						<span className="font-mono text-[11px] font-semibold tracking-[0.16em] text-[#e9d5ff] uppercase">
+						<span className="truncate font-mono text-[10px] font-semibold tracking-[0.14em] text-[#e9d5ff] uppercase sm:text-[11px] sm:tracking-[0.16em]">
 							{t("badge")}
 						</span>
 					</div>
 
 					{/* Concentric Neural Scanner Emblem */}
-					<div className="relative mb-8 flex h-28 w-28 items-center justify-center">
+					<div className="relative mb-7 flex h-24 w-24 items-center justify-center sm:mb-8 sm:h-28 sm:w-28">
 						<motion.div
 							animate={{ rotate: 360 }}
 							transition={{ duration: 7, repeat: Infinity, ease: "linear" }}
@@ -59,12 +59,15 @@ export const AssessmentAnalyzing: React.FC = () => {
 							transition={{ duration: 4.5, repeat: Infinity, ease: "linear" }}
 							className="absolute inset-2.5 rounded-full border-2 border-transparent border-t-[#c026ff] border-r-[#7b2dff]"
 						/>
-						<div className="relative flex h-16 w-16 items-center justify-center rounded-2xl border border-[#d8b4fe]/45 bg-linear-to-br from-[#7b2dff] to-[#c026ff] shadow-[0_0_36px_rgba(192,38,255,0.55)]">
-							<Sparkles className="h-8 w-8 animate-pulse text-white" aria-hidden="true" />
+						<div className="relative flex h-14 w-14 items-center justify-center rounded-2xl border border-[#d8b4fe]/45 bg-linear-to-br from-[#7b2dff] to-[#c026ff] shadow-[0_0_36px_rgba(192,38,255,0.55)] sm:h-16 sm:w-16">
+							<Sparkles
+								className="h-7 w-7 animate-pulse text-white sm:h-8 sm:w-8"
+								aria-hidden="true"
+							/>
 						</div>
 					</div>
 
-					<h2 className="font-display text-2xl font-black tracking-tight sm:text-3xl">
+					<h2 className="font-display text-xl font-black tracking-tight break-words min-[390px]:text-2xl sm:text-3xl">
 						<span className="metallic-text">{t("title")}</span>
 					</h2>
 					<p className="mt-3 max-w-md text-sm leading-relaxed text-[#b8b2c7] sm:text-base">

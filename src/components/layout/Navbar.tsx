@@ -209,13 +209,13 @@ const Navbar = () => {
 		>
 			<nav
 				aria-label="Primary Navigation"
-				className="mx-auto flex h-16 max-w-7xl items-center justify-between rounded-2xl border border-white/[0.08] bg-[#0a0a0f]/82 px-3.5 shadow-[0_12px_40px_-10px_rgba(0,0,0,0.85),inset_0_1px_0_rgba(255,255,255,0.06)] backdrop-blur-2xl sm:px-5"
+				className="mx-auto flex h-14 max-w-7xl items-center justify-between gap-2 rounded-2xl border border-white/[0.08] bg-[#0a0a0f]/82 px-2.5 shadow-[0_12px_40px_-10px_rgba(0,0,0,0.85),inset_0_1px_0_rgba(255,255,255,0.06)] backdrop-blur-2xl sm:h-16 sm:px-5"
 			>
 				{/* ----- Logo ----- */}
 				<Link
 					href="/"
 					aria-label="LK Gloss & Detail"
-					className="group flex shrink-0 items-center focus:outline-none"
+					className="group flex min-w-0 items-center focus:outline-none"
 				>
 					<BrandLogo size="sm" priority />
 				</Link>
@@ -230,14 +230,14 @@ const Navbar = () => {
 				</div>
 
 				{/* ----- Right Actions ----- */}
-				<div className="flex items-center gap-2.5 sm:gap-3">
+				<div className="flex shrink-0 items-center gap-1.5 sm:gap-3">
 					<LanguageSwitcher />
 
 					{/* Desktop CTA */}
 					<Link
 						href="/booking"
 						aria-label={t("bookNow")}
-						className="group font-display hidden items-center gap-2 rounded-xl bg-linear-to-r from-[#7b2dff] via-[#9c2bff] to-[#c026ff] px-4 py-2.5 text-xs font-bold tracking-wider text-white uppercase shadow-[0_0_20px_rgba(123,45,255,0.4)] transition-all hover:shadow-[0_0_28px_rgba(192,38,255,0.58)] hover:brightness-110 active:scale-95 md:inline-flex"
+						className="group font-display hidden cursor-pointer items-center gap-2 rounded-xl bg-linear-to-r from-[#7b2dff] via-[#9c2bff] to-[#c026ff] px-4 py-2.5 text-xs font-bold tracking-wider text-white uppercase shadow-[0_0_20px_rgba(123,45,255,0.4)] transition-all hover:shadow-[0_0_28px_rgba(192,38,255,0.58)] hover:brightness-110 active:scale-95 md:inline-flex"
 					>
 						<span>{t("bookNow")}</span>
 						<ArrowRight className="size-3.5 transition-transform duration-200 group-hover:translate-x-0.5" />
@@ -247,7 +247,7 @@ const Navbar = () => {
 					<button
 						type="button"
 						onClick={() => setMobileOpen((prev) => !prev)}
-						className="inline-flex items-center justify-center rounded-xl border border-white/10 bg-white/[0.04] p-2 text-[#ccc3d9] transition-colors hover:border-[#7b2dff]/50 hover:text-white lg:hidden"
+						className="inline-flex cursor-pointer items-center justify-center rounded-xl border border-white/10 bg-white/[0.04] p-2 text-[#ccc3d9] transition-colors hover:border-[#7b2dff]/50 hover:text-white lg:hidden"
 						aria-label={mobileOpen ? t("closeMenu") : t("openMenu")}
 						aria-expanded={mobileOpen}
 					>

@@ -29,14 +29,14 @@ export const MobileServiceSection = () => {
 			<div className="relative mx-auto max-w-7xl">
 				{/* Editorial Split Header */}
 				<RevealSection className="mb-10 flex flex-col items-start justify-between gap-5 md:mb-14 md:flex-row md:items-end">
-					<div className="space-y-3">
+					<div className="min-w-0 space-y-3">
 						<div className="inline-flex items-center gap-2.5">
 							<span className="h-px w-8 bg-linear-to-r from-[#7b2dff] to-[#d8b4fe]" />
 							<span className="font-mono text-xs font-semibold tracking-[0.22em] text-[#d1bcff] uppercase">
 								02
 							</span>
 						</div>
-						<h2 className="font-display text-3xl font-extrabold tracking-[-0.02em] sm:text-4xl md:text-5xl">
+						<h2 className="font-display text-2xl font-extrabold tracking-[-0.02em] break-words sm:text-4xl md:text-5xl">
 							<span className="metallic-text">{t("mobileService.title")}</span>
 						</h2>
 					</div>
@@ -48,8 +48,8 @@ export const MobileServiceSection = () => {
 				{/* Tight, Balanced 12-Column Bento Row */}
 				<div className="grid items-stretch gap-5 lg:grid-cols-12 lg:gap-6">
 					{/* Left: Framed Editorial Photography (6 cols) */}
-					<RevealSection className="lg:col-span-6">
-						<div className="obsidian-card group relative h-full min-h-[260px] overflow-hidden rounded-3xl sm:min-h-[340px]">
+					<RevealSection className="min-w-0 lg:col-span-6">
+						<div className="obsidian-card group relative h-full min-h-[240px] overflow-hidden rounded-3xl sm:min-h-[340px]">
 							<Image
 								src={mobileBioDetailing}
 								alt={t("mobileService.title")}
@@ -63,7 +63,7 @@ export const MobileServiceSection = () => {
 					</RevealSection>
 
 					{/* Right: Compact 2x2 Obsidian Bento Tiles (6 cols — zero hollow void) */}
-					<div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:col-span-6">
+					<div className="grid min-w-0 grid-cols-1 gap-4 sm:grid-cols-2 lg:col-span-6">
 						{MOBILE_FEATURE_ICONS.map(({ key, icon: Icon }, index) => {
 							const rawFeature = t.raw(`mobileService.features.${key}`);
 							const feature = MobileFeatureSchema.parse(rawFeature);

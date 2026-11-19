@@ -81,7 +81,8 @@ export const ConfirmModal: React.FC<ConfirmModalProps> = ({
 							type="button"
 							onClick={onClose}
 							disabled={isLoading}
-							className="absolute top-4 right-4 rounded-lg p-2 text-neutral-400 transition-colors hover:bg-neutral-800 hover:text-white disabled:opacity-50"
+							aria-label={cancelText}
+							className="absolute top-4 right-4 cursor-pointer rounded-lg p-2 text-neutral-400 transition-colors hover:bg-neutral-800 hover:text-white disabled:cursor-not-allowed disabled:opacity-50"
 						>
 							<X className="size-5" />
 						</button>

@@ -78,23 +78,23 @@ export const AssessmentReport: React.FC<AssessmentReportProps> = ({ result }) =>
 			className="mx-auto flex w-full max-w-4xl flex-col gap-7"
 		>
 			{/* ── Executive Header Banner ─────────────────────────────── */}
-			<header className="obsidian-card relative overflow-hidden rounded-3xl p-6 text-center sm:p-10">
+			<header className="obsidian-card relative overflow-hidden rounded-3xl p-5 text-center sm:p-10">
 				<div className="pointer-events-none absolute top-0 right-12 left-12 h-px bg-linear-to-r from-transparent via-[#c026ff]/80 to-transparent" />
 				<div className="pointer-events-none absolute -top-28 left-1/2 h-60 w-60 -translate-x-1/2 rounded-full bg-[#7b2dff]/24 blur-[110px]" />
 
 				<div className="relative flex flex-col items-center">
-					<div className="mb-5 inline-flex items-center gap-2 rounded-full border border-[#a855f7]/45 bg-[#7b2dff]/15 px-4 py-1.5 backdrop-blur-md">
-						<Sparkles className="h-3.5 w-3.5 text-[#e9d5ff]" aria-hidden="true" />
-						<span className="font-mono text-[11px] font-bold tracking-[0.16em] text-[#e9d5ff] uppercase">
+					<div className="mb-5 inline-flex max-w-full items-center gap-2 rounded-full border border-[#a855f7]/45 bg-[#7b2dff]/15 px-3.5 py-1.5 backdrop-blur-md sm:px-4">
+						<Sparkles className="h-3.5 w-3.5 shrink-0 text-[#e9d5ff]" aria-hidden="true" />
+						<span className="truncate font-mono text-[10px] font-bold tracking-[0.14em] text-[#e9d5ff] uppercase sm:text-[11px] sm:tracking-[0.16em]">
 							{t("report.badge")}
 						</span>
 					</div>
 
-					<div className="mb-5 flex h-16 w-16 items-center justify-center rounded-2xl border border-[#d8b4fe]/45 bg-linear-to-br from-[#7b2dff] to-[#c026ff] shadow-[0_0_36px_rgba(192,38,255,0.48)]">
-						<Sparkles className="h-8 w-8 text-white" aria-hidden="true" />
+					<div className="mb-5 flex h-14 w-14 items-center justify-center rounded-2xl border border-[#d8b4fe]/45 bg-linear-to-br from-[#7b2dff] to-[#c026ff] shadow-[0_0_36px_rgba(192,38,255,0.48)] sm:h-16 sm:w-16">
+						<Sparkles className="h-7 w-7 text-white sm:h-8 sm:w-8" aria-hidden="true" />
 					</div>
 
-					<h1 className="font-display text-3xl leading-[1.08] font-black tracking-[-0.03em] sm:text-5xl">
+					<h1 className="font-display text-2xl leading-[1.08] font-black tracking-[-0.03em] break-words min-[390px]:text-3xl sm:text-5xl">
 						<span className="metallic-text">{t("report.title")}</span>
 					</h1>
 					<p className="mt-3 max-w-xl text-sm leading-relaxed text-[#b8b2c7] sm:text-base">
@@ -134,7 +134,7 @@ export const AssessmentReport: React.FC<AssessmentReportProps> = ({ result }) =>
 								{t("report.investment")}
 							</h2>
 						</div>
-						<p className="violet-text font-display text-3xl font-black tracking-tight sm:text-4xl">
+						<p className="violet-text font-display text-2xl font-black tracking-tight min-[390px]:text-3xl sm:text-4xl">
 							{formattedMin} – {formattedMax}
 						</p>
 						<p className="mt-2 text-xs text-[#9b93ad]">{t("report.priceNote")}</p>
@@ -142,7 +142,7 @@ export const AssessmentReport: React.FC<AssessmentReportProps> = ({ result }) =>
 				</div>
 
 				{/* Timeline Card */}
-				<div className="obsidian-card relative overflow-hidden rounded-3xl p-6 sm:p-7">
+				<div className="obsidian-card relative overflow-hidden rounded-3xl p-5 sm:p-7">
 					<div className="pointer-events-none absolute top-0 right-8 left-8 h-px bg-linear-to-r from-transparent via-white/25 to-transparent" />
 
 					<div className="relative">
@@ -154,7 +154,7 @@ export const AssessmentReport: React.FC<AssessmentReportProps> = ({ result }) =>
 								{t("report.timeline")}
 							</h2>
 						</div>
-						<p className="font-display text-3xl font-black tracking-tight text-white sm:text-4xl">
+						<p className="font-display text-2xl font-black tracking-tight text-white min-[390px]:text-3xl sm:text-4xl">
 							{t("report.durationValue", { hours: durationHours })}
 						</p>
 						<p className="mt-2 text-xs text-[#9b93ad]">{t("report.durationNote")}</p>
@@ -246,11 +246,11 @@ export const AssessmentReport: React.FC<AssessmentReportProps> = ({ result }) =>
 				<Link
 					href={bookingHref}
 					aria-label={t("report.bookAppointment")}
-					className="group font-display flex w-full items-center justify-center gap-3 rounded-2xl bg-linear-to-r from-[#7b2dff] via-[#9c2bff] to-[#c026ff] px-8 py-4.5 text-base font-extrabold tracking-wide text-white shadow-[inset_0_1px_0_rgba(255,255,255,0.28),0_16px_42px_-6px_rgba(123,45,255,0.62)] transition-all duration-300 hover:scale-[1.01] hover:shadow-[0_20px_50px_-6px_rgba(192,38,255,0.72)] hover:brightness-110 active:scale-[0.99] sm:text-lg"
+					className="group font-display flex w-full items-center justify-center gap-2.5 rounded-2xl bg-linear-to-r from-[#7b2dff] via-[#9c2bff] to-[#c026ff] px-5 py-4 text-sm font-extrabold tracking-wide text-white shadow-[inset_0_1px_0_rgba(255,255,255,0.28),0_16px_42px_-6px_rgba(123,45,255,0.62)] transition-all duration-300 hover:scale-[1.01] hover:shadow-[0_20px_50px_-6px_rgba(192,38,255,0.72)] hover:brightness-110 active:scale-[0.99] sm:gap-3 sm:px-8 sm:py-4.5 sm:text-lg"
 				>
 					<span>{t("report.bookAppointment")}</span>
 					<ArrowRight
-						className="h-5 w-5 transition-transform duration-200 group-hover:translate-x-1"
+						className="h-4 w-4 shrink-0 transition-transform duration-200 group-hover:translate-x-1 sm:h-5 sm:w-5"
 						aria-hidden="true"
 					/>
 				</Link>
@@ -260,9 +260,9 @@ export const AssessmentReport: React.FC<AssessmentReportProps> = ({ result }) =>
 						type="button"
 						onClick={reset}
 						aria-label={t("report.startNew")}
-						className="inline-flex cursor-pointer items-center justify-center gap-2 rounded-xl border border-white/12 bg-white/[0.03] px-5 py-3.5 text-sm font-semibold text-[#d1bcff] transition-all hover:border-[#a855f7]/55 hover:bg-[#7b2dff]/15 hover:text-white"
+						className="inline-flex cursor-pointer items-center justify-center gap-2 rounded-xl border border-white/12 bg-white/[0.03] px-4 py-3.5 text-sm font-semibold text-[#d1bcff] transition-all hover:border-[#a855f7]/55 hover:bg-[#7b2dff]/15 hover:text-white sm:px-5"
 					>
-						<RotateCcw className="h-4 w-4" aria-hidden="true" />
+						<RotateCcw className="h-4 w-4 shrink-0" aria-hidden="true" />
 						<span>{t("report.startNew")}</span>
 					</button>
 
@@ -271,10 +271,10 @@ export const AssessmentReport: React.FC<AssessmentReportProps> = ({ result }) =>
 						target="_blank"
 						rel="noopener noreferrer"
 						aria-label={`WhatsApp: ${CONTACT_INFO.phone}`}
-						className="inline-flex items-center justify-center gap-2 rounded-xl border border-emerald-400/25 bg-emerald-500/[0.08] px-5 py-3.5 text-sm font-semibold text-emerald-200 transition-all hover:border-emerald-400/55 hover:bg-emerald-500/20 hover:text-white"
+						className="inline-flex items-center justify-center gap-2 rounded-xl border border-emerald-400/25 bg-emerald-500/[0.08] px-4 py-3.5 text-xs font-semibold text-emerald-200 transition-all hover:border-emerald-400/55 hover:bg-emerald-500/20 hover:text-white sm:px-5 sm:text-sm"
 					>
-						<MessageCircle className="h-4 w-4 text-emerald-400" aria-hidden="true" />
-						<span>WhatsApp · {CONTACT_INFO.phone}</span>
+						<MessageCircle className="h-4 w-4 shrink-0 text-emerald-400" aria-hidden="true" />
+						<span className="truncate">WhatsApp · {CONTACT_INFO.phone}</span>
 					</a>
 				</div>
 			</div>

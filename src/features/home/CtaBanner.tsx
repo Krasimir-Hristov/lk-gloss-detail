@@ -18,7 +18,7 @@ export const CtaBanner = ({ locale }: CtaBannerProps) => {
 		<section className="relative overflow-hidden bg-[#07070a] px-4 py-14 sm:py-20 md:px-12 md:py-24">
 			<div className="mx-auto max-w-7xl">
 				<RevealSection>
-					<div className="relative overflow-hidden rounded-3xl border border-[#a855f7]/35 bg-linear-to-br from-[#190a36] via-[#0d0c14] to-[#160829] px-6 py-12 text-center shadow-[0_0_90px_-20px_rgba(123,45,255,0.4),inset_0_1px_0_rgba(255,255,255,0.12)] sm:px-10 sm:py-16 md:px-16 md:py-20">
+					<div className="relative overflow-hidden rounded-3xl border border-[#a855f7]/35 bg-linear-to-br from-[#190a36] via-[#0d0c14] to-[#160829] px-5 py-10 text-center shadow-[0_0_90px_-20px_rgba(123,45,255,0.4),inset_0_1px_0_rgba(255,255,255,0.12)] sm:px-10 sm:py-16 md:px-16 md:py-20">
 						{/* Ambient Aurora Glows & Subtle Grid */}
 						<div className="atelier-grid pointer-events-none absolute inset-0 opacity-40" />
 						<div className="pointer-events-none absolute top-0 right-12 left-12 h-px bg-linear-to-r from-transparent via-[#d8b4fe]/80 to-transparent" />
@@ -37,7 +37,7 @@ export const CtaBanner = ({ locale }: CtaBannerProps) => {
 								/>
 							</div>
 
-							<h2 className="font-display text-2xl leading-[1.1] font-black tracking-[-0.025em] sm:text-4xl md:text-5xl">
+							<h2 className="font-display text-2xl leading-[1.12] font-black tracking-[-0.025em] break-words hyphens-auto sm:text-4xl md:text-5xl">
 								<span className="metallic-text">{t("cta.title")}</span>
 							</h2>
 							<p className="mt-4 max-w-xl text-base leading-relaxed text-[#c6c0d6] sm:text-lg">

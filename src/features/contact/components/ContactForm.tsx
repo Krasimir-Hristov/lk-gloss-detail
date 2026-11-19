@@ -75,7 +75,7 @@ export const ContactForm: React.FC = () => {
 						<Input
 							id="contact-name"
 							placeholder={t("namePlaceholder")}
-							className="border-[#4a4456] bg-[#1a1a2e] text-white placeholder:text-[#888]"
+							className="h-11 border-[#4a4456] bg-[#1a1a2e] text-base text-white placeholder:text-[#888] sm:text-sm"
 							{...field}
 						/>
 					)}
@@ -95,7 +95,7 @@ export const ContactForm: React.FC = () => {
 							id="contact-email"
 							type="email"
 							placeholder="name@example.com"
-							className="border-[#4a4456] bg-[#1a1a2e] text-white placeholder:text-[#888]"
+							className="h-11 border-[#4a4456] bg-[#1a1a2e] text-base text-white placeholder:text-[#888] sm:text-sm"
 							{...field}
 						/>
 					)}
@@ -115,7 +115,7 @@ export const ContactForm: React.FC = () => {
 							id="contact-phone"
 							type="tel"
 							placeholder="+49 151 12345678"
-							className="border-[#4a4456] bg-[#1a1a2e] text-white placeholder:text-[#888]"
+							className="h-11 border-[#4a4456] bg-[#1a1a2e] text-base text-white placeholder:text-[#888] sm:text-sm"
 							{...field}
 						/>
 					)}
@@ -135,7 +135,7 @@ export const ContactForm: React.FC = () => {
 							id="contact-message"
 							rows={4}
 							placeholder={t("messagePlaceholder")}
-							className="w-full rounded-lg border border-[#4a4456] bg-[#1a1a2e] px-3 py-2 text-sm text-white outline-none placeholder:text-[#888] focus:border-[#7b2dff]/50"
+							className="w-full rounded-lg border border-[#4a4456] bg-[#1a1a2e] px-3 py-2.5 text-base text-white outline-none placeholder:text-[#888] focus:border-[#7b2dff]/50 sm:text-sm"
 							{...field}
 						/>
 					)}
@@ -155,7 +155,8 @@ export const ContactForm: React.FC = () => {
 			<Button
 				type="submit"
 				disabled={status === "loading"}
-				className="mt-2 w-full bg-linear-to-r from-[#7b2dff] to-[#b303f2] py-6 text-lg font-bold text-white hover:shadow-[0_0_30px_rgba(123,45,255,0.5)]"
+				aria-label={status === "loading" ? t("submitting") : t("submit")}
+				className="mt-2 h-13 w-full cursor-pointer rounded-xl bg-linear-to-r from-[#7b2dff] to-[#b303f2] text-base font-bold text-white hover:shadow-[0_0_30px_rgba(123,45,255,0.5)] sm:text-lg"
 			>
 				{status === "loading" ? t("submitting") : t("submit")}
 			</Button>

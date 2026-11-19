@@ -19,7 +19,7 @@ export const AssessmentErrorCard: React.FC<AssessmentErrorCardProps> = ({ onRetr
 		<div
 			role="alert"
 			aria-live="assertive"
-			className="obsidian-card relative mx-auto w-full max-w-2xl overflow-hidden rounded-3xl p-7 text-center sm:p-10"
+			className="obsidian-card relative mx-auto w-full max-w-2xl overflow-hidden rounded-3xl p-5 text-center sm:p-10"
 		>
 			<div className="pointer-events-none absolute top-0 right-10 left-10 h-px bg-linear-to-r from-transparent via-amber-400/60 to-transparent" />
 
@@ -27,7 +27,7 @@ export const AssessmentErrorCard: React.FC<AssessmentErrorCardProps> = ({ onRetr
 				<AlertCircle className="h-8 w-8" aria-hidden="true" />
 			</div>
 
-			<h2 className="font-display text-2xl font-extrabold tracking-tight text-white sm:text-3xl">
+			<h2 className="font-display text-xl font-extrabold tracking-tight text-white sm:text-3xl">
 				{tErrors("aiUnavailable.title")}
 			</h2>
 			<p className="mx-auto mt-3 max-w-md text-sm leading-relaxed text-[#b8b2c7] sm:text-base">
@@ -79,14 +79,14 @@ export const NoServicesSelectedCard: React.FC<NoServicesSelectedCardProps> = ({
 	const t = useTranslations("Assessment.report");
 
 	return (
-		<div className="obsidian-card relative mx-auto w-full max-w-2xl overflow-hidden rounded-3xl p-7 text-center sm:p-10">
+		<div className="obsidian-card relative mx-auto w-full max-w-2xl overflow-hidden rounded-3xl p-5 text-center sm:p-10">
 			<div className="pointer-events-none absolute top-0 right-10 left-10 h-px bg-linear-to-r from-transparent via-[#c026ff]/65 to-transparent" />
 
 			<div className="mx-auto mb-5 flex h-16 w-16 items-center justify-center rounded-2xl border border-[#a855f7]/40 bg-[#7b2dff]/15 text-[#d8b4fe] shadow-[0_0_28px_rgba(123,45,255,0.28)]">
 				<Sparkles className="h-7 w-7" aria-hidden="true" />
 			</div>
 
-			<h2 className="font-display text-2xl font-extrabold tracking-tight text-white sm:text-3xl">
+			<h2 className="font-display text-xl font-extrabold tracking-tight text-white sm:text-3xl">
 				{t("noServicesTitle")}
 			</h2>
 			<p className="mx-auto mt-3 max-w-md text-sm leading-relaxed text-[#b8b2c7] sm:text-base">

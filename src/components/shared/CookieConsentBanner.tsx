@@ -34,10 +34,10 @@ export const CookieConsentBanner: React.FC = () => {
 	}
 
 	return (
-		<div className="fixed right-4 bottom-4 left-4 z-50 mx-auto max-w-4xl rounded-2xl border border-[#4a4456]/80 bg-[#1a1a2e]/90 p-5 shadow-2xl backdrop-blur-md md:bottom-6 md:p-6">
-			<div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+		<div className="fixed right-3 bottom-3 left-3 z-[60] mx-auto max-w-4xl rounded-2xl border border-white/15 bg-[#101018]/95 p-4 shadow-[0_24px_60px_rgba(0,0,0,0.85)] backdrop-blur-xl sm:right-4 sm:bottom-4 sm:left-4 sm:p-5 md:bottom-6 md:p-6">
+			<div className="flex flex-col gap-3.5 md:flex-row md:items-center md:justify-between md:gap-4">
 				{/* Message */}
-				<div className="flex-1 text-sm text-[#ccc3d9]">
+				<div className="flex-1 text-xs leading-relaxed text-[#ccc3d9] sm:text-sm">
 					<p>
 						{t("message")}{" "}
 						<Link href={`/${locale}/privacy`} className="text-[#d1bcff] underline hover:text-white">
@@ -48,11 +48,11 @@ export const CookieConsentBanner: React.FC = () => {
 				</div>
 
 				{/* Buttons */}
-				<div className="flex flex-wrap items-center gap-3">
+				<div className="flex flex-wrap items-center gap-2.5 sm:gap-3">
 					<button
 						type="button"
 						onClick={handleDecline}
-						className="rounded-xl border border-[#4a4456] bg-transparent px-4 py-2 text-xs font-semibold text-[#ccc3d9] transition-all hover:bg-white/5 hover:text-white"
+						className="flex-1 cursor-pointer rounded-xl border border-white/15 bg-white/[0.03] px-4 py-2.5 text-xs font-semibold text-[#ccc3d9] transition-all hover:border-white/30 hover:bg-white/[0.08] hover:text-white sm:flex-none"
 						aria-label={t("decline")}
 					>
 						{t("decline")}
@@ -60,7 +60,7 @@ export const CookieConsentBanner: React.FC = () => {
 					<button
 						type="button"
 						onClick={handleAccept}
-						className="rounded-xl bg-[#7b2dff] px-4 py-2 text-xs font-semibold text-white transition-all hover:bg-[#8c47ff] hover:shadow-lg hover:shadow-[#7b2dff]/25"
+						className="flex-1 cursor-pointer rounded-xl bg-linear-to-r from-[#7b2dff] to-[#c026ff] px-4 py-2.5 text-xs font-bold text-white shadow-[0_8px_24px_-6px_rgba(123,45,255,0.55)] transition-all hover:brightness-110 sm:flex-none"
 						aria-label={t("accept")}
 					>
 						{t("accept")}

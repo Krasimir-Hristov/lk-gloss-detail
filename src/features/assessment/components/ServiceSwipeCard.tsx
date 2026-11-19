@@ -104,6 +104,7 @@ export const ServiceSwipeCard: React.FC<ServiceSwipeCardProps> = ({
 				inset: 0,
 				zIndex: Math.max(1, 10 - stackIndex),
 				y: yOffset,
+				touchAction: isTop ? "pan-y" : undefined,
 			}}
 			animate={
 				isExiting
@@ -146,7 +147,7 @@ export const ServiceSwipeCard: React.FC<ServiceSwipeCardProps> = ({
 
 			<div className="flex h-full w-full flex-col overflow-hidden rounded-[1.25rem] bg-[#0e0e14]">
 				{/* Top Hero Media */}
-				<div className="relative h-[54%] w-full shrink-0 overflow-hidden bg-[#0a0a0f]">
+				<div className="relative h-[48%] w-full shrink-0 overflow-hidden bg-[#0a0a0f] sm:h-[54%]">
 					{service.image_url ? (
 						<ImageWithFallback
 							src={service.image_url}
@@ -164,7 +165,7 @@ export const ServiceSwipeCard: React.FC<ServiceSwipeCardProps> = ({
 					<div className="pointer-events-none absolute inset-0 bg-linear-to-t from-[#0e0e14] via-[#0e0e14]/25 to-black/25" />
 
 					{/* Category Badge top-left */}
-					<span className="absolute top-3.5 left-3.5 z-10 inline-flex items-center rounded-full border border-[#a855f7]/45 bg-black/70 px-3 py-1 font-mono text-[10px] font-bold tracking-[0.14em] text-[#e9d5ff] uppercase backdrop-blur-md">
+					<span className="absolute top-3 left-3 z-10 inline-flex items-center rounded-full border border-[#a855f7]/45 bg-black/70 px-2.5 py-1 font-mono text-[10px] font-bold tracking-[0.12em] text-[#e9d5ff] uppercase backdrop-blur-md sm:top-3.5 sm:left-3.5 sm:px-3 sm:tracking-[0.14em]">
 						{displayCategory ?? service.category}
 					</span>
 
@@ -174,30 +175,30 @@ export const ServiceSwipeCard: React.FC<ServiceSwipeCardProps> = ({
 							initial={{ opacity: 0, scale: 0.75 }}
 							animate={{ opacity: 1, scale: 1 }}
 							transition={{ delay: 0.12, duration: 0.25 }}
-							className="absolute bottom-3.5 left-4 flex h-12 w-12 items-center justify-center rounded-xl border border-[#a855f7]/45 bg-black/75 shadow-[0_0_24px_rgba(123,45,255,0.35)] backdrop-blur-md"
+							className="absolute bottom-3 left-3.5 flex h-11 w-11 items-center justify-center rounded-xl border border-[#a855f7]/45 bg-black/75 shadow-[0_0_24px_rgba(123,45,255,0.35)] backdrop-blur-md sm:bottom-3.5 sm:left-4 sm:h-12 sm:w-12"
 						>
-							{createElement(iconComponent, { className: "h-6 w-6 text-[#d8b4fe]" })}
+							{createElement(iconComponent, { className: "h-5 w-5 text-[#d8b4fe] sm:h-6 sm:w-6" })}
 						</motion.div>
 					) : null}
 				</div>
 
 				{/* Card Body */}
-				<div className="relative z-10 flex flex-1 flex-col justify-between px-5 pt-4 pb-5">
+				<div className="relative z-10 flex flex-1 flex-col justify-between px-4 pt-3.5 pb-4 sm:px-5 sm:pt-4 sm:pb-5">
 					<div>
-						<h3 className="font-display line-clamp-2 text-xl font-extrabold tracking-tight text-white sm:text-2xl">
+						<h3 className="font-display line-clamp-2 text-lg leading-snug font-extrabold tracking-tight text-white sm:text-2xl">
 							{displayName}
 						</h3>
-						<p className="mt-1.5 line-clamp-3 text-sm leading-relaxed text-[#b8b2c7]">
+						<p className="mt-1 line-clamp-3 text-xs leading-relaxed text-[#b8b2c7] sm:mt-1.5 sm:text-sm">
 							{displayDescription}
 						</p>
 					</div>
 
 					{/* Price & Duration Telemetry Pills */}
-					<div className="mt-4 flex flex-wrap items-center justify-between gap-2 border-t border-white/[0.07] pt-3.5">
-						<span className="font-display text-lg font-black tracking-tight text-white">
+					<div className="mt-3 flex flex-wrap items-center justify-between gap-2 border-t border-white/[0.07] pt-3 sm:mt-4 sm:pt-3.5">
+						<span className="font-display text-base font-black tracking-tight text-white sm:text-lg">
 							{priceText}
 						</span>
-						<span className="inline-flex items-center gap-1.5 rounded-full border border-white/10 bg-white/[0.04] px-3 py-1 font-mono text-xs font-semibold text-[#d1bcff]">
+						<span className="inline-flex items-center gap-1.5 rounded-full border border-white/10 bg-white/[0.04] px-2.5 py-1 font-mono text-xs font-semibold text-[#d1bcff] sm:px-3">
 							<Clock className="h-3.5 w-3.5 text-[#a855f7]" aria-hidden="true" />
 							<span>{durationText}</span>
 						</span>

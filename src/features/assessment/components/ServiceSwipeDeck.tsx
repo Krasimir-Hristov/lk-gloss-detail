@@ -174,7 +174,7 @@ export const ServiceSwipeDeck: React.FC<ServiceSwipeDeckProps> = ({ onCompleteAc
 			{/* Card stack container */}
 			{!isComplete ? (
 				<>
-					<div className="relative mx-auto mb-28 h-[460px] w-full max-w-[390px] sm:h-[490px]">
+					<div className="relative mx-auto mb-26 h-[430px] w-full max-w-[390px] min-[390px]:h-[450px] sm:mb-28 sm:h-[490px]">
 						{dbServices.map((service, index) => {
 							const isBehind = index < currentIndex;
 							if (isBehind) return null;
@@ -196,8 +196,8 @@ export const ServiceSwipeDeck: React.FC<ServiceSwipeDeckProps> = ({ onCompleteAc
 					</div>
 
 					{/* Progress Dots & Hint */}
-					<div className="flex flex-col items-center gap-2.5">
-						<div className="flex items-center justify-center gap-1.5 sm:gap-2">
+					<div className="flex flex-col items-center gap-2.5 text-center">
+						<div className="flex flex-wrap items-center justify-center gap-1.5 sm:gap-2">
 							{dbServices.map((service, index) => (
 								<div
 									key={service.id}

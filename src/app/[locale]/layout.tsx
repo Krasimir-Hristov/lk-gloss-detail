@@ -99,7 +99,7 @@ const LocaleLayout = async ({ children, params }: Props) => {
 					href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=swap"
 				/>
 			</head>
-			<body className="flex min-h-full flex-col bg-[#07070a] font-sans text-[#e5e2e1] selection:bg-[#7b2dff] selection:text-white">
+			<body className="flex min-h-full flex-col overflow-x-clip bg-[#07070a] font-sans text-[#e5e2e1] selection:bg-[#7b2dff] selection:text-white">
 				<Providers>
 					<NextIntlClientProvider messages={messages} locale={locale}>
 						{isAdminRoute ? (
@@ -107,7 +107,7 @@ const LocaleLayout = async ({ children, params }: Props) => {
 						) : (
 							<>
 								<Navbar />
-								<main className="flex-1 pt-20">{children}</main>
+								<main className="flex-1 pt-18 sm:pt-20">{children}</main>
 								<Footer />
 								<ScrollToTop />
 								<ChatbotWidget />

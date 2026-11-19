@@ -39,7 +39,7 @@ export const ChatbotWidget = () => {
 				type="button"
 				onClick={handleToggle}
 				disabled={!hasHydrated}
-				className="fixed right-6 bottom-6 z-50 flex h-14 w-14 items-center justify-center rounded-full bg-linear-to-r from-[#7B2DFF] to-[#C026FF] text-white shadow-[0_0_15px_rgba(192,38,255,0.4)] transition-shadow hover:shadow-[0_0_25px_rgba(192,38,255,0.6)] disabled:opacity-80"
+				className="fixed right-3.5 bottom-4 z-50 flex h-12 w-12 cursor-pointer items-center justify-center rounded-full bg-linear-to-r from-[#7B2DFF] to-[#C026FF] text-white shadow-[0_0_15px_rgba(192,38,255,0.4)] transition-shadow hover:shadow-[0_0_25px_rgba(192,38,255,0.6)] disabled:cursor-not-allowed disabled:opacity-80 sm:right-6 sm:bottom-6 sm:h-14 sm:w-14"
 				animate={{
 					boxShadow: isOpen
 						? "0 0 15px rgba(192,38,255,0.4)"
@@ -58,7 +58,11 @@ export const ChatbotWidget = () => {
 				}}
 				aria-label={isOpen ? t("closeChat") : t("openChat")}
 			>
-				{isOpen ? <X className="h-6 w-6" /> : <MessageCircle className="h-6 w-6" />}
+				{isOpen ? (
+					<X className="h-5 w-5 sm:h-6 sm:w-6" />
+				) : (
+					<MessageCircle className="h-5 w-5 sm:h-6 sm:w-6" />
+				)}
 			</motion.button>
 
 			{/* Drawer */}

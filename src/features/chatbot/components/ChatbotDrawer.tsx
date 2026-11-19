@@ -131,20 +131,20 @@ export const ChatbotDrawer = () => {
 					animate={{ opacity: 1, y: 0, scale: 1 }}
 					exit={{ opacity: 0, y: 20, scale: 0.95 }}
 					transition={{ duration: 0.25, ease: "easeOut" }}
-					className="fixed right-3 bottom-20 left-3 z-50 flex flex-col overflow-hidden rounded-2xl border border-white/10 shadow-[0_0_30px_rgba(123,45,255,0.15)] sm:right-6 sm:left-auto sm:w-95"
+					className="fixed right-3 bottom-19 left-3 z-[55] flex flex-col overflow-hidden rounded-2xl border border-white/10 shadow-[0_0_30px_rgba(123,45,255,0.15)] sm:right-6 sm:bottom-24 sm:left-auto sm:w-95"
 					style={{
-						background: "rgba(26, 26, 26, 0.85)",
+						background: "rgba(16, 16, 22, 0.92)",
 						backdropFilter: "blur(20px)",
 						WebkitBackdropFilter: "blur(20px)",
 						height: "500px",
-						maxHeight: "calc(100vh - 110px)",
+						maxHeight: "calc(100dvh - 104px)",
 					}}
 				>
 					{/* Header */}
 					<div className="flex items-center gap-3 border-b border-white/10 px-4 py-3">
 						{/* Avatar */}
-						<div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-linear-to-br from-[#7B2DFF] to-[#C026FF]">
-							<Bot className="h-6 w-6 text-white" />
+						<div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-linear-to-br from-[#7B2DFF] to-[#C026FF] sm:h-12 sm:w-12">
+							<Bot className="h-5 w-5 text-white sm:h-6 sm:w-6" />
 						</div>
 
 						{/* Name + status */}
@@ -157,7 +157,7 @@ export const ChatbotDrawer = () => {
 						<button
 							type="button"
 							onClick={closeDrawer}
-							className="flex h-8 w-8 items-center justify-center rounded-lg text-[#ccc3d9] transition-colors hover:bg-white/10 hover:text-white"
+							className="flex h-8 w-8 cursor-pointer items-center justify-center rounded-lg text-[#ccc3d9] transition-colors hover:bg-white/10 hover:text-white"
 							aria-label={t("close")}
 						>
 							<X className="h-5 w-5" />

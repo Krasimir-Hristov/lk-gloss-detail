@@ -76,9 +76,9 @@ export const BookingDossier: React.FC = () => {
 				<div className="pointer-events-none absolute inset-0 bg-linear-to-t from-[#0e0e14] via-[#0e0e14]/45 to-black/35" />
 
 				{/* Top Watermark & Live Status */}
-				<div className="absolute top-3.5 right-3.5 left-3.5 flex items-center justify-between gap-2">
-					<div className="flex items-center gap-2 rounded-full border border-white/12 bg-black/65 px-2.5 py-1 backdrop-blur-xl">
-						<div className="relative h-4 w-4 overflow-hidden rounded border border-[#7b2dff]/55 bg-black">
+				<div className="absolute top-3 right-3 left-3 flex items-center justify-between gap-1.5 sm:top-3.5 sm:right-3.5 sm:left-3.5 sm:gap-2">
+					<div className="flex shrink-0 items-center gap-1.5 rounded-full border border-white/12 bg-black/65 px-2 py-1 backdrop-blur-xl sm:gap-2 sm:px-2.5">
+						<div className="relative h-4 w-4 shrink-0 overflow-hidden rounded border border-[#7b2dff]/55 bg-black">
 							<Image
 								src={lkLogo}
 								alt="LK Gloss & Detail"
@@ -87,37 +87,37 @@ export const BookingDossier: React.FC = () => {
 								className="h-full w-full scale-105 object-cover"
 							/>
 						</div>
-						<span className="font-mono text-[10px] font-semibold tracking-[0.16em] text-[#e5e2e1] uppercase">
+						<span className="font-mono text-[9px] font-semibold tracking-[0.14em] text-[#e5e2e1] uppercase min-[390px]:text-[10px] sm:tracking-[0.16em]">
 							LK Gloss
 						</span>
 					</div>
 
-					<div className="inline-flex items-center gap-1.5 rounded-full border border-[#a855f7]/40 bg-black/65 px-2.5 py-1 backdrop-blur-xl">
-						<span className="relative flex h-2 w-2">
+					<div className="inline-flex min-w-0 items-center gap-1.5 rounded-full border border-[#a855f7]/40 bg-black/65 px-2 py-1 backdrop-blur-xl sm:px-2.5">
+						<span className="relative flex h-2 w-2 shrink-0">
 							<span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-[#c026ff] opacity-75" />
 							<span className="relative inline-flex h-2 w-2 rounded-full bg-[#d8b4fe]" />
 						</span>
-						<span className="font-mono text-[10px] font-semibold tracking-[0.14em] text-[#e9d5ff] uppercase">
+						<span className="truncate font-mono text-[9px] font-semibold tracking-[0.1em] text-[#e9d5ff] uppercase min-[390px]:text-[10px] sm:tracking-[0.14em]">
 							{t("statusOpen")}
 						</span>
 					</div>
 				</div>
 
 				{/* Bottom Header Title */}
-				<div className="absolute right-5 bottom-4 left-5 flex items-end justify-between gap-3">
-					<div>
-						<h2 className="font-display text-lg font-extrabold tracking-tight text-white sm:text-xl">
+				<div className="absolute right-4 bottom-3.5 left-4 flex items-end justify-between gap-2.5 sm:right-5 sm:bottom-4 sm:left-5 sm:gap-3">
+					<div className="min-w-0">
+						<h2 className="font-display truncate text-base font-extrabold tracking-tight text-white sm:text-xl">
 							{t("title")}
 						</h2>
 					</div>
-					<span className="rounded-lg border border-white/12 bg-black/60 px-2.5 py-1 font-mono text-[11px] font-bold tracking-widest text-[#d8b4fe] backdrop-blur-md">
+					<span className="shrink-0 rounded-lg border border-white/12 bg-black/60 px-2.5 py-1 font-mono text-[11px] font-bold tracking-widest text-[#d8b4fe] backdrop-blur-md">
 						{stepBadge}
 					</span>
 				</div>
 			</div>
 
 			{/* Live Telemetry Readout Rows */}
-			<div className="space-y-4 p-5 sm:p-6">
+			<div className="space-y-4 p-4 sm:p-6">
 				<dl className="space-y-3">
 					{/* Client */}
 					<div className="flex items-center justify-between gap-4 rounded-2xl border border-white/[0.07] bg-white/[0.025] px-4 py-3">
@@ -183,25 +183,25 @@ export const BookingDossier: React.FC = () => {
 
 					{/* Estimated Price & Duration Telemetry (real DB fields) */}
 					{selectedServices.length > 0 && (estimatedMinPrice > 0 || estimatedDuration > 0) ? (
-						<div className="grid grid-cols-2 gap-3">
+						<div className="grid grid-cols-2 gap-2.5 sm:gap-3">
 							{estimatedMinPrice > 0 ? (
-								<div className="rounded-2xl border border-[#7b2dff]/30 bg-linear-to-br from-[#7b2dff]/15 to-transparent px-4 py-3">
-									<p className="font-mono text-[10px] font-semibold tracking-wider text-[#d1bcff] uppercase">
+								<div className="min-w-0 rounded-2xl border border-[#7b2dff]/30 bg-linear-to-br from-[#7b2dff]/15 to-transparent px-3 py-2.5 sm:px-4 sm:py-3">
+									<p className="truncate font-mono text-[10px] font-semibold tracking-wider text-[#d1bcff] uppercase">
 										{t("estimatedStart")}
 									</p>
-									<p className="font-display mt-1 text-xl font-black tracking-tight text-white">
+									<p className="font-display mt-1 text-lg font-black tracking-tight text-white sm:text-xl">
 										€{estimatedMinPrice}
 									</p>
 								</div>
 							) : null}
 
 							{estimatedDuration > 0 ? (
-								<div className="rounded-2xl border border-white/[0.08] bg-white/[0.03] px-4 py-3">
-									<p className="font-mono text-[10px] font-semibold tracking-wider text-[#9b93ad] uppercase">
+								<div className="min-w-0 rounded-2xl border border-white/[0.08] bg-white/[0.03] px-3 py-2.5 sm:px-4 sm:py-3">
+									<p className="truncate font-mono text-[10px] font-semibold tracking-wider text-[#9b93ad] uppercase">
 										{t("estimatedDuration")}
 									</p>
-									<p className="font-display mt-1 flex items-center gap-1.5 text-xl font-black tracking-tight text-white">
-										<Clock className="h-4 w-4 text-[#a855f7]" aria-hidden="true" />
+									<p className="font-display mt-1 flex items-center gap-1.5 text-lg font-black tracking-tight text-white sm:text-xl">
+										<Clock className="h-4 w-4 shrink-0 text-[#a855f7]" aria-hidden="true" />
 										<span>~{estimatedDuration}h</span>
 									</p>
 								</div>
@@ -213,11 +213,11 @@ export const BookingDossier: React.FC = () => {
 					<div
 						className={
 							formattedDate
-								? "flex items-center justify-between gap-4 rounded-2xl border border-[#a855f7]/40 bg-[#7b2dff]/12 px-4 py-3"
-								: "flex items-center justify-between gap-4 rounded-2xl border border-white/[0.07] bg-white/[0.025] px-4 py-3"
+								? "flex flex-wrap items-center justify-between gap-x-3 gap-y-1 rounded-2xl border border-[#a855f7]/40 bg-[#7b2dff]/12 px-4 py-3"
+								: "flex flex-wrap items-center justify-between gap-x-3 gap-y-1 rounded-2xl border border-white/[0.07] bg-white/[0.025] px-4 py-3"
 						}
 					>
-						<dt className="flex items-center gap-2 font-mono text-[11px] font-semibold tracking-wider text-[#d1bcff] uppercase">
+						<dt className="flex shrink-0 items-center gap-2 font-mono text-[11px] font-semibold tracking-wider text-[#d1bcff] uppercase">
 							<CalendarCheck className="h-3.5 w-3.5 text-[#c026ff]" aria-hidden="true" />
 							<span>{t("date")}</span>
 						</dt>

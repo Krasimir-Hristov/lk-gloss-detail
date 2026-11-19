@@ -108,7 +108,9 @@ const BookingSuccessPage = async ({
 								<div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg border border-[#7b2dff]/35 bg-[#7b2dff]/15 text-[#d8b4fe]">
 									<Mail className="h-4 w-4" aria-hidden="true" />
 								</div>
-								<p className="min-w-0 truncate">{t("success.contactEmail", { email })}</p>
+								<p className="min-w-0 break-all sm:break-words">
+									{t("success.contactEmail", { email })}
+								</p>
 							</div>
 						) : null}
 
@@ -117,7 +119,7 @@ const BookingSuccessPage = async ({
 								<div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg border border-[#7b2dff]/35 bg-[#7b2dff]/15 text-[#d8b4fe]">
 									<Phone className="h-4 w-4" aria-hidden="true" />
 								</div>
-								<p className="min-w-0 truncate">{t("success.contactPhone", { phone })}</p>
+								<p className="min-w-0 break-words">{t("success.contactPhone", { phone })}</p>
 							</div>
 						) : null}
 					</div>
@@ -128,7 +130,7 @@ const BookingSuccessPage = async ({
 					<Link
 						href={`/${locale}`}
 						aria-label={t("success.backHome")}
-						className="group font-display inline-flex h-13 w-full items-center justify-center gap-2.5 rounded-xl bg-linear-to-r from-[#7b2dff] via-[#9c2bff] to-[#c026ff] px-7 text-base font-bold tracking-wide text-white shadow-[inset_0_1px_0_rgba(255,255,255,0.28),0_14px_38px_-8px_rgba(123,45,255,0.6)] transition-all duration-300 hover:scale-[1.01] hover:shadow-[0_18px_46px_-6px_rgba(192,38,255,0.68)] hover:brightness-110 active:scale-[0.99]"
+						className="group font-display inline-flex h-13 w-full items-center justify-center gap-2.5 rounded-xl bg-linear-to-r from-[#7b2dff] via-[#9c2bff] to-[#c026ff] px-5 text-sm font-bold tracking-wide text-white shadow-[inset_0_1px_0_rgba(255,255,255,0.28),0_14px_38px_-8px_rgba(123,45,255,0.6)] transition-all duration-300 hover:scale-[1.01] hover:shadow-[0_18px_46px_-6px_rgba(192,38,255,0.68)] hover:brightness-110 active:scale-[0.99] sm:px-7 sm:text-base"
 					>
 						<ArrowLeft
 							className="h-4 w-4 transition-transform duration-200 group-hover:-translate-x-1"

@@ -73,12 +73,12 @@ export const PhotoPreviewPanel: React.FC<PhotoPreviewPanelProps> = ({
 				) : null}
 
 				{isValid ? (
-					<div className="absolute right-4 bottom-4 left-4 z-20 flex items-center justify-between gap-3 rounded-xl border border-emerald-400/50 bg-black/75 px-4 py-2.5 backdrop-blur-xl">
-						<div className="flex items-center gap-2.5 text-emerald-300">
-							<CheckCircle2 className="h-5 w-5 shrink-0" aria-hidden="true" />
-							<span className="text-sm font-bold">{t("validation.valid")}</span>
+					<div className="absolute right-3 bottom-3 left-3 z-20 flex items-center justify-between gap-2.5 rounded-xl border border-emerald-400/50 bg-black/75 px-3.5 py-2 backdrop-blur-xl sm:right-4 sm:bottom-4 sm:left-4 sm:gap-3 sm:px-4 sm:py-2.5">
+						<div className="flex min-w-0 items-center gap-2 text-emerald-300 sm:gap-2.5">
+							<CheckCircle2 className="h-4 w-4 shrink-0 sm:h-5 sm:w-5" aria-hidden="true" />
+							<span className="truncate text-xs font-bold sm:text-sm">{t("validation.valid")}</span>
 						</div>
-						<span className="font-mono text-[11px] font-bold tracking-widest text-emerald-200 uppercase">
+						<span className="shrink-0 font-mono text-[11px] font-bold tracking-widest text-emerald-200 uppercase">
 							OK
 						</span>
 					</div>

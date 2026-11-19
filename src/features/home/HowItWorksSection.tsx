@@ -27,7 +27,7 @@ export const HowItWorksSection = () => {
 						</span>
 						<span className="h-px w-8 bg-linear-to-l from-transparent to-[#7b2dff]" />
 					</div>
-					<h2 className="font-display text-3xl font-extrabold tracking-[-0.02em] sm:text-4xl md:text-5xl">
+					<h2 className="font-display text-2xl font-extrabold tracking-[-0.02em] break-words sm:text-4xl md:text-5xl">
 						<span className="metallic-text">{t("howItWorks.title")}</span>
 					</h2>
 				</RevealSection>
@@ -45,9 +45,9 @@ export const HowItWorksSection = () => {
 							const isHighlighted = index === 1;
 
 							return (
-								<RevealSection key={key} delay={index * 0.08} className="h-full">
+								<RevealSection key={key} delay={index * 0.08} className="h-full min-w-0">
 									<article
-										className={`obsidian-card group relative flex h-full flex-col overflow-hidden rounded-3xl p-7 transition-all duration-400 hover:-translate-y-1 sm:p-8 ${
+										className={`obsidian-card group relative flex h-full flex-col overflow-hidden rounded-3xl p-5 transition-all duration-400 hover:-translate-y-1 sm:p-8 ${
 											isHighlighted
 												? "border-[#a855f7]/45 shadow-[0_20px_60px_-20px_rgba(123,45,255,0.4)]"
 												: "hover:border-[#a855f7]/45"

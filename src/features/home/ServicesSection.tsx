@@ -24,7 +24,7 @@ export const ServicesSection: React.FC<ServicesSectionProps> = ({ services }) =>
 	return (
 		<section
 			id="services"
-			className="relative scroll-mt-20 border-t border-white/[0.06] bg-[#08080c] px-4 py-16 sm:py-24 md:px-12 md:py-32"
+			className="relative scroll-mt-20 overflow-x-clip border-t border-white/[0.06] bg-[#08080c] px-4 py-16 sm:py-24 md:px-12 md:py-32"
 		>
 			{/* Ambient subtle glow */}
 			<div className="pointer-events-none absolute top-0 left-1/2 h-px w-1/2 -translate-x-1/2 bg-linear-to-r from-transparent via-[#7b2dff]/60 to-transparent" />
@@ -33,14 +33,14 @@ export const ServicesSection: React.FC<ServicesSectionProps> = ({ services }) =>
 			<div className="relative mx-auto max-w-7xl">
 				{/* Editorial Section Header */}
 				<RevealSection className="mb-12 flex flex-col items-start justify-between gap-5 md:mb-16 md:flex-row md:items-end">
-					<div className="space-y-3">
+					<div className="min-w-0 space-y-3">
 						<div className="inline-flex items-center gap-2.5">
 							<span className="h-px w-8 bg-linear-to-r from-[#7b2dff] to-[#d8b4fe]" />
 							<span className="font-mono text-xs font-semibold tracking-[0.22em] text-[#d1bcff] uppercase">
 								01
 							</span>
 						</div>
-						<h2 className="font-display text-3xl font-extrabold tracking-[-0.02em] sm:text-4xl md:text-5xl">
+						<h2 className="font-display text-2xl font-extrabold tracking-[-0.02em] break-words sm:text-4xl md:text-5xl">
 							<span className="metallic-text">{t("servicesPreview.title")}</span>
 						</h2>
 					</div>
@@ -102,7 +102,7 @@ export const ServicesSection: React.FC<ServicesSectionProps> = ({ services }) =>
 										</div>
 
 										{/* Content */}
-										<div className="flex flex-1 flex-col p-6">
+										<div className="flex flex-1 flex-col p-5 sm:p-6">
 											<h3 className="font-display text-lg font-bold tracking-tight text-white transition-colors group-hover:text-[#e9d5ff]">
 												{serviceName}
 											</h3>

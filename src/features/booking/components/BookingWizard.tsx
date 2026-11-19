@@ -83,21 +83,21 @@ const BookingWizardContent: React.FC = () => {
 		<div data-testid="booking-wizard" className="relative mx-auto w-full max-w-7xl px-4 md:px-12">
 			{/* Editorial Studio Header */}
 			<header className="mb-8 flex flex-col items-start gap-4 sm:mb-10 lg:mb-12">
-				<div className="inline-flex items-center gap-2.5 rounded-full border border-[#7b2dff]/35 bg-[#7b2dff]/10 px-4 py-1.5 backdrop-blur-md">
-					<span className="relative flex h-2 w-2">
+				<div className="inline-flex max-w-full items-center gap-2 rounded-full border border-[#7b2dff]/35 bg-[#7b2dff]/10 px-3.5 py-1.5 backdrop-blur-md sm:gap-2.5 sm:px-4">
+					<span className="relative flex h-2 w-2 shrink-0">
 						<span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-[#c026ff] opacity-75" />
 						<span className="relative inline-flex h-2 w-2 rounded-full bg-[#d8b4fe]" />
 					</span>
-					<span className="font-mono text-[11px] font-semibold tracking-[0.16em] text-[#e5d4ff] uppercase">
+					<span className="truncate font-mono text-[10px] font-semibold tracking-[0.13em] text-[#e5d4ff] uppercase min-[390px]:text-[11px] sm:tracking-[0.16em]">
 						{t("badge")}
 					</span>
 				</div>
 
-				<div className="space-y-2.5">
-					<h1 className="font-display text-3xl leading-[1.06] font-black tracking-[-0.03em] sm:text-5xl lg:text-[3.25rem]">
+				<div className="min-w-0 space-y-2.5">
+					<h1 className="font-display text-[1.75rem] leading-[1.08] font-black tracking-[-0.03em] break-words min-[390px]:text-3xl sm:text-5xl lg:text-[3.25rem]">
 						<span className="metallic-text">{t("title")}</span>
 					</h1>
-					<p className="max-w-2xl text-base leading-relaxed text-[#b8b2c7] sm:text-lg">
+					<p className="max-w-2xl text-sm leading-relaxed text-[#b8b2c7] sm:text-lg">
 						{t("subtitle")}
 					</p>
 				</div>
@@ -106,31 +106,31 @@ const BookingWizardContent: React.FC = () => {
 			{/* 12-Column Split-Screen Concierge Layout */}
 			<div className="grid grid-cols-1 items-start gap-7 lg:grid-cols-12 xl:gap-9">
 				{/* Left Main Stage: Progress Rail + Active Step Obsidian Card */}
-				<div ref={stageRef} className="lg:col-span-7">
+				<div ref={stageRef} className="min-w-0 lg:col-span-7">
 					<BookingProgress currentStep={step} onStepSelect={setStep} />
 
-					<div className="obsidian-card relative overflow-hidden rounded-3xl p-5 sm:p-7 md:p-8">
+					<div className="obsidian-card relative overflow-hidden rounded-3xl p-4 sm:p-7 md:p-8">
 						{/* Specular Top Hairline & Ambient Corner Aura */}
 						<div className="pointer-events-none absolute top-0 right-10 left-10 h-px bg-linear-to-r from-transparent via-[#c026ff]/75 to-transparent" />
 						<div className="pointer-events-none absolute -top-24 -right-24 h-56 w-56 rounded-full bg-[#7b2dff]/12 blur-[90px]" />
 
 						{/* Active Step Card Header */}
-						<div className="relative mb-6 flex items-center justify-between gap-4 border-b border-white/[0.07] pb-5">
-							<div className="flex items-center gap-3.5">
-								<div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl border border-[#a855f7]/45 bg-[#7b2dff]/15 text-[#e9d5ff] shadow-[0_0_20px_rgba(123,45,255,0.28)]">
+						<div className="relative mb-5 flex items-center justify-between gap-3 border-b border-white/[0.07] pb-4 sm:mb-6 sm:gap-4 sm:pb-5">
+							<div className="flex min-w-0 items-center gap-3 sm:gap-3.5">
+								<div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-[#a855f7]/45 bg-[#7b2dff]/15 text-[#e9d5ff] shadow-[0_0_20px_rgba(123,45,255,0.28)] sm:h-11 sm:w-11">
 									<ActiveStepIcon className="h-5 w-5" aria-hidden="true" />
 								</div>
-								<div>
-									<p className="font-mono text-[11px] font-semibold tracking-[0.18em] text-[#b996ff] uppercase">
+								<div className="min-w-0">
+									<p className="font-mono text-[10px] font-semibold tracking-[0.16em] text-[#b996ff] uppercase sm:text-[11px] sm:tracking-[0.18em]">
 										{t("stepCounter", { current: step, total: 4 })}
 									</p>
-									<h2 className="font-display mt-0.5 text-xl font-extrabold tracking-tight text-white sm:text-2xl">
+									<h2 className="font-display mt-0.5 text-lg font-extrabold tracking-tight break-words text-white sm:text-2xl">
 										{t(activeMeta.titleKey)}
 									</h2>
 								</div>
 							</div>
 
-							<span className="hidden rounded-full border border-white/[0.08] bg-white/[0.03] px-3 py-1 font-mono text-xs font-bold tracking-widest text-[#9b93ad] sm:inline-flex">
+							<span className="hidden shrink-0 rounded-full border border-white/[0.08] bg-white/[0.03] px-3 py-1 font-mono text-xs font-bold tracking-widest text-[#9b93ad] sm:inline-flex">
 								0{step} / 04
 							</span>
 						</div>
@@ -153,7 +153,7 @@ const BookingWizardContent: React.FC = () => {
 				</div>
 
 				{/* Right Sticky Live Booking Dossier */}
-				<div className="lg:sticky lg:top-24 lg:col-span-5">
+				<div className="min-w-0 lg:sticky lg:top-24 lg:col-span-5">
 					<BookingDossier />
 				</div>
 			</div>

@@ -135,7 +135,7 @@ export const StepServices: React.FC = () => {
 							aria-label={serviceName}
 							onClick={() => toggleService(service.id)}
 							className={cn(
-								"group relative flex w-full cursor-pointer items-center gap-4 overflow-hidden rounded-2xl border p-4 text-left transition-all duration-300 focus-visible:outline-2 focus-visible:outline-[#7b2dff]",
+								"group relative flex w-full cursor-pointer items-center gap-3 overflow-hidden rounded-2xl border p-3.5 text-left transition-all duration-300 focus-visible:outline-2 focus-visible:outline-[#7b2dff] sm:gap-4 sm:p-4",
 								isSelected
 									? "border-[#a855f7]/75 bg-linear-to-r from-[#7b2dff]/[0.16] via-[#7b2dff]/[0.08] to-[#c026ff]/[0.08] shadow-[0_14px_38px_-14px_rgba(123,45,255,0.48)]"
 									: "border-white/[0.08] bg-[#0c0c13]/85 hover:border-[#7b2dff]/45 hover:bg-[#12111d]",
@@ -154,7 +154,7 @@ export const StepServices: React.FC = () => {
 							{service.image_url ? (
 								<div
 									className={cn(
-										"relative h-16 w-16 shrink-0 overflow-hidden rounded-xl border transition-colors sm:h-[4.5rem] sm:w-[4.5rem]",
+										"relative h-14 w-14 shrink-0 overflow-hidden rounded-xl border transition-colors sm:h-[4.5rem] sm:w-[4.5rem]",
 										isSelected ? "border-[#c026ff]/65" : "border-white/10",
 									)}
 								>
@@ -173,13 +173,13 @@ export const StepServices: React.FC = () => {
 							) : (
 								<div
 									className={cn(
-										"flex h-14 w-14 shrink-0 items-center justify-center rounded-xl border transition-all duration-300",
+										"flex h-12 w-12 shrink-0 items-center justify-center rounded-xl border transition-all duration-300 sm:h-14 sm:w-14",
 										isSelected
 											? "border-[#c026ff]/70 bg-linear-to-br from-[#7b2dff] to-[#c026ff] text-white shadow-[0_0_20px_rgba(123,45,255,0.45)]"
 											: "border-[#7b2dff]/30 bg-[#7b2dff]/10 text-[#d1bcff] group-hover:border-[#a855f7]/60",
 									)}
 								>
-									<IconComponent className="h-6 w-6" aria-hidden="true" />
+									<IconComponent className="h-5 w-5 sm:h-6 sm:w-6" aria-hidden="true" />
 								</div>
 							)}
 
@@ -244,7 +244,7 @@ export const StepServices: React.FC = () => {
 					variant="outline"
 					onClick={prevStep}
 					aria-label={t("back")}
-					className="font-display h-13 flex-1 cursor-pointer gap-2 rounded-xl border-white/12 bg-white/[0.03] text-sm font-bold text-[#e5e2e1] transition-all hover:border-white/25 hover:bg-white/[0.08] hover:text-white"
+					className="font-display h-13 w-full cursor-pointer gap-2 rounded-xl border-white/12 bg-white/[0.03] text-sm font-bold text-[#e5e2e1] transition-all hover:border-white/25 hover:bg-white/[0.08] hover:text-white sm:flex-1"
 				>
 					<ArrowLeft className="h-4 w-4" aria-hidden="true" />
 					<span>{t("back")}</span>
@@ -254,7 +254,7 @@ export const StepServices: React.FC = () => {
 					onClick={handleNext}
 					disabled={selectedServiceIds.length === 0}
 					aria-label={t("next")}
-					className="group font-display h-13 flex-1 cursor-pointer gap-2 rounded-xl bg-linear-to-r from-[#7b2dff] via-[#9c2bff] to-[#c026ff] text-base font-bold tracking-wide text-white shadow-[inset_0_1px_0_rgba(255,255,255,0.28),0_14px_38px_-8px_rgba(123,45,255,0.6)] transition-all duration-300 hover:scale-[1.01] hover:shadow-[0_18px_46px_-6px_rgba(192,38,255,0.68)] hover:brightness-110 active:scale-[0.99] disabled:opacity-45 disabled:hover:scale-100"
+					className="group font-display h-13 w-full cursor-pointer gap-2 rounded-xl bg-linear-to-r from-[#7b2dff] via-[#9c2bff] to-[#c026ff] text-base font-bold tracking-wide text-white shadow-[inset_0_1px_0_rgba(255,255,255,0.28),0_14px_38px_-8px_rgba(123,45,255,0.6)] transition-all duration-300 hover:scale-[1.01] hover:shadow-[0_18px_46px_-6px_rgba(192,38,255,0.68)] hover:brightness-110 active:scale-[0.99] disabled:opacity-45 disabled:hover:scale-100 sm:flex-1"
 				>
 					<span>{t("next")}</span>
 					<ArrowRight

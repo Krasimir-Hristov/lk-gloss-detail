@@ -188,12 +188,12 @@ export const AssessmentWizard: React.FC = () => {
 				{isSplitLayout ? (
 					<div className="grid grid-cols-1 items-start gap-7 lg:grid-cols-12 xl:gap-9">
 						{/* Left 7 Columns: Progress Pipeline + Main Obsidian Stage Card */}
-						<div className="lg:col-span-7">
+						<div className="min-w-0 lg:col-span-7">
 							{isPhotoStep ? (
 								<ProgressIndicator currentStep={currentStep} completedSteps={completedSteps} />
 							) : null}
 
-							<div className="obsidian-card relative overflow-hidden rounded-3xl p-5 sm:p-7 md:p-8">
+							<div className="obsidian-card relative overflow-hidden rounded-3xl p-4 sm:p-7 md:p-8">
 								{/* Specular Top Hairline & Ambient Corner Aura */}
 								<div className="pointer-events-none absolute top-0 right-10 left-10 h-px bg-linear-to-r from-transparent via-[#c026ff]/75 to-transparent" />
 								<div className="pointer-events-none absolute -top-24 -right-24 h-56 w-56 rounded-full bg-[#7b2dff]/12 blur-[90px]" />
@@ -255,7 +255,7 @@ export const AssessmentWizard: React.FC = () => {
 						</div>
 
 						{/* Right 5 Columns: Sticky Live Vehicle Scan Dossier */}
-						<div className="lg:sticky lg:top-24 lg:col-span-5">
+						<div className="min-w-0 lg:sticky lg:top-24 lg:col-span-5">
 							<AssessmentDossier />
 						</div>
 					</div>

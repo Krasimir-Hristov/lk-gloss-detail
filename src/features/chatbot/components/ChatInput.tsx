@@ -39,13 +39,13 @@ export const ChatInput = ({ onSendAction, isLoading }: ChatInputProps) => {
 				onKeyDown={handleKeyDown}
 				placeholder={t("placeholder")}
 				disabled={isLoading}
-				className="min-w-0 flex-1 rounded-xl border border-[#353534] bg-[#1c1b1b] px-4 py-2.5 text-sm text-[#e5e2e1] placeholder-[#958da2] transition-all outline-none focus:border-[#7b2dff] focus:shadow-[0_0_8px_rgba(123,45,255,0.3)] disabled:opacity-50"
+				className="min-w-0 flex-1 rounded-xl border border-[#353534] bg-[#1c1b1b] px-4 py-2.5 text-base text-[#e5e2e1] placeholder-[#958da2] transition-all outline-none focus:border-[#7b2dff] focus:shadow-[0_0_8px_rgba(123,45,255,0.3)] disabled:opacity-50 sm:text-sm"
 			/>
 			<button
 				type="button"
 				onClick={handleSend}
 				disabled={isLoading || !value.trim()}
-				className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[#7b2dff] text-white transition-all hover:bg-[#7b2dff]/80 disabled:opacity-40"
+				className="flex h-10 w-10 shrink-0 cursor-pointer items-center justify-center rounded-xl bg-[#7b2dff] text-white transition-all hover:bg-[#7b2dff]/80 disabled:cursor-not-allowed disabled:opacity-40"
 				aria-label={t("send")}
 			>
 				<Send className="h-4 w-4" />
