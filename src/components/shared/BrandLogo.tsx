@@ -25,7 +25,7 @@ export const BrandLogo = ({
 	const iconSpec = ICON_SIZES[size];
 
 	return (
-		<div className={cn("inline-flex items-center gap-3", className)}>
+		<div className={cn("inline-flex items-center gap-2 sm:gap-3", className)}>
 			<div
 				className={cn(
 					"relative shrink-0 overflow-hidden border border-[#7b2dff]/45 bg-black shadow-[0_0_18px_rgba(123,45,255,0.28)] transition-all duration-300 group-hover:border-[#c026ff]/70 group-hover:shadow-[0_0_24px_rgba(192,38,255,0.45)]",
@@ -44,10 +44,10 @@ export const BrandLogo = ({
 
 			{showWordmark ? (
 				<div className="flex flex-col leading-none">
-					<span className="font-display text-sm font-black tracking-tight text-white uppercase sm:text-base">
+					<span className="font-display text-xs font-black tracking-tight text-white uppercase min-[410px]:text-sm sm:text-base">
 						LK <span className="violet-text">Gloss &amp; Detail</span>
 					</span>
-					<span className="mt-1 font-mono text-[9px] font-medium tracking-[0.22em] text-[#9b93ad] uppercase">
+					<span className="mt-1 font-mono text-[8px] font-medium tracking-[0.2em] text-[#9b93ad] uppercase min-[410px]:text-[9px] min-[410px]:tracking-[0.22em]">
 						Mobile Detailing
 					</span>
 				</div>

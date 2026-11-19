@@ -1,56 +1,105 @@
 "use client";
 
+import { motion } from "framer-motion";
+import { Check } from "lucide-react";
 import { useTranslations } from "next-intl";
+import React from "react";
 
 import { cn } from "@/lib/utils";
 
+type BookingStep = 1 | 2 | 3 | 4;
+
 type BookingProgressProps = {
-	currentStep: 1 | 2 | 3 | 4;
+	currentStep: BookingStep;
+	onStepSelect?: (step: BookingStep) => void;
 };
 
-export const BookingProgress = ({ currentStep }: BookingProgressProps) => {
+export const BookingProgress: React.FC<BookingProgressProps> = ({ currentStep, onStepSelect }) => {
 	const t = useTranslations("Booking.progress");
 
-	const steps = [t("step1"), t("step2"), t("step3"), t("step4")];
+	const steps = [
+		{ num: 1 as const, label: t("step1") },
+		{ num: 2 as const, label: t("step2") },
+		{ num: 3 as const, label: t("step3") },
+		{ num: 4 as const, label: t("step4") },
+	];
+
+	const progressPercent = (currentStep / steps.length) * 100;
 
 	return (
-		<div className="mb-8 flex items-center justify-between">
-			{steps.map((label, idx) => {
-				const stepNumber = idx + 1;
-				const isActive = stepNumber === currentStep;
-				const isCompleted = stepNumber < currentStep;
+		<nav
+			aria-label="Booking progress"
+			className="obsidian-card relative mb-6 overflow-hidden rounded-2xl p-3.5 sm:mb-7 sm:p-5"
+		>
+			<div className="pointer-events-none absolute top-0 right-10 left-10 h-px bg-linear-to-r from-transparent via-[#7b2dff]/55 to-transparent" />
 
-				return (
-					<div key={stepNumber} className="relative flex flex-1 flex-col items-center gap-2">
-						<div
-							className={cn(
-								"flex h-8 w-8 items-center justify-center rounded-full border-2 text-xs font-bold transition-colors sm:h-10 sm:w-10 sm:text-base",
-								isActive && "border-[#7b2dff] bg-[#7b2dff] text-white",
-								isCompleted && "border-[#7b2dff] bg-[#7b2dff]/20 text-[#7b2dff]",
-								!isActive && !isCompleted && "border-white/20 text-white/50",
-							)}
-						>
-							{stepNumber}
-						</div>
-						<span
-							className={cn(
-								"text-center text-[10px] leading-tight font-medium sm:text-xs",
-								isActive ? "text-white" : "text-white/50",
-							)}
-						>
-							{label}
-						</span>
-						{idx < steps.length - 1 ? (
+			<ol className="relative grid grid-cols-4 gap-2 sm:gap-3">
+				{steps.map(({ num, label }) => {
+					const isActive = num === currentStep;
+					const isCompleted = num < currentStep;
+					const canJumpBack = isCompleted && Boolean(onStepSelect);
+					const stepCode = String(num).padStart(2, "0");
+
+					const content = (
+						<div className="flex flex-col items-center gap-2 text-center">
 							<div
 								className={cn(
-									"absolute top-5 right-0 hidden h-0.5 w-[calc(100%-3rem)] -translate-y-1/2 md:block",
-									isCompleted ? "bg-[#7b2dff]" : "bg-white/10",
+									"relative flex h-9 w-9 items-center justify-center rounded-xl border font-mono text-xs font-bold transition-all duration-300 sm:h-10 sm:w-10 sm:text-sm",
+									isActive &&
+										"border-[#d8b4fe]/50 bg-linear-to-br from-[#7b2dff] to-[#c026ff] text-white shadow-[0_0_24px_rgba(192,38,255,0.55)]",
+									isCompleted &&
+										"border-[#7b2dff]/60 bg-[#7b2dff]/20 text-[#e9d5ff] group-hover:border-[#c026ff]/80 group-hover:bg-[#7b2dff]/35",
+									!isActive && !isCompleted && "border-white/[0.08] bg-white/[0.03] text-[#7a738c]",
 								)}
-							/>
-						) : null}
-					</div>
-				);
-			})}
-		</div>
+							>
+								{isCompleted ? (
+									<Check className="h-4 w-4 text-[#d8b4fe]" aria-hidden="true" />
+								) : (
+									<span>{stepCode}</span>
+								)}
+							</div>
+
+							<span
+								className={cn(
+									"font-display max-w-full truncate text-[11px] leading-tight font-semibold tracking-tight transition-colors sm:text-xs",
+									isActive && "text-white",
+									isCompleted && "text-[#cfc9de] group-hover:text-white",
+									!isActive && !isCompleted && "text-[#7a738c]",
+								)}
+							>
+								{label}
+							</span>
+						</div>
+					);
+
+					return (
+						<li key={num} aria-current={isActive ? "step" : undefined} className="min-w-0">
+							{canJumpBack ? (
+								<button
+									type="button"
+									onClick={() => onStepSelect?.(num)}
+									aria-label={`${stepCode} ${label}`}
+									className="group w-full cursor-pointer rounded-xl py-1 transition-transform hover:-translate-y-0.5 focus-visible:outline-2 focus-visible:outline-[#7b2dff]"
+								>
+									{content}
+								</button>
+							) : (
+								<div className="py-1">{content}</div>
+							)}
+						</li>
+					);
+				})}
+			</ol>
+
+			{/* Illuminated bottom progress rail */}
+			<div className="mt-4 h-1 w-full overflow-hidden rounded-full bg-white/[0.06]">
+				<motion.div
+					className="h-full rounded-full bg-linear-to-r from-[#7b2dff] via-[#a855f7] to-[#c026ff] shadow-[0_0_14px_rgba(192,38,255,0.75)]"
+					initial={false}
+					animate={{ width: `${progressPercent}%` }}
+					transition={{ type: "spring", stiffness: 260, damping: 28 }}
+				/>
+			</div>
+		</nav>
 	);
 };

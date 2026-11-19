@@ -161,6 +161,9 @@
 		"title": "Termin buchen",
 		"description": "Buchen Sie jetzt Ihren mobilen Autopflege-Termin online bei LK Gloss & Detail",
 		"subtitle": "Wählen Sie Ihre Leistungen und Ihren Wunschtermin",
+		"badge": "Mobile Concierge · Vor-Ort Service",
+		"stepCounter": "Schritt {current} von {total}",
+		"edit": "Ändern",
 		"progress": {
 			"step1": "Ihre Daten",
 			"step2": "Leistungen",
@@ -176,6 +179,7 @@
 			"carDescription": "Beschreibung Ihres Fahrzeugs",
 			"carDescriptionHint": "Was soll gemacht werden? (freiwillig)",
 			"gdpr": "Ich stimme den Datenschutzbestimmungen und AGB zu",
+			"privacyLink": "Datenschutzerklärung",
 			"firstNameRequired": "Bitte geben Sie Ihren Vornamen ein",
 			"lastNameRequired": "Bitte geben Sie Ihren Nachnamen ein",
 			"invalidEmail": "Bitte geben Sie eine gültige E-Mail-Adresse ein",
@@ -188,6 +192,8 @@
 			"loading": "Leistungen werden geladen...",
 			"loadingError": "Fehler beim Laden der Leistungen",
 			"selectMin": "Bitte wählen Sie mindestens eine Leistung",
+			"selectedCount": "{count, plural, =0 {Keine Auswahl} one {1 Leistung gewählt} other {# Leistungen gewählt}}",
+			"fromPrice": "Ab €{price}",
 			"back": "Zurück",
 			"next": "Weiter"
 		},
@@ -195,6 +201,10 @@
 			"title": "Datum wählen",
 			"loading": "Verfügbare Termine werden geladen...",
 			"selected": "Gewählter Termin",
+			"available": "Verfügbar",
+			"unavailable": "Belegt",
+			"selectedLegend": "Ausgewählt",
+			"chooseAnotherDate": "Anderes Datum wählen",
 			"back": "Zurück",
 			"next": "Weiter"
 		},
@@ -215,9 +225,25 @@
 			"dateTaken": "Dieser Termin wurde leider gerade vergeben. Bitte wählen Sie ein anderes Datum.",
 			"generic": "Ein Fehler ist aufgetreten. Bitte versuchen Sie es erneut."
 		},
+		"dossier": {
+			"title": "Buchungsübersicht",
+			"statusOpen": "Live-Vorschau",
+			"client": "Kunde",
+			"vehicle": "Fahrzeug",
+			"services": "Ausgewählte Leistungen",
+			"date": "Wunschtermin",
+			"estimatedStart": "Richtpreis ab",
+			"estimatedDuration": "Geschätzte Dauer",
+			"pending": "Noch offen",
+			"needHelp": "Fragen vorab? Direkter Kontakt:",
+			"whatsappCta": "WhatsApp",
+			"callCta": "Anrufen"
+		},
 		"success": {
+			"badge": "Reservierung eingegangen",
 			"title": "Termin erfolgreich gebucht!",
 			"message": "Wir werden uns in Kürze bei Ihnen melden.",
+			"nextSteps": "Wir prüfen Ihren Wunschtermin und bestätigen die Details persönlich mit Ihnen.",
 			"contactEmail": "per E-Mail an {email}",
 			"contactPhone": "oder telefonisch unter {phone}",
 			"backHome": "Zurück zur Startseite"

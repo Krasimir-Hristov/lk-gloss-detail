@@ -161,6 +161,9 @@
 		"title": "Book Appointment",
 		"description": "Book your mobile car detailing appointment online with LK Gloss & Detail",
 		"subtitle": "Choose your services and preferred date",
+		"badge": "Mobile Concierge · On-Site Service",
+		"stepCounter": "Step {current} of {total}",
+		"edit": "Edit",
 		"progress": {
 			"step1": "Your Details",
 			"step2": "Services",
@@ -176,6 +179,7 @@
 			"carDescription": "Vehicle Description",
 			"carDescriptionHint": "What should be done? (optional)",
 			"gdpr": "I agree to the privacy policy and terms of service",
+			"privacyLink": "Privacy Policy",
 			"firstNameRequired": "Please enter your first name",
 			"lastNameRequired": "Please enter your last name",
 			"invalidEmail": "Please enter a valid email address",
@@ -188,6 +192,8 @@
 			"loading": "Loading services...",
 			"loadingError": "Failed to load services",
 			"selectMin": "Please select at least one service",
+			"selectedCount": "{count, plural, =0 {None selected} one {1 service selected} other {# services selected}}",
+			"fromPrice": "From €{price}",
 			"back": "Back",
 			"next": "Next"
 		},
@@ -195,6 +201,10 @@
 			"title": "Choose Date",
 			"loading": "Loading available dates...",
 			"selected": "Selected Date",
+			"available": "Available",
+			"unavailable": "Unavailable",
+			"selectedLegend": "Selected",
+			"chooseAnotherDate": "Choose another date",
 			"back": "Back",
 			"next": "Next"
 		},
@@ -215,9 +225,25 @@
 			"dateTaken": "This appointment has just been taken. Please choose another date.",
 			"generic": "An error occurred. Please try again."
 		},
+		"dossier": {
+			"title": "Booking Dossier",
+			"statusOpen": "Live Preview",
+			"client": "Client",
+			"vehicle": "Vehicle",
+			"services": "Selected Services",
+			"date": "Preferred Date",
+			"estimatedStart": "Estimated from",
+			"estimatedDuration": "Est. duration",
+			"pending": "Pending",
+			"needHelp": "Questions ahead? Direct contact:",
+			"whatsappCta": "WhatsApp",
+			"callCta": "Call"
+		},
 		"success": {
+			"badge": "Reservation Received",
 			"title": "Appointment Booked Successfully!",
 			"message": "We will contact you shortly.",
+			"nextSteps": "We are reviewing your preferred date and will personally confirm all details with you.",
 			"contactEmail": "by email at {email}",
 			"contactPhone": "or by phone at {phone}",
 			"backHome": "Back to Home"
