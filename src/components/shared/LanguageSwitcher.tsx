@@ -18,13 +18,17 @@ export const LanguageSwitcher = () => {
 		setIsOpen(false);
 
 		const url = new URL(window.location.href);
-		const segments = url.pathname.split("/");
-		if ((routing.locales as readonly string[]).includes(segments[1])) {
-			segments[1] = nextLocale;
+		const normalizedPath = url.pathname.replace(/^\/+|\/+$/g, "");
+		const segments = normalizedPath ? normalizedPath.split("/") : [];
+
+		if (segments.length > 0 && (routing.locales as readonly string[]).includes(segments[0])) {
+			segments[0] = nextLocale;
 		} else {
-			segments.splice(1, 0, nextLocale);
+			segments.unshift(nextLocale);
 		}
-		url.pathname = segments.join("/") || "/";
+
+		url.pathname = `/${segments.join("/")}`;
+		url.hash = "";
 		window.location.assign(url.toString());
 	};
 
@@ -68,6 +72,7 @@ export const LanguageSwitcher = () => {
 											: "text-[#ccc3d9] hover:bg-[#2a2a2a] hover:text-[#e5e2e1]"
 									} disabled:cursor-not-allowed disabled:opacity-60`}
 									title={name}
+									aria-label={name}
 								>
 									{t(`locales.${loc}.short`)} — {name}
 								</button>

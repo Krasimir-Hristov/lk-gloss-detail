@@ -23,7 +23,7 @@ export const ServicesSection: React.FC<ServicesSectionProps> = ({ services }) =>
 	const hasServices = displayServices && displayServices.length > 0;
 
 	return (
-		<section id="services" className="px-4 py-12 sm:py-20 md:px-16 md:py-28">
+		<section id="services" className="scroll-mt-20 px-4 py-12 sm:py-20 md:px-16 md:py-28">
 			<div className="mx-auto max-w-7xl">
 				{/* Section header */}
 				<div className="mb-10 text-center sm:mb-16">

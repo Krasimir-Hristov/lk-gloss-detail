@@ -9,7 +9,7 @@ export const ContactSection: React.FC = () => {
 	const t = useTranslations("Contact");
 
 	return (
-		<section id="contact" className="px-4 py-12 sm:py-20 md:px-16 md:py-28">
+		<section id="contact" className="scroll-mt-20 px-4 py-12 sm:py-20 md:px-16 md:py-28">
 			<div className="mx-auto max-w-7xl">
 				{/* Section header */}
 				<div className="mb-10 text-center sm:mb-16">

@@ -26,13 +26,15 @@ export const HeroSection = ({ locale }: HeroSectionProps) => {
 					<div className="flex flex-col gap-3 pt-2 sm:flex-row sm:gap-4">
 						<Link
 							href={`/${locale}/assessment`}
+							aria-label={t("hero.ctaPrimary")}
 							className="inline-flex w-full items-center justify-center gap-2 rounded-lg bg-[#7b2dff] px-6 py-4 text-center text-base font-semibold text-white shadow-lg shadow-[#7b2dff]/25 transition-all hover:bg-[#7b2dff]/90 hover:shadow-[#7b2dff]/40 sm:w-auto sm:px-8"
 						>
 							{t("hero.ctaPrimary")}
 							<ArrowRight className="h-4 w-4" />
 						</Link>
 						<Link
-							href={`/${locale}/services`}
+							href={`/${locale}#services`}
+							aria-label={t("hero.ctaSecondary")}
 							className="inline-flex w-full items-center justify-center gap-2 rounded-lg border border-[#353534] bg-transparent px-6 py-4 text-center text-base font-semibold text-[#e5e2e1] transition-all hover:border-[#7b2dff]/50 hover:bg-[#201f1f] sm:w-auto sm:px-8"
 						>
 							{t("hero.ctaSecondary")}

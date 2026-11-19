@@ -13,7 +13,8 @@ const Footer: React.FC = () => {
 	const year = new Date().getFullYear();
 
 	const navLinks = NAV_LINKS.filter((l) => l.href !== "/").map((l) => ({
-		href: l.href,
+		key: l.href,
+		href: l.href.startsWith("#") ? { pathname: "/", hash: l.href.slice(1) } : l.href,
 		label: tNav(l.i18nKey),
 	}));
 
@@ -40,7 +41,7 @@ const Footer: React.FC = () => {
 					</h5>
 					<ul className="space-y-2">
 						{navLinks.map((l) => (
-							<li key={l.href}>
+							<li key={l.key}>
 								<Link
 									href={l.href}
 									className="text-sm text-[#ccc3d9] transition-colors hover:text-[#d1bcff] hover:underline"

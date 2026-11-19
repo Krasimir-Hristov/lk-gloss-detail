@@ -30,7 +30,7 @@ const useNavActiveState = (href: string, activeSection: string) => {
 		isActive = !isAnchor && (href === "/" ? pathname === "/" : pathname.startsWith(href));
 	}
 
-	const targetHref = isAnchor && !isHomepage ? `/${href}` : href;
+	const targetHref = isAnchor && !isHomepage ? { pathname: "/", hash: href.slice(1) } : href;
 
 	return { isActive, targetHref };
 };

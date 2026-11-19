@@ -18,6 +18,9 @@ const ScrollToTop = () => {
 
 	const scrollUp = useCallback(() => {
 		window.scrollTo({ top: 0, behavior: "smooth" });
+		if (window.location.hash) {
+			window.history.replaceState(null, "", `${window.location.pathname}${window.location.search}`);
+		}
 	}, []);
 
 	return (
