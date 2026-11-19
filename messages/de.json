@@ -362,6 +362,14 @@
 	"Assessment": {
 		"title": "KI-Fotoanalyse",
 		"description": "Kostenlose KI-Fahrzeugbewertung & Zustandsschätzung für Ihre Autopflege",
+		"badge": "AI Vision Lab · Kostenlose Analyse",
+		"subtitle": "Laden Sie 4 Perspektiven Ihres Fahrzeugs hoch — unsere KI analysiert den Zustand und erstellt eine individuelle Preis- und Zeitindikation.",
+		"stepCounter": "Schritt {current} von {total}",
+		"trust": {
+			"gdpr": "DSGVO-konform",
+			"noAccount": "Ohne Registrierung",
+			"instant": "Sofort-Auswertung"
+		},
 		"steps": {
 			"front": "Frontansicht",
 			"rear": "Rückansicht",
@@ -370,12 +378,20 @@
 			"right": "Rechte Seite",
 			"interior": "Innenraum"
 		},
+		"angleHints": {
+			"front": "Motorhaube, Scheinwerfer und Frontstoßstange bei gutem Licht erfassen",
+			"rear": "Heckklappe, Rückleuchten und hintere Stoßstange vollständig im Bild",
+			"side": "Komplette Seitenlinie mit Türen, Felgen und Kotflügeln aufnehmen",
+			"interior": "Sitze, Cockpit und Fußraum bei geöffneter Tür gut sichtbar fotografieren"
+		},
 		"upload": {
 			"dragDrop": "Foto hierher ziehen",
 			"orClick": "oder klicken zum Durchsuchen",
 			"chooseFile": "Datei wählen",
 			"takePhoto": "Foto aufnehmen",
 			"validating": "Foto wird überprüft...",
+			"formats": "JPG, PNG, WEBP · Automatische KI-Prüfung",
+			"scanning": "KI-Scanner prüft Perspektive & Bildqualität...",
 			"error": "Dieses Foto entspricht nicht dem erwarteten Winkel. Bitte versuchen Sie es erneut.",
 			"errors": {
 				"FILE_INVALID": "Ungültiges Bilddateiformat.",
@@ -404,7 +420,34 @@
 		"swipe": {
 			"title": "Wählen Sie Ihre Leistungen",
 			"accept": "Annehmen",
-			"reject": "Ablehnen"
+			"reject": "Ablehnen",
+			"hint": "Nach rechts wischen oder Buttons nutzen",
+			"selectedCount": "{count, plural, =0 {Noch keine gewählt} one {1 gewählt} other {# gewählt}}"
+		},
+		"dossier": {
+			"title": "Live Scan-Dossier",
+			"statusLive": "AI Bereit",
+			"statusActive": "Scan Aktiv",
+			"anglesTitle": "Perspektiven-Status",
+			"verified": "Verifiziert",
+			"activeNow": "Aktiver Schritt",
+			"awaiting": "Ausstehend",
+			"telemetryTitle": "Erkannte Fahrzeugdaten",
+			"vehicleLabel": "Fahrzeug",
+			"sizeLabel": "Klasse",
+			"conditionLabel": "Verschmutzung",
+			"servicesLabel": "Gewählte Leistungen",
+			"pendingScan": "Wird nach Foto-Upload erkannt",
+			"privacyTitle": "Datenschutz-Garantie",
+			"privacyDesc": "Ihre Fotos werden nur zur KI-Analyse verarbeitet und nach der Auswertung sofort aus dem Speicher gelöscht.",
+			"needHelp": "Hilfe bei den Fotos? Direkter Kontakt:",
+			"callCta": "Anrufen",
+			"whatsappCta": "WhatsApp",
+			"dirtLevels": {
+				"light": "Leicht",
+				"moderate": "Mittel",
+				"heavy": "Stark"
+			}
 		},
 		"services": {
 			"headingTag": "Konfigurator",
@@ -434,8 +477,12 @@
 			"completeDescription": "Deine Auswahl wurde gespeichert. Weiter zur KI-Analyse..."
 		},
 		"analyzing": {
+			"badge": "KI-Auswertung läuft",
 			"title": "KI analysiert dein Fahrzeug...",
-			"description": "Unsere KI wertet deine Fotos aus und berechnet den besten Preis für dich."
+			"description": "Unsere KI wertet deine Fotos aus und berechnet den besten Preis für dich.",
+			"stage1": "Fahrzeugsegment & Zustand werden ausgewertet",
+			"stage2": "Individuelle Leistungs- und Zeitkalkulation",
+			"stage3": "Expertenbericht wird zusammengestellt"
 		},
 		"results": {
 			"title": "Dein Ergebnis",
@@ -458,14 +505,23 @@
 			}
 		},
 		"report": {
+			"badge": "AI Vision Ergebnis",
 			"title": "Analysebericht",
+			"subtitle": "Individuelle Aufbereitungsempfehlung basierend auf Ihren Fahrzeugfotos und gewählten Leistungen.",
 			"vehicle": "Ihr Fahrzeug",
 			"aiDiagnostics": "KI-Diagnose",
 			"expertVerdict": "Expertenurteil",
+			"expertAttribution": "LK Gloss & Detail · KI-gestützte Einschätzung",
 			"investment": "Investition",
+			"priceNote": "Unverbindliche Richtpreis-Indikation",
 			"timeline": "Dauer",
+			"durationNote": "Vor-Ort Service direkt bei Ihnen",
 			"bookAppointment": "Termin buchen",
-			"durationValue": "~{hours} Std."
+			"startNew": "Neue Bewertung starten",
+			"durationValue": "~{hours} Std.",
+			"noServicesTitle": "Keine Leistungen ausgewählt",
+			"noServicesDesc": "Sie haben keine Behandlung ausgewählt. Gehen Sie zurück zur Auswahl oder buchen Sie direkt einen individuellen Termin.",
+			"backToServices": "Leistungen erneut wählen"
 		}
 	},
 	"CookieConsent": {

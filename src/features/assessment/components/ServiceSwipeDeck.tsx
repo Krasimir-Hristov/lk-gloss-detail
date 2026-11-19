@@ -1,58 +1,39 @@
 "use client";
 
 import { motion } from "framer-motion";
+import { AlertCircle, Check, RotateCcw, Sparkles } from "lucide-react";
 import { useTranslations } from "next-intl";
-import { useCallback, useEffect, useRef, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 
 import { ServiceSwipeCard } from "@/features/assessment/components/ServiceSwipeCard";
 import { useAssessmentStore } from "@/features/assessment/stores/assessmentStore";
 
 import type { ServiceSelection } from "@/features/assessment/schemas/assessmentSchema";
-
-// ── DB Service shape ────────────────────────────────────────────────────────
-
-type DbService = {
-	id: string;
-	name: Record<string, string> | string;
-	short_description: Record<string, string> | string | null;
-	icon: string;
-	image_url: string | null;
-	category: string;
-	price_small: number;
-	price_medium: number;
-	price_large: number;
-	price_suv: number;
-	duration_hours: number;
-	sort_order: number;
-};
-
-// ── Dev-only logger (silent in production) ──────────────────────────────────
-
-const isDev = process.env.NODE_ENV === "development";
-const devLog = (...args: unknown[]) => {
-	if (isDev) console.log(...args);
-};
-
-// ── Component ──────────────────────────────────────────────────────────────
+import type { AssessmentService } from "@/features/assessment/types/assessmentService";
 
 type ServiceSwipeDeckProps = {
 	onCompleteAction: () => void;
 };
 
-export const ServiceSwipeDeck = ({ onCompleteAction }: ServiceSwipeDeckProps) => {
+export const ServiceSwipeDeck: React.FC<ServiceSwipeDeckProps> = ({ onCompleteAction }) => {
 	const t = useTranslations("Assessment.services");
+	const tSwipe = useTranslations("Assessment.swipe");
+	const tErrors = useTranslations("Errors");
 
 	const acceptService = useAssessmentStore((s) => s.acceptService);
 	const rejectService = useAssessmentStore((s) => s.rejectService);
 	const setServices = useAssessmentStore((s) => s.setServices);
+	const storeServices = useAssessmentStore((s) => s.services);
 
-	const [dbServices, setDbServices] = useState<DbService[]>([]);
+	const [dbServices, setDbServices] = useState<AssessmentService[]>([]);
 	const [isLoading, setIsLoading] = useState(true);
 	const [fetchError, setFetchError] = useState<string | null>(null);
 	const [currentIndex, setCurrentIndex] = useState(0);
 	const [isComplete, setIsComplete] = useState(false);
+	const [retryTrigger, setRetryTrigger] = useState(0);
 
 	const totalCards = dbServices.length;
+	const acceptedCount = storeServices.filter((s) => s.accepted).length;
 
 	// Keep currentIndex in a ref so callbacks always see the latest value
 	const currentIndexRef = useRef(0);
@@ -60,34 +41,27 @@ export const ServiceSwipeDeck = ({ onCompleteAction }: ServiceSwipeDeckProps) =>
 		currentIndexRef.current = currentIndex;
 	}, [currentIndex]);
 
-	const tErrors = useTranslations("Errors");
-
-	const [retryTrigger, setRetryTrigger] = useState(0);
-
-	// Fetch services from DB
+	// Fetch active services from DB
 	useEffect(() => {
 		let isCancelled = false;
 		const loadServices = async () => {
-			let data: DbService[] = [];
 			try {
 				const res = await fetch("/api/services");
 				if (!res.ok) throw new Error("Failed to fetch services");
-				data = (await res.json()) as DbService[];
+				const data = (await res.json()) as AssessmentService[];
 				if (isCancelled) return;
 				setDbServices(data);
 
-				// Initialize services in store
 				const selections: ServiceSelection[] = data.map((s) => ({
 					serviceId: s.id,
 					accepted: false,
 				}));
 				setServices(selections);
-				devLog("[ServiceSwipeDeck] ✅ Loaded", data.length, "services from DB");
 
 				if (data.length === 0) {
 					setIsComplete(true);
 				}
-			} catch (err) {
+			} catch (err: unknown) {
 				if (isCancelled) return;
 				const errorMsg = err instanceof Error ? err.message : "Failed to load services";
 				console.error("[ServiceSwipeDeck] Failed to load services:", errorMsg);
@@ -113,93 +87,18 @@ export const ServiceSwipeDeck = ({ onCompleteAction }: ServiceSwipeDeckProps) =>
 		setRetryTrigger((prev) => prev + 1);
 	};
 
-	// ── Log final assessment state ──────────────────────────────────────────
-
-	const logFinalState = useCallback(() => {
-		const state = useAssessmentStore.getState();
-
-		devLog(
-			"\n%c══════════════════════════════════════════════",
-			"color: #d1bcff; font-weight: bold;",
-		);
-		devLog(
-			"%c🚗 LK Gloss & Detail — Final Assessment State",
-			"color: #7b2dff; font-size: 16px; font-weight: bold;",
-		);
-		devLog(
-			"%c══════════════════════════════════════════════",
-			"color: #d1bcff; font-weight: bold;",
-		);
-
-		devLog("\n%c📸 PHOTOS (%d):", "color: #ebb2ff; font-weight: bold;", state.photos.length);
-		if (state.photos.length === 0) {
-			devLog("  ⚠️ No photos uploaded");
-		} else {
-			console.table(
-				state.photos.map((p) => ({
-					angle: p.angle,
-					status: p.validationStatus,
-					carSize: p.carSize ?? "—",
-					dirtLevel: p.dirtLevel ?? "—",
-					carDescription: p.carDescription ?? "—",
-				})),
-			);
-		}
-
-		const accepted = state.services.filter((s) => s.accepted);
-		const rejected = state.services.filter((s) => !s.accepted);
-
-		devLog(
-			"\n%c🛠️ SERVICES (%d total, %d accepted, %d rejected):",
-			"color: #ebb2ff; font-weight: bold;",
-			state.services.length,
-			accepted.length,
-			rejected.length,
-		);
-
-		if (accepted.length > 0) {
-			devLog("%c  ✅ Accepted:", "color: #4ade80; font-weight: bold;");
-			accepted.forEach((s) => devLog(`     • ${s.serviceId}`));
-		}
-
-		if (rejected.length > 0) {
-			devLog("%c  ❌ Rejected:", "color: #f87171; font-weight: bold;");
-			rejected.forEach((s) => devLog(`     • ${s.serviceId}`));
-		}
-
-		if (accepted.length === 0) {
-			devLog(
-				"\n%c⚠️ EDGE CASE: Client selected ZERO services — app should handle gracefully",
-				"color: #fbbf24; font-weight: bold;",
-			);
-		}
-
-		devLog(
-			"\n%c══════════════════════════════════════════════\n",
-			"color: #d1bcff; font-weight: bold;",
-		);
-	}, []);
-
-	// ── Advance card and manage state ───────────────────────────────────────
-
 	const advanceCard = useCallback(() => {
 		const nextIndex = currentIndexRef.current + 1;
 		if (nextIndex >= totalCards) {
 			setIsComplete(true);
-			// Auto-advance to analysis when all services are swiped
 			onCompleteAction();
-			devLog("[ServiceSwipeDeck] 🏁 All cards swiped. Logging final state...");
-			setTimeout(() => {
-				logFinalState();
-			}, 150);
 		} else {
 			setCurrentIndex(nextIndex);
 		}
-	}, [totalCards, logFinalState, onCompleteAction]);
+	}, [totalCards, onCompleteAction]);
 
 	const handleAccept = useCallback(
 		(serviceId: string) => {
-			devLog("[ServiceSwipeDeck] ✅ Swipe RIGHT — accepted:", serviceId);
 			acceptService(serviceId);
 			advanceCard();
 		},
@@ -208,7 +107,6 @@ export const ServiceSwipeDeck = ({ onCompleteAction }: ServiceSwipeDeckProps) =>
 
 	const handleReject = useCallback(
 		(serviceId: string) => {
-			devLog("[ServiceSwipeDeck] ❌ Swipe LEFT — rejected:", serviceId);
 			rejectService(serviceId);
 			advanceCard();
 		},
@@ -216,57 +114,67 @@ export const ServiceSwipeDeck = ({ onCompleteAction }: ServiceSwipeDeckProps) =>
 	);
 
 	// ── Error state ───────────────────────────────────────────────────────
-
 	if (fetchError) {
 		return (
 			<div
 				role="alert"
 				aria-live="assertive"
-				className="flex flex-col items-center justify-center rounded-2xl border border-amber-500/30 bg-[#201f1f] p-8 text-center"
+				className="flex flex-col items-center justify-center rounded-2xl border border-amber-400/35 bg-amber-500/[0.06] p-8 text-center"
 			>
-				<p className="mb-2 text-base font-semibold text-white">
+				<div className="mb-4 flex h-12 w-12 items-center justify-center rounded-xl border border-amber-400/35 bg-amber-500/15 text-amber-300">
+					<AlertCircle className="h-6 w-6" aria-hidden="true" />
+				</div>
+				<p className="font-display mb-2 text-lg font-bold text-white">
 					{tErrors("servicesUnavailable.title")}
 				</p>
-				<p className="mb-6 max-w-md text-sm text-[#ccc3d9]">
+				<p className="mb-6 max-w-md text-sm text-[#b8b2c7]">
 					{tErrors("servicesUnavailable.description")}
 				</p>
 				<button
 					type="button"
 					onClick={handleRetry}
-					className="rounded-xl bg-linear-to-r from-[#7b2dff] to-[#b303f2] px-6 py-3 text-sm font-bold text-white transition-all hover:shadow-[0_0_20px_rgba(123,45,255,0.4)] active:scale-95"
+					aria-label={t("retry")}
+					className="inline-flex cursor-pointer items-center gap-2 rounded-xl bg-linear-to-r from-[#7b2dff] to-[#c026ff] px-6 py-3 text-sm font-bold text-white shadow-[0_10px_28px_-6px_rgba(123,45,255,0.5)] transition-all hover:brightness-110 active:scale-95"
 				>
-					{t("retry")}
+					<RotateCcw className="h-4 w-4" aria-hidden="true" />
+					<span>{t("retry")}</span>
 				</button>
 			</div>
 		);
 	}
 
 	// ── Loading state ───────────────────────────────────────────────────────
-
 	if (isLoading) {
 		return (
-			<div className="flex flex-col items-center justify-center py-20">
-				<div className="h-8 w-8 animate-spin rounded-full border-2 border-[#7b2dff] border-t-transparent" />
-				<p className="mt-4 text-sm text-[#ccc3d9]">{t("loading")}</p>
+			<div className="flex flex-col items-center justify-center py-12">
+				<div className="h-[460px] w-full max-w-[390px] animate-pulse rounded-3xl border border-white/[0.08] bg-white/[0.04]" />
+				<p className="mt-5 font-mono text-xs tracking-wider text-[#9b93ad] uppercase">
+					{t("loading")}
+				</p>
 			</div>
 		);
 	}
 
 	return (
 		<div className="flex flex-col items-center">
-			{/* Heading */}
-			<div className="mb-8 text-center">
-				<span className="mb-4 block text-[12px] font-bold tracking-widest text-[#d1bcff] uppercase">
-					{t("headingTag")}
-				</span>
-				<h2 className="text-2xl font-bold text-white md:text-3xl">{t("headingTitle")}</h2>
-				<p className="mt-2 text-sm text-[#ccc3d9]">{t("headingDescription")}</p>
+			{/* Sub-header & Live Selection Pill */}
+			<div className="mb-6 flex w-full flex-col items-center gap-3 text-center">
+				<div className="flex flex-wrap items-center justify-center gap-2">
+					<span className="inline-flex items-center gap-1.5 rounded-full border border-[#a855f7]/40 bg-[#7b2dff]/15 px-3 py-1 font-mono text-[10px] font-bold tracking-[0.16em] text-[#e9d5ff] uppercase">
+						<Sparkles className="h-3 w-3" aria-hidden="true" />
+						{t("headingTag")}
+					</span>
+					<span className="inline-flex items-center rounded-full border border-white/10 bg-white/[0.04] px-3 py-1 font-mono text-[11px] font-semibold text-[#d1bcff]">
+						{tSwipe("selectedCount", { count: acceptedCount })}
+					</span>
+				</div>
+				<p className="max-w-md text-sm leading-relaxed text-[#b8b2c7]">{t("headingDescription")}</p>
 			</div>
 
 			{/* Card stack container */}
 			{!isComplete ? (
 				<>
-					<div className="max-w-340px xs:max-w-95 relative mx-auto h-125 w-full sm:h-130">
+					<div className="relative mx-auto mb-28 h-[460px] w-full max-w-[390px] sm:h-[490px]">
 						{dbServices.map((service, index) => {
 							const isBehind = index < currentIndex;
 							if (isBehind) return null;
@@ -287,43 +195,43 @@ export const ServiceSwipeDeck = ({ onCompleteAction }: ServiceSwipeDeckProps) =>
 						})}
 					</div>
 
-					{/* Progress indicator */}
-					<div className="mt-20 flex items-center justify-center gap-1.5 sm:mt-24 sm:gap-2">
-						{dbServices.map((_, index) => (
-							<div
-								key={index}
-								className={`h-1.5 rounded-full transition-all duration-300 ${
-									index < currentIndex
-										? "w-6 bg-[#7b2dff]"
-										: index === currentIndex
-											? "w-8 bg-[#d1bcff]"
-											: "w-1.5 bg-[#353534]"
-								}`}
-							/>
-						))}
-						<span className="ml-3 text-xs text-[#ccc3d9]">
-							{currentIndex + 1} / {totalCards}
-						</span>
+					{/* Progress Dots & Hint */}
+					<div className="flex flex-col items-center gap-2.5">
+						<div className="flex items-center justify-center gap-1.5 sm:gap-2">
+							{dbServices.map((service, index) => (
+								<div
+									key={service.id}
+									className={`h-1.5 rounded-full transition-all duration-300 ${
+										index < currentIndex
+											? "w-5 bg-[#7b2dff]"
+											: index === currentIndex
+												? "w-8 bg-linear-to-r from-[#7b2dff] to-[#c026ff] shadow-[0_0_10px_rgba(192,38,255,0.7)]"
+												: "w-1.5 bg-white/15"
+									}`}
+								/>
+							))}
+							<span className="ml-2.5 font-mono text-xs font-semibold text-[#9b93ad]">
+								{currentIndex + 1} / {totalCards}
+							</span>
+						</div>
+						<p className="text-xs text-[#7a738c]">{tSwipe("hint")}</p>
 					</div>
 				</>
 			) : (
-				/* Completion state */
+				/* Completion transition card */
 				<motion.div
-					initial={{ opacity: 0, y: 20 }}
+					initial={{ opacity: 0, y: 16 }}
 					animate={{ opacity: 1, y: 0 }}
-					transition={{ duration: 0.5 }}
-					className="rounded-2xl border border-[#7b2dff]/20 bg-[#201f1f] p-8 text-center"
+					transition={{ duration: 0.4 }}
+					className="w-full rounded-2xl border border-[#7b2dff]/35 bg-[#7b2dff]/10 p-8 text-center"
 				>
-					<div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-linear-to-br from-[#7b2dff] to-[#b303f2]">
-						<span
-							className="material-symbols-outlined text-3xl text-white"
-							style={{ fontVariationSettings: "'FILL' 1" }}
-						>
-							check
-						</span>
+					<div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-2xl bg-linear-to-br from-[#7b2dff] to-[#c026ff] shadow-[0_0_32px_rgba(192,38,255,0.45)]">
+						<Check className="h-8 w-8 stroke-[2.5] text-white" aria-hidden="true" />
 					</div>
-					<h3 className="mb-2 text-xl font-bold text-white">{t("completeTitle")}</h3>
-					<p className="text-sm text-[#ccc3d9]">{t("completeDescription")}</p>
+					<h3 className="font-display mb-2 text-xl font-extrabold text-white">
+						{t("completeTitle")}
+					</h3>
+					<p className="text-sm text-[#b8b2c7]">{t("completeDescription")}</p>
 				</motion.div>
 			)}
 		</div>

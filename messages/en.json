@@ -361,6 +361,14 @@
 	"Assessment": {
 		"title": "AI Photo Analysis",
 		"description": "Free AI vehicle assessment & condition estimate for your car care",
+		"badge": "AI Vision Lab · Free Analysis",
+		"subtitle": "Upload 4 angles of your vehicle — our AI evaluates its condition and prepares a tailored price and time estimate.",
+		"stepCounter": "Step {current} of {total}",
+		"trust": {
+			"gdpr": "GDPR Compliant",
+			"noAccount": "No Registration",
+			"instant": "Instant Estimate"
+		},
 		"steps": {
 			"front": "Front view",
 			"rear": "Rear view",
@@ -369,12 +377,20 @@
 			"right": "Right Side",
 			"interior": "Interior"
 		},
+		"angleHints": {
+			"front": "Capture hood, headlights, and front bumper in clear daylight",
+			"rear": "Keep tailgate, taillights, and rear bumper fully in frame",
+			"side": "Capture full side profile including doors, rims, and fenders",
+			"interior": "Photograph seats, cockpit, and footwell clearly with door open"
+		},
 		"upload": {
 			"dragDrop": "Drag & drop your photo",
 			"orClick": "or click to browse",
 			"chooseFile": "Choose File",
 			"takePhoto": "Take Photo",
 			"validating": "Validating photo...",
+			"formats": "JPG, PNG, WEBP · Automatic AI verification",
+			"scanning": "AI scanner verifying angle & image quality...",
 			"error": "This photo does not match the expected angle. Please try again.",
 			"errors": {
 				"FILE_INVALID": "Invalid image file format.",
@@ -403,7 +419,34 @@
 		"swipe": {
 			"title": "Choose Your Services",
 			"accept": "Accept",
-			"reject": "Reject"
+			"reject": "Reject",
+			"hint": "Swipe right to add or use the buttons below",
+			"selectedCount": "{count, plural, =0 {None selected yet} one {1 selected} other {# selected}}"
+		},
+		"dossier": {
+			"title": "Live Scan Dossier",
+			"statusLive": "AI Ready",
+			"statusActive": "Scan Active",
+			"anglesTitle": "Angle Capture Status",
+			"verified": "Verified",
+			"activeNow": "Active Now",
+			"awaiting": "Pending",
+			"telemetryTitle": "Detected Telemetry",
+			"vehicleLabel": "Vehicle",
+			"sizeLabel": "Segment",
+			"conditionLabel": "Condition",
+			"servicesLabel": "Selected Services",
+			"pendingScan": "Detected after photo upload",
+			"privacyTitle": "Privacy Guarantee",
+			"privacyDesc": "Your photos are processed only for AI analysis and immediately cleared from memory once complete.",
+			"needHelp": "Need help with photos? Direct contact:",
+			"callCta": "Call Us",
+			"whatsappCta": "WhatsApp",
+			"dirtLevels": {
+				"light": "Light",
+				"moderate": "Moderate",
+				"heavy": "Heavy"
+			}
 		},
 		"services": {
 			"headingTag": "Configurator",
@@ -433,8 +476,12 @@
 			"completeDescription": "Your selection has been saved. Proceeding to AI analysis..."
 		},
 		"analyzing": {
+			"badge": "AI Evaluation Running",
 			"title": "AI is analyzing your vehicle...",
-			"description": "Our AI is evaluating your photos and calculating the best price for you."
+			"description": "Our AI is evaluating your photos and calculating the best price for you.",
+			"stage1": "Evaluating vehicle segment & condition",
+			"stage2": "Calculating tailored services & timeline",
+			"stage3": "Compiling expert detailing dossier"
 		},
 		"results": {
 			"title": "Your Result",
@@ -457,14 +504,23 @@
 			}
 		},
 		"report": {
+			"badge": "AI Vision Result",
 			"title": "Analysis Report",
+			"subtitle": "Tailored detailing recommendation based on your vehicle photos and selected treatments.",
 			"vehicle": "Your Vehicle",
 			"aiDiagnostics": "AI Diagnostics",
 			"expertVerdict": "Expert Verdict",
+			"expertAttribution": "LK Gloss & Detail · AI-Assisted Evaluation",
 			"investment": "Investment",
+			"priceNote": "Non-binding price indication",
 			"timeline": "Timeline",
+			"durationNote": "Mobile service directly at your location",
 			"bookAppointment": "Book Appointment",
-			"durationValue": "~{hours}h"
+			"startNew": "Start New Assessment",
+			"durationValue": "~{hours}h",
+			"noServicesTitle": "No Services Selected",
+			"noServicesDesc": "You didn't select any treatment. Go back to choose services or book a custom appointment directly.",
+			"backToServices": "Choose Services Again"
 		}
 	},
 	"CookieConsent": {

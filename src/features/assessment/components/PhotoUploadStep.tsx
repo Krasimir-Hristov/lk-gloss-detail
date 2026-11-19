@@ -1,11 +1,12 @@
 "use client";
 
-import { motion, AnimatePresence } from "framer-motion";
-import { Upload, Camera, Loader2, CheckCircle, XCircle } from "lucide-react";
+import { AnimatePresence } from "framer-motion";
 import { useTranslations, useLocale } from "next-intl";
-import { useCallback, useRef, useState, useEffect } from "react";
+import React, { useCallback, useRef, useState, useEffect } from "react";
 import { v4 as uuidv4 } from "uuid";
 
+import { PhotoDropzoneBay } from "@/features/assessment/components/PhotoDropzoneBay";
+import { PhotoPreviewPanel } from "@/features/assessment/components/PhotoPreviewPanel";
 import { useValidatePhoto } from "@/features/assessment/hooks/useAssessment";
 import { compressImage } from "@/features/assessment/utils/imageCompressor";
 
@@ -24,12 +25,12 @@ type PhotoUploadStepProps = {
 	onPhotoInvalidAction: (reason: string, userMessage?: string) => void;
 };
 
-export const PhotoUploadStep = ({
+export const PhotoUploadStep: React.FC<PhotoUploadStepProps> = ({
 	angle,
 	previousCarDescriptions,
 	onPhotoValidatedAction,
 	onPhotoInvalidAction,
-}: PhotoUploadStepProps) => {
+}) => {
 	const t = useTranslations("Assessment");
 	const tErrors = useTranslations("Errors");
 	const locale = useLocale();
@@ -37,6 +38,7 @@ export const PhotoUploadStep = ({
 	const [status, setStatus] = useState<"idle" | "uploading" | "valid" | "invalid">("idle");
 	const [validationReason, setValidationReason] = useState<string>("");
 	const [isMobile, setIsMobile] = useState(false);
+	const [isDragging, setIsDragging] = useState(false);
 	const fileInputRef = useRef<HTMLInputElement>(null);
 	const uploadGenerationRef = useRef<number>(0);
 
@@ -153,11 +155,21 @@ export const PhotoUploadStep = ({
 	const handleDrop = useCallback(
 		(e: React.DragEvent) => {
 			e.preventDefault();
+			setIsDragging(false);
 			const file = e.dataTransfer.files[0];
 			if (file) handleFileSelect(file);
 		},
 		[handleFileSelect],
 	);
+
+	const handleDragOver = useCallback((e: React.DragEvent) => {
+		e.preventDefault();
+		setIsDragging(true);
+	}, []);
+
+	const handleDragLeave = useCallback(() => {
+		setIsDragging(false);
+	}, []);
 
 	const handleInputChange = useCallback(
 		(e: React.ChangeEvent<HTMLInputElement>) => {
@@ -175,106 +187,36 @@ export const PhotoUploadStep = ({
 		if (fileInputRef.current) fileInputRef.current.value = "";
 	};
 
-	const isUploading = status === "uploading";
-	const isValid = status === "valid";
 	const isInvalid = status === "invalid";
 
 	return (
-		<div className="flex flex-col items-center gap-6">
-			<h2 className="text-2xl font-bold text-white">{t(`steps.${angle}`)}</h2>
+		<div className="flex flex-col gap-5">
+			{/* Angle Capture Instruction Hint */}
+			<p className="text-sm leading-relaxed text-[#b8b2c7]">{t(`angleHints.${angle}`)}</p>
 
 			<AnimatePresence mode="wait">
 				{preview === null ? (
-					<motion.div
-						key="upload"
-						initial={{ opacity: 0, y: 20 }}
-						animate={{ opacity: 1, y: 0 }}
-						exit={{ opacity: 0, y: -20 }}
-						className="w-full max-w-md"
-					>
-						<div
-							onDrop={handleDrop}
-							onDragOver={(e) => e.preventDefault()}
-							className="bg-surface-container hover:bg-surface-container-high flex flex-col items-center justify-center rounded-2xl border-2 border-dashed border-purple-500/50 p-6 text-center transition-colors hover:border-purple-500 sm:p-12"
-						>
-							<Upload className="mb-4 h-10 w-10 text-purple-400 sm:h-12 sm:w-12" />
-							<p className="mb-2 text-base font-medium text-white sm:text-lg">
-								{t("upload.dragDrop")}
-							</p>
-							<p className="text-on-surface-variant mb-6 text-xs sm:text-sm">
-								{t("upload.orClick")}
-							</p>
-
-							<div className="flex w-full flex-col gap-3 sm:w-auto sm:flex-row">
-								<button
-									onClick={() => fileInputRef.current?.click()}
-									className="bg-primary text-on-primary hover:bg-primary/90 rounded-lg px-6 py-3 font-medium transition-colors"
-								>
-									{t("upload.chooseFile")}
-								</button>
-								{isMobile ? (
-									<label className="bg-secondary text-on-secondary hover:bg-secondary/90 flex cursor-pointer items-center justify-center rounded-lg px-6 py-3 font-medium transition-colors">
-										<Camera className="mr-2 inline h-5 w-5" />
-										{t("upload.takePhoto")}
-										<input
-											type="file"
-											accept="image/*"
-											capture="environment"
-											onChange={handleInputChange}
-											className="hidden"
-										/>
-									</label>
-								) : null}
-							</div>
-
-							<input
-								ref={fileInputRef}
-								type="file"
-								accept="image/*"
-								onChange={handleInputChange}
-								className="hidden"
-							/>
-						</div>
-					</motion.div>
+					<PhotoDropzoneBay
+						angle={angle}
+						isDragging={isDragging}
+						isMobile={isMobile}
+						isInvalid={isInvalid}
+						validationReason={validationReason}
+						fileInputRef={fileInputRef}
+						onDrop={handleDrop}
+						onDragOver={handleDragOver}
+						onDragLeave={handleDragLeave}
+						onInputChange={handleInputChange}
+						onReset={reset}
+					/>
 				) : (
-					<motion.div
-						key="preview"
-						initial={{ opacity: 0, scale: 0.9 }}
-						animate={{ opacity: 1, scale: 1 }}
-						exit={{ opacity: 0, scale: 0.9 }}
-						className="flex flex-col items-center gap-6"
-					>
-						<div className="border-surface-container-high relative h-64 w-full max-w-sm overflow-hidden rounded-2xl border-4">
-							<img src={preview} alt="Preview" className="h-full w-full object-cover" />
-							{isUploading ? (
-								<div className="absolute inset-0 flex items-center justify-center bg-black/60">
-									<Loader2 className="text-primary h-12 w-12 animate-spin" />
-								</div>
-							) : null}
-							{isValid ? (
-								<div className="absolute top-4 right-4 rounded-full bg-green-500 p-2 text-white">
-									<CheckCircle className="h-6 w-6" />
-								</div>
-							) : null}
-							{isInvalid ? (
-								<div className="absolute top-4 right-4 rounded-full bg-red-500 p-2 text-white">
-									<XCircle className="h-6 w-6" />
-								</div>
-							) : null}
-						</div>
-
-						{isInvalid ? (
-							<div className="text-center">
-								<p className="mb-4 text-red-400">{validationReason}</p>
-								<button
-									onClick={reset}
-									className="bg-surface-container-high hover:bg-surface-container-highest rounded-lg px-6 py-2 font-medium text-white transition-colors"
-								>
-									{t("validation.tryAgain")}
-								</button>
-							</div>
-						) : null}
-					</motion.div>
+					<PhotoPreviewPanel
+						angle={angle}
+						preview={preview}
+						status={status}
+						validationReason={validationReason}
+						onReset={reset}
+					/>
 				)}
 			</AnimatePresence>
 		</div>

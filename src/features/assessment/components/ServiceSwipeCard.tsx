@@ -1,57 +1,42 @@
 "use client";
 
 import { motion, useMotionValue, useTransform, type PanInfo } from "framer-motion";
-import { Clock, Sparkles } from "lucide-react";
+import { Check, Clock, Sparkles, X } from "lucide-react";
 import { useLocale, useTranslations } from "next-intl";
-import { createElement, useRef, useState } from "react";
+import React, { createElement, useRef, useState } from "react";
 
 import { ImageWithFallback } from "@/components/shared/ImageWithFallback";
 import { getLocalizedText } from "@/features/admin/types/servicesTypes";
 import { getIcon } from "@/lib/iconMap";
 
-// ── DB Service shape ────────────────────────────────────────────────────────
+import type { AssessmentService } from "@/features/assessment/types/assessmentService";
 
-type DbService = {
-	id: string;
-	name: Record<string, string> | string;
-	short_description: Record<string, string> | string | null;
-	icon: string;
-	image_url: string | null;
-	category: string;
-	price_small: number;
-	price_medium: number;
-	price_large: number;
-	price_suv: number;
-	duration_hours: number;
-};
-
-// ── Props ──────────────────────────────────────────────────────────────────
-
-interface ServiceSwipeCardProps {
-	service: DbService;
+type ServiceSwipeCardProps = {
+	service: AssessmentService;
 	onAcceptAction: (serviceId: string) => void;
 	onRejectAction: (serviceId: string) => void;
 	isTop: boolean;
 	stackIndex: number;
-}
+};
 
-export const ServiceSwipeCard = ({
+export const ServiceSwipeCard: React.FC<ServiceSwipeCardProps> = ({
 	service,
 	onAcceptAction,
 	onRejectAction,
 	isTop,
 	stackIndex,
-}: ServiceSwipeCardProps) => {
+}) => {
 	const t = useTranslations("Assessment.services");
+	const tSwipe = useTranslations("Assessment.swipe");
 	const locale = useLocale();
 	const [isExiting, setIsExiting] = useState<"left" | "right" | null>(null);
 	const cardRef = useRef<HTMLDivElement>(null);
 
 	const x = useMotionValue(0);
-	const rotate = useTransform(x, [-250, 0, 250], [-25, 0, 25]);
+	const rotate = useTransform(x, [-250, 0, 250], [-20, 0, 20]);
 
-	const acceptBorderOpacity = useTransform(x, [0, 100, 250], [0, 0.5, 1]);
-	const rejectBorderOpacity = useTransform(x, [-250, -100, 0], [1, 0.5, 0]);
+	const acceptBorderOpacity = useTransform(x, [0, 90, 220], [0, 0.55, 1]);
+	const rejectBorderOpacity = useTransform(x, [-220, -90, 0], [1, 0.55, 0]);
 
 	const iconComponent = getIcon(service.icon);
 
@@ -67,26 +52,24 @@ export const ServiceSwipeCard = ({
 	};
 
 	const handleAccept = () => {
+		if (isExiting) return;
 		setIsExiting("right");
 		setTimeout(() => onAcceptAction(service.id), 300);
 	};
 
 	const handleReject = () => {
+		if (isExiting) return;
 		setIsExiting("left");
 		setTimeout(() => onRejectAction(service.id), 300);
 	};
 
-	// Stack effect: offset for non-top cards
-	const yOffset = isTop ? 0 : stackIndex * 8;
-	const scaleValue = isTop ? 1 : 1 - stackIndex * 0.05;
+	// Stack depth offset for background cards
+	const yOffset = isTop ? 0 : Math.min(stackIndex, 3) * 10;
+	const scaleValue = isTop ? 1 : Math.max(0.88, 1 - stackIndex * 0.045);
 
-	// Format duration
 	const durationText = `${service.duration_hours}h`;
-
-	// Format price range
 	const priceText = `€${service.price_small} – €${service.price_suv}`;
 
-	// i18n display text (falls back to DB name if key missing)
 	const localizedName = getLocalizedText(service.name, locale);
 	const localizedDesc = getLocalizedText(service.short_description, locale);
 
@@ -101,7 +84,7 @@ export const ServiceSwipeCard = ({
 			displayCategory = t.raw(`cards.${service.name}.tag`) as string | undefined;
 		}
 	} catch {
-		// Ignore if key missing
+		// Fallback to localized DB strings
 	}
 
 	displayName = displayName || localizedName;
@@ -119,44 +102,51 @@ export const ServiceSwipeCard = ({
 				rotate,
 				position: "absolute",
 				inset: 0,
-				zIndex: 3 - stackIndex,
+				zIndex: Math.max(1, 10 - stackIndex),
 				y: yOffset,
-				backgroundColor: isTop ? "#1a1a1a" : "#131313",
 			}}
 			animate={
 				isExiting
 					? {
-							x: isExiting === "right" ? 600 : -600,
-							rotate: isExiting === "right" ? 30 : -30,
+							x: isExiting === "right" ? 560 : -560,
+							rotate: isExiting === "right" ? 26 : -26,
 							opacity: 0,
 						}
 					: {
 							scale: scaleValue,
-							opacity: isTop ? 1 : 0.95,
+							opacity: isTop ? 1 : Math.max(0.55, 1 - stackIndex * 0.18),
 						}
 			}
 			transition={{
 				x: isExiting
-					? { duration: 0.4, ease: "easeOut" }
-					: { type: "spring", stiffness: 300, damping: 25 },
-				opacity: { duration: 0.3 },
+					? { duration: 0.38, ease: "easeOut" }
+					: { type: "spring", stiffness: 300, damping: 26 },
+				opacity: { duration: 0.28 },
 			}}
-			className="glass-panel carbon-pattern rounded-[1.25rem] p-1 shadow-2xl"
+			className={
+				isTop
+					? "obsidian-card carbon-pattern cursor-grab rounded-3xl p-1.5 shadow-[0_24px_60px_-15px_rgba(0,0,0,0.9)] active:cursor-grabbing"
+					: "obsidian-card pointer-events-none rounded-3xl p-1.5"
+			}
 		>
-			{/* Accept overlay */}
+			{/* Specular top light hairline */}
+			<div className="pointer-events-none absolute top-0 right-10 left-10 z-20 h-px bg-linear-to-r from-transparent via-[#c026ff]/65 to-transparent" />
+
+			{/* Dynamic Accept Glow Border */}
 			<motion.div
-				className="pointer-events-none absolute inset-0 z-10 rounded-[1.25rem] border-4 border-green-500"
+				className="pointer-events-none absolute inset-0 z-20 rounded-3xl border-2 border-emerald-400 shadow-[inset_0_0_32px_rgba(16,185,129,0.3)]"
 				style={{ opacity: acceptBorderOpacity }}
 			/>
-			{/* Reject overlay */}
+
+			{/* Dynamic Reject Glow Border */}
 			<motion.div
-				className="pointer-events-none absolute inset-0 z-10 rounded-[1.25rem] border-4 border-red-500"
+				className="pointer-events-none absolute inset-0 z-20 rounded-3xl border-2 border-rose-500 shadow-[inset_0_0_32px_rgba(244,63,94,0.3)]"
 				style={{ opacity: rejectBorderOpacity }}
 			/>
 
-			<div className="h-full w-full overflow-hidden rounded-[1.2rem]">
-				{/* Image */}
-				<div className="relative h-[55%] w-full overflow-hidden">
+			<div className="flex h-full w-full flex-col overflow-hidden rounded-[1.25rem] bg-[#0e0e14]">
+				{/* Top Hero Media */}
+				<div className="relative h-[54%] w-full shrink-0 overflow-hidden bg-[#0a0a0f]">
 					{service.image_url ? (
 						<ImageWithFallback
 							src={service.image_url}
@@ -167,112 +157,107 @@ export const ServiceSwipeCard = ({
 							priority={isTop}
 						/>
 					) : (
-						<div className="flex h-full w-full items-center justify-center bg-[#201f1f]">
-							{createElement(iconComponent, { className: "h-16 w-16 text-[#7b2dff]/30" })}
+						<div className="flex h-full w-full items-center justify-center bg-linear-to-br from-[#161026] to-[#0a0a0f]">
+							{createElement(iconComponent, { className: "h-16 w-16 text-[#7b2dff]/45" })}
 						</div>
 					)}
-					<div className="absolute inset-0 bg-linear-to-t from-[#131313] via-transparent to-transparent" />
-					<div className="absolute inset-0 bg-linear-to-b from-transparent via-transparent to-[#131313]/80" />
+					<div className="pointer-events-none absolute inset-0 bg-linear-to-t from-[#0e0e14] via-[#0e0e14]/25 to-black/25" />
 
-					{/* Icon badge */}
+					{/* Category Badge top-left */}
+					<span className="absolute top-3.5 left-3.5 z-10 inline-flex items-center rounded-full border border-[#a855f7]/45 bg-black/70 px-3 py-1 font-mono text-[10px] font-bold tracking-[0.14em] text-[#e9d5ff] uppercase backdrop-blur-md">
+						{displayCategory ?? service.category}
+					</span>
+
+					{/* Floating Icon Badge bottom-left */}
 					{isTop ? (
 						<motion.div
-							initial={{ opacity: 0, scale: 0.5 }}
+							initial={{ opacity: 0, scale: 0.75 }}
 							animate={{ opacity: 1, scale: 1 }}
-							transition={{ delay: 0.2, duration: 0.3 }}
-							className="absolute bottom-4 left-4 flex h-12 w-12 items-center justify-center rounded-xl border border-[#7b2dff]/30 bg-[#131313]/80 backdrop-blur-sm"
+							transition={{ delay: 0.12, duration: 0.25 }}
+							className="absolute bottom-3.5 left-4 flex h-12 w-12 items-center justify-center rounded-xl border border-[#a855f7]/45 bg-black/75 shadow-[0_0_24px_rgba(123,45,255,0.35)] backdrop-blur-md"
 						>
-							{createElement(iconComponent, { className: "h-6 w-6 text-[#d1bcff]" })}
+							{createElement(iconComponent, { className: "h-6 w-6 text-[#d8b4fe]" })}
 						</motion.div>
 					) : null}
 				</div>
 
-				{/* Content */}
-				<div className="relative z-10 flex flex-col px-4 pt-3 pb-4 sm:px-6 sm:pt-4 sm:pb-6">
-					{/* Category tag */}
-					<span className="mb-2 inline-block w-fit rounded-full border border-[#7b2dff]/30 bg-[#7b2dff]/20 px-2 py-0.5 text-[10px] font-bold tracking-tighter text-[#d1bcff] uppercase">
-						{displayCategory ?? service.category}
-					</span>
-
-					<h2 className="text-xl font-bold text-white sm:text-2xl">{displayName}</h2>
-					<p className="mt-1 text-sm text-[#d1bcff]">{displayDescription}</p>
-
-					{/* Price range */}
-					<div className="mt-3 flex items-center gap-2 sm:mt-4">
-						<span className="text-base font-bold text-white sm:text-lg">{priceText}</span>
+				{/* Card Body */}
+				<div className="relative z-10 flex flex-1 flex-col justify-between px-5 pt-4 pb-5">
+					<div>
+						<h3 className="font-display line-clamp-2 text-xl font-extrabold tracking-tight text-white sm:text-2xl">
+							{displayName}
+						</h3>
+						<p className="mt-1.5 line-clamp-3 text-sm leading-relaxed text-[#b8b2c7]">
+							{displayDescription}
+						</p>
 					</div>
 
-					{/* Duration badge */}
-					<div className="mt-2 flex items-center gap-1 text-xs text-[#ccc3d9] sm:mt-3">
-						<span className="flex items-center gap-1 rounded-full bg-white/5 px-2 py-1">
-							<Clock className="h-3.5 w-3.5" />
-							{durationText}
+					{/* Price & Duration Telemetry Pills */}
+					<div className="mt-4 flex flex-wrap items-center justify-between gap-2 border-t border-white/[0.07] pt-3.5">
+						<span className="font-display text-lg font-black tracking-tight text-white">
+							{priceText}
+						</span>
+						<span className="inline-flex items-center gap-1.5 rounded-full border border-white/10 bg-white/[0.04] px-3 py-1 font-mono text-xs font-semibold text-[#d1bcff]">
+							<Clock className="h-3.5 w-3.5 text-[#a855f7]" aria-hidden="true" />
+							<span>{durationText}</span>
 						</span>
 					</div>
 				</div>
 			</div>
 
-			{/* Bottom action overlay — Accept/Reject indicators */}
+			{/* Drag Stamp Indicators */}
 			{isTop && !isExiting ? (
 				<>
-					{/* ACCEPT label (green) */}
 					<motion.div
-						className="pointer-events-none absolute top-8 right-6 z-20 rounded-full border-3 border-green-500 px-4 py-1.5"
+						className="pointer-events-none absolute top-14 right-5 z-30 -rotate-12 rounded-xl border-2 border-emerald-400 bg-emerald-950/85 px-3.5 py-1.5 backdrop-blur-md"
 						style={{ opacity: acceptBorderOpacity }}
 					>
-						<span className="text-lg font-extrabold tracking-wider text-green-500 uppercase">
-							<Sparkles className="mr-1 inline h-5 w-5" />
-							Accept
+						<span className="font-display inline-flex items-center gap-1.5 text-sm font-black tracking-wider text-emerald-300 uppercase">
+							<Sparkles className="h-4 w-4" aria-hidden="true" />
+							{tSwipe("accept")}
 						</span>
 					</motion.div>
 
-					{/* REJECT label (red) */}
 					<motion.div
-						className="pointer-events-none absolute top-8 left-6 z-20 rounded-full border-3 border-red-500 px-4 py-1.5"
+						className="pointer-events-none absolute top-14 left-5 z-30 rotate-12 rounded-xl border-2 border-rose-500 bg-rose-950/85 px-3.5 py-1.5 backdrop-blur-md"
 						style={{ opacity: rejectBorderOpacity }}
 					>
-						<span className="text-lg font-extrabold tracking-wider text-red-500 uppercase">
-							Reject
+						<span className="font-display inline-flex items-center gap-1.5 text-sm font-black tracking-wider text-rose-300 uppercase">
+							<X className="h-4 w-4" aria-hidden="true" />
+							{tSwipe("reject")}
 						</span>
 					</motion.div>
 				</>
 			) : null}
 
-			{/* Action buttons */}
+			{/* Tactile Decline & Accept Buttons below the card */}
 			{isTop && !isExiting ? (
-				<div className="absolute -bottom-16 left-1/2 z-30 flex -translate-x-1/2 gap-4 sm:-bottom-20 sm:gap-6">
-					{/* Reject button */}
+				<div className="absolute -bottom-24 left-1/2 z-30 flex -translate-x-1/2 items-center gap-7">
 					<button
+						type="button"
 						onClick={handleReject}
-						className="group flex flex-col items-center gap-1"
-						aria-label="Reject service"
+						aria-label={`${tSwipe("reject")}: ${displayName ?? ""}`}
+						className="group flex cursor-pointer flex-col items-center gap-1.5"
 					>
-						<div className="flex h-14 w-14 items-center justify-center rounded-full border-2 border-[#958da2] transition-all duration-300 group-hover:border-red-500 group-hover:bg-red-500/10">
-							<span className="material-symbols-outlined text-2xl text-[#ccc3d9] group-hover:text-red-500">
-								close
-							</span>
+						<div className="flex h-14 w-14 items-center justify-center rounded-full border border-white/15 bg-[#12121a] text-[#b8b2c7] shadow-lg transition-all duration-200 group-hover:scale-105 group-hover:border-rose-500/70 group-hover:bg-rose-500/15 group-hover:text-rose-400 group-active:scale-95">
+							<X className="h-6 w-6" aria-hidden="true" />
 						</div>
-						<span className="text-[10px] font-bold tracking-widest text-[#ccc3d9] uppercase opacity-60 group-hover:opacity-100">
-							Decline
+						<span className="font-mono text-[10px] font-semibold tracking-[0.14em] text-[#9b93ad] uppercase transition-colors group-hover:text-rose-300">
+							{tSwipe("reject")}
 						</span>
 					</button>
 
-					{/* Accept button */}
 					<button
+						type="button"
 						onClick={handleAccept}
-						className="group flex flex-col items-center gap-1"
-						aria-label="Accept service"
+						aria-label={`${tSwipe("accept")}: ${displayName ?? ""}`}
+						className="group flex cursor-pointer flex-col items-center gap-1.5"
 					>
-						<div className="neon-glow flex h-16 w-16 items-center justify-center rounded-full bg-linear-to-br from-[#7b2dff] to-[#b303f2] transition-all duration-300 group-hover:shadow-[0_0_25px_rgba(123,45,255,0.5)] active:scale-90">
-							<span
-								className="material-symbols-outlined text-3xl text-white"
-								style={{ fontVariationSettings: "'FILL' 1" }}
-							>
-								check
-							</span>
+						<div className="flex h-16 w-16 items-center justify-center rounded-full border border-[#d8b4fe]/45 bg-linear-to-br from-[#7b2dff] via-[#9c2bff] to-[#c026ff] text-white shadow-[0_0_28px_rgba(192,38,255,0.5)] transition-all duration-200 group-hover:scale-105 group-hover:shadow-[0_0_38px_rgba(192,38,255,0.75)] group-active:scale-95">
+							<Check className="h-7 w-7 stroke-[2.5]" aria-hidden="true" />
 						</div>
-						<span className="text-[10px] font-bold tracking-widest text-[#d1bcff] uppercase">
-							Accept
+						<span className="font-mono text-[10px] font-bold tracking-[0.14em] text-[#d8b4fe] uppercase transition-colors group-hover:text-white">
+							{tSwipe("accept")}
 						</span>
 					</button>
 				</div>

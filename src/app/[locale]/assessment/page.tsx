@@ -60,7 +60,14 @@ const AssessmentPage = async ({ params }: { params: Promise<Params> }) => {
 				url={`${localeUrl}/assessment`}
 				locale={locale}
 			/>
-			<AssessmentWizard />
+			<section className="relative min-h-screen overflow-x-clip bg-[#07070a] pt-8 pb-20 sm:pt-12 md:pt-14 md:pb-28">
+				{/* Atelier Grid & Rim-Lit Studio Ambient Glows */}
+				<div className="atelier-grid pointer-events-none absolute inset-0 mask-[radial-gradient(ellipse_at_top,black_25%,transparent_80%)] opacity-55" />
+				<div className="pointer-events-none absolute -top-32 -left-24 h-112 w-112 rounded-full bg-[#7b2dff]/16 blur-[140px]" />
+				<div className="pointer-events-none absolute top-1/3 -right-32 h-128 w-128 rounded-full bg-[#c026ff]/11 blur-[150px]" />
+
+				<AssessmentWizard />
+			</section>
 		</>
 	);
 };

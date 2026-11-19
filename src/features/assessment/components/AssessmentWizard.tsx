@@ -1,12 +1,21 @@
 "use client";
 
 import { motion, AnimatePresence } from "framer-motion";
-import { ArrowLeft, Loader2, AlertCircle, Phone } from "lucide-react";
+import { ArrowLeft } from "lucide-react";
 import { useTranslations, useLocale } from "next-intl";
-import { useCallback } from "react";
+import React, { useCallback, useEffect, useRef } from "react";
 
-import { CONTACT_INFO } from "@/constants/contact";
+import { AssessmentAnalyzing } from "@/features/assessment/components/AssessmentAnalyzing";
+import { AssessmentDossier } from "@/features/assessment/components/AssessmentDossier";
+import {
+	AssessmentHeroHeader,
+	AssessmentStageHeader,
+} from "@/features/assessment/components/AssessmentHeroHeader";
 import { AssessmentReport } from "@/features/assessment/components/AssessmentReport";
+import {
+	AssessmentErrorCard,
+	NoServicesSelectedCard,
+} from "@/features/assessment/components/AssessmentResultFallback";
 import { PhotoUploadStep } from "@/features/assessment/components/PhotoUploadStep";
 import { ProgressIndicator } from "@/features/assessment/components/ProgressIndicator";
 import { ServiceSwipeDeck } from "@/features/assessment/components/ServiceSwipeDeck";
@@ -15,12 +24,12 @@ import {
 	AssessmentResultSchema,
 } from "@/features/assessment/schemas/assessmentSchema";
 import { useAssessmentStore } from "@/features/assessment/stores/assessmentStore";
+import { extractVehicleTelemetry } from "@/features/assessment/types/assessmentService";
 
 import type { PhotoAngle, WizardStep } from "@/features/assessment/schemas/assessmentSchema";
 
-export const AssessmentWizard = () => {
+export const AssessmentWizard: React.FC = () => {
 	const t = useTranslations("Assessment");
-	const tErrors = useTranslations("Errors");
 	const locale = useLocale();
 	const {
 		currentStep,
@@ -38,6 +47,21 @@ export const AssessmentWizard = () => {
 
 	const result = useAssessmentStore((s) => s.result);
 	const error = useAssessmentStore((s) => s.error);
+
+	const stageRef = useRef<HTMLDivElement>(null);
+	const isFirstRender = useRef(true);
+
+	// Smoothly scroll stage into view when moving between steps
+	useEffect(() => {
+		if (isFirstRender.current) {
+			isFirstRender.current = false;
+			return;
+		}
+		if (stageRef.current) {
+			const top = stageRef.current.getBoundingClientRect().top + window.scrollY - 108;
+			window.scrollTo({ top: Math.max(0, top), behavior: "smooth" });
+		}
+	}, [currentStep]);
 
 	const completedSteps = photos
 		.filter((p) => p.validationStatus === "valid")
@@ -70,49 +94,22 @@ export const AssessmentWizard = () => {
 		[setPhoto, setPhotoValidation, nextStep, currentStep, t],
 	);
 
-	const handlePhotoInvalidAction = useCallback((reason: string, userMessage?: string) => {
-		console.log("[AssessmentWizard] Photo invalid:", { reason, userMessage });
+	const handlePhotoInvalidAction = useCallback((_reason: string, _userMessage?: string) => {
+		// Validation reason is rendered directly in PhotoUploadStep
 	}, []);
 
 	// ── Trigger analysis after services are swiped ──────────────────────────
-
 	const handleServicesComplete = useCallback(async () => {
 		const state = useAssessmentStore.getState();
 		const acceptedIds = state.services.filter((s) => s.accepted).map((s) => s.serviceId);
 
 		if (acceptedIds.length === 0) {
-			console.log("[AssessmentWizard] No services accepted — skipping analysis");
 			clearPhotos();
 			goToStep("results");
 			return;
 		}
 
-		// Extract car info from validated photos (most common values)
-		const validPhotos = state.photos.filter((p) => p.validationStatus === "valid");
-		const carSizes = validPhotos.map((p) => p.carSize).filter(Boolean);
-		const dirtLevels = validPhotos.map((p) => p.dirtLevel).filter(Boolean);
-		const carDescriptions = validPhotos.map((p) => p.carDescription).filter(Boolean);
-
-		// Pick the most common car size, or default to "medium"
-		const carSize =
-			carSizes.length > 0
-				? carSizes
-						.sort(
-							(a, b) =>
-								carSizes.filter((v) => v === a).length - carSizes.filter((v) => v === b).length,
-						)
-						.pop()!
-				: "medium";
-		const dirtLevel =
-			dirtLevels.length > 0
-				? dirtLevels
-						.sort(
-							(a, b) =>
-								dirtLevels.filter((v) => v === a).length - dirtLevels.filter((v) => v === b).length,
-						)
-						.pop()!
-				: "moderate";
-		const brand = carDescriptions.length > 0 ? carDescriptions[0] : null;
+		const { carSize, dirtLevel, brand } = extractVehicleTelemetry(state.photos);
 
 		setIsAnalyzing(true);
 		goToStep("analyzing");
@@ -136,7 +133,6 @@ export const AssessmentWizard = () => {
 					const err = await res.json();
 					errorMsg = (err as { error?: string }).error ?? errorMsg;
 				} catch {
-					// Response body is not JSON — use text or default
 					errorMsg = (await res.text().catch(() => "")) || errorMsg;
 				}
 				throw new Error(errorMsg);
@@ -165,138 +161,127 @@ export const AssessmentWizard = () => {
 	}, [locale, setResult, setIsAnalyzing, setError, clearPhotos, goToStep]);
 
 	const isPhotoStep = PHOTO_STEPS.includes(currentStep);
+	const isSplitLayout = isPhotoStep || currentStep === "services";
+	const photoStepIndex = PHOTO_STEPS.indexOf(currentStep);
+	const photoStepNumber = photoStepIndex >= 0 ? photoStepIndex + 1 : 1;
 
 	const previousCarDescriptions = photos
 		.filter((p) => p.validationStatus === "valid" && p.carDescription)
 		.map((p) => p.carDescription!);
 
+	const handleRetryToServices = () => {
+		setError(null);
+		setIsAnalyzing(false);
+		goToStep("services");
+	};
+
 	return (
 		<div
 			data-testid="assessment-wizard"
-			className="bg-surface flex min-h-screen flex-col items-center justify-center px-4 py-12"
+			className="relative mx-auto w-full max-w-7xl px-4 md:px-12"
 		>
-			<div className="w-full max-w-2xl">
-				{isPhotoStep ? (
-					<div className="mb-8">
-						<ProgressIndicator currentStep={currentStep} completedSteps={completedSteps} />
-					</div>
-				) : null}
+			{/* Editorial AI Vision Lab Header (shown during capture & configurator steps) */}
+			{isSplitLayout ? <AssessmentHeroHeader /> : null}
 
-				<AnimatePresence mode="wait">
-					{isPhotoStep ? (
-						<motion.div
-							key={currentStep}
-							initial={{ opacity: 0, x: 20 }}
-							animate={{ opacity: 1, x: 0 }}
-							exit={{ opacity: 0, x: -20 }}
-							transition={{ duration: 0.3 }}
-						>
-							<PhotoUploadStep
-								angle={currentStep as PhotoAngle}
-								previousCarDescriptions={previousCarDescriptions}
-								onPhotoValidatedAction={handlePhotoValidatedAction}
-								onPhotoInvalidAction={handlePhotoInvalidAction}
-							/>
-						</motion.div>
-					) : null}
+			{/* Stage Viewport */}
+			<div ref={stageRef}>
+				{isSplitLayout ? (
+					<div className="grid grid-cols-1 items-start gap-7 lg:grid-cols-12 xl:gap-9">
+						{/* Left 7 Columns: Progress Pipeline + Main Obsidian Stage Card */}
+						<div className="lg:col-span-7">
+							{isPhotoStep ? (
+								<ProgressIndicator currentStep={currentStep} completedSteps={completedSteps} />
+							) : null}
 
-					{currentStep === "services" ? (
-						<motion.div
-							key="services"
-							initial={{ opacity: 0, y: 10 }}
-							animate={{ opacity: 1, y: 0 }}
-							exit={{ opacity: 0, y: -10 }}
-							transition={{ duration: 0.3 }}
-							className="w-full"
-						>
-							<ServiceSwipeDeck onCompleteAction={handleServicesComplete} />
-						</motion.div>
-					) : null}
+							<div className="obsidian-card relative overflow-hidden rounded-3xl p-5 sm:p-7 md:p-8">
+								{/* Specular Top Hairline & Ambient Corner Aura */}
+								<div className="pointer-events-none absolute top-0 right-10 left-10 h-px bg-linear-to-r from-transparent via-[#c026ff]/75 to-transparent" />
+								<div className="pointer-events-none absolute -top-24 -right-24 h-56 w-56 rounded-full bg-[#7b2dff]/12 blur-[90px]" />
 
-					{currentStep === "analyzing" ? (
-						<motion.div
-							key="analyzing"
-							initial={{ opacity: 0, scale: 0.95 }}
-							animate={{ opacity: 1, scale: 1 }}
-							className="flex flex-col items-center justify-center py-20"
-						>
-							<Loader2 className="text-primary mb-6 h-16 w-16 animate-spin" />
-							<h2 className="mb-2 text-2xl font-bold text-white">{t("analyzing.title")}</h2>
-							<p className="text-on-surface-variant text-sm">{t("analyzing.description")}</p>
-						</motion.div>
-					) : null}
+								<AssessmentStageHeader
+									isPhotoStep={isPhotoStep}
+									currentStep={currentStep}
+									photoStepNumber={photoStepNumber}
+								/>
 
-					{currentStep === "results" ? (
-						<motion.div
-							key="results"
-							initial={{ opacity: 0, y: 20 }}
-							animate={{ opacity: 1, y: 0 }}
-							className="flex flex-col items-center py-12"
-						>
-							{error ? (
-								// Error state
-								<div
-									role="alert"
-									aria-live="assertive"
-									className="flex flex-col items-center gap-4 text-center"
-								>
-									<div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-amber-500/15 text-amber-400">
-										<AlertCircle className="h-8 w-8" aria-hidden="true" />
-									</div>
-									<h2 className="text-2xl font-bold text-white">
-										{tErrors("aiUnavailable.title")}
-									</h2>
-									<p className="max-w-md text-sm text-[#ccc3d9]">
-										{tErrors("aiUnavailable.description")}
-									</p>
-									<div className="mt-4 flex w-full flex-col justify-center gap-3 sm:w-auto sm:flex-row">
+								{/* Animated Active Stage */}
+								<div className="relative">
+									<AnimatePresence mode="wait">
+										{isPhotoStep ? (
+											<motion.div
+												key={currentStep}
+												initial={{ opacity: 0, x: 16 }}
+												animate={{ opacity: 1, x: 0 }}
+												exit={{ opacity: 0, x: -16 }}
+												transition={{ duration: 0.24, ease: [0.16, 1, 0.3, 1] }}
+											>
+												<PhotoUploadStep
+													angle={currentStep as PhotoAngle}
+													previousCarDescriptions={previousCarDescriptions}
+													onPhotoValidatedAction={handlePhotoValidatedAction}
+													onPhotoInvalidAction={handlePhotoInvalidAction}
+												/>
+											</motion.div>
+										) : (
+											<motion.div
+												key="services"
+												initial={{ opacity: 0, y: 12 }}
+												animate={{ opacity: 1, y: 0 }}
+												exit={{ opacity: 0, y: -12 }}
+												transition={{ duration: 0.28, ease: [0.16, 1, 0.3, 1] }}
+												className="w-full"
+											>
+												<ServiceSwipeDeck onCompleteAction={handleServicesComplete} />
+											</motion.div>
+										)}
+									</AnimatePresence>
+								</div>
+
+								{/* Integrated Back Button for Photo Steps 2–4 */}
+								{isPhotoStep && currentStep !== "front" ? (
+									<div className="mt-6 border-t border-white/[0.07] pt-5">
 										<button
 											type="button"
-											onClick={() => {
-												setError(null);
-												setIsAnalyzing(false);
-												goToStep("services");
-											}}
-											className="rounded-xl bg-linear-to-r from-[#7b2dff] to-[#b303f2] px-6 py-3.5 font-bold text-white shadow-lg shadow-[#7b2dff]/25 transition-all hover:bg-[#7b2dff]/90 active:scale-95"
+											onClick={prevStep}
+											aria-label={t("navigation.back")}
+											className="inline-flex cursor-pointer items-center gap-2 rounded-xl border border-white/10 bg-white/[0.03] px-4 py-2.5 text-sm font-medium text-[#ccc3d9] transition-all hover:border-[#a855f7]/50 hover:bg-[#7b2dff]/12 hover:text-white"
 										>
-											{t("results.retry")}
+											<ArrowLeft className="h-4 w-4" aria-hidden="true" />
+											<span>{t("navigation.back")}</span>
 										</button>
-										<a
-											href={`tel:${CONTACT_INFO.phoneRaw}`}
-											className="inline-flex items-center justify-center gap-2 rounded-xl border border-white/20 px-5 py-3.5 text-sm font-semibold text-white transition-colors hover:bg-white/10"
-										>
-											<Phone className="h-4 w-4 text-[#d1bcff]" aria-hidden="true" />
-											<span>
-												{tErrors("bookingUnavailable.callUs")}: {CONTACT_INFO.phone}
-											</span>
-										</a>
 									</div>
-								</div>
-							) : result ? (
-								// Success state — use the AssessmentReport component
-								<div className="w-full max-w-2xl">
-									<AssessmentReport result={result} />
-								</div>
-							) : (
-								// Fallback (shouldn't happen)
-								<p className="text-on-surface-variant text-sm">{t("results.comingSoon")}</p>
-							)}
-						</motion.div>
-					) : null}
-				</AnimatePresence>
+								) : null}
+							</div>
+						</div>
 
-				{/* Back button for photo steps (not on first step) */}
-				{isPhotoStep && currentStep !== "front" ? (
-					<div className="mt-8 text-center">
-						<button
-							onClick={prevStep}
-							className="text-on-surface-variant inline-flex items-center gap-2 transition-colors hover:text-white"
-						>
-							<ArrowLeft className="h-4 w-4" />
-							{t("navigation.back")}
-						</button>
+						{/* Right 5 Columns: Sticky Live Vehicle Scan Dossier */}
+						<div className="lg:sticky lg:top-24 lg:col-span-5">
+							<AssessmentDossier />
+						</div>
 					</div>
-				) : null}
+				) : (
+					<AnimatePresence mode="wait">
+						{currentStep === "analyzing" ? <AssessmentAnalyzing /> : null}
+
+						{currentStep === "results" ? (
+							<motion.div
+								key="results"
+								initial={{ opacity: 0, y: 16 }}
+								animate={{ opacity: 1, y: 0 }}
+								exit={{ opacity: 0, y: -12 }}
+								transition={{ duration: 0.35 }}
+							>
+								{error ? (
+									<AssessmentErrorCard onRetry={handleRetryToServices} />
+								) : result ? (
+									<AssessmentReport result={result} />
+								) : (
+									<NoServicesSelectedCard onBackToServices={handleRetryToServices} />
+								)}
+							</motion.div>
+						) : null}
+					</AnimatePresence>
+				)}
 			</div>
 		</div>
 	);
