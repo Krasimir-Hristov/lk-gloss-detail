@@ -1,4 +1,4 @@
-import { Geist, Geist_Mono } from "next/font/google";
+import { Geist, Geist_Mono, Montserrat } from "next/font/google";
 import { headers } from "next/headers";
 import { notFound } from "next/navigation";
 import { NextIntlClientProvider, hasLocale } from "next-intl";
@@ -17,6 +17,13 @@ import { routing } from "@/i18n/routing";
 import type { Metadata } from "next";
 
 import "../globals.css";
+
+const montserrat = Montserrat({
+	variable: "--font-montserrat",
+	subsets: ["latin", "latin-ext"],
+	weight: ["600", "700", "800", "900"],
+	display: "swap",
+});
 
 const geistSans = Geist({
 	variable: "--font-geist-sans",
@@ -78,7 +85,7 @@ const LocaleLayout = async ({ children, params }: Props) => {
 		<html
 			lang={locale}
 			data-scroll-behavior="smooth"
-			className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
+			className={`${montserrat.variable} ${geistSans.variable} ${geistMono.variable} h-full antialiased`}
 		>
 			<head>
 				<link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -92,7 +99,7 @@ const LocaleLayout = async ({ children, params }: Props) => {
 					href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=swap"
 				/>
 			</head>
-			<body className="flex min-h-full flex-col bg-[#131313] font-sans text-[#e5e2e1]">
+			<body className="flex min-h-full flex-col bg-[#07070a] font-sans text-[#e5e2e1] selection:bg-[#7b2dff] selection:text-white">
 				<Providers>
 					<NextIntlClientProvider messages={messages} locale={locale}>
 						{isAdminRoute ? (

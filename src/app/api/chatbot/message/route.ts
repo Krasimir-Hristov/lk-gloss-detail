@@ -135,8 +135,8 @@ Wichtige Regeln:
    - Services: [${links.services}](/${locale}#services)
    - Booking: [${links.booking}](/${locale}/booking)
    - Assessment: [${links.assessment}](/${locale}/assessment)
-   - Contact: [${links.contact}](/${locale}/contact)
-4. Für geschäftliche Anfragen (B2B/Flotten) verweise auf das [${links.contact}](/${locale}/contact).
+   - Contact: [${links.contact}](/${locale}#contact)
+4. Für geschäftliche Anfragen (B2B/Flotten) verweise auf das [${links.contact}](/${locale}#contact).
 5. Sei immer höflich und professionell.${contextSection}`;
 }
 

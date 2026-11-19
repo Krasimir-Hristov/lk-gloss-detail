@@ -39,23 +39,23 @@ export const LanguageSwitcher = () => {
 			<button
 				type="button"
 				onClick={() => setIsOpen(!isOpen)}
-				className="flex items-center gap-2 rounded-lg border border-white/10 bg-[#201f1f] px-3 py-2 text-sm font-medium text-[#ccc3d9] transition-colors hover:text-[#e5e2e1]"
+				className="flex items-center gap-2 rounded-xl border border-white/10 bg-white/[0.04] px-3 py-2 font-mono text-xs font-medium text-[#d5d0e3] transition-all hover:border-[#7b2dff]/50 hover:bg-white/[0.08] hover:text-white"
 				aria-label={t("label")}
 				aria-expanded={isOpen}
 			>
-				<Globe className="size-4" />
-				<span className="font-bold">{currentName}</span>
+				<Globe className="size-3.5 text-[#d1bcff]" />
+				<span className="font-bold tracking-wider">{currentName}</span>
 				<ChevronDown className={`size-3 transition-transform ${isOpen ? "rotate-180" : ""}`} />
 			</button>
 
 			<AnimatePresence>
 				{isOpen ? (
 					<motion.div
-						initial={{ opacity: 0, y: -10 }}
-						animate={{ opacity: 1, y: 0 }}
-						exit={{ opacity: 0, y: -10 }}
+						initial={{ opacity: 0, y: -8, scale: 0.98 }}
+						animate={{ opacity: 1, y: 0, scale: 1 }}
+						exit={{ opacity: 0, y: -8, scale: 0.98 }}
 						transition={{ duration: 0.15 }}
-						className="absolute right-0 mt-2 w-32 overflow-hidden rounded-lg border border-white/10 bg-[#201f1f] shadow-lg"
+						className="absolute right-0 mt-2 w-36 overflow-hidden rounded-xl border border-white/10 bg-[#0d0d14]/95 p-1 shadow-[0_20px_50px_rgba(0,0,0,0.85)] backdrop-blur-2xl"
 					>
 						{routing.locales.map((loc) => {
 							const isActive = loc === locale;
@@ -66,11 +66,11 @@ export const LanguageSwitcher = () => {
 									key={loc}
 									onClick={() => handleChange(loc)}
 									disabled={isNavigating || isActive}
-									className={`block w-full px-4 py-2 text-left text-sm transition-colors ${
+									className={`block w-full rounded-lg px-3 py-2 text-left font-mono text-xs transition-colors ${
 										isActive
-											? "bg-[#7b2dff] text-white"
-											: "text-[#ccc3d9] hover:bg-[#2a2a2a] hover:text-[#e5e2e1]"
-									} disabled:cursor-not-allowed disabled:opacity-60`}
+											? "bg-linear-to-r from-[#7b2dff] to-[#a855f7] font-bold text-white"
+											: "text-[#ccc3d9] hover:bg-white/[0.06] hover:text-white"
+									} disabled:cursor-not-allowed disabled:opacity-75`}
 									title={name}
 									aria-label={name}
 								>

@@ -1,68 +1,150 @@
-import { ShieldCheck, ArrowRight } from "lucide-react";
+import { ArrowRight, Award, BrainCircuit, ShieldCheck, Sparkles, Truck } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { useTranslations } from "next-intl";
 
-import { heroCarDetailing } from "@/assets";
+import { heroShowroom, lkLogo } from "@/assets";
 
 type HeroSectionProps = {
 	locale: string;
 };
 
+const HERO_TRUST_ITEMS = [
+	{ key: "mobile", icon: Truck },
+	{ key: "professional", icon: Award },
+	{ key: "aiPowered", icon: BrainCircuit },
+] as const;
+
 export const HeroSection = ({ locale }: HeroSectionProps) => {
 	const t = useTranslations("HomePage");
 
 	return (
-		<section className="relative overflow-hidden px-4 pt-12 pb-20 md:px-16 md:pt-20 md:pb-32">
-			<div className="mx-auto grid max-w-7xl items-center gap-12 lg:grid-cols-2 lg:gap-16">
-				{/* Left: Text */}
-				<div className="flex flex-col gap-6">
-					<h1 className="text-3xl leading-tight font-extrabold tracking-tight text-[#e5e2e1] sm:text-4xl md:text-5xl lg:text-6xl">
-						{t("hero.title")}
-					</h1>
-					<p className="max-w-lg text-base leading-relaxed text-[#ccc3d9] sm:text-lg md:text-xl">
-						{t("hero.subtitle")}
-					</p>
-					<div className="flex flex-col gap-3 pt-2 sm:flex-row sm:gap-4">
-						<Link
-							href={`/${locale}/assessment`}
-							aria-label={t("hero.ctaPrimary")}
-							className="inline-flex w-full items-center justify-center gap-2 rounded-lg bg-[#7b2dff] px-6 py-4 text-center text-base font-semibold text-white shadow-lg shadow-[#7b2dff]/25 transition-all hover:bg-[#7b2dff]/90 hover:shadow-[#7b2dff]/40 sm:w-auto sm:px-8"
-						>
-							{t("hero.ctaPrimary")}
-							<ArrowRight className="h-4 w-4" />
-						</Link>
-						<Link
-							href={`/${locale}#services`}
-							aria-label={t("hero.ctaSecondary")}
-							className="inline-flex w-full items-center justify-center gap-2 rounded-lg border border-[#353534] bg-transparent px-6 py-4 text-center text-base font-semibold text-[#e5e2e1] transition-all hover:border-[#7b2dff]/50 hover:bg-[#201f1f] sm:w-auto sm:px-8"
-						>
-							{t("hero.ctaSecondary")}
-						</Link>
-					</div>
-				</div>
+		<section className="relative overflow-hidden bg-[#07070a] px-4 pt-8 pb-20 sm:pt-12 md:px-12 md:pt-16 md:pb-28">
+			{/* Subtle architectural grid & ambient studio lights */}
+			<div className="atelier-grid pointer-events-none absolute inset-0 mask-[radial-gradient(ellipse_at_center,black_30%,transparent_80%)] opacity-60" />
+			<div className="pointer-events-none absolute -top-32 -left-24 h-112 w-112 rounded-full bg-[#7b2dff]/18 blur-[130px]" />
+			<div className="pointer-events-none absolute top-1/3 -right-32 h-128 w-128 rounded-full bg-[#c026ff]/12 blur-[150px]" />
 
-				{/* Right: Image with floating badge */}
-				<div className="relative mx-auto w-full max-w-lg lg:mx-0 lg:max-w-none">
-					<div className="relative overflow-hidden rounded-2xl border border-[#353534]">
-						<Image
-							src={heroCarDetailing}
-							alt={t("hero.imageAlt")}
-							priority
-							sizes="(max-width: 768px) 100vw, (max-width: 1280px) 50vw, 800px"
-							className="h-auto w-full object-cover"
-						/>
-						{/* Gradient overlay */}
-						<div className="pointer-events-none absolute inset-0 bg-linear-to-t from-[#131313]/60 via-transparent to-transparent" />
-					</div>
-					{/* Floating badge */}
-					<div className="absolute -bottom-4 left-1/2 flex max-w-[calc(100%-2rem)] -translate-x-1/2 items-center gap-3 rounded-xl border border-[#353534] bg-[#201f1f] px-4 py-3 shadow-xl sm:px-5 md:-left-8 md:translate-x-0">
-						<div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-[#7b2dff]/20">
-							<ShieldCheck className="h-5 w-5 text-[#d1bcff]" />
+			<div className="relative mx-auto max-w-7xl">
+				<div className="grid items-center gap-10 lg:grid-cols-12 lg:gap-12">
+					{/* Left: Editorial Display Typography & Actions */}
+					<div className="flex flex-col gap-6 lg:col-span-6">
+						{/* Studio Pill Badge */}
+						<div className="inline-flex w-fit items-center gap-2.5 rounded-full border border-[#7b2dff]/35 bg-[#7b2dff]/10 px-4 py-1.5 backdrop-blur-md">
+							<span className="relative flex h-2 w-2">
+								<span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-[#c026ff] opacity-75" />
+								<span className="relative inline-flex h-2 w-2 rounded-full bg-[#d8b4fe]" />
+							</span>
+							<span className="font-mono text-[11px] font-semibold tracking-[0.16em] text-[#e5d4ff] uppercase">
+								{t("hero.badgeTitle")} · {t("hero.badgeSubtitle")}
+							</span>
 						</div>
-						<div className="min-w-0 flex-1">
-							<p className="truncate text-sm font-bold text-[#e5e2e1]">{t("hero.badgeTitle")}</p>
-							<p className="truncate text-xs text-[#ccc3d9]">{t("hero.badgeSubtitle")}</p>
+
+						{/* Monumental Headline */}
+						<h1 className="font-display text-3xl leading-[1.06] font-black tracking-[-0.03em] sm:text-5xl lg:text-[3.35rem] xl:text-6xl">
+							<span className="metallic-text">{t("hero.title")}</span>
+						</h1>
+
+						{/* Subtitle */}
+						<p className="max-w-xl text-base leading-relaxed text-[#b8b2c7] sm:text-lg">
+							{t("hero.subtitle")}
+						</p>
+
+						{/* Dual Primary & Secondary CTAs (exact existing routes & labels) */}
+						<div className="flex flex-col gap-3.5 pt-2 sm:flex-row sm:items-center sm:gap-4">
+							<Link
+								href={`/${locale}/assessment`}
+								aria-label={t("hero.ctaPrimary")}
+								className="group font-display relative inline-flex w-full items-center justify-center gap-2.5 overflow-hidden rounded-xl bg-linear-to-r from-[#7b2dff] via-[#9c2bff] to-[#c026ff] px-7 py-4 text-center text-sm font-bold tracking-wide text-white shadow-[inset_0_1px_0_rgba(255,255,255,0.28),0_14px_38px_-8px_rgba(123,45,255,0.6)] transition-all duration-300 hover:scale-[1.015] hover:shadow-[inset_0_1px_0_rgba(255,255,255,0.35),0_18px_45px_-6px_rgba(192,38,255,0.65)] hover:brightness-110 active:scale-[0.98] sm:w-auto sm:px-8"
+							>
+								<Sparkles className="h-4 w-4 text-[#f3e8ff]" aria-hidden="true" />
+								<span>{t("hero.ctaPrimary")}</span>
+								<ArrowRight
+									className="h-4 w-4 transition-transform duration-200 group-hover:translate-x-1"
+									aria-hidden="true"
+								/>
+							</Link>
+
+							<Link
+								href={`/${locale}#services`}
+								aria-label={t("hero.ctaSecondary")}
+								className="font-display inline-flex w-full items-center justify-center gap-2 rounded-xl border border-white/15 bg-white/[0.04] px-7 py-4 text-center text-sm font-bold tracking-wide text-[#f1eff7] backdrop-blur-md transition-all duration-300 hover:border-[#a855f7]/60 hover:bg-white/[0.08] hover:text-white active:scale-[0.98] sm:w-auto sm:px-8"
+							>
+								<span>{t("hero.ctaSecondary")}</span>
+							</Link>
+						</div>
+
+						{/* Quiet Luxury Trust Strip (100% localized) */}
+						<div className="mt-4 grid grid-cols-1 gap-3 border-t border-white/[0.08] pt-6 sm:grid-cols-3 sm:gap-4">
+							{HERO_TRUST_ITEMS.map(({ key, icon: Icon }) => (
+								<div key={key} className="flex items-center gap-2.5">
+									<div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg border border-white/[0.08] bg-white/[0.03] text-[#d1bcff]">
+										<Icon className="h-4 w-4" aria-hidden="true" />
+									</div>
+									<span className="text-xs leading-snug font-medium text-[#cfc9de]">
+										{t(`whyLK.${key}`)}
+									</span>
+								</div>
+							))}
+						</div>
+					</div>
+
+					{/* Right: Rim-Lit Showroom Photography Showcase */}
+					<div className="relative mx-auto w-full max-w-2xl lg:col-span-6 lg:mx-0 lg:max-w-none">
+						{/* Ambient rim glow behind visual */}
+						<div className="pointer-events-none absolute -inset-3 rounded-[32px] bg-linear-to-tr from-[#7b2dff]/25 via-transparent to-[#c026ff]/20 opacity-80 blur-2xl" />
+
+						{/* Precision Chamfered Obsidian Frame */}
+						<div className="relative rounded-[26px] bg-linear-to-b from-[#c026ff]/45 via-white/15 to-white/[0.04] p-px shadow-[0_30px_90px_-20px_rgba(0,0,0,0.95)]">
+							<div className="group relative overflow-hidden rounded-[25px] bg-[#0b0b10]">
+								<div className="relative aspect-[16/11] w-full sm:aspect-[16/10] lg:aspect-[4/3]">
+									<Image
+										src={heroShowroom}
+										alt={t("hero.imageAlt")}
+										priority
+										placeholder="blur"
+										fill
+										sizes="(max-width: 1024px) 100vw, 52vw"
+										className="object-cover object-[62%_center] transition-transform duration-700 ease-out group-hover:scale-[1.03]"
+									/>
+									{/* Subtle cinematic vignette */}
+									<div className="pointer-events-none absolute inset-0 bg-linear-to-t from-[#07070a]/90 via-[#07070a]/15 to-transparent" />
+									<div className="pointer-events-none absolute inset-0 bg-linear-to-r from-[#07070a]/45 via-transparent to-transparent" />
+								</div>
+
+								{/* Top Brand Watermark Crest */}
+								<div className="absolute top-4 left-4 flex items-center gap-2 rounded-full border border-white/12 bg-black/65 px-3 py-1.5 backdrop-blur-xl">
+									<div className="relative h-5 w-5 overflow-hidden rounded-md border border-[#7b2dff]/50 bg-black">
+										<Image
+											src={lkLogo}
+											alt="LK Gloss & Detail"
+											width={20}
+											height={20}
+											className="h-full w-full scale-105 object-cover"
+										/>
+									</div>
+									<span className="font-mono text-[10px] font-semibold tracking-[0.18em] text-[#e5e2e1] uppercase">
+										LK Gloss &amp; Detail
+									</span>
+								</div>
+
+								{/* Floating Smoked-Glass Certification Card */}
+								<div className="absolute right-4 bottom-4 left-4 sm:right-auto sm:max-w-sm">
+									<div className="glass-panel flex items-center gap-3.5 rounded-2xl px-4 py-3 shadow-[0_20px_45px_rgba(0,0,0,0.75)]">
+										<div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-linear-to-br from-[#7b2dff] to-[#c026ff] text-white shadow-[0_0_20px_rgba(123,45,255,0.5)]">
+											<ShieldCheck className="h-5 w-5" aria-hidden="true" />
+										</div>
+										<div className="min-w-0 flex-1">
+											<p className="font-display truncate text-sm font-bold text-white">
+												{t("hero.badgeTitle")}
+											</p>
+											<p className="truncate font-mono text-xs text-[#d1bcff]">
+												{t("hero.badgeSubtitle")}
+											</p>
+										</div>
+									</div>
+								</div>
+							</div>
 						</div>
 					</div>
 				</div>

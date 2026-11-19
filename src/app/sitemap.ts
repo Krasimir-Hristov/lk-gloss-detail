@@ -13,7 +13,6 @@ const PUBLIC_ROUTES: RouteConfig[] = [
 	{ path: "", priority: 1.0, changeFrequency: "weekly" },
 	{ path: "/assessment", priority: 0.9, changeFrequency: "weekly" },
 	{ path: "/booking", priority: 0.9, changeFrequency: "weekly" },
-	{ path: "/contact", priority: 0.8, changeFrequency: "monthly" },
 	{ path: "/impressum", priority: 0.3, changeFrequency: "yearly" },
 	{ path: "/privacy", priority: 0.3, changeFrequency: "yearly" },
 ];

@@ -7,8 +7,8 @@
 export const NAV_LINKS = [
 	{ href: "/", i18nKey: "home" },
 	{ href: "#services", i18nKey: "services" },
-	{ href: "/assessment", i18nKey: "assessment" },
 	{ href: "#contact", i18nKey: "contact" },
+	{ href: "/assessment", i18nKey: "assessment" },
 ] as const;
 
 export const LEGAL_LINKS = [

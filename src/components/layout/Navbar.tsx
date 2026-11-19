@@ -1,10 +1,11 @@
 "use client";
 
 import { motion, AnimatePresence } from "framer-motion";
-import { Menu, X } from "lucide-react";
+import { ArrowRight, Menu, X } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { useState, useCallback, useEffect, useRef, type ReactNode } from "react";
 
+import { BrandLogo } from "@/components/shared/BrandLogo";
 import { LanguageSwitcher } from "@/components/shared/LanguageSwitcher";
 import { NAV_LINKS } from "@/constants/navigation";
 import { Link, usePathname } from "@/i18n/routing";
@@ -24,7 +25,7 @@ const useNavActiveState = (href: string, activeSection: string) => {
 			const sectionId = href.replace("#", "");
 			isActive = activeSection === sectionId;
 		} else if (href === "/") {
-			isActive = activeSection === "";
+			isActive = activeSection === "home";
 		}
 	} else {
 		isActive = !isAnchor && (href === "/" ? pathname === "/" : pathname.startsWith(href));
@@ -36,12 +37,6 @@ const useNavActiveState = (href: string, activeSection: string) => {
 };
 
 // ---------- Inline sub-components ----------
-
-const navLinkClass = (isActive: boolean) =>
-	cn(
-		"font-medium text-sm transition-colors",
-		isActive ? "text-[#d1bcff] font-bold" : "text-[#ccc3d9] hover:text-[#d1bcff]",
-	);
 
 const DesktopNavLink = ({
 	href,
@@ -58,10 +53,10 @@ const DesktopNavLink = ({
 		<Link
 			href={targetHref}
 			className={cn(
-				navLinkClass(isActive),
-				"relative pb-1",
-				isActive &&
-					"after:absolute after:bottom-0 after:left-0 after:h-0.5 after:w-full after:rounded-full after:bg-[#7b2dff]",
+				"relative rounded-full px-4 py-1.5 font-mono text-xs tracking-[0.12em] uppercase transition-all duration-200",
+				isActive
+					? "bg-[#7b2dff]/20 font-semibold text-white shadow-[inset_0_0_0_1px_rgba(168,85,247,0.45)]"
+					: "font-medium text-[#b8b2c7] hover:bg-white/[0.05] hover:text-white",
 			)}
 		>
 			{children}
@@ -87,8 +82,10 @@ const MobileNavLink = ({
 			href={targetHref}
 			onClick={onClick}
 			className={cn(
-				"block rounded-lg px-4 py-3 text-lg font-medium transition-colors",
-				isActive ? "bg-[#7b2dff]/20 text-[#d1bcff]" : "text-[#e5e2e1] hover:bg-[#2a2a2a]",
+				"font-display block rounded-xl px-4 py-3 text-base font-semibold transition-all",
+				isActive
+					? "border border-[#7b2dff]/40 bg-[#7b2dff]/20 text-white"
+					: "text-[#d5d0e3] hover:bg-white/[0.05] hover:text-white",
 			)}
 		>
 			{children}
@@ -103,7 +100,7 @@ const Navbar = () => {
 	const pathname = usePathname();
 	const [mobileOpen, setMobileOpen] = useState(false);
 	const [hidden, setHidden] = useState(false);
-	const [activeSection, setActiveSection] = useState<string>("");
+	const [activeSection, setActiveSection] = useState<string>("home");
 	const lastScrollY = useRef(0);
 	const isInitial = useRef(true);
 
@@ -147,45 +144,50 @@ const Navbar = () => {
 			return () => clearTimeout(timer);
 		}
 
-		let servicesTop = Infinity;
-		let contactTop = Infinity;
+		const handleScroll = () => {
+			if (window.scrollY < 100) {
+				setActiveSection("home");
+				return;
+			}
 
-		const updateOffsets = () => {
 			const servicesEl = document.getElementById("services");
 			const contactEl = document.getElementById("contact");
-			servicesTop = servicesEl ? servicesEl.offsetTop : Infinity;
-			contactTop = contactEl ? contactEl.offsetTop : Infinity;
-		};
+			const servicesRect = servicesEl?.getBoundingClientRect();
+			const contactRect = contactEl?.getBoundingClientRect();
+			const viewportHeight = window.innerHeight;
+			const isNearBottom =
+				viewportHeight + window.scrollY >= document.documentElement.scrollHeight - 120;
 
-		const handleScroll = () => {
-			const scrollPosition = window.scrollY + 220; // Trigger threshold
+			const isInOrPastContact =
+				contactRect != null && (contactRect.top <= viewportHeight * 0.55 || isNearBottom);
 
-			let currentSection = "";
-			if (scrollPosition >= contactTop) {
-				currentSection = "contact";
-			} else if (scrollPosition >= servicesTop) {
-				currentSection = "services";
+			const isInServices =
+				servicesRect != null &&
+				servicesRect.top <= viewportHeight * 0.4 &&
+				servicesRect.bottom > 160;
+
+			const isInHero = servicesRect != null && servicesRect.top > viewportHeight * 0.4;
+
+			if (isInOrPastContact) {
+				setActiveSection("contact");
+			} else if (isInServices) {
+				setActiveSection("services");
+			} else if (isInHero) {
+				setActiveSection("home");
 			} else {
-				currentSection = "";
+				setActiveSection("");
 			}
-
-			if (window.scrollY < 100) {
-				currentSection = "";
-			}
-
-			setActiveSection(currentSection);
 		};
 
-		updateOffsets();
-		window.addEventListener("resize", updateOffsets, { passive: true });
+		window.addEventListener("resize", handleScroll, { passive: true });
 		window.addEventListener("scroll", handleScroll, { passive: true });
 
 		const timer = setTimeout(() => {
-			handleScroll(); // Initial check
+			handleScroll();
 		}, 0);
 
 		return () => {
-			window.removeEventListener("resize", updateOffsets);
+			window.removeEventListener("resize", handleScroll);
 			window.removeEventListener("scroll", handleScroll);
 			clearTimeout(timer);
 		};
@@ -201,22 +203,25 @@ const Navbar = () => {
 	return (
 		<header
 			className={cn(
-				"fixed top-0 z-50 w-full border-b border-white/10 bg-black/80 shadow-[0px_0px_15px_rgba(123,45,255,0.15)] backdrop-blur-xl transition-transform duration-300",
+				"fixed top-0 right-0 left-0 z-50 px-3 pt-3 transition-transform duration-300 sm:px-6",
 				hidden ? "-translate-y-full" : "translate-y-0",
 			)}
 		>
-			<nav className="mx-auto flex h-20 max-w-7xl items-center justify-between px-4 md:px-16">
+			<nav
+				aria-label="Primary Navigation"
+				className="mx-auto flex h-16 max-w-7xl items-center justify-between rounded-2xl border border-white/[0.08] bg-[#0a0a0f]/82 px-3.5 shadow-[0_12px_40px_-10px_rgba(0,0,0,0.85),inset_0_1px_0_rgba(255,255,255,0.06)] backdrop-blur-2xl sm:px-5"
+			>
 				{/* ----- Logo ----- */}
-				<Link href="/" className="flex items-center">
-					<div>
-						<div className="text-lg font-extrabold tracking-tighter text-[#d1bcff] uppercase sm:text-xl">
-							LK Gloss <span className="text-[#7b2dff]">&</span> Detail
-						</div>
-					</div>
+				<Link
+					href="/"
+					aria-label="LK Gloss & Detail"
+					className="group flex shrink-0 items-center focus:outline-none"
+				>
+					<BrandLogo size="sm" priority />
 				</Link>
 
 				{/* ----- Desktop Links ----- */}
-				<div className="hidden items-center gap-8 md:flex">
+				<div className="hidden items-center gap-1 rounded-full border border-white/[0.06] bg-white/[0.025] p-1 lg:flex">
 					{navLinks.map((l) => (
 						<DesktopNavLink key={l.href} href={l.href} activeSection={activeSection}>
 							{l.label}
@@ -225,25 +230,28 @@ const Navbar = () => {
 				</div>
 
 				{/* ----- Right Actions ----- */}
-				<div className="flex items-center gap-4">
+				<div className="flex items-center gap-2.5 sm:gap-3">
 					<LanguageSwitcher />
 
 					{/* Desktop CTA */}
 					<Link
 						href="/booking"
-						className="hidden rounded-lg bg-linear-to-r from-[#7B2DFF] to-[#C026FF] px-5 py-2.5 text-sm font-bold text-white shadow-[0px_0px_15px_rgba(192,38,255,0.4)] transition-all hover:shadow-[0px_0px_25px_rgba(192,38,255,0.6)] active:scale-95 md:inline-flex"
+						aria-label={t("bookNow")}
+						className="group font-display hidden items-center gap-2 rounded-xl bg-linear-to-r from-[#7b2dff] via-[#9c2bff] to-[#c026ff] px-4 py-2.5 text-xs font-bold tracking-wider text-white uppercase shadow-[0_0_20px_rgba(123,45,255,0.4)] transition-all hover:shadow-[0_0_28px_rgba(192,38,255,0.58)] hover:brightness-110 active:scale-95 md:inline-flex"
 					>
-						{t("bookNow")}
+						<span>{t("bookNow")}</span>
+						<ArrowRight className="size-3.5 transition-transform duration-200 group-hover:translate-x-0.5" />
 					</Link>
 
 					{/* Hamburger button */}
 					<button
+						type="button"
 						onClick={() => setMobileOpen((prev) => !prev)}
-						className="inline-flex items-center justify-center rounded-lg p-2 text-[#ccc3d9] transition-colors hover:text-[#d1bcff] md:hidden"
+						className="inline-flex items-center justify-center rounded-xl border border-white/10 bg-white/[0.04] p-2 text-[#ccc3d9] transition-colors hover:border-[#7b2dff]/50 hover:text-white lg:hidden"
 						aria-label={mobileOpen ? t("closeMenu") : t("openMenu")}
 						aria-expanded={mobileOpen}
 					>
-						{mobileOpen ? <X className="size-6" /> : <Menu className="size-6" />}
+						{mobileOpen ? <X className="size-5" /> : <Menu className="size-5" />}
 					</button>
 				</div>
 			</nav>
@@ -252,13 +260,13 @@ const Navbar = () => {
 			<AnimatePresence>
 				{mobileOpen ? (
 					<motion.div
-						initial={{ opacity: 0, height: 0 }}
-						animate={{ opacity: 1, height: "auto" }}
-						exit={{ opacity: 0, height: 0 }}
-						transition={{ duration: 0.25, ease: "easeInOut" }}
-						className="overflow-hidden border-t border-white/10 bg-black/95 backdrop-blur-xl md:hidden"
+						initial={{ opacity: 0, y: -8 }}
+						animate={{ opacity: 1, y: 0 }}
+						exit={{ opacity: 0, y: -8 }}
+						transition={{ duration: 0.22, ease: [0.16, 1, 0.3, 1] }}
+						className="mx-auto mt-2 max-w-7xl overflow-hidden rounded-2xl border border-white/10 bg-[#0b0b12]/95 shadow-[0_24px_60px_rgba(0,0,0,0.85)] backdrop-blur-2xl lg:hidden"
 					>
-						<div className="flex flex-col gap-1 px-4 py-4">
+						<div className="flex flex-col gap-1.5 p-4">
 							{navLinks.map((l) => (
 								<MobileNavLink
 									key={l.href}
@@ -269,13 +277,15 @@ const Navbar = () => {
 									{l.label}
 								</MobileNavLink>
 							))}
-							<hr className="my-2 border-white/10" />
+							<div className="my-2 h-px bg-linear-to-r from-transparent via-white/10 to-transparent" />
 							<Link
 								href="/booking"
 								onClick={closeMobile}
-								className="mt-2 block rounded-lg bg-linear-to-r from-[#7B2DFF] to-[#C026FF] px-4 py-3 text-center text-base font-bold text-white shadow-[0px_0px_15px_rgba(192,38,255,0.4)]"
+								aria-label={t("bookNow")}
+								className="font-display inline-flex items-center justify-center gap-2 rounded-xl bg-linear-to-r from-[#7b2dff] to-[#c026ff] px-4 py-3.5 text-center text-sm font-bold tracking-wider text-white uppercase shadow-[0_0_20px_rgba(192,38,255,0.4)]"
 							>
-								{t("bookNow")}
+								<span>{t("bookNow")}</span>
+								<ArrowRight className="size-4" />
 							</Link>
 						</div>
 					</motion.div>

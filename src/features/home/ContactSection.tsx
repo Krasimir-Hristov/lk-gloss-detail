@@ -1,71 +1,128 @@
-import { Mail, Phone, MessageCircle } from "lucide-react";
+import { ArrowUpRight, Mail, MessageCircle, Phone } from "lucide-react";
 import { useTranslations } from "next-intl";
 import * as React from "react";
 
+import { BrandLogo } from "@/components/shared/BrandLogo";
 import { CONTACT_INFO } from "@/constants/contact";
 import { ContactForm } from "@/features/contact";
+import { RevealSection } from "@/features/home/components/RevealSection";
 
 export const ContactSection: React.FC = () => {
 	const t = useTranslations("Contact");
 
 	return (
-		<section id="contact" className="scroll-mt-20 px-4 py-12 sm:py-20 md:px-16 md:py-28">
-			<div className="mx-auto max-w-7xl">
-				{/* Section header */}
-				<div className="mb-10 text-center sm:mb-16">
-					<div className="mx-auto mb-4 h-1 w-16 rounded-full bg-linear-to-r from-[#7b2dff] to-[#d8b4fe]" />
-					<h2 className="text-2xl font-bold text-[#e5e2e1] sm:text-3xl md:text-4xl">
-						{t("title")}
-					</h2>
-				</div>
+		<section
+			id="contact"
+			className="relative scroll-mt-20 border-t border-white/[0.06] bg-[#060609] px-4 py-16 sm:py-24 md:px-12 md:py-32"
+		>
+			<div className="pointer-events-none absolute top-0 left-1/2 h-px w-1/2 -translate-x-1/2 bg-linear-to-r from-transparent via-[#7b2dff]/60 to-transparent" />
+			<div className="pointer-events-none absolute right-0 bottom-16 h-80 w-80 rounded-full bg-[#7b2dff]/10 blur-[130px]" />
 
-				<div className="mx-auto grid max-w-4xl gap-8 lg:grid-cols-2 lg:gap-12">
-					{/* Contact form */}
-					<div className="rounded-xl border border-[#353534] bg-[#201f1f] p-5 sm:p-8">
-						<ContactForm />
+			<div className="relative mx-auto max-w-7xl">
+				{/* Editorial Section Header */}
+				<RevealSection className="mb-12 text-center md:mb-16">
+					<div className="mb-3 inline-flex items-center gap-2.5">
+						<span className="h-px w-8 bg-linear-to-r from-transparent to-[#7b2dff]" />
+						<span className="font-mono text-xs font-semibold tracking-[0.22em] text-[#d1bcff] uppercase">
+							06
+						</span>
+						<span className="h-px w-8 bg-linear-to-l from-transparent to-[#7b2dff]" />
 					</div>
+					<h2 className="font-display text-3xl font-extrabold tracking-[-0.02em] sm:text-4xl md:text-5xl">
+						<span className="metallic-text">{t("title")}</span>
+					</h2>
+				</RevealSection>
 
-					{/* Contact details */}
-					<div className="flex flex-col gap-6">
+				<div className="mx-auto grid max-w-5xl items-start gap-6 lg:grid-cols-12 lg:gap-8">
+					{/* Left: Smoked Glass Contact Form Card (exact ContactForm preserved) */}
+					<RevealSection className="lg:col-span-7">
+						<div className="obsidian-card relative overflow-hidden rounded-3xl p-6 sm:p-8 md:p-10">
+							<div className="pointer-events-none absolute top-0 right-10 left-10 h-px bg-linear-to-r from-transparent via-[#c026ff]/60 to-transparent" />
+							<ContactForm />
+						</div>
+					</RevealSection>
+
+					{/* Right: Atelier Concierge Direct Channels */}
+					<RevealSection delay={0.08} className="flex flex-col gap-4 lg:col-span-5">
+						{/* Brand Identity Card */}
+						<div className="obsidian-card rounded-2xl p-6">
+							<BrandLogo size="lg" />
+						</div>
+
 						<a
 							href={`tel:${CONTACT_INFO.phoneRaw}`}
-							className="flex items-center gap-4 rounded-xl border border-[#353534] bg-[#201f1f] p-6 transition-all hover:border-[#7b2dff]/30"
+							aria-label={`${t("details.phone")}: ${CONTACT_INFO.phone}`}
+							className="obsidian-card group flex items-center justify-between gap-4 rounded-2xl p-5 transition-all duration-300 hover:-translate-y-0.5 hover:border-[#a855f7]/50 hover:shadow-[0_14px_38px_-14px_rgba(123,45,255,0.35)]"
 						>
-							<div className="flex h-12 w-12 items-center justify-center rounded-xl bg-[#7b2dff]/15">
-								<Phone className="h-6 w-6 text-[#d1bcff]" />
+							<div className="flex items-center gap-4">
+								<div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl border border-[#7b2dff]/35 bg-[#7b2dff]/15 text-[#d8b4fe] transition-colors group-hover:bg-[#7b2dff] group-hover:text-white">
+									<Phone className="h-5 w-5" aria-hidden="true" />
+								</div>
+								<div>
+									<p className="font-mono text-[11px] font-semibold tracking-wider text-[#9b93ad] uppercase">
+										{t("details.phone")}
+									</p>
+									<p className="font-display mt-0.5 text-sm font-bold text-white sm:text-base">
+										{CONTACT_INFO.phone}
+									</p>
+								</div>
 							</div>
-							<div>
-								<p className="text-sm font-bold text-[#e5e2e1]">{t("details.phone")}</p>
-								<p className="text-sm text-[#ccc3d9]">{CONTACT_INFO.phone}</p>
-							</div>
+							<ArrowUpRight
+								className="h-4 w-4 shrink-0 text-[#8c859e] transition-transform duration-200 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 group-hover:text-[#d8b4fe]"
+								aria-hidden="true"
+							/>
 						</a>
+
 						<a
 							href={`mailto:${CONTACT_INFO.email}`}
-							className="flex items-center gap-4 rounded-xl border border-[#353534] bg-[#201f1f] p-6 transition-all hover:border-[#7b2dff]/30"
+							aria-label={`${t("details.email")}: ${CONTACT_INFO.email}`}
+							className="obsidian-card group flex items-center justify-between gap-4 rounded-2xl p-5 transition-all duration-300 hover:-translate-y-0.5 hover:border-[#a855f7]/50 hover:shadow-[0_14px_38px_-14px_rgba(123,45,255,0.35)]"
 						>
-							<div className="flex h-12 w-12 items-center justify-center rounded-xl bg-[#7b2dff]/15">
-								<Mail className="h-6 w-6 text-[#d1bcff]" />
+							<div className="flex min-w-0 items-center gap-4">
+								<div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl border border-[#7b2dff]/35 bg-[#7b2dff]/15 text-[#d8b4fe] transition-colors group-hover:bg-[#7b2dff] group-hover:text-white">
+									<Mail className="h-5 w-5" aria-hidden="true" />
+								</div>
+								<div className="min-w-0">
+									<p className="font-mono text-[11px] font-semibold tracking-wider text-[#9b93ad] uppercase">
+										{t("details.email")}
+									</p>
+									<p className="font-display mt-0.5 truncate text-sm font-bold text-white sm:text-base">
+										{CONTACT_INFO.email}
+									</p>
+								</div>
 							</div>
-							<div>
-								<p className="text-sm font-bold text-[#e5e2e1]">{t("details.email")}</p>
-								<p className="text-sm text-[#ccc3d9]">{CONTACT_INFO.email}</p>
-							</div>
+							<ArrowUpRight
+								className="h-4 w-4 shrink-0 text-[#8c859e] transition-transform duration-200 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 group-hover:text-[#d8b4fe]"
+								aria-hidden="true"
+							/>
 						</a>
+
 						<a
 							href={CONTACT_INFO.whatsappUrl}
 							target="_blank"
 							rel="noopener noreferrer"
-							className="flex items-center gap-4 rounded-xl border border-[#353534] bg-[#201f1f] p-6 transition-all hover:border-[#7b2dff]/30"
+							aria-label={`${t("details.whatsapp")}: WhatsApp`}
+							className="obsidian-card group flex items-center justify-between gap-4 rounded-2xl p-5 transition-all duration-300 hover:-translate-y-0.5 hover:border-emerald-400/45 hover:shadow-[0_14px_38px_-14px_rgba(16,185,129,0.28)]"
 						>
-							<div className="flex h-12 w-12 items-center justify-center rounded-xl bg-[#7b2dff]/15">
-								<MessageCircle className="h-6 w-6 text-[#d1bcff]" />
+							<div className="flex items-center gap-4">
+								<div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl border border-emerald-400/30 bg-emerald-500/15 text-emerald-300 transition-colors group-hover:bg-emerald-500 group-hover:text-white">
+									<MessageCircle className="h-5 w-5" aria-hidden="true" />
+								</div>
+								<div>
+									<p className="font-mono text-[11px] font-semibold tracking-wider text-[#9b93ad] uppercase">
+										{t("details.whatsapp")}
+									</p>
+									<p className="font-display mt-0.5 text-sm font-bold text-white sm:text-base">
+										WhatsApp
+									</p>
+								</div>
 							</div>
-							<div>
-								<p className="text-sm font-bold text-[#e5e2e1]">{t("details.whatsapp")}</p>
-								<p className="text-sm text-[#ccc3d9]">WhatsApp</p>
-							</div>
+							<ArrowUpRight
+								className="h-4 w-4 shrink-0 text-[#8c859e] transition-transform duration-200 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 group-hover:text-emerald-300"
+								aria-hidden="true"
+							/>
 						</a>
-					</div>
+					</RevealSection>
 				</div>
 			</div>
 		</section>

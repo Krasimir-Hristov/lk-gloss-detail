@@ -1,8 +1,11 @@
-export { HeroSection } from "@/features/home/HeroSection";
-export { ServicesSection } from "@/features/home/ServicesSection";
-export { ContactSection } from "@/features/home/ContactSection";
-export { WhyLKSection } from "@/features/home/WhyLKSection";
-export { HowItWorksSection } from "@/features/home/HowItWorksSection";
+export { AiValuationSection } from "@/features/home/AiValuationSection";
 export { B2BSection } from "@/features/home/B2BSection";
+export { ContactSection } from "@/features/home/ContactSection";
 export { CtaBanner } from "@/features/home/CtaBanner";
+export { HeroSection } from "@/features/home/HeroSection";
+export { HowItWorksSection } from "@/features/home/HowItWorksSection";
+export { MobileServiceSection } from "@/features/home/MobileServiceSection";
+export { ServicesSection } from "@/features/home/ServicesSection";
+export { WhyLKSection } from "@/features/home/WhyLKSection";
+export { RevealSection } from "@/features/home/components/RevealSection";
 export { ServicesFallback } from "@/features/home/components/ServicesFallback";
