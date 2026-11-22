@@ -43,7 +43,6 @@ const LEGACY_LINE_LIMIT_ALLOWLIST = new Set([
 	"src/features/admin/components/knowledge/AiKnowledgeWizard.tsx",
 	"src/features/admin/components/services/ServiceModal.tsx",
 	"src/app/[locale]/privacy/page.tsx",
-	"src/lib/ai/assessmentAnalysisGraph.ts",
 ]);
 
 const LEGACY_ARROW_COMPONENT_ALLOWLIST = new Set([
