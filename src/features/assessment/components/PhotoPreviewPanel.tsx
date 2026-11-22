@@ -1,7 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { CheckCircle2, Loader2, RotateCcw, ScanLine, XCircle } from "lucide-react";
+import { ArrowRight, CheckCircle2, Loader2, RotateCcw, ScanLine, X, XCircle } from "lucide-react";
 import Image from "next/image";
 import { useTranslations } from "next-intl";
 import React from "react";
@@ -16,6 +16,8 @@ type PhotoPreviewPanelProps = {
 	status: "idle" | "uploading" | "valid" | "invalid";
 	validationReason: string;
 	onReset: () => void;
+	onCancel?: () => void;
+	onContinue?: () => void;
 };
 
 export const PhotoPreviewPanel: React.FC<PhotoPreviewPanelProps> = ({
@@ -24,6 +26,8 @@ export const PhotoPreviewPanel: React.FC<PhotoPreviewPanelProps> = ({
 	status,
 	validationReason,
 	onReset,
+	onCancel,
+	onContinue,
 }) => {
 	const t = useTranslations("Assessment");
 
@@ -69,6 +73,17 @@ export const PhotoPreviewPanel: React.FC<PhotoPreviewPanelProps> = ({
 								{t("upload.scanning")}
 							</span>
 						</div>
+						{onCancel ? (
+							<button
+								type="button"
+								onClick={onCancel}
+								aria-label={t("upload.cancel")}
+								className="mt-4 inline-flex cursor-pointer items-center gap-1.5 rounded-xl border border-white/20 bg-black/70 px-4 py-2 text-xs font-semibold text-white backdrop-blur-md transition-colors hover:border-white/40 hover:bg-white/15"
+							>
+								<X className="h-3.5 w-3.5" aria-hidden="true" />
+								<span>{t("upload.cancel")}</span>
+							</button>
+						) : null}
 					</div>
 				) : null}
 
@@ -91,6 +106,31 @@ export const PhotoPreviewPanel: React.FC<PhotoPreviewPanelProps> = ({
 					</div>
 				) : null}
 			</div>
+
+			{isValid ? (
+				<div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+					<button
+						type="button"
+						onClick={onReset}
+						aria-label={t("validation.uploadDifferent")}
+						className="inline-flex cursor-pointer items-center justify-center gap-2 rounded-xl border border-white/15 bg-white/[0.04] px-5 py-3 text-sm font-semibold text-[#e5e2e1] transition-all hover:border-[#a855f7]/60 hover:bg-[#7b2dff]/15 hover:text-white"
+					>
+						<RotateCcw className="h-4 w-4" aria-hidden="true" />
+						<span>{t("validation.uploadDifferent")}</span>
+					</button>
+					{onContinue ? (
+						<button
+							type="button"
+							onClick={onContinue}
+							aria-label={t("validation.continue")}
+							className="inline-flex cursor-pointer items-center justify-center gap-2 rounded-xl bg-linear-to-r from-[#7b2dff] via-[#9c2bff] to-[#c026ff] px-6 py-3 text-sm font-bold text-white shadow-[0_10px_28px_-6px_rgba(123,45,255,0.5)] transition-all hover:brightness-110 active:scale-[0.98]"
+						>
+							<span>{t("validation.continue")}</span>
+							<ArrowRight className="h-4 w-4" aria-hidden="true" />
+						</button>
+					) : null}
+				</div>
+			) : null}
 
 			{isInvalid ? (
 				<div
