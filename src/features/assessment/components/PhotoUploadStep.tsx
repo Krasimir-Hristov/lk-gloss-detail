@@ -56,6 +56,7 @@ type PhotoUploadStepProps = {
 	) => void;
 	onPhotoInvalidAction: (reason: string, userMessage?: string) => void;
 	onContinueAction?: () => void;
+	onResetAction?: () => void;
 	onUploadingChange?: (isUploading: boolean) => void;
 };
 
@@ -65,6 +66,7 @@ export const PhotoUploadStep: React.FC<PhotoUploadStepProps> = ({
 	onPhotoValidatedAction,
 	onPhotoInvalidAction,
 	onContinueAction,
+	onResetAction,
 	onUploadingChange,
 }) => {
 	const t = useTranslations("Assessment");
@@ -236,12 +238,13 @@ export const PhotoUploadStep: React.FC<PhotoUploadStepProps> = ({
 	);
 
 	const reset = useCallback(() => {
+		onResetAction?.();
 		uploadGenerationRef.current++;
 		setPreview(null);
 		setStatus("idle");
 		setValidationReason("");
 		if (fileInputRef.current) fileInputRef.current.value = "";
-	}, []);
+	}, [onResetAction]);
 
 	const handleCancel = useCallback(() => {
 		uploadGenerationRef.current++;

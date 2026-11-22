@@ -1,8 +1,9 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
 
-const { mockCreateClient, mockCreateServiceClient } = vi.hoisted(() => ({
+const { mockCreateClient, mockCreateServiceClient, mockSummaryInvoke } = vi.hoisted(() => ({
 	mockCreateClient: vi.fn(),
 	mockCreateServiceClient: vi.fn(),
+	mockSummaryInvoke: vi.fn(),
 }));
 
 vi.mock("@/lib/supabase/server", () => ({
@@ -12,6 +13,15 @@ vi.mock("@/lib/supabase/server", () => ({
 vi.mock("@/lib/supabase/service", () => ({
 	createServiceClient: mockCreateServiceClient,
 }));
+
+vi.mock("@langchain/openai", () => {
+	class MockChatOpenAI {
+		withStructuredOutput() {
+			return { invoke: mockSummaryInvoke };
+		}
+	}
+	return { ChatOpenAI: MockChatOpenAI };
+});
 
 import {
 	assessmentAnalysisGraph,
@@ -93,22 +103,6 @@ describe("calculateAssessmentPricing", () => {
 		});
 	});
 
-	it("enforces carSize-only pricing invariant: changing dirtLevel never alters price or duration", () => {
-		const dirtLevels = ["light", "moderate", "heavy"] as const;
-		const resultsByDirtLevel = dirtLevels.map((_dirtLevel) =>
-			calculateAssessmentPricing("large", SAMPLE_SERVICES),
-		);
-
-		expect(calculateAssessmentPricing.length).toBe(2);
-		expect(resultsByDirtLevel[0]).toEqual(resultsByDirtLevel[1]);
-		expect(resultsByDirtLevel[1]).toEqual(resultsByDirtLevel[2]);
-		expect(resultsByDirtLevel[0]).toEqual({
-			priceMin: 250,
-			priceMax: 287,
-			durationHours: 2.4,
-		});
-	});
-
 	it("handles zero-price edge cases and preserves 1-decimal rounding", () => {
 		const zeroPriceService: ServicePricingRow[] = [
 			{
@@ -140,10 +134,69 @@ describe("calculateAssessmentPricing", () => {
 	});
 });
 
-describe("assessmentAnalysisGraph dual-client DB outage classification", () => {
+describe("assessmentAnalysisGraph pricing invariants & dual-client DB outage classification", () => {
 	afterEach(() => {
-		vi.clearAllMocks();
+		vi.resetAllMocks();
 		vi.unstubAllEnvs();
+	});
+
+	it("produces identical priceMin, priceMax, and durationHours across light, moderate, and heavy dirtLevel with fixed carSize and DB rows", async () => {
+		const chain = {
+			select: vi.fn().mockReturnThis(),
+			eq: vi.fn().mockReturnThis(),
+			in: vi.fn().mockResolvedValue({ data: SAMPLE_SERVICES, error: null }),
+		};
+		mockCreateClient.mockResolvedValue({
+			from: vi.fn(() => chain),
+		});
+		mockSummaryInvoke.mockResolvedValue({
+			summaryText: "Inspection summary",
+			diagnostics: [{ title: "Paint", description: "Consistent clear coat" }],
+			expertVerdict: "Recommended package",
+		});
+
+		const dirtLevels = ["light", "moderate", "heavy"] as const;
+		const callerResults = [];
+		for (const dirtLevel of dirtLevels) {
+			const result = await assessmentAnalysisGraph.invoke({
+				acceptedServiceIds: SAMPLE_SERVICES.map((s) => s.id),
+				carSize: "large",
+				dirtLevel,
+				brand: "BMW 5er",
+				visualFindings: ["light dust"],
+				locale: "de",
+			});
+			callerResults.push(result);
+		}
+
+		expect(mockCreateClient).toHaveBeenCalledTimes(3);
+		expect(mockSummaryInvoke).toHaveBeenCalledTimes(3);
+
+		for (const result of callerResults) {
+			expect(result.error).toBeNull();
+			expect(result.priceMin).toBe(250);
+			expect(result.priceMax).toBe(287);
+			expect(result.durationHours).toBe(2.4);
+		}
+
+		expect({
+			priceMin: callerResults[0].priceMin,
+			priceMax: callerResults[0].priceMax,
+			durationHours: callerResults[0].durationHours,
+		}).toEqual({
+			priceMin: callerResults[1].priceMin,
+			priceMax: callerResults[1].priceMax,
+			durationHours: callerResults[1].durationHours,
+		});
+		expect({
+			priceMin: callerResults[1].priceMin,
+			priceMax: callerResults[1].priceMax,
+			durationHours: callerResults[1].durationHours,
+		}).toEqual({
+			priceMin: callerResults[2].priceMin,
+			priceMax: callerResults[2].priceMax,
+			durationHours: callerResults[2].durationHours,
+		});
 	});
 
 	it("returns DB query failed error instead of Missing or inactive services when both Supabase clients throw", async () => {

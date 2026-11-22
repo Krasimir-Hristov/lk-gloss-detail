@@ -5,19 +5,38 @@ import {
 	PhotoValidationResponseSchema,
 } from "@/features/assessment/schemas/photoValidationSchema";
 import { assessmentValidationGraph } from "@/lib/ai/assessmentValidationGraph";
+import {
+	InvalidJsonError,
+	PayloadTooLargeError,
+	readBoundedJson,
+} from "@/lib/http/readBoundedJson";
 
 export const maxDuration = 60;
+
+// Allows 4.5M base64 image string plus bounded JSON envelope fields before rejecting early
+const MAX_REQUEST_BODY_BYTES = 4_600_000;
 
 export async function POST(request: NextRequest) {
 	try {
 		let body: unknown;
 		try {
-			body = await request.json();
-		} catch {
+			body = await readBoundedJson(request, MAX_REQUEST_BODY_BYTES);
+		} catch (err: unknown) {
+			if (err instanceof PayloadTooLargeError) {
+				return NextResponse.json(
+					{
+						valid: false,
+						reason: "Payload too large",
+						userMessage: "Photo payload exceeds the maximum allowed size.",
+					},
+					{ status: 413 },
+				);
+			}
+			const reason = err instanceof InvalidJsonError ? err.message : "Invalid JSON payload";
 			return NextResponse.json(
 				{
 					valid: false,
-					reason: "Invalid JSON payload",
+					reason,
 					userMessage: "Invalid request payload.",
 				},
 				{ status: 400 },

@@ -4,7 +4,7 @@ import { useQuery } from "@tanstack/react-query";
 import { motion } from "framer-motion";
 import { AlertCircle, Check, RotateCcw, Sparkles } from "lucide-react";
 import { useTranslations } from "next-intl";
-import React, { useCallback, useEffect, useRef, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
 
 import { ServiceSwipeCard } from "@/features/assessment/components/ServiceSwipeCard";
 import { useAssessmentStore } from "@/features/assessment/stores/assessmentStore";
@@ -29,8 +29,8 @@ export const ServiceSwipeDeck: React.FC<ServiceSwipeDeckProps> = ({ onCompleteAc
 	const setServices = useAssessmentStore((s) => s.setServices);
 	const storeServices = useAssessmentStore((s) => s.services);
 
-	const [currentIndex, setCurrentIndex] = useState(0);
-	const [isComplete, setIsComplete] = useState(false);
+	const [reviewedIds, setReviewedIds] = useState<string[]>([]);
+	const hasCompletedRef = useRef(false);
 
 	const {
 		data: dbServices = [],
@@ -42,14 +42,25 @@ export const ServiceSwipeDeck: React.FC<ServiceSwipeDeckProps> = ({ onCompleteAc
 		queryFn: fetchAssessmentServices,
 	});
 
-	const totalCards = dbServices.length;
-	const acceptedCount = storeServices.filter((s) => s.accepted).length;
+	const reviewedSet = useMemo(() => new Set(reviewedIds), [reviewedIds]);
+	const unreviewedServices = useMemo(
+		() => dbServices.filter((s) => !reviewedSet.has(s.id)),
+		[dbServices, reviewedSet],
+	);
+	const activeService = unreviewedServices[0] ?? null;
 
-	// Keep currentIndex in a ref so callbacks always see the latest value
-	const currentIndexRef = useRef(0);
+	const totalCards = dbServices.length;
+	const reviewedInCatalogCount = totalCards - unreviewedServices.length;
+	const acceptedCount = storeServices.filter((s) => s.accepted).length;
+	const allReviewed = !isLoading && !isError && totalCards > 0 && unreviewedServices.length === 0;
+
+	// Notify parent once when all catalog services have been reviewed
 	useEffect(() => {
-		currentIndexRef.current = currentIndex;
-	}, [currentIndex]);
+		if (allReviewed && !hasCompletedRef.current) {
+			hasCompletedRef.current = true;
+			onCompleteAction();
+		}
+	}, [allReviewed, onCompleteAction]);
 
 	// Initialize store selections while preserving existing accepted/rejected flags
 	useEffect(() => {
@@ -69,35 +80,29 @@ export const ServiceSwipeDeck: React.FC<ServiceSwipeDeckProps> = ({ onCompleteAc
 	}, [dbServices, storeServices, setServices]);
 
 	const handleRetry = () => {
-		setIsComplete(false);
-		setCurrentIndex(0);
+		hasCompletedRef.current = false;
+		setReviewedIds([]);
 		void refetch();
 	};
 
-	const advanceCard = useCallback(() => {
-		const nextIndex = currentIndexRef.current + 1;
-		if (nextIndex >= totalCards) {
-			setIsComplete(true);
-			onCompleteAction();
-		} else {
-			setCurrentIndex(nextIndex);
-		}
-	}, [totalCards, onCompleteAction]);
+	const markReviewed = useCallback((serviceId: string) => {
+		setReviewedIds((prev) => (prev.includes(serviceId) ? prev : [...prev, serviceId]));
+	}, []);
 
 	const handleAccept = useCallback(
 		(serviceId: string) => {
 			acceptService(serviceId);
-			advanceCard();
+			markReviewed(serviceId);
 		},
-		[acceptService, advanceCard],
+		[acceptService, markReviewed],
 	);
 
 	const handleReject = useCallback(
 		(serviceId: string) => {
 			rejectService(serviceId);
-			advanceCard();
+			markReviewed(serviceId);
 		},
-		[rejectService, advanceCard],
+		[rejectService, markReviewed],
 	);
 
 	// ── Error state ───────────────────────────────────────────────────────
@@ -142,7 +147,7 @@ export const ServiceSwipeDeck: React.FC<ServiceSwipeDeckProps> = ({ onCompleteAc
 		);
 	}
 
-	const showComplete = isComplete || totalCards === 0;
+	const showComplete = allReviewed || totalCards === 0;
 
 	return (
 		<div className="flex flex-col items-center">
@@ -164,43 +169,39 @@ export const ServiceSwipeDeck: React.FC<ServiceSwipeDeckProps> = ({ onCompleteAc
 			{!showComplete ? (
 				<>
 					<div className="relative mx-auto mb-26 h-[430px] w-full max-w-[390px] min-[390px]:h-[450px] sm:mb-28 sm:h-[490px]">
-						{dbServices.map((service, index) => {
-							const isBehind = index < currentIndex;
-							if (isBehind) return null;
-
-							const isTop = index === currentIndex;
-							const stackIndex = index - currentIndex;
-
-							return (
-								<ServiceSwipeCard
-									key={service.id}
-									service={service}
-									onAcceptAction={handleAccept}
-									onRejectAction={handleReject}
-									isTop={isTop}
-									stackIndex={stackIndex}
-								/>
-							);
-						})}
+						{unreviewedServices.map((service, stackIndex) => (
+							<ServiceSwipeCard
+								key={service.id}
+								service={service}
+								onAcceptAction={handleAccept}
+								onRejectAction={handleReject}
+								isTop={stackIndex === 0}
+								stackIndex={stackIndex}
+							/>
+						))}
 					</div>
 
 					{/* Progress Dots & Hint */}
 					<div className="flex flex-col items-center gap-2.5 text-center">
 						<div className="flex flex-wrap items-center justify-center gap-1.5 sm:gap-2">
-							{dbServices.map((service, index) => (
-								<div
-									key={service.id}
-									className={`h-1.5 rounded-full transition-all duration-300 ${
-										index < currentIndex
-											? "w-5 bg-[#7b2dff]"
-											: index === currentIndex
-												? "w-8 bg-linear-to-r from-[#7b2dff] to-[#c026ff] shadow-[0_0_10px_rgba(192,38,255,0.7)]"
-												: "w-1.5 bg-white/15"
-									}`}
-								/>
-							))}
+							{dbServices.map((service) => {
+								const isReviewed = reviewedSet.has(service.id);
+								const isCurrent = service.id === activeService?.id;
+								return (
+									<div
+										key={service.id}
+										className={`h-1.5 rounded-full transition-all duration-300 ${
+											isReviewed
+												? "w-5 bg-[#7b2dff]"
+												: isCurrent
+													? "w-8 bg-linear-to-r from-[#7b2dff] to-[#c026ff] shadow-[0_0_10px_rgba(192,38,255,0.7)]"
+													: "w-1.5 bg-white/15"
+										}`}
+									/>
+								);
+							})}
 							<span className="ml-2.5 font-mono text-xs font-semibold text-[#9b93ad]">
-								{currentIndex + 1} / {totalCards}
+								{Math.min(reviewedInCatalogCount + 1, totalCards)} / {totalCards}
 							</span>
 						</div>
 						<p className="text-xs text-[#7a738c]">{tSwipe("hint")}</p>

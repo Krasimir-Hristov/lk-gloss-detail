@@ -53,17 +53,17 @@
 | `d:\myProjects\lulezim_kodhimaj-testing`  | `wt/testing`  | `src/**/*.test.{ts,tsx}` _(без `src/test/security/**`)_, `e2e/**`                                                                                                                                        | **Testing Agent:** Целенасочени Vitest unit/contract и Playwright тестове (само по одобрен фазов план).                                                                                                                                  |
 | `d:\myProjects\lulezim_kodhimaj-security` | `wt/security` | `src/test/security/**`, `scripts/verifyArchitecture.mjs`                                                                                                                                                 | **Security & Arch Agent:** Одитира и тества CVE-2025-29927 header scrubbing, SSRF/payload/prompt-injection защити, RLS изолация, rate-limit и автоматизирани архитектурни правила.                                                       |
 
-### Модели по Роли и Автоматичен Fallback при Квота (при `/teamwork`)
+### Модели по Роли и Автоматичен Fallback при Квота (при `/teamwork` / Swarm)
 
-> При `/teamwork` Координаторът пинва всеки агент към Primary модела му. При изчерпана квота превключва модела в движение (`model` action, без `kill` и без загуба на контекст) към **различен модел** по веригата Fallback. За **Backend Agent** никога не се ползва `Medium`.
+> **КРИТИЧНО ПРАВИЛО ЗА СТАРТИРАНЕ (SWARM ПРОТОКОЛ):** Забранено е пускането на паралелни работници с общо `invoke_subagent` и `Model: 'inherit'`, защото това наследява сляпо един и същ модел за всички. Задължително се използва нативният инструмент `swarm` (`action: "add", model: "<id>", workspace: "share"`) с точните системни идентификатори от таблицата. Преди старта Оркестраторът задължително изпълнява `swarm action: "status"` и показва таблица на потребителя с реално зачислените модели. При изчерпана квота превключва модела в движение (`swarm action: "model"`) без загуба на контекст. За **Backend Agent** никога не се ползва `Medium`.
 
-| Роля               | Primary Модел                                                    | Fallback Верига при Квота (различен модел)                                  | Бележка                                                        |
-| :----------------- | :--------------------------------------------------------------- | :-------------------------------------------------------------------------- | :------------------------------------------------------------- |
-| **Orchestrator**   | `Gemini 4 Neon (Extra High)`                                     | `Claude Opus 5.5 (High)` -> `Claude Sonnet 5.5 (High)`                      | Планиране (`/plan`), Contract-First, merge, CodeRabbit разбор. |
-| **Frontend Agent** | `Gemini 4 Neon (High)` _(за flagship UI екрани -> `Extra High`)_ | `Gemini 4 Argon (High)` -> `Claude Sonnet 5.5 (High)`                       | Високо дизайнерско качество и UX детайл.                       |
-| **Backend Agent**  | `Gemini 4 Neon (Extra High)` _(винаги Extra High)_               | `Claude Opus 5.5 (High)` -> `Claude Sonnet 5.5 (High)` _(никога `Medium`!)_ | LangGraph, API сигурност, Supabase RLS, `proxy.ts`.            |
-| **Testing Agent**  | `Gemini 4 Hydrogen (Medium)`                                     | `Gemini 3.8 Flash (Medium)`                                                 | Бърз и икономичен; резултатите се верифицират от Vitest.       |
-| **Security Agent** | `Claude Opus 5.5 (Medium)`                                       | `Claude Sonnet 5.5 (High)` -> `Gemini 4 Neon (High)`                        | Cross-Model Pre-PR одит (втори чифт очи преди CodeRabbit).     |
+| Роля               | Системен ID в Swarm        | Display Име                  | Fallback Верига при Квота (различен модел)         | Бележка                                                                |
+| :----------------- | :------------------------- | :--------------------------- | :------------------------------------------------- | :--------------------------------------------------------------------- |
+| **Orchestrator**   | `gemini-4-neon-xhigh`      | `Gemini 4 Neon (Extra High)` | `claude-opus-5-5-high` -> `claude-sonnet-5-5-high` | Планиране (`/plan`), Contract-First, merge, CodeRabbit разбор.         |
+| **Frontend Agent** | `gemini-4-neon-high`       | `Gemini 4 Neon (High)`       | `gemini-4-argon-high` -> `claude-sonnet-5-5-high`  | Високо дизайнерско качество и UX детайл (flagship UI: `xhigh`).        |
+| **Backend Agent**  | `gemini-4-neon-xhigh`      | `Gemini 4 Neon (Extra High)` | `claude-opus-5-5-high` -> `claude-sonnet-5-5-high` | LangGraph, API сигурност, Supabase RLS, `proxy.ts` (никога `Medium`!). |
+| **Testing Agent**  | `gemini-4-hydrogen-medium` | `Gemini 4 Hydrogen (Medium)` | `gemini-3.8-flash-medium`                          | Бърз и икономичен; верифицира се от Vitest.                            |
+| **Security Agent** | `claude-opus-5-5-medium`   | `Claude Opus 5.5 (Medium)`   | `claude-sonnet-5-5-high` -> `gemini-4-neon-high`   | **Задължително Opus!** Cross-Model Pre-PR одит (независими очи).       |
 
 ---
 

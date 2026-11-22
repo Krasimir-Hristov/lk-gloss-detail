@@ -112,7 +112,9 @@ const checkFileNaming = (filePath, relPath) => {
 
 const checkLineLimit = (filePath, relPath, content) => {
 	if (LEGACY_LINE_LIMIT_ALLOWLIST.has(relPath)) return;
-	const lineCount = content.split(/\r?\n/).length;
+	const lines = content.split(/\r?\n/);
+	const lineCount =
+		lines.length > 0 && lines[lines.length - 1] === "" ? lines.length - 1 : lines.length;
 	if (lineCount > MAX_LINES) {
 		addError(
 			filePath,
@@ -125,7 +127,7 @@ const checkArrowComponents = (filePath, relPath, content) => {
 	if (!filePath.endsWith(".tsx")) return;
 	if (LEGACY_ARROW_COMPONENT_ALLOWLIST.has(relPath)) return;
 	const functionComponentPattern =
-		/^\s*(?:export\s+default\s+|export\s+)?(?:async\s+)?function\s+[A-Z][A-Za-z0-9_]*/m;
+		/^\s*(?:(?:export\s+default\s+|export\s+)?(?:async\s+)?function\s+[A-Z][A-Za-z0-9_]*|export\s+default\s+(?:async\s+)?function\s*\()/m;
 	if (functionComponentPattern.test(content)) {
 		addError(
 			filePath,

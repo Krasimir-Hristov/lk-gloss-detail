@@ -24,6 +24,50 @@ const getLocaleFromPathname = (pathname: string): (typeof routing.locales)[numbe
 	return isLocale ? (potentialLocale as (typeof routing.locales)[number]) : routing.defaultLocale;
 };
 
+/**
+ * Resolves the client IP solely from verified ingress headers or a configured trusted-proxy hop
+ * count (counting from the right of x-forwarded-for). Never trusts the client-spoofable leftmost IP.
+ */
+const resolveClientIp = (headers: Headers): string => {
+	if (process.env.VERCEL === "1") {
+		const vercelForwarded = headers.get("x-vercel-forwarded-for");
+		if (vercelForwarded) {
+			const hops = vercelForwarded
+				.split(",")
+				.map((part) => part.trim())
+				.filter(Boolean);
+			if (hops.length > 0) {
+				return hops[hops.length - 1];
+			}
+		}
+
+		const realIp = headers.get("x-real-ip")?.trim();
+		if (realIp) {
+			return realIp;
+		}
+		return "unknown";
+	}
+
+	const rawProxyCount = process.env.TRUSTED_PROXY_COUNT?.trim();
+	if (rawProxyCount && /^\d+$/.test(rawProxyCount)) {
+		const trustedProxyCount = Number.parseInt(rawProxyCount, 10);
+		if (trustedProxyCount >= 1) {
+			const forwardedFor = headers.get("x-forwarded-for");
+			if (forwardedFor) {
+				const entries = forwardedFor
+					.split(",")
+					.map((part) => part.trim())
+					.filter(Boolean);
+				if (entries.length >= trustedProxyCount) {
+					return entries[entries.length - trustedProxyCount];
+				}
+			}
+		}
+	}
+
+	return "unknown";
+};
+
 export default async function proxy(request: NextRequest) {
 	// ── Prevent security bypass (CVE-2025-29927 Mitigation) ──────────────────
 	// Strip only x-middleware-subrequest from external client requests to preserve
@@ -37,8 +81,7 @@ export default async function proxy(request: NextRequest) {
 	safeHeaders.set("x-pathname", pathname);
 
 	const currentRequest = new NextRequest(request, { headers: safeHeaders });
-	const forwardedFor = currentRequest.headers.get("x-forwarded-for");
-	const ip = forwardedFor ? forwardedFor.split(",")[0].trim() || "unknown" : "unknown";
+	const ip = resolveClientIp(currentRequest.headers);
 
 	// ── Admin Route Protection ────────────────────────────────────────
 	if (isProtectedRoute(pathname)) {
@@ -107,26 +150,31 @@ export default async function proxy(request: NextRequest) {
 
 	// ── Rate limit assessment API routes ──────────────────────────────
 	if (pathname.startsWith("/api/assessment/")) {
-		const key = `${ip}:${pathname}`;
+		const normalizedPath = pathname.replace(/\/+$/, "");
+		const bucket =
+			normalizedPath === "/api/assessment/validate-photo"
+				? "validatePhoto"
+				: normalizedPath === "/api/assessment/analyze"
+					? "analyze"
+					: null;
 
-		const limit = pathname.includes("validate")
-			? ASSESSMENT_RATE_LIMIT.validatePhoto
-			: ASSESSMENT_RATE_LIMIT.analyze;
+		if (bucket !== null) {
+			const key = `${ip}:assessment:${bucket}`;
+			const result = rateLimit(key, ASSESSMENT_RATE_LIMIT[bucket]);
 
-		const result = rateLimit(key, limit);
-
-		if (!result.success) {
-			const retryAfter = Math.ceil(result.resetIn / 1000);
-			return NextResponse.json(
-				{ error: "Too many requests", code: "RATE_LIMITED", retryAfter },
-				{
-					status: 429,
-					headers: { "Retry-After": String(retryAfter) },
-				},
-			);
+			if (!result.success) {
+				const retryAfter = Math.ceil(result.resetIn / 1000);
+				return NextResponse.json(
+					{ error: "Too many requests", code: "RATE_LIMITED", retryAfter },
+					{
+						status: 429,
+						headers: { "Retry-After": String(retryAfter) },
+					},
+				);
+			}
 		}
 
-		// Let API routes pass through to their handlers with scrubbed headers
+		// Let known API routes (or 404s for unknown subpaths) pass through with scrubbed headers
 		return NextResponse.next({
 			request: {
 				headers: currentRequest.headers,
@@ -136,18 +184,21 @@ export default async function proxy(request: NextRequest) {
 
 	// ── Rate limit chatbot API routes ─────────────────────────────────
 	if (pathname.startsWith("/api/chatbot/")) {
-		const key = `${ip}:${pathname}`;
-		const result = rateLimit(key, CHATBOT_RATE_LIMIT.message);
+		const normalizedPath = pathname.replace(/\/+$/, "");
+		if (normalizedPath === "/api/chatbot/message") {
+			const key = `${ip}:chatbot:message`;
+			const result = rateLimit(key, CHATBOT_RATE_LIMIT.message);
 
-		if (!result.success) {
-			const retryAfter = Math.ceil(result.resetIn / 1000);
-			return NextResponse.json(
-				{ error: "Too many requests. Please slow down.", code: "RATE_LIMITED", retryAfter },
-				{
-					status: 429,
-					headers: { "Retry-After": String(retryAfter) },
-				},
-			);
+			if (!result.success) {
+				const retryAfter = Math.ceil(result.resetIn / 1000);
+				return NextResponse.json(
+					{ error: "Too many requests. Please slow down.", code: "RATE_LIMITED", retryAfter },
+					{
+						status: 429,
+						headers: { "Retry-After": String(retryAfter) },
+					},
+				);
+			}
 		}
 
 		return NextResponse.next({

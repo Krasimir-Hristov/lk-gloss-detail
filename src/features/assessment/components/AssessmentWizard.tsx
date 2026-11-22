@@ -216,6 +216,7 @@ export const AssessmentWizard: React.FC = () => {
 													onPhotoValidatedAction={handlePhotoValidatedAction}
 													onPhotoInvalidAction={handlePhotoInvalidAction}
 													onContinueAction={handleContinuePhoto}
+													onResetAction={clearAdvanceTimer}
 													onUploadingChange={setIsUploadingPhoto}
 												/>
 											</motion.div>

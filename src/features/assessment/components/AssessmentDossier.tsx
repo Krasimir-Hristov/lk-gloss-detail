@@ -34,10 +34,12 @@ export const AssessmentDossier: React.FC = () => {
 	const validatedCount = validPhotos.length;
 
 	const hasTelemetry = validatedCount > 0;
+	const hasObservedSize = validPhotos.some((p) => Boolean(p.carSize));
+	const hasObservedDirt = validPhotos.some((p) => Boolean(p.dirtLevel));
 	const telemetry = extractVehicleTelemetry(photos);
 	const detectedVehicle = hasTelemetry ? telemetry.brand : null;
-	const detectedSize = hasTelemetry ? telemetry.carSize : null;
-	const detectedDirt = hasTelemetry ? telemetry.dirtLevel : null;
+	const detectedSize = hasObservedSize ? telemetry.carSize : null;
+	const detectedDirt = hasObservedDirt ? telemetry.dirtLevel : null;
 	const visualFindings = hasTelemetry ? telemetry.visualFindings : [];
 
 	const acceptedIds = services.filter((s) => s.accepted).map((s) => s.serviceId);
@@ -123,7 +125,7 @@ export const AssessmentDossier: React.FC = () => {
 						<span>{tDossier("telemetryTitle")}</span>
 					</p>
 
-					{detectedVehicle || detectedSize || detectedDirt ? (
+					{detectedVehicle || detectedSize || detectedDirt || visualFindings.length > 0 ? (
 						<dl className="space-y-2 text-xs">
 							{detectedVehicle ? (
 								<div className="flex items-start justify-between gap-3">

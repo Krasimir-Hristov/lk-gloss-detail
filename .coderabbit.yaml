@@ -1,0 +1,81 @@
+# CodeRabbit AI Code Review Configuration
+# https://docs.coderabbit.ai
+# Project: LK Gloss & Detail — Mobile Autopflege & Detailing
+
+language: "en"
+early_access: false
+
+reviews:
+  profile: "chill"
+  request_changes_workflow: false
+  high_level_summary: true
+  poem: false
+  review_status: true
+  collapse_walkthrough: false
+  auto_review:
+    enabled: true
+    drafts: false
+    base_branches: ["main"]
+  path_filters:
+    - "!**/*.lock"
+    - "!**/generated/**"
+    - "!**/*.d.ts"
+    - "!**/node_modules/**"
+    - "!**/.next/**"
+    - "!**/public/screenshots/**"
+
+  tone_instructions: >
+    Use a professional but friendly tone. Write in English.
+    When suggesting changes, explain WHY it matters for this project specifically.
+    Reference AGENTS.md and .agents/skills/lk-lessons/SKILL.md when applicable.
+
+  summary_instructions: >
+    ## LK Gloss & Detail — Code Review Guidelines
+
+    This is a **German mobile car detailing service** website built with:
+    - **Next.js 16** (App Router, Turbopack, React 19, `src/proxy.ts`)
+    - **TypeScript** (strict mode, no `any`)
+    - **Tailwind CSS v4** + **shadcn/ui** (dark theme only, `bg-linear-to-*`)
+    - **Supabase** (PostgreSQL + RLS + pgvector for AI/RAG)
+    - **LangChain.js + LangGraph.js** (AI assessment & chatbot)
+    - **Zustand** + **TanStack Query** + **Zod**
+    - **next-intl** (3 locales: `de`, `en`, `el`)
+    - **Framer Motion**
+
+    ### Architecture & Security Rules (AGENTS.md)
+    1. **Strict No-Middleware (`middleware.ts` forbidden):** Global perimeter MUST live in `src/proxy.ts` with CVE-2025-29927 header scrubbing (`x-middleware-subrequest`), trusted ingress IP resolution, rate limiting, and admin session guard.
+    2. **No `any` Type:** Use strict interfaces, `unknown` with type guards, and Zod `z.infer`.
+    3. **React 19 Arrow Components:** All React components MUST be Arrow Functions in `PascalCase.tsx`. Non-component helpers/hooks/schemas/actions/tests MUST use `camelCase.ts`. NEVER suggest `kebab-case`.
+    4. **File Length Limit:** Files under `src/` MUST NOT exceed 300 lines.
+    5. **Tailwind CSS v4 Gradients:** Always use `bg-linear-to-*`, never `bg-gradient-to-*`.
+    6. **Async Route Params:** Always `await` `params`, `searchParams`, `cookies()`, and `headers()`.
+    7. **Hybrid API & Server Actions:**
+       - Use Server Actions (`"use server"`) for admin and booking mutations.
+       - Next.js Route Handlers (`/api/assessment/*`, `/api/chatbot/*`, `/api/services`) are explicitly intentional for public APIs, bounded byte-limit JSON/image uploads, and AI streaming endpoints.
+    8. **AI Invocation Rules:**
+       - Streaming (SSE / `for await...of`) applies to conversational chatbot responses.
+       - Deterministic structured outputs (photo validation, DB pricing analysis, summaries) intentionally use `.invoke()` with `.withStructuredOutput(ZodSchema)` and Zod `safeParse`.
+       - Stateless assessment graphs do NOT require PostgreSQL checkpointing.
+    9. **Fixed Business Rule — AI Car Assessment:**
+       - `dirtLevel` (`light` | `moderate` | `heavy`) is strictly informational and MUST NEVER modify pricing or duration.
+       - Pricing depends strictly on `carSize` (`small` | `medium` | `large` | `suv`) multiplied by live active Supabase `services` rows (`active = true`).
+    10. **Feature-Based Isolation & i18n:**
+        - Code lives under `src/features/<feature-name>/`.
+        - User-facing copy MUST use `next-intl` translation keys across `de`, `en`, and `el`.
+        - Never expose raw stack traces or SQL/DB internals to clients.
+
+chat:
+  auto_reply: true
+
+knowledge_base:
+  learnings:
+    - "AGENTS.md"
+    - ".agents/skills/lk-lessons/SKILL.md"
+    - ".agents/skills/lk-worktrees/SKILL.md"
+    - ".github/copilot-instructions.md"
+  agent_skills:
+    - ".agents/skills/nextjs-best-practices/SKILL.md"
+    - ".agents/skills/langchain-best-practices/SKILL.md"
+    - ".agents/skills/langgraph-best-practices/SKILL.md"
+    - ".agents/skills/supabase/SKILL.md"
+    - ".agents/skills/supabase-postgres-best-practices/SKILL.md"

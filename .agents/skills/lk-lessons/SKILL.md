@@ -27,15 +27,21 @@ description: Compact curated lessons learned from CodeRabbit PR reviews and secu
 - **[Typecheck]** Не пускай само `tsc --noEmit` -> винаги `next typegen && tsc --noEmit` _(генерира `.next/types` при чист checkout/CI)_.
 - **[API Timeouts]** За API route handlers с външни AI заявки задавай `export const maxDuration = 60;` и `timeout` на LLM клиента _(предотвратява Vercel serverless timeout)_.
 - **[Error Statuses]** В API route handlers не хвърляй `ZodError` към `500` -> хващай `ZodError` / невалиден JSON и връщай HTTP `400` _(чисти клиентски грешки без шум в сървърните логове)_.
+- **[Proxy IP Trust]** Не чети клиентския най-ляв `x-forwarded-for` за rate limit -> ползвай Vercel edge хедъри или `TRUSTED_PROXY_COUNT` отдясно наляво с fail-closed `"unknown"` _(спира IP spoofing)_.
+- **[Rate Limit Capacity]** При пълен in-memory store не трий живи броячи -> първо изчиствай изтеклите, иначе отказвай нови ключове _(предотвратява DoS bypass)_.
+- **[Bounded Key Space]** Не вкарвай суров `pathname` за произволни подпътища в rate-limit ключа -> ключирай само известни нормализирани маршрути _(спира DoS запълване на 5000-слотовия кеш)_.
+- **[Bounded Body Parsing]** Не викай суров `request.json()` на upload route -> чети потока с byte limit преди `JSON.parse` с HTTP `413` _(пази паметта при chunked streaming атаки)_.
 
 ### Архитектура & Граници
 
 - **[Path Canonicalization]** Забрани `..` traversal вътре в `@/` алиаси _(затваря path-traversal между модули)_.
 - **[File Size]** Спазвай лимита от 300 реда за `.ts`, `.tsx` и `.css` файлове в `src/` _(поддържа модулност и четливост)_.
 - **[Server Data Fetching]** Не дублирай `fetch` заявки в `useEffect`, когато вече има TanStack Query ключ -> споделяй един `queryKey` _(елиминира двойни HTTP заявки)_.
+- **[UI Telemetry & Refetch]** Не показвай fallback default стойности като засечена телеметрия и не индексирай списъци по числов индекс при refetch -> ползвай реални флагове и стабилно ID _(гарантира коректни UI данни)_.
 
 ### Multi-Agent & Worktrees
 
+- **[Swarm Model Pinning]** Не използвай сляпо `invoke_subagent` с `inherit` за 4-те агента -> използвай `swarm action: "add"` с точните IDs от `AGENTS.md` (напр. `claude-opus-5-5-medium` за Security) и принтирай `swarm action: "status"` _(гарантира реален крос-моделен одит и спазване на ролевите квоти)_.
 - **[Ownership Globs]** Не допускай припокриващи се пътища между 4-те агента -> всяка зона е непресичаща се _(гарантира 0 merge конфликти)_.
 - **[Worktree Sync]** Не разчитай само на `merge --ff-only` -> следвай 3-стъпковата Zero-Data-Loss процедура и верифицирай SHA на 4-те клона _(0 загубени файлове)_.
 - **[Post-Review Gate]** Дестилирай `lk-lessons` + пусни Risk-Based Security Delta одит (при код/SQL/скриптове) **преди** финалния `pnpm verify` и `push` _(атомарен проверен PR)_.
