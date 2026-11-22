@@ -391,13 +391,16 @@
 			"validating": "Validating photo...",
 			"formats": "JPG, PNG, WEBP · Automatic AI verification",
 			"scanning": "AI scanner verifying angle & image quality...",
+			"cancel": "Cancel",
 			"error": "This photo does not match the expected angle. Please try again.",
 			"errors": {
 				"FILE_INVALID": "Invalid image file format.",
 				"FILE_READ_FAILED": "Failed to read image file.",
 				"IMAGE_DECODE_FAILED": "Failed to decode image.",
+				"HEIC_UNSUPPORTED": "HEIC/HEIF photos are not supported by this browser. Please upload a JPG, PNG, or WEBP image.",
 				"CANVAS_CONTEXT_FAILED": "Image processing failed.",
 				"FILE_TOO_LARGE": "Image file is too large. Please upload a smaller photo.",
+				"RATE_LIMITED": "Too many requests in a short time. Please wait a moment and try again.",
 				"VALIDATION_FAILED": "Photo validation failed. Please try again."
 			}
 		},
@@ -406,7 +409,8 @@
 			"valid": "Photo valid!",
 			"invalid": "Invalid photo",
 			"tryAgain": "Try Again",
-			"uploadDifferent": "Upload Different Photo"
+			"uploadDifferent": "Upload Different Photo",
+			"continue": "Continue"
 		},
 		"navigation": {
 			"back": "Back",

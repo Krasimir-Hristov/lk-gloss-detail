@@ -7,3 +7,7 @@ export { AssessmentReport } from "@/features/assessment/components/AssessmentRep
 export { PhotoUploadStep } from "@/features/assessment/components/PhotoUploadStep";
 export { ProgressIndicator } from "@/features/assessment/components/ProgressIndicator";
 export { compressImage } from "@/features/assessment/utils/imageCompressor";
+export {
+	extractVehicleTelemetry,
+	type VehicleTelemetry,
+} from "@/features/assessment/types/assessmentService";

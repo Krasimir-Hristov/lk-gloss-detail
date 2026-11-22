@@ -1,9 +1,9 @@
 "use client";
 
-import { motion, AnimatePresence } from "framer-motion";
+import { AnimatePresence, motion } from "framer-motion";
 import { ArrowLeft } from "lucide-react";
-import { useTranslations, useLocale } from "next-intl";
-import React, { useCallback, useEffect, useRef } from "react";
+import { useLocale, useTranslations } from "next-intl";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 
 import { AssessmentAnalyzing } from "@/features/assessment/components/AssessmentAnalyzing";
 import { AssessmentDossier } from "@/features/assessment/components/AssessmentDossier";
@@ -19,10 +19,8 @@ import {
 import { PhotoUploadStep } from "@/features/assessment/components/PhotoUploadStep";
 import { ProgressIndicator } from "@/features/assessment/components/ProgressIndicator";
 import { ServiceSwipeDeck } from "@/features/assessment/components/ServiceSwipeDeck";
-import {
-	PHOTO_STEPS,
-	AssessmentResultSchema,
-} from "@/features/assessment/schemas/assessmentSchema";
+import { useAnalyzeAssessment } from "@/features/assessment/hooks/useAssessment";
+import { PHOTO_STEPS } from "@/features/assessment/schemas/assessmentSchema";
 import { useAssessmentStore } from "@/features/assessment/stores/assessmentStore";
 import { extractVehicleTelemetry } from "@/features/assessment/types/assessmentService";
 
@@ -30,7 +28,8 @@ import type { PhotoAngle, WizardStep } from "@/features/assessment/schemas/asses
 
 export const AssessmentWizard: React.FC = () => {
 	const t = useTranslations("Assessment");
-	const locale = useLocale();
+	const rawLocale = useLocale();
+	const locale: "de" | "en" | "el" = rawLocale === "en" || rawLocale === "el" ? rawLocale : "de";
 	const {
 		currentStep,
 		photos,
@@ -47,9 +46,21 @@ export const AssessmentWizard: React.FC = () => {
 
 	const result = useAssessmentStore((s) => s.result);
 	const error = useAssessmentStore((s) => s.error);
+	const { mutateAsync: analyzeAssessment } = useAnalyzeAssessment();
 
+	const [isUploadingPhoto, setIsUploadingPhoto] = useState(false);
 	const stageRef = useRef<HTMLDivElement>(null);
 	const isFirstRender = useRef(true);
+	const advanceTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+	const clearAdvanceTimer = useCallback(() => {
+		if (advanceTimerRef.current !== null) {
+			clearTimeout(advanceTimerRef.current);
+			advanceTimerRef.current = null;
+		}
+	}, []);
+
+	useEffect(() => () => clearAdvanceTimer(), [clearAdvanceTimer]);
 
 	// Smoothly scroll stage into view when moving between steps
 	useEffect(() => {
@@ -74,10 +85,9 @@ export const AssessmentWizard: React.FC = () => {
 			carSize?: "small" | "medium" | "large" | "suv",
 			dirtLevel?: "light" | "moderate" | "heavy",
 			carDescription?: string,
+			visualFindings?: string[],
 		) => {
-			// Store the photo with the SAME id from the upload step
 			setPhoto(currentStep as PhotoAngle, previewUrl, photoId);
-
 			setPhotoValidation(
 				photoId,
 				"valid",
@@ -85,14 +95,21 @@ export const AssessmentWizard: React.FC = () => {
 				carSize,
 				dirtLevel,
 				carDescription,
+				visualFindings,
 			);
-
-			setTimeout(() => {
+			clearAdvanceTimer();
+			advanceTimerRef.current = setTimeout(() => {
+				advanceTimerRef.current = null;
 				nextStep();
 			}, 1000);
 		},
-		[setPhoto, setPhotoValidation, nextStep, currentStep, t],
+		[setPhoto, setPhotoValidation, nextStep, currentStep, t, clearAdvanceTimer],
 	);
+
+	const handleContinuePhoto = useCallback(() => {
+		clearAdvanceTimer();
+		nextStep();
+	}, [clearAdvanceTimer, nextStep]);
 
 	const handlePhotoInvalidAction = useCallback((_reason: string, _userMessage?: string) => {
 		// Validation reason is rendered directly in PhotoUploadStep
@@ -104,53 +121,25 @@ export const AssessmentWizard: React.FC = () => {
 		const acceptedIds = state.services.filter((s) => s.accepted).map((s) => s.serviceId);
 
 		if (acceptedIds.length === 0) {
-			clearPhotos();
 			goToStep("results");
 			return;
 		}
 
-		const { carSize, dirtLevel, brand } = extractVehicleTelemetry(state.photos);
-
+		const { carSize, dirtLevel, brand, visualFindings } = extractVehicleTelemetry(state.photos);
 		setIsAnalyzing(true);
 		goToStep("analyzing");
 
 		try {
-			const res = await fetch("/api/assessment/analyze", {
-				method: "POST",
-				headers: { "Content-Type": "application/json" },
-				body: JSON.stringify({
-					acceptedServiceIds: acceptedIds,
-					carSize,
-					dirtLevel,
-					brand,
-					locale,
-				}),
+			const analysisResult = await analyzeAssessment({
+				acceptedServiceIds: acceptedIds,
+				carSize,
+				dirtLevel,
+				brand,
+				visualFindings,
+				locale,
 			});
-
-			if (!res.ok) {
-				let errorMsg = "Analysis failed";
-				try {
-					const err = await res.json();
-					errorMsg = (err as { error?: string }).error ?? errorMsg;
-				} catch {
-					errorMsg = (await res.text().catch(() => "")) || errorMsg;
-				}
-				throw new Error(errorMsg);
-			}
-
-			const rawBody = await res.json();
-			const parsed = AssessmentResultSchema.safeParse(rawBody);
-
-			if (!parsed.success) {
-				console.error("[AssessmentWizard] Response validation failed:", parsed.error.flatten());
-				throw new Error("Invalid response from server");
-			}
-
-			setResult(parsed.data);
-
-			// Clear base64 images from browser memory
+			setResult(analysisResult);
 			clearPhotos();
-
 			goToStep("results");
 		} catch (err: unknown) {
 			const message = err instanceof Error ? err.message : "Analysis failed";
@@ -158,7 +147,7 @@ export const AssessmentWizard: React.FC = () => {
 			setError(message);
 			goToStep("results");
 		}
-	}, [locale, setResult, setIsAnalyzing, setError, clearPhotos, goToStep]);
+	}, [analyzeAssessment, locale, setResult, setIsAnalyzing, setError, clearPhotos, goToStep]);
 
 	const isPhotoStep = PHOTO_STEPS.includes(currentStep);
 	const isSplitLayout = isPhotoStep || currentStep === "services";
@@ -166,8 +155,14 @@ export const AssessmentWizard: React.FC = () => {
 	const photoStepNumber = photoStepIndex >= 0 ? photoStepIndex + 1 : 1;
 
 	const previousCarDescriptions = photos
-		.filter((p) => p.validationStatus === "valid" && p.carDescription)
-		.map((p) => p.carDescription!);
+		.filter(
+			(p) =>
+				p.validationStatus === "valid" &&
+				p.carDescription &&
+				PHOTO_STEPS.indexOf(p.angle) < photoStepIndex,
+		)
+		.map((p) => p.carDescription!.trim().slice(0, 200))
+		.filter(Boolean);
 
 	const handleRetryToServices = () => {
 		setError(null);
@@ -220,6 +215,8 @@ export const AssessmentWizard: React.FC = () => {
 													previousCarDescriptions={previousCarDescriptions}
 													onPhotoValidatedAction={handlePhotoValidatedAction}
 													onPhotoInvalidAction={handlePhotoInvalidAction}
+													onContinueAction={handleContinuePhoto}
+													onUploadingChange={setIsUploadingPhoto}
 												/>
 											</motion.div>
 										) : (
@@ -242,9 +239,13 @@ export const AssessmentWizard: React.FC = () => {
 									<div className="mt-6 border-t border-white/[0.07] pt-5">
 										<button
 											type="button"
-											onClick={prevStep}
+											disabled={isUploadingPhoto}
+											onClick={() => {
+												clearAdvanceTimer();
+												prevStep();
+											}}
 											aria-label={t("navigation.back")}
-											className="inline-flex cursor-pointer items-center gap-2 rounded-xl border border-white/10 bg-white/[0.03] px-4 py-2.5 text-sm font-medium text-[#ccc3d9] transition-all hover:border-[#a855f7]/50 hover:bg-[#7b2dff]/12 hover:text-white"
+											className="inline-flex cursor-pointer items-center gap-2 rounded-xl border border-white/10 bg-white/[0.03] px-4 py-2.5 text-sm font-medium text-[#ccc3d9] transition-all hover:border-[#a855f7]/50 hover:bg-[#7b2dff]/12 hover:text-white disabled:cursor-not-allowed disabled:opacity-50"
 										>
 											<ArrowLeft className="h-4 w-4" aria-hidden="true" />
 											<span>{t("navigation.back")}</span>

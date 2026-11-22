@@ -392,13 +392,16 @@
 			"validating": "Foto wird überprüft...",
 			"formats": "JPG, PNG, WEBP · Automatische KI-Prüfung",
 			"scanning": "KI-Scanner prüft Perspektive & Bildqualität...",
+			"cancel": "Abbrechen",
 			"error": "Dieses Foto entspricht nicht dem erwarteten Winkel. Bitte versuchen Sie es erneut.",
 			"errors": {
 				"FILE_INVALID": "Ungültiges Bilddateiformat.",
 				"FILE_READ_FAILED": "Bilddatei konnte nicht gelesen werden.",
 				"IMAGE_DECODE_FAILED": "Bild konnte nicht dekodiert werden.",
+				"HEIC_UNSUPPORTED": "HEIC/HEIF-Fotos werden von diesem Browser nicht unterstützt. Bitte laden Sie ein JPG-, PNG- oder WEBP-Bild hoch.",
 				"CANVAS_CONTEXT_FAILED": "Bildverarbeitung fehlgeschlagen.",
 				"FILE_TOO_LARGE": "Bilddatei ist zu groß. Bitte laden Sie ein kleineres Foto hoch.",
+				"RATE_LIMITED": "Zu viele Anfragen in kurzer Zeit. Bitte warten Sie einen Moment und versuchen Sie es erneut.",
 				"VALIDATION_FAILED": "Fotovalidierung fehlgeschlagen. Bitte versuchen Sie es erneut."
 			}
 		},
@@ -407,7 +410,8 @@
 			"valid": "Foto gültig!",
 			"invalid": "Ungültiges Foto",
 			"tryAgain": "Erneut versuchen",
-			"uploadDifferent": "Anderes Foto hochladen"
+			"uploadDifferent": "Anderes Foto hochladen",
+			"continue": "Weiter"
 		},
 		"navigation": {
 			"back": "Zurück",

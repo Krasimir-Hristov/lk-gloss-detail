@@ -12,6 +12,7 @@ import { getLocalizedText } from "@/features/admin/types/servicesTypes";
 import { DossierAngleGrid } from "@/features/assessment/components/DossierAngleGrid";
 import { useAssessmentStore } from "@/features/assessment/stores/assessmentStore";
 import {
+	extractVehicleTelemetry,
 	fetchAssessmentServices,
 	type AssessmentService,
 } from "@/features/assessment/types/assessmentService";
@@ -32,9 +33,12 @@ export const AssessmentDossier: React.FC = () => {
 	const validPhotos = photos.filter((p) => p.validationStatus === "valid");
 	const validatedCount = validPhotos.length;
 
-	const detectedVehicle = validPhotos.find((p) => p.carDescription)?.carDescription ?? null;
-	const detectedSize = validPhotos.find((p) => p.carSize)?.carSize ?? null;
-	const detectedDirt = validPhotos.find((p) => p.dirtLevel)?.dirtLevel ?? null;
+	const hasTelemetry = validatedCount > 0;
+	const telemetry = extractVehicleTelemetry(photos);
+	const detectedVehicle = hasTelemetry ? telemetry.brand : null;
+	const detectedSize = hasTelemetry ? telemetry.carSize : null;
+	const detectedDirt = hasTelemetry ? telemetry.dirtLevel : null;
+	const visualFindings = hasTelemetry ? telemetry.visualFindings : [];
 
 	const acceptedIds = services.filter((s) => s.accepted).map((s) => s.serviceId);
 	const acceptedCatalogServices = catalogServices.filter((s) => acceptedIds.includes(s.id));
@@ -144,6 +148,18 @@ export const AssessmentDossier: React.FC = () => {
 									<dd className="font-semibold text-[#e5e2e1]">
 										{tDossier(`dirtLevels.${detectedDirt}`)}
 									</dd>
+								</div>
+							) : null}
+							{visualFindings.length > 0 ? (
+								<div className="flex flex-wrap gap-1.5 border-t border-white/[0.06] pt-2">
+									{visualFindings.slice(0, 4).map((finding) => (
+										<span
+											key={finding}
+											className="rounded-md border border-white/10 bg-white/[0.04] px-2 py-0.5 text-[10px] font-medium text-[#d1bcff]"
+										>
+											{finding}
+										</span>
+									))}
 								</div>
 							) : null}
 						</dl>

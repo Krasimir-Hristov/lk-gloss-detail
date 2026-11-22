@@ -1,5 +1,6 @@
 "use client";
 
+import { useQuery } from "@tanstack/react-query";
 import { motion } from "framer-motion";
 import { AlertCircle, Check, RotateCcw, Sparkles } from "lucide-react";
 import { useTranslations } from "next-intl";
@@ -7,9 +8,12 @@ import React, { useCallback, useEffect, useRef, useState } from "react";
 
 import { ServiceSwipeCard } from "@/features/assessment/components/ServiceSwipeCard";
 import { useAssessmentStore } from "@/features/assessment/stores/assessmentStore";
+import {
+	fetchAssessmentServices,
+	type AssessmentService,
+} from "@/features/assessment/types/assessmentService";
 
 import type { ServiceSelection } from "@/features/assessment/schemas/assessmentSchema";
-import type { AssessmentService } from "@/features/assessment/types/assessmentService";
 
 type ServiceSwipeDeckProps = {
 	onCompleteAction: () => void;
@@ -25,12 +29,18 @@ export const ServiceSwipeDeck: React.FC<ServiceSwipeDeckProps> = ({ onCompleteAc
 	const setServices = useAssessmentStore((s) => s.setServices);
 	const storeServices = useAssessmentStore((s) => s.services);
 
-	const [dbServices, setDbServices] = useState<AssessmentService[]>([]);
-	const [isLoading, setIsLoading] = useState(true);
-	const [fetchError, setFetchError] = useState<string | null>(null);
 	const [currentIndex, setCurrentIndex] = useState(0);
 	const [isComplete, setIsComplete] = useState(false);
-	const [retryTrigger, setRetryTrigger] = useState(0);
+
+	const {
+		data: dbServices = [],
+		isLoading,
+		isError,
+		refetch,
+	} = useQuery<AssessmentService[]>({
+		queryKey: ["services"],
+		queryFn: fetchAssessmentServices,
+	});
 
 	const totalCards = dbServices.length;
 	const acceptedCount = storeServices.filter((s) => s.accepted).length;
@@ -41,50 +51,27 @@ export const ServiceSwipeDeck: React.FC<ServiceSwipeDeckProps> = ({ onCompleteAc
 		currentIndexRef.current = currentIndex;
 	}, [currentIndex]);
 
-	// Fetch active services from DB
+	// Initialize store selections while preserving existing accepted/rejected flags
 	useEffect(() => {
-		let isCancelled = false;
-		const loadServices = async () => {
-			try {
-				const res = await fetch("/api/services");
-				if (!res.ok) throw new Error("Failed to fetch services");
-				const data = (await res.json()) as AssessmentService[];
-				if (isCancelled) return;
-				setDbServices(data);
+		if (dbServices.length === 0) return;
 
-				const selections: ServiceSelection[] = data.map((s) => ({
-					serviceId: s.id,
-					accepted: false,
-				}));
-				setServices(selections);
+		const existingMap = new Map(storeServices.map((s) => [s.serviceId, s.accepted]));
+		const hasMatchingServices =
+			storeServices.length === dbServices.length && dbServices.every((s) => existingMap.has(s.id));
 
-				if (data.length === 0) {
-					setIsComplete(true);
-				}
-			} catch (err: unknown) {
-				if (isCancelled) return;
-				const errorMsg = err instanceof Error ? err.message : "Failed to load services";
-				console.error("[ServiceSwipeDeck] Failed to load services:", errorMsg);
-				setFetchError(errorMsg);
-			} finally {
-				if (!isCancelled) {
-					setIsLoading(false);
-				}
-			}
-		};
+		if (hasMatchingServices) return;
 
-		loadServices();
-		return () => {
-			isCancelled = true;
-		};
-	}, [setServices, retryTrigger]);
+		const selections: ServiceSelection[] = dbServices.map((s) => ({
+			serviceId: s.id,
+			accepted: existingMap.get(s.id) ?? false,
+		}));
+		setServices(selections);
+	}, [dbServices, storeServices, setServices]);
 
 	const handleRetry = () => {
-		setIsLoading(true);
-		setFetchError(null);
 		setIsComplete(false);
 		setCurrentIndex(0);
-		setRetryTrigger((prev) => prev + 1);
+		void refetch();
 	};
 
 	const advanceCard = useCallback(() => {
@@ -114,7 +101,7 @@ export const ServiceSwipeDeck: React.FC<ServiceSwipeDeckProps> = ({ onCompleteAc
 	);
 
 	// ── Error state ───────────────────────────────────────────────────────
-	if (fetchError) {
+	if (isError) {
 		return (
 			<div
 				role="alert"
@@ -155,6 +142,8 @@ export const ServiceSwipeDeck: React.FC<ServiceSwipeDeckProps> = ({ onCompleteAc
 		);
 	}
 
+	const showComplete = isComplete || totalCards === 0;
+
 	return (
 		<div className="flex flex-col items-center">
 			{/* Sub-header & Live Selection Pill */}
@@ -172,7 +161,7 @@ export const ServiceSwipeDeck: React.FC<ServiceSwipeDeckProps> = ({ onCompleteAc
 			</div>
 
 			{/* Card stack container */}
-			{!isComplete ? (
+			{!showComplete ? (
 				<>
 					<div className="relative mx-auto mb-26 h-[430px] w-full max-w-[390px] min-[390px]:h-[450px] sm:mb-28 sm:h-[490px]">
 						{dbServices.map((service, index) => {
