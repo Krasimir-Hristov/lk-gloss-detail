@@ -1,43 +1,48 @@
 import { randomUUID } from "crypto";
 
 import { type NextRequest, NextResponse } from "next/server";
-import { z } from "zod";
 
+import { AnalyzeRequestSchema } from "@/features/assessment/schemas/assessmentSchema";
 import { assessmentAnalysisGraph } from "@/lib/ai/assessmentAnalysisGraph";
 
-const AnalyzeRequestSchema = z.object({
-	acceptedServiceIds: z.array(z.string()),
-	carSize: z.enum(["small", "medium", "large", "suv"]).default("medium"),
-	dirtLevel: z.enum(["light", "moderate", "heavy"]).default("moderate"),
-	brand: z.string().nullable().default(null),
-	locale: z.enum(["de", "en", "el"]).default("de"),
-});
+export const maxDuration = 60;
 
 export async function POST(request: NextRequest) {
 	try {
-		const body = await request.json();
-		const validatedBody = AnalyzeRequestSchema.parse(body);
+		let body: unknown;
+		try {
+			body = await request.json();
+		} catch {
+			return NextResponse.json({ error: "Invalid JSON payload." }, { status: 400 });
+		}
 
-		const { acceptedServiceIds, carSize, dirtLevel, brand, locale } = validatedBody;
+		const parsed = AnalyzeRequestSchema.safeParse(body);
+		if (!parsed.success) {
+			return NextResponse.json(
+				{ error: "Invalid assessment request parameters." },
+				{ status: 400 },
+			);
+		}
 
-		console.log("[analyze] Starting analysis:", {
-			serviceCount: acceptedServiceIds.length,
-			carSize,
-			dirtLevel,
-			locale,
-		});
+		const { acceptedServiceIds, carSize, dirtLevel, brand, visualFindings, locale } = parsed.data;
 
 		const result = await assessmentAnalysisGraph.invoke({
-			base64Images: [],
 			acceptedServiceIds,
 			carSize,
 			dirtLevel,
 			brand,
+			visualFindings,
 			locale,
 		});
 
 		if (result.error) {
 			console.error("[analyze] Analysis failed:", result.error);
+			if (result.error.startsWith("Missing or inactive services")) {
+				return NextResponse.json(
+					{ error: "One or more selected services are unavailable or inactive." },
+					{ status: 400 },
+				);
+			}
 			return NextResponse.json(
 				{ error: "Analysis could not be completed. Please try again." },
 				{ status: 500 },
