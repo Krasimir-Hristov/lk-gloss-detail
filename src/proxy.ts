@@ -37,7 +37,8 @@ export default async function proxy(request: NextRequest) {
 	safeHeaders.set("x-pathname", pathname);
 
 	const currentRequest = new NextRequest(request, { headers: safeHeaders });
-	const ip = currentRequest.headers.get("x-forwarded-for") ?? "unknown";
+	const forwardedFor = currentRequest.headers.get("x-forwarded-for");
+	const ip = forwardedFor ? forwardedFor.split(",")[0].trim() || "unknown" : "unknown";
 
 	// ── Admin Route Protection ────────────────────────────────────────
 	if (isProtectedRoute(pathname)) {
@@ -117,7 +118,7 @@ export default async function proxy(request: NextRequest) {
 		if (!result.success) {
 			const retryAfter = Math.ceil(result.resetIn / 1000);
 			return NextResponse.json(
-				{ error: "Too many requests", retryAfter },
+				{ error: "Too many requests", code: "RATE_LIMITED", retryAfter },
 				{
 					status: 429,
 					headers: { "Retry-After": String(retryAfter) },
@@ -141,7 +142,7 @@ export default async function proxy(request: NextRequest) {
 		if (!result.success) {
 			const retryAfter = Math.ceil(result.resetIn / 1000);
 			return NextResponse.json(
-				{ error: "Too many requests. Please slow down.", retryAfter },
+				{ error: "Too many requests. Please slow down.", code: "RATE_LIMITED", retryAfter },
 				{
 					status: 429,
 					headers: { "Retry-After": String(retryAfter) },

@@ -1,14 +1,83 @@
 import { HumanMessage, SystemMessage } from "@langchain/core/messages";
-import { StateGraph, START, END } from "@langchain/langgraph";
+import { END, START, StateGraph } from "@langchain/langgraph";
 import { ChatOpenAI } from "@langchain/openai";
 import { z } from "zod";
 
+import { getAiModelsConfig } from "@/config/aiModelsConfig";
 import { getLocalizedText } from "@/features/admin/types/servicesTypes";
-import { AssessmentDiagnosticSchema } from "@/features/assessment/schemas/assessmentSchema";
+import {
+	buildAnalysisSummaryPrompt,
+	SUMMARY_SYSTEM_PROMPT,
+	SummaryOutputSchema,
+} from "@/lib/ai/assessmentAnalysisPrompts";
 import { createClient } from "@/lib/supabase/server";
 import { createServiceClient } from "@/lib/supabase/service";
 
-// ── Pricing Schema ─────────────────────────────────────────────────────────
+import type { AiModelsConfig } from "@/config/aiModelsConfig";
+import type { SummaryOutput } from "@/lib/ai/assessmentAnalysisPrompts";
+
+// ── Exported Pure Pricing Types & Calculator (R2: CarSize-only) ────────────
+
+export type AssessmentCarSize = "small" | "medium" | "large" | "suv";
+
+export interface ServicePricingRow {
+	id: string;
+	name: unknown;
+	price_small: number;
+	price_medium: number;
+	price_large: number;
+	price_suv: number;
+	duration_hours: number;
+}
+
+export interface CalculatedAssessmentTotals {
+	priceMin: number;
+	priceMax: number;
+	durationHours: number;
+}
+
+const PRICE_COLUMN_BY_SIZE: Record<
+	AssessmentCarSize,
+	keyof Pick<ServicePricingRow, "price_small" | "price_medium" | "price_large" | "price_suv">
+> = {
+	small: "price_small",
+	medium: "price_medium",
+	large: "price_large",
+	suv: "price_suv",
+};
+
+/**
+ * Pure R2 pricing calculator: depends strictly on `carSize` and active DB service prices.
+ * `dirtLevel` is informational only and NEVER modifies price or duration.
+ */
+export const calculateAssessmentPricing = (
+	carSize: AssessmentCarSize,
+	servicesPricing: ServicePricingRow[],
+): CalculatedAssessmentTotals => {
+	if (servicesPricing.length === 0) {
+		return { priceMin: 0, priceMax: 0, durationHours: 0 };
+	}
+
+	const priceKey = PRICE_COLUMN_BY_SIZE[carSize];
+	let totalMin = 0;
+	let totalMax = 0;
+	let totalDuration = 0;
+
+	for (const service of servicesPricing) {
+		const price = service[priceKey];
+		totalMin += price;
+		totalMax += Math.round(price * 1.15);
+		totalDuration += service.duration_hours;
+	}
+
+	return {
+		priceMin: totalMin,
+		priceMax: totalMax,
+		durationHours: Math.round(totalDuration * 10) / 10,
+	};
+};
+
+// ── Pricing Row & State Schemas ─────────────────────────────────────────────
 
 const PricingRowSchema = z.object({
 	id: z.string(),
@@ -22,67 +91,45 @@ const PricingRowSchema = z.object({
 
 type PricingRow = z.infer<typeof PricingRowSchema>;
 
-// ── State Schema ────────────────────────────────────────────────────────────
-
 const AnalysisState = z.object({
-	base64Images: z.array(z.string()),
 	acceptedServiceIds: z.array(z.string()),
 	locale: z.string().default("de"),
 	carSize: z.enum(["small", "medium", "large", "suv"]).nullable().default(null),
 	dirtLevel: z.enum(["light", "moderate", "heavy"]).nullable().default(null),
 	brand: z.string().nullable().default(null),
+	visualFindings: z.array(z.string()).default([]),
 	servicesPricing: z.array(PricingRowSchema).default([]),
 	priceMin: z.number().default(0),
 	priceMax: z.number().default(0),
 	durationHours: z.number().default(0),
 	summaryText: z.string().default(""),
-	diagnostics: z
-		.array(
-			z.object({
-				title: z.string(),
-				description: z.string(),
-			}),
-		)
-		.default([]),
+	diagnostics: z.array(z.object({ title: z.string(), description: z.string() })).default([]),
 	expertVerdict: z.string().default(""),
 	error: z.string().nullable().default(null),
 });
 
 type AnalysisStateType = z.infer<typeof AnalysisState>;
 
-// ── Model for summary generation ───────────────────────────────────────────
+// ── Summary Model Factory (Primary + Fallback) ──────────────────────────────
 
-const summaryModel = new ChatOpenAI({
-	apiKey: process.env.OPENROUTER_API_KEY,
-	modelName: "openai/gpt-4o-mini",
-	temperature: 0.7,
-	configuration: {
-		baseURL: "https://openrouter.ai/api/v1",
-	},
-});
+const createSummaryModel = (modelName: string, config: AiModelsConfig) =>
+	new ChatOpenAI({
+		apiKey: process.env.OPENROUTER_API_KEY,
+		modelName,
+		temperature: config.assessmentSummary.temperature,
+		timeout: config.assessmentSummary.timeoutMs,
+		configuration: {
+			baseURL: config.openRouterBaseUrl,
+		},
+	}).withStructuredOutput(SummaryOutputSchema, {
+		name: "generate_assessment_summary",
+		method: "jsonSchema",
+	});
 
-// ── Node 1: vision_car_analysis ────────────────────────────────────────────
+const SERVICE_COLUMNS =
+	"id, name, price_small, price_medium, price_large, price_suv, duration_hours";
 
-const visionCarAnalysis = async (state: AnalysisStateType): Promise<Partial<AnalysisStateType>> => {
-	// Vision analysis is already done during photo validation.
-	// carSize, dirtLevel and brand are extracted per-photo and stored.
-	// For a full multi-photo analysis, we would need the base64 images,
-	// but they are too large (>10MB) to send in a JSON request.
-	// Using placeholder values — in production, pass extracted data directly.
-	console.log(
-		"[analysis-graph] Vision node: skipping vision (photos already validated during upload)",
-	);
-
-	return {
-		carSize: state.carSize ?? null,
-		dirtLevel: state.dirtLevel ?? null,
-		brand: state.brand ?? null,
-		// Drop base64 images from state
-		base64Images: [],
-	};
-};
-
-// ── Node 2: fetch_db_pricing ───────────────────────────────────────────────
+// ── Node 1: fetch_db_pricing ───────────────────────────────────────────────
 
 const fetchDbPricing = async (state: AnalysisStateType): Promise<Partial<AnalysisStateType>> => {
 	try {
@@ -91,45 +138,47 @@ const fetchDbPricing = async (state: AnalysisStateType): Promise<Partial<Analysi
 		}
 
 		let rawData: unknown[] | null = null;
-		let error: { message: string } | null = null;
+		let dbError: { message: string } | null = null;
 
 		try {
 			const supabase = await createClient();
 			const res = await supabase
 				.from("services")
-				.select("id, name, price_small, price_medium, price_large, price_suv, duration_hours")
+				.select(SERVICE_COLUMNS)
+				.eq("active", true)
 				.in("id", state.acceptedServiceIds);
 			rawData = res.data;
-			error = res.error;
-		} catch (clientErr) {
+			dbError = res.error;
+		} catch (clientErr: unknown) {
 			console.warn(
 				"[analysis-graph] Standard server client failed, trying service client:",
 				clientErr,
 			);
 		}
 
-		// Fallback to service client if standard client returned error or no data
-		if ((error || !rawData) && process.env.NEXT_PUBLIC_SUPABASE_URL) {
+		if ((dbError || !rawData) && process.env.NEXT_PUBLIC_SUPABASE_URL) {
 			try {
 				const serviceClient = createServiceClient();
 				const res = await serviceClient
 					.from("services")
-					.select("id, name, price_small, price_medium, price_large, price_suv, duration_hours")
+					.select(SERVICE_COLUMNS)
+					.eq("active", true)
 					.in("id", state.acceptedServiceIds);
 				rawData = res.data;
-				error = res.error;
-			} catch (serviceErr) {
+				dbError = res.error;
+			} catch (serviceErr: unknown) {
 				console.error("[analysis-graph] Service client failed as well:", serviceErr);
 			}
 		}
 
-		if (error) throw new Error(`DB query failed: ${error.message}`);
+		if (dbError) throw new Error(`DB query failed: ${dbError.message}`);
+		if (rawData === null) {
+			throw new Error("DB query failed: unable to retrieve active services");
+		}
 
-		const parsedRows: PricingRow[] = z.array(PricingRowSchema).parse(rawData ?? []);
-
-		// Validate that every requested service ID was found
-		const foundIds = parsedRows.map((s) => s.id);
-		const missingIds = state.acceptedServiceIds.filter((id) => !foundIds.includes(id));
+		const parsedRows: PricingRow[] = z.array(PricingRowSchema).parse(rawData);
+		const foundIds = new Set(parsedRows.map((s) => s.id));
+		const missingIds = state.acceptedServiceIds.filter((id) => !foundIds.has(id));
 
 		if (missingIds.length > 0) {
 			throw new Error(
@@ -137,210 +186,99 @@ const fetchDbPricing = async (state: AnalysisStateType): Promise<Partial<Analysi
 			);
 		}
 
-		console.log(
-			"[analysis-graph] Fetched pricing for",
-			parsedRows.length,
-			"services:",
-			parsedRows.map((s) => getLocalizedText(s.name, state.locale)),
-		);
-
-		return { servicesPricing: parsedRows ?? [] };
-	} catch (err) {
+		return { servicesPricing: parsedRows };
+	} catch (err: unknown) {
 		const message = err instanceof Error ? err.message : "Failed to fetch pricing";
 		console.error("[analysis-graph] fetch_db_pricing error:", message);
 		return { error: message };
 	}
 };
 
-// ── Node 3: deterministic_calculator ───────────────────────────────────────
+// ── Node 2: deterministic_calculator ───────────────────────────────────────
 
 const deterministicCalculator = async (
 	state: AnalysisStateType,
 ): Promise<Partial<AnalysisStateType>> => {
 	try {
-		const { carSize, servicesPricing } = state;
-
-		if (!carSize || servicesPricing.length === 0) {
-			return {
-				priceMin: 0,
-				priceMax: 0,
-				durationHours: 0,
-			};
+		if (!state.carSize || state.servicesPricing.length === 0) {
+			return { priceMin: 0, priceMax: 0, durationHours: 0 };
 		}
-
-		// Map car_size to the correct price column
-		const priceKey = `price_${carSize}` as keyof (typeof servicesPricing)[0];
-
-		let totalMin = 0;
-		let totalMax = 0;
-		let totalDuration = 0;
-
-		for (const service of servicesPricing) {
-			const price = service[priceKey] as number;
-			// price_min = price (base), price_max = price * 1.15 (15% buffer for extras)
-			totalMin += price;
-			totalMax += Math.round(price * 1.15);
-			totalDuration += service.duration_hours;
-		}
-
-		console.log("[analysis-graph] Calculator result:", {
-			carSize,
-			services: servicesPricing.length,
-			priceMin: totalMin,
-			priceMax: totalMax,
-			durationHours: totalDuration,
-		});
-
-		return {
-			priceMin: totalMin,
-			priceMax: totalMax,
-			durationHours: Math.round(totalDuration * 10) / 10, // Round to 1 decimal
-		};
-	} catch (err) {
+		return calculateAssessmentPricing(state.carSize, state.servicesPricing);
+	} catch (err: unknown) {
 		const message = err instanceof Error ? err.message : "Price calculation failed";
 		console.error("[analysis-graph] deterministic_calculator error:", message);
 		return { error: message };
 	}
 };
 
-// ── Node 4: generate_localized_summary ─────────────────────────────────────
-
-const SUMMARY_SYSTEM_PROMPT = `You are a friendly, professional car detailing expert at LK Gloss & Detail, a mobile car detailing service in Germany.
-Generate a structured assessment report for the customer based on their car assessment results.
-
-You MUST respond with valid JSON in exactly this shape (no markdown, no code fences, just the raw JSON object):
-{
-  "summaryText": "A short, punchy 1-2 sentence CTA summary including the estimated price range and duration. Be enthusiastic.",
-  "diagnostics": [
-    { "title": "Short finding title (e.g., Heavy Swirls Detected)", "description": "1-2 sentence professional explanation of the finding and its impact" }
-  ],
-  "expertVerdict": "A 2-3 sentence professional verdict from the detailing expert, summarizing the car's condition and recommended action."
-}
-
-Generate 3-5 diagnostic findings relevant to the car's condition (car size, dirt level, and the accepted services).
-Respond in the language specified by the user's locale.`;
+// ── Node 3: generate_localized_summary ─────────────────────────────────────
 
 const generateLocalizedSummary = async (
 	state: AnalysisStateType,
 ): Promise<Partial<AnalysisStateType>> => {
 	try {
-		const {
-			carSize,
-			dirtLevel,
-			brand,
-			priceMin,
-			priceMax,
-			durationHours,
-			servicesPricing,
-			locale,
-		} = state;
+		const config = getAiModelsConfig();
+		const serviceNames = state.servicesPricing
+			.map((s) => getLocalizedText(s.name, state.locale))
+			.join(", ");
 
-		const localeNames: Record<string, string> = {
-			de: "German",
-			en: "English",
-			el: "Greek",
-		};
-
-		const serviceNames = servicesPricing.map((s) => getLocalizedText(s.name, locale)).join(", ");
-
-		const messages = [
-			new SystemMessage(SUMMARY_SYSTEM_PROMPT),
-			new HumanMessage(
-				`Car: ${brand ?? "Unknown"} (${carSize ?? "medium"} size, ${dirtLevel ?? "moderate"} dirt level)
-Accepted services: ${serviceNames || "None"}
-Price estimate: €${priceMin} – €${priceMax}
-Duration: ~${durationHours} hours
-Language: ${localeNames[locale] ?? "German"}
-
-Generate the structured assessment report as JSON.`,
-			),
-		];
-
-		const response = await summaryModel.invoke(messages);
-		const rawContent = (response.content as string).trim();
-
-		console.log("[analysis-graph] Raw LLM response:", rawContent);
-
-		// Parse the structured JSON from the LLM
-		let parsed: {
-			summaryText?: string;
-			diagnostics?: { title: string; description: string }[];
-			expertVerdict?: string;
-		};
-
-		try {
-			// Handle potential code fences
-			const jsonStr = rawContent
-				.replace(/```json\n?/gi, "")
-				.replace(/```\n?/g, "")
-				.trim();
-			parsed = JSON.parse(jsonStr);
-		} catch {
-			console.warn("[analysis-graph] Failed to parse structured JSON, using fallback");
-			parsed = {
-				summaryText: rawContent,
-				diagnostics: [],
-				expertVerdict: "",
-			};
-		}
-
-		// Validate each diagnostic item with the shared Zod schema
-		const diagnostics = (Array.isArray(parsed.diagnostics) ? parsed.diagnostics : [])
-			.map((d) => {
-				const result = AssessmentDiagnosticSchema.safeParse(d);
-				return result.success ? result.data : null;
-			})
-			.filter((d): d is NonNullable<typeof d> => d !== null);
-		const expertVerdict = typeof parsed.expertVerdict === "string" ? parsed.expertVerdict : "";
-		const summaryText = typeof parsed.summaryText === "string" ? parsed.summaryText : rawContent;
-
-		console.log("[analysis-graph] Structured result:", {
-			summaryText: summaryText.slice(0, 80),
-			diagnosticsCount: diagnostics.length,
-			verdictLength: expertVerdict.length,
+		const promptText = buildAnalysisSummaryPrompt({
+			brand: state.brand,
+			carSize: state.carSize,
+			dirtLevel: state.dirtLevel,
+			visualFindings: state.visualFindings,
+			serviceNames,
+			priceMin: state.priceMin,
+			priceMax: state.priceMax,
+			durationHours: state.durationHours,
+			locale: state.locale,
 		});
 
+		const messages = [new SystemMessage(SUMMARY_SYSTEM_PROMPT), new HumanMessage(promptText)];
+
+		let rawOutput: SummaryOutput;
+		try {
+			const primaryModel = createSummaryModel(config.assessmentSummary.primaryModel, config);
+			rawOutput = await primaryModel.invoke(messages);
+		} catch (primaryErr: unknown) {
+			const errMsg = primaryErr instanceof Error ? primaryErr.message : "Unknown error";
+			console.warn(
+				`[analysis-graph] Primary summary model (${config.assessmentSummary.primaryModel}) failed: ${errMsg}. Retrying with fallback (${config.assessmentSummary.fallbackModel}).`,
+			);
+			const fallbackModel = createSummaryModel(config.assessmentSummary.fallbackModel, config);
+			rawOutput = await fallbackModel.invoke(messages);
+		}
+
+		const validated = SummaryOutputSchema.safeParse(rawOutput);
+		if (!validated.success) {
+			throw new Error("Structured summary validation failed");
+		}
+
 		return {
-			summaryText,
-			diagnostics,
-			expertVerdict,
+			summaryText: validated.data.summaryText,
+			diagnostics: validated.data.diagnostics,
+			expertVerdict: validated.data.expertVerdict,
 		};
-	} catch (err) {
+	} catch (err: unknown) {
 		const message = err instanceof Error ? err.message : "Summary generation failed";
 		console.error("[analysis-graph] generate_localized_summary error:", message);
 		return { error: message };
 	}
 };
 
-// ── Router: check for errors ───────────────────────────────────────────────
+// ── Routers & Graph Build ──────────────────────────────────────────────────
 
-const routeAfterVision = (state: AnalysisStateType): string => {
-	if (state.error) return END;
-	return "fetch_db_pricing";
-};
+const routeAfterPricing = (state: AnalysisStateType): string =>
+	state.error ? END : "deterministic_calculator";
 
-const routeAfterPricing = (state: AnalysisStateType): string => {
-	if (state.error) return END;
-	return "deterministic_calculator";
-};
-
-const routeAfterCalculator = (state: AnalysisStateType): string => {
-	if (state.error) return END;
-	return "generate_localized_summary";
-};
-
-// ── Build Graph ─────────────────────────────────────────────────────────────
+const routeAfterCalculator = (state: AnalysisStateType): string =>
+	state.error ? END : "generate_localized_summary";
 
 const graph = new StateGraph(AnalysisState)
-	.addNode("vision_car_analysis", visionCarAnalysis)
 	.addNode("fetch_db_pricing", fetchDbPricing)
 	.addNode("deterministic_calculator", deterministicCalculator)
 	.addNode("generate_localized_summary", generateLocalizedSummary)
-	.addEdge(START, "vision_car_analysis")
-	.addConditionalEdges("vision_car_analysis", routeAfterVision, {
-		fetch_db_pricing: "fetch_db_pricing",
-		[END]: END,
-	})
+	.addEdge(START, "fetch_db_pricing")
 	.addConditionalEdges("fetch_db_pricing", routeAfterPricing, {
 		deterministic_calculator: "deterministic_calculator",
 		[END]: END,
