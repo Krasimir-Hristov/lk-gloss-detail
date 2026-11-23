@@ -28,6 +28,7 @@ description: Compact curated lessons learned from CodeRabbit PR reviews and secu
 - **[API Timeouts]** За API route handlers с външни AI заявки задавай `export const maxDuration = 60;` и `timeout` на LLM клиента _(предотвратява Vercel serverless timeout)_.
 - **[Error Statuses]** В API route handlers не хвърляй `ZodError` към `500` -> хващай `ZodError` / невалиден JSON и връщай HTTP `400` _(чисти клиентски грешки без шум в сървърните логове)_.
 - **[Proxy IP Trust]** Не чети клиентския най-ляв `x-forwarded-for` за rate limit -> ползвай Vercel edge хедъри или `TRUSTED_PROXY_COUNT` отдясно наляво с fail-closed `"unknown"` _(спира IP spoofing)_.
+- **[Shared Client IP Helper]** Всички `rateLimit` извиквания (proxy, API routes, Server Actions) да ползват споделения `resolveClientIp(headers)`, никога суров `x-forwarded-for` _(пази споделения кеш и спира brute-force)_.
 - **[Rate Limit Capacity]** При пълен in-memory store не трий живи броячи -> първо изчиствай изтеклите, иначе отказвай нови ключове _(предотвратява DoS bypass)_.
 - **[Bounded Key Space]** Не вкарвай суров `pathname` за произволни подпътища в rate-limit ключа -> ключирай само известни нормализирани маршрути _(спира DoS запълване на 5000-слотовия кеш)_.
 - **[Bounded Body Parsing]** Не викай суров `request.json()` на upload route -> чети потока с byte limit преди `JSON.parse` с HTTP `413` _(пази паметта при chunked streaming атаки)_.
@@ -38,6 +39,7 @@ description: Compact curated lessons learned from CodeRabbit PR reviews and secu
 - **[File Size]** Спазвай лимита от 300 реда за `.ts`, `.tsx` и `.css` файлове в `src/` _(поддържа модулност и четливост)_.
 - **[Server Data Fetching]** Не дублирай `fetch` заявки в `useEffect`, когато вече има TanStack Query ключ -> споделяй един `queryKey` _(елиминира двойни HTTP заявки)_.
 - **[UI Telemetry & Refetch]** Не показвай fallback default стойности като засечена телеметрия и не индексирай списъци по числов индекс при refetch -> ползвай реални флагове и стабилно ID _(гарантира коректни UI данни)_.
+- **[Effect Ordering]** Когато компонент синхронизира Zustand store и вика completion callback, декларирай reconciliation `useEffect` преди completion `useEffect` и пази с `isSuccess` _(предотвратява stale store reads и блокиране при празен каталог)_.
 
 ### Multi-Agent & Worktrees
 

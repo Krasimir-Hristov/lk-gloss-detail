@@ -9,6 +9,7 @@ import {
 	type AuthResult,
 } from "@/features/admin/schemas/authSchema";
 import { isAdminUser } from "@/features/admin/utils/auth";
+import { resolveClientIp } from "@/lib/http/resolveClientIp";
 import { rateLimit } from "@/lib/rateLimit";
 import { createClient } from "@/lib/supabase/server";
 
@@ -24,7 +25,7 @@ export const loginAdmin = async (data: LoginFormValues): Promise<AuthResult> => 
 
 		// Enforce rate limiting based on IP and route
 		const headerList = await headers();
-		const ip = headerList.get("x-forwarded-for") ?? "unknown";
+		const ip = resolveClientIp(headerList);
 		const rateLimitResult = rateLimit(`${ip}:loginAdmin`, {
 			interval: 60000, // 1 minute
 			maxRequests: 5, // max 5 requests per minute

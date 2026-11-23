@@ -36,6 +36,7 @@ export const ServiceSwipeDeck: React.FC<ServiceSwipeDeckProps> = ({ onCompleteAc
 		data: dbServices = [],
 		isLoading,
 		isError,
+		isSuccess,
 		refetch,
 	} = useQuery<AssessmentService[]>({
 		queryKey: ["services"],
@@ -52,19 +53,18 @@ export const ServiceSwipeDeck: React.FC<ServiceSwipeDeckProps> = ({ onCompleteAc
 	const totalCards = dbServices.length;
 	const reviewedInCatalogCount = totalCards - unreviewedServices.length;
 	const acceptedCount = storeServices.filter((s) => s.accepted).length;
-	const allReviewed = !isLoading && !isError && totalCards > 0 && unreviewedServices.length === 0;
+	const allReviewed = isSuccess && unreviewedServices.length === 0;
 
-	// Notify parent once when all catalog services have been reviewed
+	// Reconcile store selections against current catalog before any completion check runs
 	useEffect(() => {
-		if (allReviewed && !hasCompletedRef.current) {
-			hasCompletedRef.current = true;
-			onCompleteAction();
+		if (!isSuccess) return;
+
+		if (dbServices.length === 0) {
+			if (storeServices.length > 0) {
+				setServices([]);
+			}
+			return;
 		}
-	}, [allReviewed, onCompleteAction]);
-
-	// Initialize store selections while preserving existing accepted/rejected flags
-	useEffect(() => {
-		if (dbServices.length === 0) return;
 
 		const existingMap = new Map(storeServices.map((s) => [s.serviceId, s.accepted]));
 		const hasMatchingServices =
@@ -77,7 +77,15 @@ export const ServiceSwipeDeck: React.FC<ServiceSwipeDeckProps> = ({ onCompleteAc
 			accepted: existingMap.get(s.id) ?? false,
 		}));
 		setServices(selections);
-	}, [dbServices, storeServices, setServices]);
+	}, [dbServices, isSuccess, storeServices, setServices]);
+
+	// Notify parent once when all catalog services (including an empty catalog) are reviewed
+	useEffect(() => {
+		if (allReviewed && !hasCompletedRef.current) {
+			hasCompletedRef.current = true;
+			onCompleteAction();
+		}
+	}, [allReviewed, onCompleteAction]);
 
 	const handleRetry = () => {
 		hasCompletedRef.current = false;

@@ -1,14 +1,20 @@
+# yaml-language-server: $schema=https://coderabbit.ai/integrations/schema.v2.json
 # CodeRabbit AI Code Review Configuration
 # https://docs.coderabbit.ai
 # Project: LK Gloss & Detail — Mobile Autopflege & Detailing
 
 language: "en"
 early_access: false
+tone_instructions: "Use a professional, concise tone in English. Explain why each finding matters for LK Gloss & Detail and reference AGENTS.md or lk-lessons when relevant."
 
 reviews:
   profile: "chill"
   request_changes_workflow: false
   high_level_summary: true
+  high_level_summary_instructions: >
+    Summarize PR changes for LK Gloss & Detail cleanly grouped by Security & Proxy/API,
+    AI Assessment & Pricing Invariants, Frontend UX & i18n, and Architecture/Tests.
+    Highlight any risk to carSize-only pricing or CVE-2025-29927 proxy hardening.
   poem: false
   review_status: true
   collapse_walkthrough: false
@@ -23,59 +29,34 @@ reviews:
     - "!**/node_modules/**"
     - "!**/.next/**"
     - "!**/public/screenshots/**"
-
-  tone_instructions: >
-    Use a professional but friendly tone. Write in English.
-    When suggesting changes, explain WHY it matters for this project specifically.
-    Reference AGENTS.md and .agents/skills/lk-lessons/SKILL.md when applicable.
-
-  summary_instructions: >
-    ## LK Gloss & Detail — Code Review Guidelines
-
-    This is a **German mobile car detailing service** website built with:
-    - **Next.js 16** (App Router, Turbopack, React 19, `src/proxy.ts`)
-    - **TypeScript** (strict mode, no `any`)
-    - **Tailwind CSS v4** + **shadcn/ui** (dark theme only, `bg-linear-to-*`)
-    - **Supabase** (PostgreSQL + RLS + pgvector for AI/RAG)
-    - **LangChain.js + LangGraph.js** (AI assessment & chatbot)
-    - **Zustand** + **TanStack Query** + **Zod**
-    - **next-intl** (3 locales: `de`, `en`, `el`)
-    - **Framer Motion**
-
-    ### Architecture & Security Rules (AGENTS.md)
-    1. **Strict No-Middleware (`middleware.ts` forbidden):** Global perimeter MUST live in `src/proxy.ts` with CVE-2025-29927 header scrubbing (`x-middleware-subrequest`), trusted ingress IP resolution, rate limiting, and admin session guard.
-    2. **No `any` Type:** Use strict interfaces, `unknown` with type guards, and Zod `z.infer`.
-    3. **React 19 Arrow Components:** All React components MUST be Arrow Functions in `PascalCase.tsx`. Non-component helpers/hooks/schemas/actions/tests MUST use `camelCase.ts`. NEVER suggest `kebab-case`.
-    4. **File Length Limit:** Files under `src/` MUST NOT exceed 300 lines.
-    5. **Tailwind CSS v4 Gradients:** Always use `bg-linear-to-*`, never `bg-gradient-to-*`.
-    6. **Async Route Params:** Always `await` `params`, `searchParams`, `cookies()`, and `headers()`.
-    7. **Hybrid API & Server Actions:**
-       - Use Server Actions (`"use server"`) for admin and booking mutations.
-       - Next.js Route Handlers (`/api/assessment/*`, `/api/chatbot/*`, `/api/services`) are explicitly intentional for public APIs, bounded byte-limit JSON/image uploads, and AI streaming endpoints.
-    8. **AI Invocation Rules:**
-       - Streaming (SSE / `for await...of`) applies to conversational chatbot responses.
-       - Deterministic structured outputs (photo validation, DB pricing analysis, summaries) intentionally use `.invoke()` with `.withStructuredOutput(ZodSchema)` and Zod `safeParse`.
-       - Stateless assessment graphs do NOT require PostgreSQL checkpointing.
-    9. **Fixed Business Rule — AI Car Assessment:**
-       - `dirtLevel` (`light` | `moderate` | `heavy`) is strictly informational and MUST NEVER modify pricing or duration.
-       - Pricing depends strictly on `carSize` (`small` | `medium` | `large` | `suv`) multiplied by live active Supabase `services` rows (`active = true`).
-    10. **Feature-Based Isolation & i18n:**
-        - Code lives under `src/features/<feature-name>/`.
-        - User-facing copy MUST use `next-intl` translation keys across `de`, `en`, and `el`.
-        - Never expose raw stack traces or SQL/DB internals to clients.
+  path_instructions:
+    - path: "src/**/*.{ts,tsx}"
+      instructions: >
+        Enforce AGENTS.md architecture and business rules for LK Gloss & Detail:
+        1. Next.js 16 global perimeter lives in `src/proxy.ts` (`middleware.ts` is strictly forbidden) with CVE-2025-29927 header scrubbing, trusted ingress IP resolution, rate limiting, and admin session guard.
+        2. Strict TypeScript (no `any`). Always `await` `params`, `searchParams`, `cookies()`, and `headers()`.
+        3. React 19 components MUST be Arrow Functions in `PascalCase.tsx`. Non-component helpers, schemas, actions, hooks, and tests MUST use `camelCase.ts` (NEVER suggest `kebab-case`).
+        4. Keep files under `src/` at <= 300 lines and use Tailwind v4 `bg-linear-to-*` (never `bg-gradient-to-*`).
+        5. Hybrid endpoints: Server Actions (`"use server"`) are used for admin/booking mutations, whereas Route Handlers (`/api/assessment/*`, `/api/chatbot/*`, `/api/services`, `/api/contact`, `/api/booking/create`) are intentional for public APIs, bounded byte-limit JSON/image uploads, and AI SSE streaming.
+        6. Assessment LangGraph endpoints use deterministic `.invoke()` with `.withStructuredOutput(ZodSchema)` and `safeParse`; streaming applies to conversational chatbot responses; stateless assessment graphs do not need PostgreSQL checkpointing.
+        7. Fixed AI Assessment Business Rule: `dirtLevel` (`light` | `moderate` | `heavy`) is strictly informational and MUST NEVER alter pricing or duration. Pricing is always determined exclusively by AI-detected `carSize` multiplied by live active Supabase `services` rows (`active = true`).
+        8. Use `next-intl` translation keys across `de`, `en`, and `el`; never expose raw stack traces or SQL/DB internals to clients.
 
 chat:
   auto_reply: true
 
 knowledge_base:
   learnings:
-    - "AGENTS.md"
-    - ".agents/skills/lk-lessons/SKILL.md"
-    - ".agents/skills/lk-worktrees/SKILL.md"
-    - ".github/copilot-instructions.md"
-  agent_skills:
-    - ".agents/skills/nextjs-best-practices/SKILL.md"
-    - ".agents/skills/langchain-best-practices/SKILL.md"
-    - ".agents/skills/langgraph-best-practices/SKILL.md"
-    - ".agents/skills/supabase/SKILL.md"
-    - ".agents/skills/supabase-postgres-best-practices/SKILL.md"
+    scope: "auto"
+  code_guidelines:
+    enabled: true
+    filePatterns:
+      - "AGENTS.md"
+      - ".github/copilot-instructions.md"
+      - ".agents/skills/lk-lessons/SKILL.md"
+      - ".agents/skills/lk-worktrees/SKILL.md"
+      - ".agents/skills/nextjs-best-practices/SKILL.md"
+      - ".agents/skills/langchain-best-practices/SKILL.md"
+      - ".agents/skills/langgraph-best-practices/SKILL.md"
+      - ".agents/skills/supabase/SKILL.md"
+      - ".agents/skills/supabase-postgres-best-practices/SKILL.md"
