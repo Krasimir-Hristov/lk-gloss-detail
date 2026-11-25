@@ -19,15 +19,15 @@ Multi-root IDE workspace file: `d:\myProjects\lulezim_kodhimaj\lk-gloss-detail.c
 
 ### Default Model Roster & Quota Fallback (`/teamwork` / `swarm` mode)
 
-When spawning workers in `/teamwork`, pin each worker to its Primary model automatically (and use `swarm(action="model")` to fall back cleanly without losing context if a worker hits quota). **Important:** Quota is shared across reasoning tiers (`Extra High` / `High` / `Medium`) of the same model, so fallbacks ALWAYS switch to a **different model**. **Backend Agent** MUST NEVER drop to `Medium` (only `Extra High` / `High`):
+When spawning workers in `/teamwork` / `swarm`, pin each worker to its Primary model automatically (and use `swarm(action="model")` to fall back cleanly without losing context if a worker hits quota). **Important:** All Google models (`Neon`, `Carbon`, `Hydrogen`) share one quota pool, while Anthropic models (`Opus 5.5`, `Sonnet 5.5`) share a separate pool — so fallbacks ALWAYS switch to the **other quota pool**. Only active `New` models are used (`Argon` and `3.8 Flash` are `Leaving Soon` and removed). **Backend Agent** MUST NEVER drop to `Medium` (only `Extra High` / `High`):
 
-| Role               | Primary Model                                                       | Quota Fallback Chain (different model)                                            |
-| :----------------- | :------------------------------------------------------------------ | :-------------------------------------------------------------------------------- |
-| **Orchestrator**   | `Gemini 4 Neon (Extra High)`                                        | `Claude Opus 5.5 (High)` -> `Claude Sonnet 5.5 (High)` _(or pause until refresh)_ |
-| **Frontend Agent** | `Gemini 4 Neon (High)` _(use `Extra High` for flagship UI screens)_ | `Gemini 4 Argon (High)` -> `Claude Sonnet 5.5 (High)`                             |
-| **Backend Agent**  | `Gemini 4 Neon (Extra High)` _(mandatory always Extra High)_        | `Claude Opus 5.5 (High)` -> `Claude Sonnet 5.5 (High)` _(never `Medium`!)_        |
-| **Testing Agent**  | `Gemini 4 Hydrogen (Medium)`                                        | `Gemini 3.8 Flash (Medium)`                                                       |
-| **Security Agent** | `Claude Opus 5.5 (Medium)`                                          | `Claude Sonnet 5.5 (High)` -> `Gemini 4 Neon (High)`                              |
+| Role               | Primary Model (`New` models only)                                                       | Cross-Pool Quota Fallback Chain                                               |
+| :----------------- | :-------------------------------------------------------------------------------------- | :---------------------------------------------------------------------------- |
+| **Orchestrator**   | `Gemini 4 Neon (Extra High)` (`gemini-4-neon-xhigh`)                                    | `claude-opus-5-5-high` -> `claude-sonnet-5-5-high` _(or pause until refresh)_ |
+| **Frontend Agent** | `Gemini 4 Neon (High)` (`gemini-4-neon-high`; optional fast UI: `gemini-4-carbon-high`) | `claude-sonnet-5-5-high`                                                      |
+| **Backend Agent**  | `Gemini 4 Neon (Extra High)` (`gemini-4-neon-xhigh`, mandatory always Extra High)       | `claude-opus-5-5-high` -> `claude-sonnet-5-5-high` _(never `Medium`!)_        |
+| **Testing Agent**  | `Gemini 4 Hydrogen (Medium)` (`gemini-4-hydrogen-medium`)                               | `claude-sonnet-5-5-low`                                                       |
+| **Security Agent** | `Claude Opus 5.5 (Medium)` (`claude-opus-5-5-medium`)                                   | `claude-sonnet-5-5-high` -> `gemini-4-neon-high`                              |
 
 ## 2. Mandatory 8-Step Phase Execution Sequence
 

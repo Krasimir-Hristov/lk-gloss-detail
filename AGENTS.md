@@ -57,13 +57,13 @@
 
 > **КРИТИЧНО ПРАВИЛО ЗА СТАРТИРАНЕ (SWARM ПРОТОКОЛ):** Забранено е пускането на паралелни работници с общо `invoke_subagent` и `Model: 'inherit'`, защото това наследява сляпо един и същ модел за всички. Задължително се използва нативният инструмент `swarm` (`action: "add", model: "<id>", workspace: "share"`) с точните системни идентификатори от таблицата. Преди старта Оркестраторът задължително изпълнява `swarm action: "status"` и показва таблица на потребителя с реално зачислените модели. При изчерпана квота превключва модела в движение (`swarm action: "model"`) без загуба на контекст. За **Backend Agent** никога не се ползва `Medium`.
 
-| Роля               | Системен ID в Swarm        | Display Име                  | Fallback Верига при Квота (различен модел)         | Бележка                                                                |
-| :----------------- | :------------------------- | :--------------------------- | :------------------------------------------------- | :--------------------------------------------------------------------- |
-| **Orchestrator**   | `gemini-4-neon-xhigh`      | `Gemini 4 Neon (Extra High)` | `claude-opus-5-5-high` -> `claude-sonnet-5-5-high` | Планиране (`/plan`), Contract-First, merge, CodeRabbit разбор.         |
-| **Frontend Agent** | `gemini-4-neon-high`       | `Gemini 4 Neon (High)`       | `gemini-4-argon-high` -> `claude-sonnet-5-5-high`  | Високо дизайнерско качество и UX детайл (flagship UI: `xhigh`).        |
-| **Backend Agent**  | `gemini-4-neon-xhigh`      | `Gemini 4 Neon (Extra High)` | `claude-opus-5-5-high` -> `claude-sonnet-5-5-high` | LangGraph, API сигурност, Supabase RLS, `proxy.ts` (никога `Medium`!). |
-| **Testing Agent**  | `gemini-4-hydrogen-medium` | `Gemini 4 Hydrogen (Medium)` | `gemini-3.8-flash-medium`                          | Бърз и икономичен; верифицира се от Vitest.                            |
-| **Security Agent** | `claude-opus-5-5-medium`   | `Claude Opus 5.5 (Medium)`   | `claude-sonnet-5-5-high` -> `gemini-4-neon-high`   | **Задължително Opus!** Cross-Model Pre-PR одит (независими очи).       |
+| Роля               | Системен ID в Swarm        | Display Име                  | Fallback Верига при Квота (различен пул)           | Бележка                                                                                 |
+| :----------------- | :------------------------- | :--------------------------- | :------------------------------------------------- | :-------------------------------------------------------------------------------------- |
+| **Orchestrator**   | `gemini-4-neon-xhigh`      | `Gemini 4 Neon (Extra High)` | `claude-opus-5-5-high` -> `claude-sonnet-5-5-high` | Планиране (`/plan`), Contract-First, merge, CodeRabbit разбор.                          |
+| **Frontend Agent** | `gemini-4-neon-high`       | `Gemini 4 Neon (High)`       | `claude-sonnet-5-5-high`                           | Премиум UI и UX детайл (flagship UI: `xhigh`; бързи UI задачи: `gemini-4-carbon-high`). |
+| **Backend Agent**  | `gemini-4-neon-xhigh`      | `Gemini 4 Neon (Extra High)` | `claude-opus-5-5-high` -> `claude-sonnet-5-5-high` | LangGraph, API сигурност, Supabase RLS, `proxy.ts` (никога `Medium`!).                  |
+| **Testing Agent**  | `gemini-4-hydrogen-medium` | `Gemini 4 Hydrogen (Medium)` | `claude-sonnet-5-5-low`                            | Бърз и икономичен (`Hydrogen` замества `3.8 Flash`); верифицира се от Vitest.           |
+| **Security Agent** | `claude-opus-5-5-medium`   | `Claude Opus 5.5 (Medium)`   | `claude-sonnet-5-5-high` -> `gemini-4-neon-high`   | **Задължително Opus!** Cross-Model Pre-PR одит (независими очи + отделен пул).          |
 
 ---
 
