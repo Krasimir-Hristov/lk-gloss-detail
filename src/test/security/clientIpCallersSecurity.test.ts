@@ -91,6 +91,21 @@ describe("Trusted Client IP Resolution in Contact Route & Admin Login Action", (
 		expect(blockedResponse.status).toBe(429);
 		expect(blockedResponse.headers.get("Retry-After")).toBeTruthy();
 		expect(mockSubmitContact).toHaveBeenCalledTimes(3);
+
+		// A different verified client remains in its own isolated bucket even with the same spoofed x-forwarded-for
+		const otherClientRequest = new Request("http://localhost:3000/api/contact", {
+			method: "POST",
+			headers: {
+				"content-type": "application/json",
+				"x-forwarded-for": "203.0.113.250",
+				"x-vercel-forwarded-for": "198.51.100.72",
+			},
+			body: validPayload,
+		});
+
+		const otherClientResponse = await contactPost(otherClientRequest);
+		expect(otherClientResponse.status).toBe(200);
+		expect(mockSubmitContact).toHaveBeenCalledTimes(4);
 	});
 
 	it("blocks brute-force rotating x-forwarded-for on loginAdmin Server Action using verified ingress IP", async () => {
@@ -122,5 +137,20 @@ describe("Trusted Client IP Resolution in Contact Route & Admin Login Action", (
 		});
 		expect(blockedResult).toEqual({ success: false, error: "too_many_attempts" });
 		expect(mockSignInWithPassword).toHaveBeenCalledTimes(5);
+
+		// A different verified client reaches authentication unaffected by the throttled client's bucket
+		mockHeaders.mockResolvedValueOnce(
+			new Headers({
+				"x-forwarded-for": "203.0.113.200",
+				"x-vercel-forwarded-for": "198.51.100.73",
+			}),
+		);
+
+		const otherClientResult = await loginAdmin({
+			email: "admin@example.com",
+			password: "wrongpassword123",
+		});
+		expect(otherClientResult).toEqual({ success: false, error: "invalid_credentials" });
+		expect(mockSignInWithPassword).toHaveBeenCalledTimes(6);
 	});
 });
