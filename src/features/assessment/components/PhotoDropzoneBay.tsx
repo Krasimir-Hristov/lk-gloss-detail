@@ -1,7 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { Camera, RotateCcw, Upload, XCircle } from "lucide-react";
+import { Camera, Loader2, RotateCcw, Upload, X, XCircle } from "lucide-react";
 import { useTranslations } from "next-intl";
 import React from "react";
 
@@ -14,6 +14,7 @@ type PhotoDropzoneBayProps = {
 	angle: PhotoAngle;
 	isDragging: boolean;
 	isMobile: boolean;
+	isUploading: boolean;
 	isInvalid: boolean;
 	validationReason: string;
 	fileInputRef: React.RefObject<HTMLInputElement | null>;
@@ -22,12 +23,14 @@ type PhotoDropzoneBayProps = {
 	onDragLeave: () => void;
 	onInputChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
 	onReset: () => void;
+	onCancel: () => void;
 };
 
 export const PhotoDropzoneBay: React.FC<PhotoDropzoneBayProps> = ({
 	angle,
 	isDragging,
 	isMobile,
+	isUploading,
 	isInvalid,
 	validationReason,
 	fileInputRef,
@@ -36,8 +39,22 @@ export const PhotoDropzoneBay: React.FC<PhotoDropzoneBayProps> = ({
 	onDragLeave,
 	onInputChange,
 	onReset,
+	onCancel,
 }) => {
 	const t = useTranslations("Assessment");
+
+	const handleContainerClick = () => {
+		if (!isUploading) {
+			fileInputRef.current?.click();
+		}
+	};
+
+	const handleContainerKeyDown = (e: React.KeyboardEvent<HTMLDivElement>) => {
+		if (!isUploading && (e.key === "Enter" || e.key === " ")) {
+			e.preventDefault();
+			fileInputRef.current?.click();
+		}
+	};
 
 	return (
 		<motion.div
@@ -48,11 +65,18 @@ export const PhotoDropzoneBay: React.FC<PhotoDropzoneBayProps> = ({
 			transition={{ duration: 0.25 }}
 		>
 			<div
+				role="button"
+				tabIndex={isUploading ? -1 : 0}
+				aria-label={t("upload.chooseFile")}
+				aria-disabled={isUploading}
+				onClick={handleContainerClick}
+				onKeyDown={handleContainerKeyDown}
 				onDrop={onDrop}
 				onDragOver={onDragOver}
 				onDragLeave={onDragLeave}
 				className={cn(
-					"relative overflow-hidden rounded-2xl border border-dashed px-4 py-7 text-center transition-all duration-300 sm:px-8 sm:py-12",
+					"relative overflow-hidden rounded-2xl border border-dashed px-4 py-7 text-center transition-all duration-300 focus-visible:ring-2 focus-visible:ring-[#a855f7] focus-visible:outline-none sm:px-8 sm:py-12",
+					isUploading ? "cursor-wait" : "cursor-pointer",
 					isDragging
 						? "scale-[1.01] border-[#c026ff] bg-[#7b2dff]/15 shadow-[0_0_40px_rgba(192,38,255,0.28)]"
 						: "border-[#7b2dff]/45 bg-[#09090e]/85 hover:border-[#a855f7]/75 hover:bg-[#0e0c18]/90",
@@ -67,6 +91,33 @@ export const PhotoDropzoneBay: React.FC<PhotoDropzoneBayProps> = ({
 				<span className="pointer-events-none absolute top-3 right-3 h-4 w-4 border-t-2 border-r-2 border-[#a855f7]/75" />
 				<span className="pointer-events-none absolute bottom-3 left-3 h-4 w-4 border-b-2 border-l-2 border-[#a855f7]/75" />
 				<span className="pointer-events-none absolute right-3 bottom-3 h-4 w-4 border-r-2 border-b-2 border-[#a855f7]/75" />
+
+				{isUploading ? (
+					<div
+						role="status"
+						aria-live="polite"
+						className="absolute inset-0 z-20 flex flex-col items-center justify-center gap-4 bg-[#09090e]/90 px-4 backdrop-blur-sm"
+					>
+						<div className="flex h-14 w-14 items-center justify-center rounded-2xl border border-[#c026ff]/60 bg-black/70 shadow-[0_0_28px_rgba(192,38,255,0.45)]">
+							<Loader2 className="h-7 w-7 animate-spin text-[#d8b4fe]" aria-hidden="true" />
+						</div>
+						<span className="font-mono text-xs font-semibold text-white">
+							{t("upload.scanning")}
+						</span>
+						<button
+							type="button"
+							onClick={(e) => {
+								e.stopPropagation();
+								onCancel();
+							}}
+							aria-label={t("upload.cancel")}
+							className="inline-flex cursor-pointer items-center gap-1.5 rounded-xl border border-white/15 bg-white/[0.06] px-4 py-2 text-xs font-semibold text-white transition-colors hover:bg-white/15"
+						>
+							<X className="h-3.5 w-3.5" aria-hidden="true" />
+							<span>{t("upload.cancel")}</span>
+						</button>
+					</div>
+				) : null}
 
 				<div className="relative flex flex-col items-center">
 					{/* Angle Silhouette Emblem */}
@@ -85,9 +136,15 @@ export const PhotoDropzoneBay: React.FC<PhotoDropzoneBayProps> = ({
 					<div className="flex w-full flex-col justify-center gap-3 sm:w-auto sm:flex-row">
 						<button
 							type="button"
-							onClick={() => fileInputRef.current?.click()}
+							disabled={isUploading}
+							tabIndex={isUploading ? -1 : undefined}
+							onClick={(e) => {
+								e.stopPropagation();
+								if (isUploading) return;
+								fileInputRef.current?.click();
+							}}
 							aria-label={t("upload.chooseFile")}
-							className="inline-flex w-full cursor-pointer items-center justify-center gap-2.5 rounded-xl bg-linear-to-r from-[#7b2dff] via-[#9c2bff] to-[#c026ff] px-5 py-3.5 text-sm font-bold text-white shadow-[inset_0_1px_0_rgba(255,255,255,0.25),0_12px_32px_-6px_rgba(123,45,255,0.58)] transition-all hover:brightness-110 active:scale-[0.98] sm:w-auto sm:px-6"
+							className="inline-flex w-full cursor-pointer items-center justify-center gap-2.5 rounded-xl bg-linear-to-r from-[#7b2dff] via-[#9c2bff] to-[#c026ff] px-5 py-3.5 text-sm font-bold text-white shadow-[inset_0_1px_0_rgba(255,255,255,0.25),0_12px_32px_-6px_rgba(123,45,255,0.58)] transition-all hover:brightness-110 active:scale-[0.98] disabled:pointer-events-none disabled:opacity-50 sm:w-auto sm:px-6"
 						>
 							<Upload className="h-4 w-4 shrink-0" aria-hidden="true" />
 							<span>{t("upload.chooseFile")}</span>
@@ -96,7 +153,15 @@ export const PhotoDropzoneBay: React.FC<PhotoDropzoneBayProps> = ({
 						{isMobile ? (
 							<label
 								aria-label={t("upload.takePhoto")}
-								className="inline-flex w-full cursor-pointer items-center justify-center gap-2 rounded-xl border border-white/15 bg-white/[0.05] px-5 py-3.5 text-sm font-semibold text-white backdrop-blur-md transition-all hover:border-[#a855f7]/60 hover:bg-[#7b2dff]/18 sm:w-auto sm:px-6"
+								aria-disabled={isUploading}
+								onClick={(e) => {
+									e.stopPropagation();
+									if (isUploading) e.preventDefault();
+								}}
+								className={cn(
+									"inline-flex w-full cursor-pointer items-center justify-center gap-2 rounded-xl border border-white/15 bg-white/[0.05] px-5 py-3.5 text-sm font-semibold text-white backdrop-blur-md transition-all hover:border-[#a855f7]/60 hover:bg-[#7b2dff]/18 sm:w-auto sm:px-6",
+									isUploading && "pointer-events-none opacity-50",
+								)}
 							>
 								<Camera className="h-4 w-4 shrink-0 text-[#d8b4fe]" aria-hidden="true" />
 								<span>{t("upload.takePhoto")}</span>
@@ -104,6 +169,8 @@ export const PhotoDropzoneBay: React.FC<PhotoDropzoneBayProps> = ({
 									type="file"
 									accept="image/*"
 									capture="environment"
+									disabled={isUploading}
+									onClick={(e) => e.stopPropagation()}
 									onChange={onInputChange}
 									className="hidden"
 								/>
@@ -119,6 +186,8 @@ export const PhotoDropzoneBay: React.FC<PhotoDropzoneBayProps> = ({
 						ref={fileInputRef}
 						type="file"
 						accept="image/*"
+						disabled={isUploading}
+						onClick={(e) => e.stopPropagation()}
 						onChange={onInputChange}
 						className="hidden"
 					/>

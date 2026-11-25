@@ -16,8 +16,21 @@ export const AssessmentPhotoSchema = z.object({
 	carSize: z.enum(["small", "medium", "large", "suv"]).optional(),
 	dirtLevel: z.enum(["light", "moderate", "heavy"]).optional(),
 	carDescription: z.string().optional(),
+	visualFindings: z.array(z.string().trim().max(160)).max(4).optional(),
 });
 export type AssessmentPhoto = z.infer<typeof AssessmentPhotoSchema>;
+
+// ── Analyze Request ────────────────────────────────────────────────────────
+
+export const AnalyzeRequestSchema = z.object({
+	acceptedServiceIds: z.array(z.string().uuid()).min(1).max(30),
+	carSize: z.enum(["small", "medium", "large", "suv"]).default("medium"),
+	dirtLevel: z.enum(["light", "moderate", "heavy"]).default("moderate"),
+	brand: z.string().trim().max(160).nullable().default(null),
+	visualFindings: z.array(z.string().trim().max(200)).max(16).default([]),
+	locale: z.enum(["de", "en", "el"]).default("de"),
+});
+export type AnalyzeRequest = z.infer<typeof AnalyzeRequestSchema>;
 
 // ── Service Selection ──────────────────────────────────────────────────────
 

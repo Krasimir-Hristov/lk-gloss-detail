@@ -1,15 +1,19 @@
 "use client";
 
+import { useQuery } from "@tanstack/react-query";
 import { motion } from "framer-motion";
 import { AlertCircle, Check, RotateCcw, Sparkles } from "lucide-react";
 import { useTranslations } from "next-intl";
-import React, { useCallback, useEffect, useRef, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
 
 import { ServiceSwipeCard } from "@/features/assessment/components/ServiceSwipeCard";
 import { useAssessmentStore } from "@/features/assessment/stores/assessmentStore";
+import {
+	fetchAssessmentServices,
+	type AssessmentService,
+} from "@/features/assessment/types/assessmentService";
 
 import type { ServiceSelection } from "@/features/assessment/schemas/assessmentSchema";
-import type { AssessmentService } from "@/features/assessment/types/assessmentService";
 
 type ServiceSwipeDeckProps = {
 	onCompleteAction: () => void;
@@ -25,96 +29,92 @@ export const ServiceSwipeDeck: React.FC<ServiceSwipeDeckProps> = ({ onCompleteAc
 	const setServices = useAssessmentStore((s) => s.setServices);
 	const storeServices = useAssessmentStore((s) => s.services);
 
-	const [dbServices, setDbServices] = useState<AssessmentService[]>([]);
-	const [isLoading, setIsLoading] = useState(true);
-	const [fetchError, setFetchError] = useState<string | null>(null);
-	const [currentIndex, setCurrentIndex] = useState(0);
-	const [isComplete, setIsComplete] = useState(false);
-	const [retryTrigger, setRetryTrigger] = useState(0);
+	const [reviewedIds, setReviewedIds] = useState<string[]>([]);
+	const hasCompletedRef = useRef(false);
+
+	const {
+		data: dbServices = [],
+		isLoading,
+		isError,
+		isSuccess,
+		refetch,
+	} = useQuery<AssessmentService[]>({
+		queryKey: ["services"],
+		queryFn: fetchAssessmentServices,
+	});
+
+	const reviewedSet = useMemo(() => new Set(reviewedIds), [reviewedIds]);
+	const unreviewedServices = useMemo(
+		() => dbServices.filter((s) => !reviewedSet.has(s.id)),
+		[dbServices, reviewedSet],
+	);
+	const activeService = unreviewedServices[0] ?? null;
 
 	const totalCards = dbServices.length;
+	const reviewedInCatalogCount = totalCards - unreviewedServices.length;
 	const acceptedCount = storeServices.filter((s) => s.accepted).length;
+	const allReviewed = isSuccess && unreviewedServices.length === 0;
 
-	// Keep currentIndex in a ref so callbacks always see the latest value
-	const currentIndexRef = useRef(0);
+	// Reconcile store selections against current catalog before any completion check runs
 	useEffect(() => {
-		currentIndexRef.current = currentIndex;
-	}, [currentIndex]);
+		if (!isSuccess) return;
 
-	// Fetch active services from DB
-	useEffect(() => {
-		let isCancelled = false;
-		const loadServices = async () => {
-			try {
-				const res = await fetch("/api/services");
-				if (!res.ok) throw new Error("Failed to fetch services");
-				const data = (await res.json()) as AssessmentService[];
-				if (isCancelled) return;
-				setDbServices(data);
-
-				const selections: ServiceSelection[] = data.map((s) => ({
-					serviceId: s.id,
-					accepted: false,
-				}));
-				setServices(selections);
-
-				if (data.length === 0) {
-					setIsComplete(true);
-				}
-			} catch (err: unknown) {
-				if (isCancelled) return;
-				const errorMsg = err instanceof Error ? err.message : "Failed to load services";
-				console.error("[ServiceSwipeDeck] Failed to load services:", errorMsg);
-				setFetchError(errorMsg);
-			} finally {
-				if (!isCancelled) {
-					setIsLoading(false);
-				}
+		if (dbServices.length === 0) {
+			if (storeServices.length > 0) {
+				setServices([]);
 			}
-		};
+			return;
+		}
 
-		loadServices();
-		return () => {
-			isCancelled = true;
-		};
-	}, [setServices, retryTrigger]);
+		const existingMap = new Map(storeServices.map((s) => [s.serviceId, s.accepted]));
+		const hasMatchingServices =
+			storeServices.length === dbServices.length && dbServices.every((s) => existingMap.has(s.id));
+
+		if (hasMatchingServices) return;
+
+		const selections: ServiceSelection[] = dbServices.map((s) => ({
+			serviceId: s.id,
+			accepted: existingMap.get(s.id) ?? false,
+		}));
+		setServices(selections);
+	}, [dbServices, isSuccess, storeServices, setServices]);
+
+	// Notify parent once when all catalog services (including an empty catalog) are reviewed
+	useEffect(() => {
+		if (allReviewed && !hasCompletedRef.current) {
+			hasCompletedRef.current = true;
+			onCompleteAction();
+		}
+	}, [allReviewed, onCompleteAction]);
 
 	const handleRetry = () => {
-		setIsLoading(true);
-		setFetchError(null);
-		setIsComplete(false);
-		setCurrentIndex(0);
-		setRetryTrigger((prev) => prev + 1);
+		hasCompletedRef.current = false;
+		setReviewedIds([]);
+		void refetch();
 	};
 
-	const advanceCard = useCallback(() => {
-		const nextIndex = currentIndexRef.current + 1;
-		if (nextIndex >= totalCards) {
-			setIsComplete(true);
-			onCompleteAction();
-		} else {
-			setCurrentIndex(nextIndex);
-		}
-	}, [totalCards, onCompleteAction]);
+	const markReviewed = useCallback((serviceId: string) => {
+		setReviewedIds((prev) => (prev.includes(serviceId) ? prev : [...prev, serviceId]));
+	}, []);
 
 	const handleAccept = useCallback(
 		(serviceId: string) => {
 			acceptService(serviceId);
-			advanceCard();
+			markReviewed(serviceId);
 		},
-		[acceptService, advanceCard],
+		[acceptService, markReviewed],
 	);
 
 	const handleReject = useCallback(
 		(serviceId: string) => {
 			rejectService(serviceId);
-			advanceCard();
+			markReviewed(serviceId);
 		},
-		[rejectService, advanceCard],
+		[rejectService, markReviewed],
 	);
 
 	// ── Error state ───────────────────────────────────────────────────────
-	if (fetchError) {
+	if (isError) {
 		return (
 			<div
 				role="alert"
@@ -155,6 +155,8 @@ export const ServiceSwipeDeck: React.FC<ServiceSwipeDeckProps> = ({ onCompleteAc
 		);
 	}
 
+	const showComplete = allReviewed || totalCards === 0;
+
 	return (
 		<div className="flex flex-col items-center">
 			{/* Sub-header & Live Selection Pill */}
@@ -172,46 +174,42 @@ export const ServiceSwipeDeck: React.FC<ServiceSwipeDeckProps> = ({ onCompleteAc
 			</div>
 
 			{/* Card stack container */}
-			{!isComplete ? (
+			{!showComplete ? (
 				<>
 					<div className="relative mx-auto mb-26 h-[430px] w-full max-w-[390px] min-[390px]:h-[450px] sm:mb-28 sm:h-[490px]">
-						{dbServices.map((service, index) => {
-							const isBehind = index < currentIndex;
-							if (isBehind) return null;
-
-							const isTop = index === currentIndex;
-							const stackIndex = index - currentIndex;
-
-							return (
-								<ServiceSwipeCard
-									key={service.id}
-									service={service}
-									onAcceptAction={handleAccept}
-									onRejectAction={handleReject}
-									isTop={isTop}
-									stackIndex={stackIndex}
-								/>
-							);
-						})}
+						{unreviewedServices.map((service, stackIndex) => (
+							<ServiceSwipeCard
+								key={service.id}
+								service={service}
+								onAcceptAction={handleAccept}
+								onRejectAction={handleReject}
+								isTop={stackIndex === 0}
+								stackIndex={stackIndex}
+							/>
+						))}
 					</div>
 
 					{/* Progress Dots & Hint */}
 					<div className="flex flex-col items-center gap-2.5 text-center">
 						<div className="flex flex-wrap items-center justify-center gap-1.5 sm:gap-2">
-							{dbServices.map((service, index) => (
-								<div
-									key={service.id}
-									className={`h-1.5 rounded-full transition-all duration-300 ${
-										index < currentIndex
-											? "w-5 bg-[#7b2dff]"
-											: index === currentIndex
-												? "w-8 bg-linear-to-r from-[#7b2dff] to-[#c026ff] shadow-[0_0_10px_rgba(192,38,255,0.7)]"
-												: "w-1.5 bg-white/15"
-									}`}
-								/>
-							))}
+							{dbServices.map((service) => {
+								const isReviewed = reviewedSet.has(service.id);
+								const isCurrent = service.id === activeService?.id;
+								return (
+									<div
+										key={service.id}
+										className={`h-1.5 rounded-full transition-all duration-300 ${
+											isReviewed
+												? "w-5 bg-[#7b2dff]"
+												: isCurrent
+													? "w-8 bg-linear-to-r from-[#7b2dff] to-[#c026ff] shadow-[0_0_10px_rgba(192,38,255,0.7)]"
+													: "w-1.5 bg-white/15"
+										}`}
+									/>
+								);
+							})}
 							<span className="ml-2.5 font-mono text-xs font-semibold text-[#9b93ad]">
-								{currentIndex + 1} / {totalCards}
+								{Math.min(reviewedInCatalogCount + 1, totalCards)} / {totalCards}
 							</span>
 						</div>
 						<p className="text-xs text-[#7a738c]">{tSwipe("hint")}</p>

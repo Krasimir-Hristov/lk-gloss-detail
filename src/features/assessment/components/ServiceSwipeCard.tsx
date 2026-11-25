@@ -3,7 +3,7 @@
 import { motion, useMotionValue, useTransform, type PanInfo } from "framer-motion";
 import { Check, Clock, Sparkles, X } from "lucide-react";
 import { useLocale, useTranslations } from "next-intl";
-import React, { createElement, useRef, useState } from "react";
+import React, { createElement, useEffect, useRef, useState } from "react";
 
 import { ImageWithFallback } from "@/components/shared/ImageWithFallback";
 import { getLocalizedText } from "@/features/admin/types/servicesTypes";
@@ -31,6 +31,16 @@ export const ServiceSwipeCard: React.FC<ServiceSwipeCardProps> = ({
 	const locale = useLocale();
 	const [isExiting, setIsExiting] = useState<"left" | "right" | null>(null);
 	const cardRef = useRef<HTMLDivElement>(null);
+	const exitTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+	useEffect(() => {
+		return () => {
+			if (exitTimerRef.current !== null) {
+				clearTimeout(exitTimerRef.current);
+				exitTimerRef.current = null;
+			}
+		};
+	}, []);
 
 	const x = useMotionValue(0);
 	const rotate = useTransform(x, [-250, 0, 250], [-20, 0, 20]);
@@ -40,27 +50,35 @@ export const ServiceSwipeCard: React.FC<ServiceSwipeCardProps> = ({
 
 	const iconComponent = getIcon(service.icon);
 
+	const scheduleExit = (direction: "left" | "right", callback: (id: string) => void) => {
+		if (exitTimerRef.current !== null) {
+			clearTimeout(exitTimerRef.current);
+		}
+		setIsExiting(direction);
+		exitTimerRef.current = setTimeout(() => {
+			exitTimerRef.current = null;
+			callback(service.id);
+		}, 300);
+	};
+
 	const handleDragEnd = (_: unknown, info: PanInfo) => {
+		if (isExiting) return;
 		const threshold = 120;
 		if (info.offset.x > threshold) {
-			setIsExiting("right");
-			setTimeout(() => onAcceptAction(service.id), 300);
+			scheduleExit("right", onAcceptAction);
 		} else if (info.offset.x < -threshold) {
-			setIsExiting("left");
-			setTimeout(() => onRejectAction(service.id), 300);
+			scheduleExit("left", onRejectAction);
 		}
 	};
 
 	const handleAccept = () => {
 		if (isExiting) return;
-		setIsExiting("right");
-		setTimeout(() => onAcceptAction(service.id), 300);
+		scheduleExit("right", onAcceptAction);
 	};
 
 	const handleReject = () => {
 		if (isExiting) return;
-		setIsExiting("left");
-		setTimeout(() => onRejectAction(service.id), 300);
+		scheduleExit("left", onRejectAction);
 	};
 
 	// Stack depth offset for background cards

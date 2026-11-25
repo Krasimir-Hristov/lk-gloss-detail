@@ -1,0 +1,62 @@
+# yaml-language-server: $schema=https://coderabbit.ai/integrations/schema.v2.json
+# CodeRabbit AI Code Review Configuration
+# https://docs.coderabbit.ai
+# Project: LK Gloss & Detail — Mobile Autopflege & Detailing
+
+language: "en"
+early_access: false
+tone_instructions: "Use a professional, concise tone in English. Explain why each finding matters for LK Gloss & Detail and reference AGENTS.md or lk-lessons when relevant."
+
+reviews:
+  profile: "chill"
+  request_changes_workflow: false
+  high_level_summary: true
+  high_level_summary_instructions: >
+    Summarize PR changes for LK Gloss & Detail cleanly grouped by Security & Proxy/API,
+    AI Assessment & Pricing Invariants, Frontend UX & i18n, and Architecture/Tests.
+    Highlight any risk to carSize-only pricing or CVE-2025-29927 proxy hardening.
+  poem: false
+  review_status: true
+  collapse_walkthrough: false
+  auto_review:
+    enabled: true
+    drafts: false
+    base_branches: ["main"]
+  path_filters:
+    - "!**/*.lock"
+    - "!**/generated/**"
+    - "!**/*.d.ts"
+    - "!**/node_modules/**"
+    - "!**/.next/**"
+    - "!**/public/screenshots/**"
+  path_instructions:
+    - path: "src/**/*.{ts,tsx}"
+      instructions: >
+        Enforce AGENTS.md architecture and business rules for LK Gloss & Detail:
+        1. Next.js 16 global perimeter lives in `src/proxy.ts` (`middleware.ts` is strictly forbidden) with CVE-2025-29927 header scrubbing, trusted ingress IP resolution, rate limiting, and admin session guard.
+        2. Strict TypeScript (no `any`). Always `await` `params`, `searchParams`, `cookies()`, and `headers()`.
+        3. React 19 components MUST be Arrow Functions in `PascalCase.tsx`. Non-component helpers, schemas, actions, hooks, and tests MUST use `camelCase.ts` (NEVER suggest `kebab-case`).
+        4. Keep files under `src/` at <= 300 lines and use Tailwind v4 `bg-linear-to-*` (never `bg-gradient-to-*`).
+        5. Hybrid endpoints: Server Actions (`"use server"`) are used for admin/booking mutations, whereas Route Handlers (`/api/assessment/*`, `/api/chatbot/*`, `/api/services`, `/api/contact`, `/api/booking/create`) are intentional for public APIs, bounded byte-limit JSON/image uploads, and AI SSE streaming.
+        6. Assessment LangGraph endpoints use deterministic `.invoke()` with `.withStructuredOutput(ZodSchema)` and `safeParse`; streaming applies to conversational chatbot responses; stateless assessment graphs do not need PostgreSQL checkpointing.
+        7. Fixed AI Assessment Business Rule: `dirtLevel` (`light` | `moderate` | `heavy`) is strictly informational and MUST NEVER alter pricing or duration. Pricing is always determined exclusively by AI-detected `carSize` multiplied by live active Supabase `services` rows (`active = true`).
+        8. Use `next-intl` translation keys across `de`, `en`, and `el`; never expose raw stack traces or SQL/DB internals to clients.
+
+chat:
+  auto_reply: true
+
+knowledge_base:
+  learnings:
+    scope: "auto"
+  code_guidelines:
+    enabled: true
+    filePatterns:
+      - "AGENTS.md"
+      - ".github/copilot-instructions.md"
+      - ".agents/skills/lk-lessons/SKILL.md"
+      - ".agents/skills/lk-worktrees/SKILL.md"
+      - ".agents/skills/nextjs-best-practices/SKILL.md"
+      - ".agents/skills/langchain-best-practices/SKILL.md"
+      - ".agents/skills/langgraph-best-practices/SKILL.md"
+      - ".agents/skills/supabase/SKILL.md"
+      - ".agents/skills/supabase-postgres-best-practices/SKILL.md"

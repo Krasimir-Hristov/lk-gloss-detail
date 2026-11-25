@@ -22,6 +22,7 @@ type AssessmentActions = {
 		carSize?: "small" | "medium" | "large" | "suv",
 		dirtLevel?: "light" | "moderate" | "heavy",
 		carDescription?: string,
+		visualFindings?: string[],
 	) => void;
 	nextStep: () => void;
 	prevStep: () => void;
@@ -55,20 +56,20 @@ export const useAssessmentStore = create<AssessmentState & AssessmentActions>()(
 			previewUrl,
 			validationStatus: "pending",
 		};
-		console.log("[AssessmentStore] setPhoto:", { angle, photoId: photo.id });
 		set((state) => ({
 			photos: [...state.photos.filter((p) => p.angle !== angle), photo],
 		}));
 	},
 
-	setPhotoValidation: (photoId, status, reason, carSize, dirtLevel, carDescription) => {
-		console.log("[AssessmentStore] setPhotoValidation:", {
-			photoId,
-			status,
-			carSize,
-			dirtLevel,
-			carDescription,
-		});
+	setPhotoValidation: (
+		photoId,
+		status,
+		reason,
+		carSize,
+		dirtLevel,
+		carDescription,
+		visualFindings,
+	) => {
 		set((state) => ({
 			photos: state.photos.map((p) =>
 				p.id === photoId
@@ -79,6 +80,7 @@ export const useAssessmentStore = create<AssessmentState & AssessmentActions>()(
 							carSize: carSize ?? p.carSize,
 							dirtLevel: dirtLevel ?? p.dirtLevel,
 							carDescription: carDescription ?? p.carDescription,
+							visualFindings: visualFindings ?? p.visualFindings,
 						}
 					: p,
 			),
@@ -90,7 +92,6 @@ export const useAssessmentStore = create<AssessmentState & AssessmentActions>()(
 		const idx = WIZARD_STEPS.indexOf(currentStep);
 		if (idx < WIZARD_STEPS.length - 1) {
 			const next = WIZARD_STEPS[idx + 1];
-			console.log("[AssessmentStore] nextStep:", { from: currentStep, to: next });
 			set({ currentStep: next });
 		}
 	},
@@ -100,77 +101,51 @@ export const useAssessmentStore = create<AssessmentState & AssessmentActions>()(
 		const idx = WIZARD_STEPS.indexOf(currentStep);
 		if (idx > 0) {
 			const prev = WIZARD_STEPS[idx - 1];
-			console.log("[AssessmentStore] prevStep:", { from: currentStep, to: prev });
 			set({ currentStep: prev });
 		}
 	},
 
 	goToStep: (step) => {
-		console.log("[AssessmentStore] goToStep:", step);
 		set({ currentStep: step });
 	},
 
 	setServices: (services) => {
-		console.log("[AssessmentStore] setServices called with", services.length, "services:", {
-			ids: services.map((s) => s.serviceId),
-		});
 		set({ services });
 	},
 
 	acceptService: (serviceId) => {
-		console.log("[AssessmentStore] Service accepted:", serviceId);
-		set((state) => {
-			const updated = state.services.map((s) =>
+		set((state) => ({
+			services: state.services.map((s) =>
 				s.serviceId === serviceId ? { ...s, accepted: true } : s,
-			);
-			console.log("[AssessmentStore] Current services state:", {
-				accepted: updated.filter((s) => s.accepted).map((s) => s.serviceId),
-				rejected: updated.filter((s) => !s.accepted).map((s) => s.serviceId),
-			});
-			return { services: updated };
-		});
+			),
+		}));
 	},
 
 	rejectService: (serviceId) => {
-		console.log("[AssessmentStore] Service rejected:", serviceId);
-		set((state) => {
-			const updated = state.services.map((s) =>
+		set((state) => ({
+			services: state.services.map((s) =>
 				s.serviceId === serviceId ? { ...s, accepted: false } : s,
-			);
-			console.log("[AssessmentStore] Current services state:", {
-				accepted: updated.filter((s) => s.accepted).map((s) => s.serviceId),
-				rejected: updated.filter((s) => !s.accepted).map((s) => s.serviceId),
-			});
-			return { services: updated };
-		});
+			),
+		}));
 	},
 
 	setResult: (result) => {
-		console.log("[AssessmentStore] setResult:", {
-			id: result.id,
-			priceMin: result.priceMin,
-			priceMax: result.priceMax,
-		});
 		set({ result, isAnalyzing: false });
 	},
 
 	setIsAnalyzing: (isAnalyzing) => {
-		console.log("[AssessmentStore] setIsAnalyzing:", isAnalyzing);
 		set({ isAnalyzing });
 	},
 
 	setError: (error) => {
-		console.log("[AssessmentStore] setError:", error);
 		set({ error, isAnalyzing: false });
 	},
 
 	clearPhotos: () => {
-		console.log("[AssessmentStore] clearPhotos — wiping base64 data from memory");
 		set({ photos: [] });
 	},
 
 	reset: () => {
-		console.log("[AssessmentStore] reset");
 		set(initialState);
 	},
 }));

@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 
 import { submitContact } from "@/actions/contact";
 import { ContactFormSchema } from "@/features/contact/schemas/contactSchema";
+import { resolveClientIp } from "@/lib/http/resolveClientIp";
 import { rateLimit } from "@/lib/rateLimit";
 
 const CONTACT_RATE_LIMIT = {
@@ -12,7 +13,7 @@ const CONTACT_RATE_LIMIT = {
 export async function POST(request: Request): Promise<NextResponse> {
 	try {
 		// ── Rate Limiting ──
-		const ip = request.headers.get("x-forwarded-for") ?? "unknown";
+		const ip = resolveClientIp(request.headers);
 		const rateLimitResult = rateLimit(`contact:${ip}`, CONTACT_RATE_LIMIT);
 
 		if (!rateLimitResult.success) {

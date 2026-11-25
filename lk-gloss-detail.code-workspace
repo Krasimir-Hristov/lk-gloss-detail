@@ -1,0 +1,30 @@
+{
+	"folders": [
+		{
+			"name": "LK Gloss & Detail (Orchestrator)",
+			"path": ".",
+		},
+		{
+			"name": "LK — Frontend (wt/frontend)",
+			"path": "../lulezim_kodhimaj-frontend",
+		},
+		{
+			"name": "LK — Backend (wt/backend)",
+			"path": "../lulezim_kodhimaj-backend",
+		},
+		{
+			"name": "LK — Testing (wt/testing)",
+			"path": "../lulezim_kodhimaj-testing",
+		},
+		{
+			"name": "LK — Security (wt/security)",
+			"path": "../lulezim_kodhimaj-security",
+		},
+	],
+	"settings": {
+		"git.autoRepositoryDetection": true,
+		"files.exclude": {
+			"**/.next": true,
+		},
+	},
+}

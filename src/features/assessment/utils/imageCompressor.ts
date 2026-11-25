@@ -1,8 +1,8 @@
 import { z } from "zod";
 
 export const CompressOptionsSchema = z.object({
-	maxDimension: z.number().positive().finite().default(1920),
-	quality: z.number().min(0).max(1).default(0.8),
+	maxDimension: z.number().positive().finite().default(1280),
+	quality: z.number().min(0).max(1).default(0.75),
 	maxSizeBytes: z
 		.number()
 		.positive()
@@ -14,14 +14,14 @@ export type CompressOptions = z.infer<typeof CompressOptionsSchema>;
 
 /**
  * Utility to compress and normalize images on the client side before sending to API.
- * Downscales images to maxDimension (default 1920px) preserving aspect ratio,
+ * Downscales images to maxDimension (default 1280px) preserving aspect ratio,
  * re-encodes as JPEG with quality, and iteratively compresses if exceeding maxSizeBytes.
  * Rejects with stable error codes: "FILE_INVALID", "FILE_READ_FAILED", "IMAGE_DECODE_FAILED", "CANVAS_CONTEXT_FAILED", "FILE_TOO_LARGE".
  */
 export async function compressImage(
 	file: File,
-	maxDimension = 1920,
-	quality = 0.8,
+	maxDimension = 1280,
+	quality = 0.75,
 	maxSizeBytes = 3 * 1024 * 1024,
 ): Promise<string> {
 	if (typeof window === "undefined" || !(file instanceof File)) {

@@ -3,6 +3,7 @@ import { NextRequest, NextResponse } from "next/server";
 import createMiddleware from "next-intl/middleware";
 
 import { isAdminUser } from "@/features/admin/utils/auth";
+import { resolveClientIp } from "@/lib/http/resolveClientIp";
 import { rateLimit, ASSESSMENT_RATE_LIMIT, CHATBOT_RATE_LIMIT } from "@/lib/rateLimit";
 
 import { routing } from "./i18n/routing";
@@ -37,7 +38,7 @@ export default async function proxy(request: NextRequest) {
 	safeHeaders.set("x-pathname", pathname);
 
 	const currentRequest = new NextRequest(request, { headers: safeHeaders });
-	const ip = currentRequest.headers.get("x-forwarded-for") ?? "unknown";
+	const ip = resolveClientIp(currentRequest.headers);
 
 	// ── Admin Route Protection ────────────────────────────────────────
 	if (isProtectedRoute(pathname)) {
@@ -106,26 +107,31 @@ export default async function proxy(request: NextRequest) {
 
 	// ── Rate limit assessment API routes ──────────────────────────────
 	if (pathname.startsWith("/api/assessment/")) {
-		const key = `${ip}:${pathname}`;
+		const normalizedPath = pathname.replace(/\/+$/, "");
+		const bucket =
+			normalizedPath === "/api/assessment/validate-photo"
+				? "validatePhoto"
+				: normalizedPath === "/api/assessment/analyze"
+					? "analyze"
+					: null;
 
-		const limit = pathname.includes("validate")
-			? ASSESSMENT_RATE_LIMIT.validatePhoto
-			: ASSESSMENT_RATE_LIMIT.analyze;
+		if (bucket !== null) {
+			const key = `${ip}:assessment:${bucket}`;
+			const result = rateLimit(key, ASSESSMENT_RATE_LIMIT[bucket]);
 
-		const result = rateLimit(key, limit);
-
-		if (!result.success) {
-			const retryAfter = Math.ceil(result.resetIn / 1000);
-			return NextResponse.json(
-				{ error: "Too many requests", retryAfter },
-				{
-					status: 429,
-					headers: { "Retry-After": String(retryAfter) },
-				},
-			);
+			if (!result.success) {
+				const retryAfter = Math.ceil(result.resetIn / 1000);
+				return NextResponse.json(
+					{ error: "Too many requests", code: "RATE_LIMITED", retryAfter },
+					{
+						status: 429,
+						headers: { "Retry-After": String(retryAfter) },
+					},
+				);
+			}
 		}
 
-		// Let API routes pass through to their handlers with scrubbed headers
+		// Let known API routes (or 404s for unknown subpaths) pass through with scrubbed headers
 		return NextResponse.next({
 			request: {
 				headers: currentRequest.headers,
@@ -135,18 +141,21 @@ export default async function proxy(request: NextRequest) {
 
 	// ── Rate limit chatbot API routes ─────────────────────────────────
 	if (pathname.startsWith("/api/chatbot/")) {
-		const key = `${ip}:${pathname}`;
-		const result = rateLimit(key, CHATBOT_RATE_LIMIT.message);
+		const normalizedPath = pathname.replace(/\/+$/, "");
+		if (normalizedPath === "/api/chatbot/message") {
+			const key = `${ip}:chatbot:message`;
+			const result = rateLimit(key, CHATBOT_RATE_LIMIT.message);
 
-		if (!result.success) {
-			const retryAfter = Math.ceil(result.resetIn / 1000);
-			return NextResponse.json(
-				{ error: "Too many requests. Please slow down.", retryAfter },
-				{
-					status: 429,
-					headers: { "Retry-After": String(retryAfter) },
-				},
-			);
+			if (!result.success) {
+				const retryAfter = Math.ceil(result.resetIn / 1000);
+				return NextResponse.json(
+					{ error: "Too many requests. Please slow down.", code: "RATE_LIMITED", retryAfter },
+					{
+						status: 429,
+						headers: { "Retry-After": String(retryAfter) },
+					},
+				);
+			}
 		}
 
 		return NextResponse.next({

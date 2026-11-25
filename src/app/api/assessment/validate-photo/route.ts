@@ -5,26 +5,64 @@ import {
 	PhotoValidationResponseSchema,
 } from "@/features/assessment/schemas/photoValidationSchema";
 import { assessmentValidationGraph } from "@/lib/ai/assessmentValidationGraph";
+import {
+	InvalidJsonError,
+	PayloadTooLargeError,
+	readBoundedJson,
+} from "@/lib/http/readBoundedJson";
+
+export const maxDuration = 60;
+
+// Allows 4.5M base64 image string plus bounded JSON envelope fields before rejecting early
+const MAX_REQUEST_BODY_BYTES = 4_600_000;
 
 export async function POST(request: NextRequest) {
 	try {
-		const body = await request.json();
-		const validatedBody = PhotoValidationRequestSchema.parse(body);
+		let body: unknown;
+		try {
+			body = await readBoundedJson(request, MAX_REQUEST_BODY_BYTES);
+		} catch (err: unknown) {
+			if (err instanceof PayloadTooLargeError) {
+				return NextResponse.json(
+					{
+						valid: false,
+						reason: "Payload too large",
+						userMessage: "Photo payload exceeds the maximum allowed size.",
+					},
+					{ status: 413 },
+				);
+			}
+			const reason = err instanceof InvalidJsonError ? err.message : "Invalid JSON payload";
+			return NextResponse.json(
+				{
+					valid: false,
+					reason,
+					userMessage: "Invalid request payload.",
+				},
+				{ status: 400 },
+			);
+		}
 
-		const { imageBase64, expectedAngle, previousCarDescriptions, locale } = validatedBody;
+		const parsed = PhotoValidationRequestSchema.safeParse(body);
+		if (!parsed.success) {
+			return NextResponse.json(
+				{
+					valid: false,
+					reason: "Invalid request parameters",
+					userMessage: "Invalid photo validation request.",
+				},
+				{ status: 400 },
+			);
+		}
 
-		// Invoke LangGraph validation workflow
+		const { imageBase64, expectedAngle, previousCarDescriptions, locale } = parsed.data;
+
 		const result = await assessmentValidationGraph.invoke({
 			imageBase64,
 			expectedAngle,
 			previousCarDescriptions: previousCarDescriptions ?? [],
-			locale: locale ?? "de",
+			locale,
 		});
-
-		console.log(
-			`[validate-photo] LangGraph result for ${expectedAngle}:`,
-			JSON.stringify({ valid: result.valid, carSize: result.carSize, dirtLevel: result.dirtLevel }),
-		);
 
 		return NextResponse.json(
 			PhotoValidationResponseSchema.parse({
@@ -34,6 +72,7 @@ export async function POST(request: NextRequest) {
 				carSize: result.carSize,
 				dirtLevel: result.dirtLevel,
 				carDescription: result.carDescription,
+				visualFindings: result.visualFindings ?? [],
 			}),
 		);
 	} catch (err: unknown) {
