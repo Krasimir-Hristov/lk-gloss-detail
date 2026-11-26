@@ -26,6 +26,7 @@ export const BlockDateConflictBanner: React.FC<BlockDateConflictBannerProps> = (
 	onConfirmOverride,
 }) => {
 	const t = useTranslations("Admin.appointments.modals.block");
+	const tAppointments = useTranslations("Admin.appointments");
 
 	if (conflicts.length === 0) return null;
 
@@ -39,11 +40,16 @@ export const BlockDateConflictBanner: React.FC<BlockDateConflictBannerProps> = (
 				</div>
 			</div>
 			<ul className="max-h-24 space-y-1 overflow-y-auto text-[11px] text-amber-100/90">
-				{conflicts.map((c) => (
-					<li key={c.id}>
-						• {c.booking_date} — {c.first_name} {c.last_name} ({c.status})
-					</li>
-				))}
+				{conflicts.map((c) => {
+					const statusLabel = tAppointments.has(`status.${c.status}`)
+						? tAppointments(`status.${c.status}`)
+						: c.status;
+					return (
+						<li key={c.id}>
+							• {c.booking_date} — {c.first_name} {c.last_name} ({statusLabel})
+						</li>
+					);
+				})}
 			</ul>
 			<div className="flex items-center gap-2 pt-1">
 				<button

@@ -7,10 +7,10 @@ import type { ServiceFormInput } from "@/features/admin/schemas/servicesSchema";
 import type { FieldErrors, UseFormRegister } from "react-hook-form";
 
 const PRICE_FIELDS = [
-	["price_small", "Small (€)"],
-	["price_medium", "Medium (€)"],
-	["price_large", "Large (€)"],
-	["price_suv", "SUV (€)"],
+	["price_small", "small"],
+	["price_medium", "medium"],
+	["price_large", "large"],
+	["price_suv", "suv"],
 ] as const;
 
 interface ServicePricingSectionProps {
@@ -30,13 +30,13 @@ export const ServicePricingSection: React.FC<ServicePricingSectionProps> = ({
 				{t("form.sections.pricing")}
 			</h4>
 			<div className="grid grid-cols-2 gap-4 md:grid-cols-4">
-				{PRICE_FIELDS.map(([field, label]) => (
+				{PRICE_FIELDS.map(([field, sizeKey]) => (
 					<div key={field}>
 						<label
 							htmlFor={`service-${field}`}
 							className="mb-1 block text-sm font-medium text-neutral-300"
 						>
-							{label}
+							{t(`form.sizes.${sizeKey}`)} (€)
 						</label>
 						<input
 							id={`service-${field}`}

@@ -97,8 +97,27 @@ export const deleteAppointment = async (id: string): Promise<ActionResult<null>>
 	}
 };
 
+interface UpdateAppointmentRpcArgs {
+	p_id: string;
+	p_first_name: string;
+	p_last_name: string;
+	p_email: string;
+	p_phone: string;
+	p_car_description: string | null;
+	p_booking_date: string;
+	p_status: string;
+	p_service_ids: string[];
+}
+
+interface AppointmentRpcClient {
+	rpc: (
+		fn: "update_appointment_with_services",
+		args: UpdateAppointmentRpcArgs,
+	) => Promise<{ error: { message: string; code?: string } | null }>;
+}
+
 /**
- * Updates full appointment details and re-assigns services.
+ * Updates full appointment details and re-assigns services in a single DB transaction.
  */
 export const editAppointment = async (input: EditAppointmentInput): Promise<ActionResult<null>> => {
 	try {
@@ -124,57 +143,36 @@ export const editAppointment = async (input: EditAppointmentInput): Promise<Acti
 			service_ids,
 		} = parsed.data;
 
-		const { supabase } = auth;
+		const uniqueServiceIds = Array.from(new Set(service_ids));
+		const rpcClient = auth.supabase as unknown as AppointmentRpcClient;
 
-		// 1. Update main appointment record
-		const { error: apptError } = await supabase
-			.from("appointments")
-			.update({
-				first_name,
-				last_name,
-				email,
-				phone,
-				car_description: car_description || null,
-				booking_date,
-				status,
-			})
-			.eq("id", id);
+		const { error } = await rpcClient.rpc("update_appointment_with_services", {
+			p_id: id,
+			p_first_name: first_name,
+			p_last_name: last_name,
+			p_email: email,
+			p_phone: phone,
+			p_car_description: car_description || null,
+			p_booking_date: booking_date,
+			p_status: status,
+			p_service_ids: uniqueServiceIds,
+		});
 
-		if (apptError) {
-			console.error("[editAppointment] Error updating appointment:", apptError.message);
-			if (apptError.code === "23505") {
+		if (error) {
+			console.error("[editAppointment] RPC error:", error.message);
+			if (error.code === "23505") {
 				return {
 					success: false,
 					error: "Another active appointment already exists on this date",
 				};
 			}
+			if (error.code === "P0002" || error.message.includes("APPOINTMENT_NOT_FOUND")) {
+				return { success: false, error: "Appointment not found" };
+			}
+			if (error.code === "23503") {
+				return { success: false, error: "One or more selected services no longer exist" };
+			}
 			return { success: false, error: "Failed to update appointment details" };
-		}
-
-		// 2. Re-assign services in appointment_services
-		const { error: deleteError } = await supabase
-			.from("appointment_services")
-			.delete()
-			.eq("appointment_id", id);
-
-		if (deleteError) {
-			console.error("[editAppointment] Error clearing appointment services:", deleteError.message);
-			return { success: false, error: "Failed to update services" };
-		}
-
-		const uniqueServiceIds = Array.from(new Set(service_ids));
-		const newServiceRows = uniqueServiceIds.map((serviceId) => ({
-			appointment_id: id,
-			service_id: serviceId,
-		}));
-
-		const { error: insertError } = await supabase
-			.from("appointment_services")
-			.insert(newServiceRows);
-
-		if (insertError) {
-			console.error("[editAppointment] Error inserting appointment services:", insertError.message);
-			return { success: false, error: "Failed to re-assign services" };
 		}
 
 		revalidateAppointmentPaths();

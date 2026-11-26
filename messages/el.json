@@ -301,9 +301,18 @@
 	"LanguageSwitcher": {
 		"label": "Επιλέξτε γλώσσα",
 		"locales": {
-			"de": { "short": "DE", "full": "Deutsch" },
-			"en": { "short": "EN", "full": "English" },
-			"el": { "short": "ΕΛ", "full": "Ελληνικά" }
+			"de": {
+				"short": "DE",
+				"full": "Deutsch"
+			},
+			"en": {
+				"short": "EN",
+				"full": "English"
+			},
+			"el": {
+				"short": "ΕΛ",
+				"full": "Ελληνικά"
+			}
 		}
 	},
 	"Common": {
@@ -610,7 +619,13 @@
 					"descLabel": "Περιγραφή"
 				},
 				"active": "Ενεργό (ορατό στον ιστότοπο)",
-				"save": "Αποθήκευση Υπηρεσίας"
+				"save": "Αποθήκευση Υπηρεσίας",
+				"sizes": {
+					"small": "Μικρό",
+					"medium": "Μεσαίο",
+					"large": "Μεγάλο",
+					"suv": "SUV"
+				}
 			},
 			"toast": {
 				"createSuccess": "Η υπηρεσία δημιουργήθηκε επιτυχώς",
@@ -830,7 +845,8 @@
 				"messages": "Μηνύματα",
 				"servicesCrud": "Υπηρεσίες",
 				"chatbotKb": "Γνώση Chatbot"
-			}
+			},
+			"loadingLabel": "Φόρτωση πίνακα διαχείρισης"
 		},
 		"messages": {
 			"title": "Μηνύματα & Ερωτήματα",
@@ -878,6 +894,11 @@
 			"deleteConfirm": {
 				"title": "Διαγραφή Μηνύματος;",
 				"description": "Είστε βέβαιοι ότι θέλετε να διαγράψετε οριστικά αυτό το μήνυμα επικοινωνίας;"
+			},
+			"pagination": {
+				"showing": "Σελίδα {page} από {totalPages} ({total} σύνολο)",
+				"prev": "Προηγούμενη",
+				"next": "Επόμενη"
 			}
 		},
 		"appointments": {

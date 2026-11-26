@@ -26,7 +26,7 @@ interface QueryBuilder extends PromiseLike<{
 	order: (column: string, opts?: { ascending?: boolean }) => QueryBuilder;
 	eq: (column: string, value: string) => QueryBuilder;
 	or: (filter: string) => QueryBuilder;
-	ilike: (column: string, pattern: string) => QueryBuilder;
+	range: (from: number, to: number) => QueryBuilder;
 	limit: (count: number) => QueryBuilder;
 	single: () => Promise<{ data: AdminMessage | null; error: { message: string } | null }>;
 }
@@ -35,7 +35,6 @@ interface UpdateBuilder extends PromiseLike<{ data: AdminMessage | null; error: 
 	eq: (column: string, value: string) => UpdateBuilder;
 	select: (cols?: string) => {
 		single: () => Promise<{ data: AdminMessage; error: null }>;
-		maybeSingle: () => Promise<{ data: AdminMessage | null; error: null }>;
 		then: PromiseLike<{ data: AdminMessage[]; error: null }>["then"];
 	};
 }
@@ -65,6 +64,7 @@ const createMockSupabase = () => ({
 	from: vi.fn((_table: string) => ({
 		select: vi.fn((_cols?: string, opts?: { head?: boolean; count?: string }) => {
 			let rows = [...mockState.rows];
+			let totalMatched: number | undefined;
 			const builder: QueryBuilder = {
 				order: () => builder,
 				eq(column: string, value: string) {
@@ -84,13 +84,9 @@ const createMockSupabase = () => ({
 					}
 					return builder;
 				},
-				ilike(column: string, pattern: string) {
-					const term = pattern.replace(/%/g, "").toLowerCase();
-					rows = rows.filter((r) =>
-						String(r[column as keyof AdminMessage])
-							.toLowerCase()
-							.includes(term),
-					);
+				range(from: number, to: number) {
+					totalMatched = rows.length;
+					rows = rows.slice(from, to + 1);
 					return builder;
 				},
 				limit(count: number) {
@@ -102,9 +98,10 @@ const createMockSupabase = () => ({
 					error: rows[0] ? null : { message: "Not found" },
 				}),
 				then(onfulfilled, onrejected) {
+					const count = totalMatched ?? rows.length;
 					const result = opts?.head
-						? { data: null, count: rows.length, error: null }
-						: { data: rows, count: rows.length, error: null };
+						? { data: null, count, error: null }
+						: { data: rows, count, error: null };
 					return Promise.resolve(result).then(onfulfilled, onrejected);
 				},
 			};
@@ -133,7 +130,6 @@ const createMockSupabase = () => ({
 				},
 				select: () => ({
 					single: async () => ({ data: updatedRow, error: null }),
-					maybeSingle: async () => ({ data: updatedRow, error: null }),
 					then(onfulfilled, onrejected) {
 						return Promise.resolve({ data: [updatedRow], error: null }).then(
 							onfulfilled,
@@ -161,14 +157,7 @@ vi.mock("@/lib/supabase/service", () => ({
 	createServiceClient: vi.fn(() => createMockSupabase()),
 }));
 
-const extractMessages = (data: unknown): AdminMessage[] => {
-	if (Array.isArray(data)) return data as AdminMessage[];
-	if (typeof data === "object" && data !== null && "messages" in data) {
-		const container = data as { messages?: unknown };
-		if (Array.isArray(container.messages)) return container.messages as AdminMessage[];
-	}
-	return [];
-};
+const extractMessages = (data: { messages: AdminMessage[] }): AdminMessage[] => data.messages;
 
 describe("Admin Messages Actions", () => {
 	beforeEach(() => {
@@ -222,17 +211,24 @@ describe("Admin Messages Actions", () => {
 	});
 
 	describe("getAdminMessages()", () => {
-		it("returns messages and supports status filtering", async () => {
-			const allRes = await getAdminMessages({ status: "all" });
-			expect(allRes.success).toBe(true);
-			if (allRes.success) expect(extractMessages(allRes.data)).toHaveLength(2);
+		it("paginates server-filtered messages and returns accurate counts", async () => {
+			const page1Res = await getAdminMessages({ status: "all", page: 1, pageSize: 1 });
+			expect(page1Res.success).toBe(true);
+			if (page1Res.success) {
+				expect(extractMessages(page1Res.data)).toHaveLength(1);
+				expect(page1Res.data.pagination).toEqual({
+					page: 1,
+					pageSize: 1,
+					totalFiltered: 2,
+					totalPages: 2,
+				});
+				expect(page1Res.data.counts).toEqual({ all: 2, unread: 1, read: 1, archived: 0 });
+			}
 
 			const unreadRes = await getAdminMessages({ status: "unread" });
 			expect(unreadRes.success).toBe(true);
 			if (unreadRes.success) {
-				const unread = extractMessages(unreadRes.data);
-				expect(unread).toHaveLength(1);
-				expect(unread[0]?.id).toBe(VALID_ID);
+				expect(extractMessages(unreadRes.data).map((m) => m.id)).toEqual([VALID_ID]);
 			}
 		});
 

@@ -301,9 +301,18 @@
 	"LanguageSwitcher": {
 		"label": "Choose language",
 		"locales": {
-			"de": { "short": "DE", "full": "Deutsch" },
-			"en": { "short": "EN", "full": "English" },
-			"el": { "short": "ΕΛ", "full": "Ελληνικά" }
+			"de": {
+				"short": "DE",
+				"full": "Deutsch"
+			},
+			"en": {
+				"short": "EN",
+				"full": "English"
+			},
+			"el": {
+				"short": "ΕΛ",
+				"full": "Ελληνικά"
+			}
 		}
 	},
 	"Common": {
@@ -610,7 +619,13 @@
 					"descLabel": "Description"
 				},
 				"active": "Active (visible on website)",
-				"save": "Save Service"
+				"save": "Save Service",
+				"sizes": {
+					"small": "Small",
+					"medium": "Medium",
+					"large": "Large",
+					"suv": "SUV"
+				}
 			},
 			"toast": {
 				"createSuccess": "Service created successfully",
@@ -822,7 +837,8 @@
 				"messages": "Messages",
 				"servicesCrud": "Services",
 				"chatbotKb": "Chatbot KB"
-			}
+			},
+			"loadingLabel": "Loading admin dashboard"
 		},
 		"messages": {
 			"title": "Messages & Inquiries",
@@ -870,6 +886,11 @@
 			"deleteConfirm": {
 				"title": "Delete Message?",
 				"description": "Are you sure you want to permanently delete this contact inquiry?"
+			},
+			"pagination": {
+				"showing": "Page {page} of {totalPages} ({total} total)",
+				"prev": "Previous",
+				"next": "Next"
 			}
 		},
 		"appointments": {

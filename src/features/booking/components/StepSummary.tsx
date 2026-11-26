@@ -59,7 +59,11 @@ export const StepSummary: React.FC = () => {
 			});
 
 			if (!result.success) {
-				setSubmitError(result.error === "DATE_TAKEN" ? "dateTaken" : "generic");
+				setSubmitError(
+					result.error === "DATE_TAKEN" || result.error === "DATE_BLOCKED"
+						? "dateTaken"
+						: "generic",
+				);
 				return;
 			}
 

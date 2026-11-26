@@ -22,9 +22,7 @@ interface AppointmentConflictRow {
 interface AppointmentsQuery extends PromiseLike<{ data: AppointmentConflictRow[]; error: null }> {
 	gte: (column: string, value: string) => AppointmentsQuery;
 	lte: (column: string, value: string) => AppointmentsQuery;
-	in: (column: string, values: string[]) => AppointmentsQuery;
 	neq: (column: string, value: string) => AppointmentsQuery;
-	eq: (column: string, value: string) => AppointmentsQuery;
 	order: (column: string, opts?: { ascending?: boolean }) => AppointmentsQuery;
 }
 
@@ -79,18 +77,9 @@ const createMockSupabase = () => ({
 							);
 							return builder;
 						},
-						in(column: string, values: string[]) {
-							rows = rows.filter((r) =>
-								column === "booking_date" ? values.includes(r.booking_date) : true,
-							);
-							return builder;
-						},
 						neq(column: string, value: string) {
 							mockAppointmentNeqCalls.push([column, value]);
 							rows = rows.filter((r) => (column === "status" ? r.status !== value : true));
-							return builder;
-						},
-						eq() {
 							return builder;
 						},
 						order() {
@@ -236,6 +225,7 @@ describe("Admin Blocked Dates Range (blockDateRange)", () => {
 			]);
 		}
 		expect(mockUpsertPayloads).toHaveLength(1);
+		expect(mockUpsertOptions[0]).toEqual({ onConflict: "blocked_date", ignoreDuplicates: true });
 		expect(mockUpsertPayloads[0]).toEqual([
 			{ blocked_date: "2026-08-10", reason: "Summer closure" },
 			{ blocked_date: "2026-08-11", reason: "Summer closure" },

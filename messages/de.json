@@ -302,9 +302,18 @@
 	"LanguageSwitcher": {
 		"label": "Sprache wählen",
 		"locales": {
-			"de": { "short": "DE", "full": "Deutsch" },
-			"en": { "short": "EN", "full": "English" },
-			"el": { "short": "ΕΛ", "full": "Ελληνικά" }
+			"de": {
+				"short": "DE",
+				"full": "Deutsch"
+			},
+			"en": {
+				"short": "EN",
+				"full": "English"
+			},
+			"el": {
+				"short": "ΕΛ",
+				"full": "Ελληνικά"
+			}
 		}
 	},
 	"Common": {
@@ -611,7 +620,13 @@
 					"descLabel": "Beschreibung"
 				},
 				"active": "Aktiv (sichtbar auf der Website)",
-				"save": "Dienstleistung speichern"
+				"save": "Dienstleistung speichern",
+				"sizes": {
+					"small": "Kleinwagen",
+					"medium": "Mittelklasse",
+					"large": "Groß / Kombi",
+					"suv": "SUV"
+				}
 			},
 			"toast": {
 				"createSuccess": "Dienstleistung erfolgreich erstellt",
@@ -823,7 +838,8 @@
 				"messages": "Nachrichten",
 				"servicesCrud": "Dienstleistungen",
 				"chatbotKb": "Chatbot-Wissen"
-			}
+			},
+			"loadingLabel": "Admin-Bereich wird geladen"
 		},
 		"messages": {
 			"title": "Nachrichten & Anfragen",
@@ -871,6 +887,11 @@
 			"deleteConfirm": {
 				"title": "Nachricht löschen?",
 				"description": "Sind Sie sicher, dass Sie diese Kontaktanfrage dauerhaft löschen möchten?"
+			},
+			"pagination": {
+				"showing": "Seite {page} von {totalPages} ({total} Einträge)",
+				"prev": "Zurück",
+				"next": "Weiter"
 			}
 		},
 		"appointments": {

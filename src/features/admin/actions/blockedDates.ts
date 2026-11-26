@@ -211,7 +211,7 @@ export const blockDateRange = async (
 
 		const { data: upsertedRows, error: upsertError } = await supabase
 			.from("blocked_dates")
-			.upsert(upsertRows, { onConflict: "blocked_date" })
+			.upsert(upsertRows, { onConflict: "blocked_date", ignoreDuplicates: true })
 			.select("id, blocked_date, reason, created_at")
 			.order("blocked_date", { ascending: true });
 

@@ -53,9 +53,10 @@ export const BlockDateForm: React.FC<BlockDateFormProps> = ({
 					<button
 						key={tab}
 						type="button"
+						disabled={isSubmitting}
 						onClick={() => onModeChange(tab)}
 						aria-label={t(tab === "single" ? "modeSingle" : "modeRange")}
-						className={`cursor-pointer rounded-md py-1.5 font-semibold transition-colors ${
+						className={`cursor-pointer rounded-md py-1.5 font-semibold transition-colors disabled:cursor-not-allowed disabled:opacity-50 ${
 							mode === tab ? "bg-purple-600 text-white" : "text-neutral-400 hover:text-white"
 						}`}
 					>
@@ -88,9 +89,10 @@ export const BlockDateForm: React.FC<BlockDateFormProps> = ({
 							id="block-date"
 							type="date"
 							required
+							disabled={isSubmitting}
 							value={dateInput}
 							onChange={(e) => onDateChange(e.target.value)}
-							className="mt-1 w-full rounded-lg border border-neutral-800 bg-neutral-900 px-3 py-2 text-sm text-white focus:border-purple-500 focus:outline-none"
+							className="mt-1 w-full rounded-lg border border-neutral-800 bg-neutral-900 px-3 py-2 text-sm text-white focus:border-purple-500 focus:outline-none disabled:cursor-not-allowed disabled:opacity-50"
 						/>
 					</div>
 				) : (
@@ -103,9 +105,10 @@ export const BlockDateForm: React.FC<BlockDateFormProps> = ({
 								id="block-start-date"
 								type="date"
 								required
+								disabled={isSubmitting}
 								value={startDateInput}
 								onChange={(e) => onStartDateChange(e.target.value)}
-								className="mt-1 w-full rounded-lg border border-neutral-800 bg-neutral-900 px-2.5 py-2 text-xs text-white focus:border-purple-500 focus:outline-none"
+								className="mt-1 w-full rounded-lg border border-neutral-800 bg-neutral-900 px-2.5 py-2 text-xs text-white focus:border-purple-500 focus:outline-none disabled:cursor-not-allowed disabled:opacity-50"
 							/>
 						</div>
 						<div>
@@ -116,9 +119,10 @@ export const BlockDateForm: React.FC<BlockDateFormProps> = ({
 								id="block-end-date"
 								type="date"
 								required
+								disabled={isSubmitting}
 								value={endDateInput}
 								onChange={(e) => onEndDateChange(e.target.value)}
-								className="mt-1 w-full rounded-lg border border-neutral-800 bg-neutral-900 px-2.5 py-2 text-xs text-white focus:border-purple-500 focus:outline-none"
+								className="mt-1 w-full rounded-lg border border-neutral-800 bg-neutral-900 px-2.5 py-2 text-xs text-white focus:border-purple-500 focus:outline-none disabled:cursor-not-allowed disabled:opacity-50"
 							/>
 						</div>
 					</div>
@@ -131,10 +135,11 @@ export const BlockDateForm: React.FC<BlockDateFormProps> = ({
 					<input
 						id="block-reason"
 						type="text"
+						disabled={isSubmitting}
 						placeholder={t("reasonPlaceholder")}
 						value={reasonInput}
 						onChange={(e) => onReasonChange(e.target.value)}
-						className="mt-1 w-full rounded-lg border border-neutral-800 bg-neutral-900 px-3 py-2 text-sm text-white placeholder-neutral-500 focus:border-purple-500 focus:outline-none"
+						className="mt-1 w-full rounded-lg border border-neutral-800 bg-neutral-900 px-3 py-2 text-sm text-white placeholder-neutral-500 focus:border-purple-500 focus:outline-none disabled:cursor-not-allowed disabled:opacity-50"
 					/>
 				</div>
 

@@ -19,6 +19,7 @@ import type { ActionResult } from "@/features/admin/actions/dashboard";
 import type {
 	AdminMessage,
 	MessageCounts,
+	MessagesPageMeta,
 	MessageStatus,
 } from "@/features/admin/types/messagesTypes";
 
@@ -37,7 +38,9 @@ const revalidateAdminMessagesPaths = (): void => {
 
 export const getAdminMessages = async (
 	filter?: Partial<MessagesFilter>,
-): Promise<ActionResult<{ messages: AdminMessage[]; counts: MessageCounts }>> => {
+): Promise<
+	ActionResult<{ messages: AdminMessage[]; counts: MessageCounts; pagination: MessagesPageMeta }>
+> => {
 	try {
 		const auth = await requireAdmin();
 		if (!auth.authorized) {
@@ -49,13 +52,16 @@ export const getAdminMessages = async (
 			return { success: false, error: "Invalid filter parameters" };
 		}
 
-		const { status, search } = parsedFilter.data;
+		const { status, search, page, pageSize } = parsedFilter.data;
 		const { supabase } = auth;
+		const rangeFrom = (page - 1) * pageSize;
+		const rangeTo = rangeFrom + pageSize - 1;
 
 		let listQuery = supabase
 			.from("contact_submissions")
-			.select(MESSAGE_SELECT)
-			.order("created_at", { ascending: false });
+			.select(MESSAGE_SELECT, { count: "exact" })
+			.order("created_at", { ascending: false })
+			.range(rangeFrom, rangeTo);
 
 		if (status !== "all") {
 			listQuery = listQuery.eq("status", status);
@@ -111,11 +117,20 @@ export const getAdminMessages = async (
 			archived: archivedRes.count ?? 0,
 		};
 
+		const totalFiltered = listRes.count ?? parsedRows.data.length;
+		const pagination: MessagesPageMeta = {
+			page,
+			pageSize,
+			totalFiltered,
+			totalPages: Math.max(1, Math.ceil(totalFiltered / pageSize)),
+		};
+
 		return {
 			success: true,
 			data: {
 				messages: parsedRows.data,
 				counts,
+				pagination,
 			},
 		};
 	} catch (err: unknown) {

@@ -1,8 +1,8 @@
 /* eslint-disable no-console */
 /**
  * Seed script for chatbot_knowledge table (Single-Language Language-Agnostic RAG).
- * Embeds ~8 concise company/policy/booking/B2B rules with language = 'any'.
- * Live service names, durations, and prices are injected directly from the `services` table at runtime.
+ * Generates embeddings before touching Supabase and upserts deterministic seed UUIDs
+ * in one atomic statement, preserving all admin-authored entries.
  *
  * Usage:
  *   pnpm tsx scripts/seed-chatbot.ts
@@ -30,17 +30,21 @@ const supabase = createClient(supabaseUrl, supabaseKey, {
 });
 
 interface SeedEntry {
+	id: string;
 	content: string;
 	language: "any";
 	metadata: {
 		category: "company_policy" | "booking_process" | "mobile_service" | "b2b" | "faq" | "general";
 		title: string;
 		keywords: string[];
+		source: "seed_chatbot";
+		seedKey: string;
 	};
 }
 
 const seedData: SeedEntry[] = [
 	{
+		id: "11111111-1111-4111-8111-000000000001",
 		language: "any",
 		content:
 			"LK Gloss & Detail ist ein zertifizierter mobiler Auto-Detailing-Service, gegründet von Lulezim Kodhimaj mit Sitz in Neuhausen auf den Fildern (Region Stuttgart), Deutschland. Über 250 zufriedene Kunden vertrauen auf unsere Qualität.",
@@ -48,9 +52,12 @@ const seedData: SeedEntry[] = [
 			category: "general",
 			title: "Über LK Gloss & Detail",
 			keywords: ["LK Gloss & Detail", "Lulezim Kodhimaj", "Neuhausen", "Stuttgart", "Detailing"],
+			source: "seed_chatbot",
+			seedKey: "about_company",
 		},
 	},
 	{
+		id: "11111111-1111-4111-8111-000000000002",
 		language: "any",
 		content:
 			"Unser mobiler Service kommt mit kompletter Ausrüstung direkt zum Kunden — nach Hause oder an den Arbeitsplatz im Großraum Stuttgart. Für die Aufbereitung vor Ort sollte das Fahrzeug sicher zugänglich sein; falls Strom oder Wasser benötigt werden, klären wir das telefonisch vorab.",
@@ -58,9 +65,12 @@ const seedData: SeedEntry[] = [
 			category: "mobile_service",
 			title: "Mobiler Vor-Ort-Service",
 			keywords: ["mobil", "Vor-Ort", "Stuttgart", "Zuhause", "Arbeitsplatz"],
+			source: "seed_chatbot",
+			seedKey: "mobile_service",
 		},
 	},
 	{
+		id: "11111111-1111-4111-8111-000000000003",
 		language: "any",
 		content:
 			"Termine können direkt über unsere Website auf der Buchungsseite angefragt werden: Leistungen auswählen, freies Datum wählen und Kontaktdaten absenden. Die Terminbestätigung und finale Abstimmung erfolgen persönlich per Telefon oder WhatsApp.",
@@ -68,9 +78,12 @@ const seedData: SeedEntry[] = [
 			category: "booking_process",
 			title: "Terminbuchung & Bestätigung",
 			keywords: ["Termin", "Buchung", "Datum", "Telefon", "Bestätigung"],
+			source: "seed_chatbot",
+			seedKey: "booking_process",
 		},
 	},
 	{
+		id: "11111111-1111-4111-8111-000000000004",
 		language: "any",
 		content:
 			"Unsere kostenlose KI-Fahrzeugbewertung analysiert 4 Fotos Ihres Fahrzeugs (Front, Heck, Seite, Innenraum), erkennt die Fahrzeuggröße und erstellt einen unverbindlichen Pflegeplan auf Basis unserer aktuellen Servicepreise.",
@@ -78,9 +91,12 @@ const seedData: SeedEntry[] = [
 			category: "faq",
 			title: "Kostenlose KI-Fahrzeugbewertung",
 			keywords: ["KI", "Bewertung", "Fotos", "Kostenvoranschlag", "kostenlos"],
+			source: "seed_chatbot",
+			seedKey: "ai_assessment",
 		},
 	},
 	{
+		id: "11111111-1111-4111-8111-000000000005",
 		language: "any",
 		content:
 			"Für die Innenraumaufbereitung arbeiten wir mit professionellen Dampfreinigern, schonenden Spezialprodukten für Leder und Textilien sowie Geruchsneutralisierung für ein hygienisch frisches Ergebnis.",
@@ -88,9 +104,12 @@ const seedData: SeedEntry[] = [
 			category: "faq",
 			title: "Innenreinigung & Arbeitsweise",
 			keywords: ["Innenreinigung", "Dampfreiniger", "Leder", "Geruch", "Textilien"],
+			source: "seed_chatbot",
+			seedKey: "interior_cleaning",
 		},
 	},
 	{
+		id: "11111111-1111-4111-8111-000000000006",
 		language: "any",
 		content:
 			"Für Geschäftskunden (Autohäuser, Leasinggesellschaften, Autovermietungen und Fuhrparkmanager) bieten wir individuelle B2B-Flottenkonditionen und langfristige Partnerschaften. Anfragen bitte über das Kontaktformular oder telefonisch stellen.",
@@ -98,9 +117,12 @@ const seedData: SeedEntry[] = [
 			category: "b2b",
 			title: "B2B & Flottenservice",
 			keywords: ["B2B", "Flotte", "Autohaus", "Gewerbe", "Rabatt"],
+			source: "seed_chatbot",
+			seedKey: "b2b_fleet",
 		},
 	},
 	{
+		id: "11111111-1111-4111-8111-000000000007",
 		language: "any",
 		content:
 			"Bei Terminänderungen oder Stornierungen bitten wir um rechtzeitige telefonische oder WhatsApp-Mitteilung mindestens 24 Stunden vor dem Termin, damit wir den Tag wieder freigeben können.",
@@ -108,9 +130,12 @@ const seedData: SeedEntry[] = [
 			category: "company_policy",
 			title: "Stornierung & Terminänderung",
 			keywords: ["Stornierung", "Absage", "Terminänderung", "24 Stunden"],
+			source: "seed_chatbot",
+			seedKey: "cancellation_policy",
 		},
 	},
 	{
+		id: "11111111-1111-4111-8111-000000000008",
 		language: "any",
 		content:
 			"Sie erreichen uns über das Kontaktformular auf der Website, telefonisch oder direkt über den WhatsApp-Button. Wir melden uns in der Regel innerhalb von 24 Stunden zurück.",
@@ -118,42 +143,41 @@ const seedData: SeedEntry[] = [
 			category: "general",
 			title: "Kontakt & Erreichbarkeit",
 			keywords: ["Kontakt", "Telefon", "WhatsApp", "Rückruf", "Erreichbarkeit"],
+			source: "seed_chatbot",
+			seedKey: "contact_hours",
 		},
 	},
 ];
 
 const main = async () => {
-	console.log("🚀 Seeding single-language chatbot knowledge base...\n");
-
-	const { error: deleteError } = await supabase
-		.from("chatbot_knowledge")
-		.delete()
-		.neq("id", "00000000-0000-0000-0000-000000000000");
-
-	if (deleteError) {
-		console.warn("⚠️ Could not clear existing entries (table may be empty):", deleteError.message);
-	} else {
-		console.log("🧹 Cleared existing entries.\n");
-	}
+	console.log("🚀 Generating embeddings for default chatbot knowledge rules...\n");
 
 	const embeddings = getOpenRouterEmbeddings();
 	const vectors = await embeddings.embedDocuments(seedData.map((entry) => entry.content));
 
+	if (vectors.length !== seedData.length) {
+		throw new Error(`Expected ${seedData.length} embeddings, received ${vectors.length}`);
+	}
+
 	const rows = seedData.map((entry, idx) => ({
+		id: entry.id,
 		content: entry.content,
 		embedding: vectors[idx],
 		language: entry.language,
 		metadata: entry.metadata,
 	}));
 
-	const { error: insertError } = await supabase.from("chatbot_knowledge").insert(rows);
+	console.log("🔄 Upserting managed seed rules atomically (preserving admin entries)...");
+	const { error: upsertError } = await supabase
+		.from("chatbot_knowledge")
+		.upsert(rows, { onConflict: "id" });
 
-	if (insertError) {
-		console.error(`❌ Batch insert failed: ${insertError.message}`);
+	if (upsertError) {
+		console.error(`❌ Atomic seed upsert failed: ${upsertError.message}`);
 		process.exit(1);
 	}
 
-	console.log(`🎉 Done! ${rows.length} language-agnostic rules seeded.`);
+	console.log(`🎉 Done! ${rows.length} managed language-agnostic rules seeded/updated.`);
 };
 
 main().catch((err) => {

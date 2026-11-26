@@ -4,7 +4,11 @@ import React from "react";
 
 import { getAdminMessages } from "@/features/admin/actions/messages";
 import { MessagesManager } from "@/features/admin/components/messages/MessagesManager";
-import { MessageStatusSchema, type MessageStatus } from "@/features/admin/schemas/messagesSchema";
+import {
+	DEFAULT_MESSAGES_PAGE_SIZE,
+	MessageStatusSchema,
+	type MessageStatus,
+} from "@/features/admin/schemas/messagesSchema";
 import { getCachedAdminSession } from "@/lib/auth/requireAdmin";
 
 import type { Metadata } from "next";
@@ -36,17 +40,24 @@ const AdminMessagesPage: React.FC<MessagesPageProps> = async ({ params, searchPa
 	const parsedStatus = MessageStatusSchema.safeParse(resolvedSearch.status);
 	const initialStatus: MessageStatus | "all" = parsedStatus.success ? parsedStatus.data : "all";
 
-	const res = await getAdminMessages({ status: "all" });
+	const res = await getAdminMessages({
+		status: initialStatus,
+		page: 1,
+		pageSize: DEFAULT_MESSAGES_PAGE_SIZE,
+	});
 
-	const initialMessages = res.success && res.data ? res.data.messages : [];
-	const initialCounts =
-		res.success && res.data ? res.data.counts : { all: 0, unread: 0, read: 0, archived: 0 };
+	const initialMessages = res.success ? res.data.messages : [];
+	const initialCounts = res.success ? res.data.counts : { all: 0, unread: 0, read: 0, archived: 0 };
+	const initialPagination = res.success
+		? res.data.pagination
+		: { page: 1, pageSize: DEFAULT_MESSAGES_PAGE_SIZE, totalFiltered: 0, totalPages: 1 };
 	const initialError = res.success ? null : (res.error ?? "Failed to load messages");
 
 	return (
 		<MessagesManager
 			initialMessages={initialMessages}
 			initialCounts={initialCounts}
+			initialPagination={initialPagination}
 			initialStatus={initialStatus}
 			initialError={initialError}
 		/>

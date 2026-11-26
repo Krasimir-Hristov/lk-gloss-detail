@@ -78,6 +78,22 @@ vi.mock("@langchain/openai", () => {
 	return { ChatOpenAI: MockChatOpenAI };
 });
 
+const buildRow = (id: string, payload: Record<string, unknown>): ChatbotKnowledgeListItem => ({
+	id,
+	content: String(payload.content ?? ""),
+	metadata: (payload.metadata as ChatbotKnowledgeListItem["metadata"]) ?? { category: "general" },
+	language: String(payload.language ?? "any"),
+	created_at: "2026-11-26T10:00:00.000Z",
+});
+
+const wrapSingle = (row: ChatbotKnowledgeListItem) => ({
+	select: () => ({ single: async () => ({ data: row, error: null }) }),
+	then: (
+		onfulfilled?: (val: { data: ChatbotKnowledgeListItem; error: null }) => unknown,
+		onrejected?: (r: unknown) => unknown,
+	) => Promise.resolve({ data: row, error: null }).then(onfulfilled, onrejected),
+});
+
 const createMockSupabase = () => ({
 	rpc: vi.fn(async (fnName: string, params: Record<string, unknown>) => {
 		mockRpcCalls.push([fnName, params]);
@@ -88,9 +104,7 @@ const createMockSupabase = () => ({
 			mockSelectColumns.push(columns);
 			let rows = [...mockState.entries];
 			const chain: KnowledgeSelectChain = {
-				order() {
-					return chain;
-				},
+				order: () => chain,
 				contains(col: string, value: Record<string, unknown>) {
 					mockContainsCalls.push([col, value]);
 					const cat = value.category;
@@ -99,55 +113,22 @@ const createMockSupabase = () => ({
 					}
 					return chain;
 				},
-				eq() {
-					return chain;
-				},
-				then(onfulfilled, onrejected) {
-					return Promise.resolve({ data: rows, error: null }).then(onfulfilled, onrejected);
-				},
+				eq: () => chain,
+				then: (onfulfilled, onrejected) =>
+					Promise.resolve({ data: rows, error: null }).then(onfulfilled, onrejected),
 			};
 			return chain;
 		}),
 		insert: vi.fn((payload: Record<string, unknown>) => {
 			mockInsertPayloads.push(payload);
-			const created: ChatbotKnowledgeListItem = {
-				id: ENTRY_ID,
-				content: String(payload.content ?? ""),
-				metadata: (payload.metadata as ChatbotKnowledgeListItem["metadata"]) ?? {
-					category: "general",
-				},
-				language: String(payload.language ?? "any"),
-				created_at: "2026-11-26T10:00:00.000Z",
-			};
-			return {
-				select: () => ({ single: async () => ({ data: created, error: null }) }),
-				then: (
-					onfulfilled?: (val: { data: ChatbotKnowledgeListItem; error: null }) => unknown,
-					onrejected?: (r: unknown) => unknown,
-				) => Promise.resolve({ data: created, error: null }).then(onfulfilled, onrejected),
-			};
+			return wrapSingle(buildRow(ENTRY_ID, payload));
 		}),
 		update: vi.fn((payload: Record<string, unknown>) => {
 			mockUpdatePayloads.push(payload);
 			return {
 				eq: vi.fn((col: string, val: string) => {
 					mockUpdateEqCalls.push([col, val]);
-					const updated: ChatbotKnowledgeListItem = {
-						id: val,
-						content: String(payload.content ?? ""),
-						metadata: (payload.metadata as ChatbotKnowledgeListItem["metadata"]) ?? {
-							category: "general",
-						},
-						language: String(payload.language ?? "any"),
-						created_at: "2026-11-26T10:00:00.000Z",
-					};
-					return {
-						select: () => ({ single: async () => ({ data: updated, error: null }) }),
-						then: (
-							onfulfilled?: (val: { data: ChatbotKnowledgeListItem; error: null }) => unknown,
-							onrejected?: (r: unknown) => unknown,
-						) => Promise.resolve({ data: updated, error: null }).then(onfulfilled, onrejected),
-					};
+					return wrapSingle(buildRow(val, payload));
 				}),
 			};
 		}),

@@ -12,3 +12,10 @@ export interface MessageCounts {
 	read: number;
 	archived: number;
 }
+
+export interface MessagesPageMeta {
+	page: number;
+	pageSize: number;
+	totalFiltered: number;
+	totalPages: number;
+}

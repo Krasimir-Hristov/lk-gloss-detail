@@ -19,14 +19,14 @@ export const AppointmentDetailInfo: React.FC<AppointmentDetailInfoProps> = ({ ap
 	const locale = useLocale();
 
 	const getServiceName = (name: string | Record<string, string>) => {
-		if (typeof name === "object" && name !== null) return getLocalizedText(name, locale);
-		const nameStr = String(name);
+		const localized = getLocalizedText(name, locale);
+		if (typeof name === "object" && name !== null) return localized;
 		try {
-			if (tServices.has(`${nameStr}.title`)) return tServices(`${nameStr}.title`);
+			if (tServices.has(`${localized}.title`)) return tServices(`${localized}.title`);
 		} catch {
-			// Fallback to raw name
+			// Fallback to localized text
 		}
-		return nameStr;
+		return localized;
 	};
 
 	const totalPrice = appointment.services.reduce(

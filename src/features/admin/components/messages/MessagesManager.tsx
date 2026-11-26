@@ -3,7 +3,7 @@
 import { Inbox } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useLocale, useTranslations } from "next-intl";
-import React, { useMemo, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 
 import { ConfirmModal } from "@/components/shared/ConfirmModal";
 import {
@@ -14,17 +14,20 @@ import {
 } from "@/features/admin/actions/messages";
 import { MessageCard } from "@/features/admin/components/messages/MessageCard";
 import { MessageDetailModal } from "@/features/admin/components/messages/MessageDetailModal";
+import { MessagesPagination } from "@/features/admin/components/messages/MessagesPagination";
 import { MessagesToolbar } from "@/features/admin/components/messages/MessagesToolbar";
 
 import type {
 	AdminMessage,
 	MessageCounts,
+	MessagesPageMeta,
 	MessageStatus,
 } from "@/features/admin/types/messagesTypes";
 
 interface MessagesManagerProps {
 	initialMessages: AdminMessage[];
 	initialCounts: MessageCounts;
+	initialPagination: MessagesPageMeta;
 	initialStatus?: MessageStatus | "all";
 	initialError?: string | null;
 }
@@ -35,16 +38,10 @@ const localeMap: Record<string, string> = {
 	el: "el-GR",
 };
 
-const computeCounts = (list: AdminMessage[]): MessageCounts => ({
-	all: list.length,
-	unread: list.filter((m) => m.status === "unread").length,
-	read: list.filter((m) => m.status === "read").length,
-	archived: list.filter((m) => m.status === "archived").length,
-});
-
 export const MessagesManager: React.FC<MessagesManagerProps> = ({
 	initialMessages,
 	initialCounts,
+	initialPagination,
 	initialStatus = "all",
 	initialError = null,
 }) => {
@@ -55,6 +52,7 @@ export const MessagesManager: React.FC<MessagesManagerProps> = ({
 
 	const [messages, setMessages] = useState<AdminMessage[]>(initialMessages);
 	const [counts, setCounts] = useState<MessageCounts>(initialCounts);
+	const [pagination, setPagination] = useState<MessagesPageMeta>(initialPagination);
 	const [statusFilter, setStatusFilter] = useState<MessageStatus | "all">(initialStatus);
 	const [searchQuery, setSearchQuery] = useState("");
 	const [selectedMessage, setSelectedMessage] = useState<AdminMessage | null>(null);
@@ -64,40 +62,77 @@ export const MessagesManager: React.FC<MessagesManagerProps> = ({
 	const [isMutating, setIsMutating] = useState(false);
 	const [errorMsg, setErrorMsg] = useState<string | null>(initialError);
 
+	const requestIdRef = useRef(0);
+	const searchMountedRef = useRef(false);
+	const pageSize = pagination.pageSize;
 	const dateLocale = localeMap[locale] ?? "de-DE";
 
-	const filteredMessages = useMemo(() => {
-		const q = searchQuery.trim().toLowerCase();
-		return messages.filter((msg) => {
-			if (statusFilter !== "all" && msg.status !== statusFilter) return false;
-			if (!q) return true;
-			return (
-				msg.name.toLowerCase().includes(q) ||
-				msg.email.toLowerCase().includes(q) ||
-				msg.phone.toLowerCase().includes(q) ||
-				msg.message.toLowerCase().includes(q)
-			);
-		});
-	}, [messages, statusFilter, searchQuery]);
-
-	const refreshMessages = async () => {
-		setIsLoading(true);
-		setErrorMsg(null);
-		try {
-			const res = await getAdminMessages({ status: "all" });
-			if (res.success) {
+	const fetchServerMessages = useCallback(
+		async (
+			nextStatus: MessageStatus | "all",
+			nextSearch: string,
+			nextPage: number,
+			refreshRouter: boolean,
+		) => {
+			const reqId = ++requestIdRef.current;
+			setIsLoading(true);
+			setErrorMsg(null);
+			try {
+				const trimmedSearch = nextSearch.trim();
+				const searchParam = trimmedSearch.length > 0 ? trimmedSearch : undefined;
+				let res = await getAdminMessages({
+					status: nextStatus,
+					search: searchParam,
+					page: nextPage,
+					pageSize,
+				});
+				if (reqId !== requestIdRef.current) return;
+				if (!res.success) {
+					setErrorMsg(res.error ?? t("errors.loadFailed"));
+					return;
+				}
+				if (nextPage > res.data.pagination.totalPages) {
+					res = await getAdminMessages({
+						status: nextStatus,
+						search: searchParam,
+						page: res.data.pagination.totalPages,
+						pageSize,
+					});
+					if (reqId !== requestIdRef.current) return;
+					if (!res.success) {
+						setErrorMsg(res.error ?? t("errors.loadFailed"));
+						return;
+					}
+				}
 				setMessages(res.data.messages);
 				setCounts(res.data.counts);
-				router.refresh();
-			} else {
-				setErrorMsg(res.error ?? t("errors.loadFailed"));
+				setPagination(res.data.pagination);
+				if (refreshRouter) router.refresh();
+			} catch (err) {
+				if (reqId !== requestIdRef.current) return;
+				console.error("[MessagesManager] Fetch error:", err);
+				setErrorMsg(t("errors.loadFailed"));
+			} finally {
+				if (reqId === requestIdRef.current) setIsLoading(false);
 			}
-		} catch (err) {
-			console.error("[MessagesManager] Refresh error:", err);
-			setErrorMsg(t("errors.loadFailed"));
-		} finally {
-			setIsLoading(false);
+		},
+		[pageSize, router, t],
+	);
+
+	useEffect(() => {
+		if (!searchMountedRef.current) {
+			searchMountedRef.current = true;
+			return;
 		}
+		const timer = setTimeout(() => {
+			void fetchServerMessages(statusFilter, searchQuery, 1, false);
+		}, 300);
+		return () => clearTimeout(timer);
+	}, [searchQuery, statusFilter, fetchServerMessages]);
+
+	const handleStatusFilterChange = (nextStatus: MessageStatus | "all") => {
+		setStatusFilter(nextStatus);
+		void fetchServerMessages(nextStatus, searchQuery, 1, false);
 	};
 
 	const handleStatusChange = async (id: string, nextStatus: MessageStatus) => {
@@ -106,14 +141,8 @@ export const MessagesManager: React.FC<MessagesManagerProps> = ({
 		try {
 			const res = await updateMessageStatus({ id, status: nextStatus });
 			if (res.success) {
-				const updated = res.data;
-				setMessages((prev) => {
-					const nextList = prev.map((m) => (m.id === id ? updated : m));
-					setCounts(computeCounts(nextList));
-					return nextList;
-				});
-				setSelectedMessage((prev) => (prev && prev.id === id ? updated : prev));
-				router.refresh();
+				setSelectedMessage((prev) => (prev && prev.id === id ? res.data : prev));
+				await fetchServerMessages(statusFilter, searchQuery, pagination.page, true);
 			} else {
 				setErrorMsg(res.error ?? t("errors.updateFailed"));
 			}
@@ -139,15 +168,7 @@ export const MessagesManager: React.FC<MessagesManagerProps> = ({
 		try {
 			const res = await markAllMessagesRead();
 			if (res.success) {
-				const nowIso = new Date().toISOString();
-				setMessages((prev) => {
-					const nextList = prev.map((m) =>
-						m.status === "unread" ? { ...m, status: "read" as const, read_at: nowIso } : m,
-					);
-					setCounts(computeCounts(nextList));
-					return nextList;
-				});
-				router.refresh();
+				await fetchServerMessages(statusFilter, searchQuery, pagination.page, true);
 			} else {
 				setErrorMsg(res.error ?? t("errors.updateFailed"));
 			}
@@ -166,13 +187,8 @@ export const MessagesManager: React.FC<MessagesManagerProps> = ({
 		try {
 			const res = await deleteMessage({ id: deletingId });
 			if (res.success) {
-				setMessages((prev) => {
-					const nextList = prev.filter((m) => m.id !== deletingId);
-					setCounts(computeCounts(nextList));
-					return nextList;
-				});
 				if (selectedMessage?.id === deletingId) setSelectedMessage(null);
-				router.refresh();
+				await fetchServerMessages(statusFilter, searchQuery, pagination.page, true);
 			} else {
 				setErrorMsg(res.error ?? t("errors.deleteFailed"));
 			}
@@ -204,21 +220,21 @@ export const MessagesManager: React.FC<MessagesManagerProps> = ({
 				isLoading={isLoading}
 				isMutating={isMutating}
 				errorMsg={errorMsg}
-				onRefresh={refreshMessages}
+				onRefresh={() => void fetchServerMessages(statusFilter, searchQuery, pagination.page, true)}
 				onMarkAllRead={handleMarkAllRead}
 				onDismissError={() => setErrorMsg(null)}
-				onStatusFilterChange={setStatusFilter}
+				onStatusFilterChange={handleStatusFilterChange}
 				onSearchQueryChange={setSearchQuery}
 			/>
 
-			{filteredMessages.length === 0 ? (
+			{messages.length === 0 ? (
 				<div className="flex flex-col items-center justify-center rounded-xl border border-dashed border-neutral-800 bg-neutral-900/40 py-14 text-center">
 					<Inbox className="mb-3 size-10 text-neutral-600" />
 					<p className="text-sm text-neutral-500">{t("empty")}</p>
 				</div>
 			) : (
 				<div className="space-y-3">
-					{filteredMessages.map((msg) => (
+					{messages.map((msg) => (
 						<MessageCard
 							key={msg.id}
 							message={msg}
@@ -234,6 +250,14 @@ export const MessagesManager: React.FC<MessagesManagerProps> = ({
 					))}
 				</div>
 			)}
+
+			<MessagesPagination
+				pagination={pagination}
+				isLoading={isLoading}
+				onPageChange={(nextPage) =>
+					void fetchServerMessages(statusFilter, searchQuery, nextPage, false)
+				}
+			/>
 
 			<MessageDetailModal
 				message={selectedMessage}

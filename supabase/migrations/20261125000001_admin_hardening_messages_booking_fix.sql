@@ -141,6 +141,49 @@ BEGIN
 END;
 $$;
 
--- 4. Language-Agnostic Chatbot Knowledge Base
+-- 4. Atomic Edit Appointment RPC (single transaction for appointment + services)
+CREATE OR REPLACE FUNCTION public.update_appointment_with_services(
+  p_id UUID,
+  p_first_name TEXT,
+  p_last_name TEXT,
+  p_email TEXT,
+  p_phone TEXT,
+  p_car_description TEXT,
+  p_booking_date DATE,
+  p_status TEXT,
+  p_service_ids UUID[]
+) RETURNS VOID
+LANGUAGE plpgsql
+SET search_path = ''
+AS $$
+DECLARE
+  v_unique_ids UUID[];
+BEGIN
+  UPDATE public.appointments
+  SET
+    first_name = p_first_name,
+    last_name = p_last_name,
+    email = p_email,
+    phone = p_phone,
+    car_description = p_car_description,
+    booking_date = p_booking_date,
+    status = p_status
+  WHERE id = p_id;
+
+  IF NOT FOUND THEN
+    RAISE EXCEPTION 'APPOINTMENT_NOT_FOUND' USING ERRCODE = 'P0002';
+  END IF;
+
+  DELETE FROM public.appointment_services
+  WHERE appointment_id = p_id;
+
+  SELECT ARRAY(SELECT DISTINCT unnest(p_service_ids)) INTO v_unique_ids;
+
+  INSERT INTO public.appointment_services (appointment_id, service_id)
+  SELECT p_id, unnest(v_unique_ids);
+END;
+$$;
+
+-- 5. Language-Agnostic Chatbot Knowledge Base
 ALTER TABLE public.chatbot_knowledge
   ALTER COLUMN language SET DEFAULT 'any';

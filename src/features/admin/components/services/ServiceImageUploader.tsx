@@ -94,26 +94,28 @@ export const ServiceImageUploader: React.FC<ServiceImageUploaderProps> = ({
 							</div>
 						</>
 					) : (
-						<div className="flex flex-col items-center justify-center p-6 text-center text-neutral-500">
-							{isUploading ? (
-								<Loader2 className="mb-2 h-8 w-8 animate-spin text-purple-500" />
-							) : (
-								<ImageIcon className="mb-2 h-8 w-8" />
-							)}
-							<span className="text-sm">
-								{isUploading ? t("form.uploading") : t("form.uploadPrompt")}
-							</span>
-						</div>
+						<>
+							<div className="flex flex-col items-center justify-center p-6 text-center text-neutral-500">
+								{isUploading ? (
+									<Loader2 className="mb-2 h-8 w-8 animate-spin text-purple-500" />
+								) : (
+									<ImageIcon className="mb-2 h-8 w-8" />
+								)}
+								<span className="text-sm">
+									{isUploading ? t("form.uploading") : t("form.uploadPrompt")}
+								</span>
+							</div>
+							<input
+								type="file"
+								ref={fileInputRef}
+								aria-label={t("form.uploadPrompt")}
+								accept="image/png, image/jpeg, image/webp"
+								onChange={handleImageUpload}
+								disabled={isUploading}
+								className="absolute inset-0 cursor-pointer opacity-0 disabled:cursor-not-allowed"
+							/>
+						</>
 					)}
-					<input
-						type="file"
-						ref={fileInputRef}
-						aria-label={t("form.uploadPrompt")}
-						accept="image/png, image/jpeg, image/webp"
-						onChange={handleImageUpload}
-						disabled={isUploading}
-						className="absolute inset-0 cursor-pointer opacity-0 disabled:cursor-not-allowed"
-					/>
 				</div>
 
 				<div className="flex flex-col gap-1.5 text-xs text-neutral-400">
