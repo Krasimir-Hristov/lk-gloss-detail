@@ -11,6 +11,11 @@ export default defineConfig({
 		setupFiles: ["./vitest.setup.ts"],
 		include: ["src/**/*.test.{ts,tsx}"],
 		exclude: ["node_modules", "e2e"],
+		server: {
+			deps: {
+				inline: ["next-intl"],
+			},
+		},
 		alias: {
 			"@": path.resolve(__dirname, "./src"),
 		},

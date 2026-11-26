@@ -4,10 +4,10 @@ import React from "react";
 
 import { LanguageSwitcher } from "@/components/shared/LanguageSwitcher";
 import { logoutAdmin } from "@/features/admin/actions/auth";
+import { getAdminSidebarCountsAction } from "@/features/admin/actions/dashboard";
 import { AdminMobileHeader } from "@/features/admin/components/AdminMobileHeader";
-import { AdminSidebarNav } from "@/features/admin/components/AdminSidebarNav";
-import { isAdminUser } from "@/features/admin/utils/auth";
-import { createClient } from "@/lib/supabase/server";
+import { AdminSidebarNav, type AdminNavItem } from "@/features/admin/components/AdminSidebarNav";
+import { getCachedAdminSession } from "@/lib/auth/requireAdmin";
 
 interface AdminLayoutProps {
 	children: React.ReactNode;
@@ -16,27 +16,51 @@ interface AdminLayoutProps {
 
 const AdminLayout: React.FC<AdminLayoutProps> = async ({ children, params }) => {
 	const { locale } = await params;
-	const t = await getTranslations("Admin");
+	const [session, t, countsRes] = await Promise.all([
+		getCachedAdminSession(),
+		getTranslations("Admin"),
+		getAdminSidebarCountsAction(),
+	]);
 
-	const supabase = await createClient();
-
-	const {
-		data: { user },
-	} = await supabase.auth.getUser();
-
-	const isAdmin = user ? await isAdminUser(supabase, user.id) : false;
-
-	if (!user || !isAdmin) {
+	if (!session) {
 		redirect(`/${locale}/admin/login`);
 	}
 
+	const counts =
+		countsRes.success && countsRes.data
+			? countsRes.data
+			: { pendingAppointments: 0, unreadMessages: 0 };
+
 	const handleLogout = logoutAdmin.bind(null, locale);
 
-	const navItems = [
-		{ href: "/admin", label: t("dashboard.sidebar.overview") },
-		{ href: "/admin/appointments", label: t("dashboard.sidebar.appointments") },
-		{ href: "/admin/services", label: t("dashboard.sidebar.servicesCrud") },
-		{ href: "/admin/chatbot-kb", label: t("dashboard.sidebar.chatbotKb") },
+	const navItems: AdminNavItem[] = [
+		{
+			href: "/admin",
+			label: t("dashboard.sidebar.overview"),
+			iconKey: "overview",
+		},
+		{
+			href: "/admin/appointments",
+			label: t("dashboard.sidebar.appointments"),
+			iconKey: "appointments",
+			badge: counts.pendingAppointments,
+		},
+		{
+			href: "/admin/messages",
+			label: t("dashboard.sidebar.messages"),
+			iconKey: "messages",
+			badge: counts.unreadMessages,
+		},
+		{
+			href: "/admin/services",
+			label: t("dashboard.sidebar.servicesCrud"),
+			iconKey: "services",
+		},
+		{
+			href: "/admin/chatbot-kb",
+			label: t("dashboard.sidebar.chatbotKb"),
+			iconKey: "chatbotKb",
+		},
 	];
 
 	return (
@@ -47,7 +71,7 @@ const AdminLayout: React.FC<AdminLayoutProps> = async ({ children, params }) => 
 				subtitle={t("dashboard.title")}
 				managementLabel={t("dashboard.sidebar.management")}
 				items={navItems}
-				userEmail={user?.email}
+				userEmail={session.user.email}
 				logoutAction={handleLogout}
 				logoutLabel={t("logoutButton")}
 			/>
@@ -71,12 +95,13 @@ const AdminLayout: React.FC<AdminLayoutProps> = async ({ children, params }) => 
 				<div className="shrink-0 border-t border-neutral-800 pt-4">
 					<div className="mb-4 flex items-center justify-between">
 						<div className="truncate pr-2">
-							<p className="truncate text-xs text-neutral-400">{user?.email}</p>
+							<p className="truncate text-xs text-neutral-400">{session.user.email}</p>
 						</div>
 					</div>
 					<form action={handleLogout}>
 						<button
 							type="submit"
+							aria-label={t("logoutButton")}
 							className="flex w-full cursor-pointer items-center justify-center gap-2 rounded-md border border-red-500/20 bg-red-950/10 px-4 py-2 text-sm font-medium text-red-400 transition-all duration-200 hover:border-red-500/40 hover:bg-red-950/30"
 						>
 							{t("logoutButton")}

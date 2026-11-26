@@ -1,132 +1,102 @@
-import {
-	CalendarDays,
-	Clock,
-	MessageSquare,
-	Wrench,
-	BrainCircuit,
-	AlertCircle,
-} from "lucide-react";
+import { CalendarDays, Clock, MessageSquare, AlertCircle, ArrowUpRight } from "lucide-react";
 import React from "react";
 
+import { Link } from "@/i18n/routing";
+
 interface MetricCardProps {
+	href: string;
 	title: string;
 	value: number;
 	description: string;
-	gradientFrom: string;
-	gradientTo: string;
+	accentBarClass: string;
+	iconBgClass: string;
 	icon: React.ReactNode;
 }
 
 const MetricCard: React.FC<MetricCardProps> = ({
+	href,
 	title,
 	value,
 	description,
-	gradientFrom,
-	gradientTo,
+	accentBarClass,
+	iconBgClass,
 	icon,
 }) => (
-	<div className="group relative overflow-hidden rounded-xl border border-neutral-800 bg-neutral-900 p-6 shadow-lg transition-all duration-300 hover:border-neutral-700 hover:shadow-xl">
-		<div
-			className="absolute top-0 left-0 h-full w-1"
-			style={{
-				background: `linear-gradient(to bottom, ${gradientFrom}, ${gradientTo})`,
-			}}
-		/>
-		<div className="flex items-start justify-between">
-			<div>
-				<h3 className="text-xs font-semibold tracking-wider text-neutral-400 uppercase">{title}</h3>
-				<p className="Montserrat mt-3 text-4xl font-extrabold text-white">{value}</p>
-				<span className="mt-2 block text-xs text-neutral-500">{description}</span>
+	<Link
+		href={href}
+		aria-label={`${title}: ${value}`}
+		className="group relative overflow-hidden rounded-xl border border-neutral-800 bg-neutral-900 p-5 shadow-lg transition-all duration-300 hover:border-purple-500/40 hover:bg-neutral-900/90 hover:shadow-xl"
+	>
+		<div className={`absolute top-0 left-0 h-full w-1 ${accentBarClass}`} />
+		<div className="flex items-start justify-between gap-3">
+			<div className="min-w-0">
+				<h3 className="flex items-center gap-1.5 text-xs font-semibold tracking-wider text-neutral-400 uppercase">
+					<span className="truncate">{title}</span>
+					<ArrowUpRight className="size-3.5 shrink-0 text-neutral-600 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5 group-hover:text-purple-400" />
+				</h3>
+				<p className="Montserrat mt-2.5 text-3xl font-extrabold text-white">{value}</p>
+				<span className="mt-1.5 block truncate text-xs text-neutral-500">{description}</span>
 			</div>
 			<div
-				className="rounded-lg p-2.5 opacity-60 transition-opacity group-hover:opacity-100"
-				style={{
-					background: `linear-gradient(135deg, ${gradientFrom}20, ${gradientTo}20)`,
-				}}
+				className={`shrink-0 rounded-lg p-2.5 transition-opacity group-hover:opacity-100 ${iconBgClass}`}
 			>
 				{icon}
 			</div>
 		</div>
-	</div>
+	</Link>
 );
 
 interface DashboardMetricsGridProps {
-	totalAppointments: number;
+	pendingCount: number;
+	unreadMessagesCount: number;
 	todayCount: number;
 	upcomingCount: number;
-	pendingCount: number;
-	monthlySubmissions: number;
-	activeServices: number;
-	knowledgeChunks: number;
 	t: (key: string) => string;
 }
 
 export const DashboardMetricsGrid: React.FC<DashboardMetricsGridProps> = ({
-	totalAppointments,
+	pendingCount,
+	unreadMessagesCount,
 	todayCount,
 	upcomingCount,
-	pendingCount,
-	monthlySubmissions,
-	activeServices,
-	knowledgeChunks,
 	t,
 }) => (
 	<div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
 		<MetricCard
-			title={t("cards.appointments.title")}
-			value={totalAppointments}
-			description={t("cards.appointments.desc")}
-			gradientFrom="#a855f7"
-			gradientTo="#6366f1"
-			icon={<CalendarDays className="h-5 w-5 text-purple-400" />}
-		/>
-		<MetricCard
-			title={t("cards.today.title")}
-			value={todayCount}
-			description={t("cards.today.desc")}
-			gradientFrom="#22d3ee"
-			gradientTo="#3b82f6"
-			icon={<Clock className="h-5 w-5 text-cyan-400" />}
-		/>
-		<MetricCard
+			href="/admin/appointments?status=pending"
 			title={t("cards.pending.title")}
 			value={pendingCount}
 			description={t("cards.pending.desc")}
-			gradientFrom="#f59e0b"
-			gradientTo="#ef4444"
+			accentBarClass="bg-linear-to-b from-amber-500 to-red-500"
+			iconBgClass="bg-linear-to-br from-amber-500/15 to-red-500/15"
 			icon={<AlertCircle className="h-5 w-5 text-amber-400" />}
 		/>
 		<MetricCard
+			href="/admin/messages?status=unread"
+			title={t("cards.unreadMessages.title")}
+			value={unreadMessagesCount}
+			description={t("cards.unreadMessages.desc")}
+			accentBarClass="bg-linear-to-b from-purple-500 to-pink-500"
+			iconBgClass="bg-linear-to-br from-purple-500/15 to-pink-500/15"
+			icon={<MessageSquare className="h-5 w-5 text-purple-400" />}
+		/>
+		<MetricCard
+			href="/admin/appointments"
+			title={t("cards.today.title")}
+			value={todayCount}
+			description={t("cards.today.desc")}
+			accentBarClass="bg-linear-to-b from-cyan-400 to-blue-500"
+			iconBgClass="bg-linear-to-br from-cyan-400/15 to-blue-500/15"
+			icon={<Clock className="h-5 w-5 text-cyan-400" />}
+		/>
+		<MetricCard
+			href="/admin/appointments"
 			title={t("cards.upcoming.title")}
 			value={upcomingCount}
 			description={t("cards.upcoming.desc")}
-			gradientFrom="#10b981"
-			gradientTo="#06b6d4"
+			accentBarClass="bg-linear-to-b from-emerald-500 to-cyan-500"
+			iconBgClass="bg-linear-to-br from-emerald-500/15 to-cyan-500/15"
 			icon={<CalendarDays className="h-5 w-5 text-emerald-400" />}
-		/>
-		<MetricCard
-			title={t("cards.contact.title")}
-			value={monthlySubmissions}
-			description={t("cards.contact.desc")}
-			gradientFrom="#ec4899"
-			gradientTo="#f43f5e"
-			icon={<MessageSquare className="h-5 w-5 text-pink-400" />}
-		/>
-		<MetricCard
-			title={t("cards.services.title")}
-			value={activeServices}
-			description={t("cards.services.desc")}
-			gradientFrom="#3b82f6"
-			gradientTo="#06b6d4"
-			icon={<Wrench className="h-5 w-5 text-blue-400" />}
-		/>
-		<MetricCard
-			title={t("cards.chatbot.title")}
-			value={knowledgeChunks}
-			description={t("cards.chatbot.desc")}
-			gradientFrom="#f59e0b"
-			gradientTo="#eab308"
-			icon={<BrainCircuit className="h-5 w-5 text-amber-400" />}
 		/>
 	</div>
 );

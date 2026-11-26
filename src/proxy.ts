@@ -5,6 +5,7 @@ import createMiddleware from "next-intl/middleware";
 import { isAdminUser } from "@/features/admin/utils/auth";
 import { resolveClientIp } from "@/lib/http/resolveClientIp";
 import { rateLimit, ASSESSMENT_RATE_LIMIT, CHATBOT_RATE_LIMIT } from "@/lib/rateLimit";
+import { getPublicSupabaseEnv } from "@/lib/supabase/env";
 
 import { routing } from "./i18n/routing";
 
@@ -46,10 +47,10 @@ export default async function proxy(request: NextRequest) {
 			request: currentRequest,
 		});
 
-		const supabase = createServerClient(
-			process.env.NEXT_PUBLIC_SUPABASE_URL!,
-			process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY!,
-			{
+		try {
+			const { url: supabaseUrl, key: supabaseKey } = getPublicSupabaseEnv();
+
+			const supabase = createServerClient(supabaseUrl, supabaseKey, {
 				cookies: {
 					getAll() {
 						return currentRequest.cookies.getAll();
@@ -64,10 +65,8 @@ export default async function proxy(request: NextRequest) {
 						);
 					},
 				},
-			},
-		);
+			});
 
-		try {
 			const {
 				data: { user },
 			} = await supabase.auth.getUser();

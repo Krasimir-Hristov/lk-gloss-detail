@@ -1,14 +1,35 @@
 "use server";
 
+import { revalidatePath } from "next/cache";
+import { headers } from "next/headers";
+
 import { ContactFormSchema } from "@/features/contact/schemas/contactSchema";
-import { getResend } from "@/lib/resend";
+import { routing } from "@/i18n/routing";
+import { resolveClientIp } from "@/lib/http/resolveClientIp";
+import { rateLimit } from "@/lib/rateLimit";
 import { createServiceClient } from "@/lib/supabase/service";
 
 import type { ContactFormData } from "@/features/contact/schemas/contactSchema";
 
+const CONTACT_ACTION_RATE_LIMIT = {
+	interval: 300_000, // 5 minutes
+	maxRequests: 3,
+} as const;
+
 type ContactResult =
 	| { success: true }
-	| { success: false; error: "INVALID_DATA" | "INTERNAL_ERROR" };
+	| { success: false; error: "INVALID_DATA" | "TOO_MANY_REQUESTS" | "INTERNAL_ERROR" };
+
+const revalidateAdminMessages = (): void => {
+	for (const loc of routing.locales) {
+		try {
+			revalidatePath(`/${loc}/admin`);
+			revalidatePath(`/${loc}/admin/messages`);
+		} catch {
+			// Ignore if called outside Next.js request context (e.g. unit tests)
+		}
+	}
+};
 
 export const submitContact = async (data: ContactFormData): Promise<ContactResult> => {
 	try {
@@ -21,8 +42,21 @@ export const submitContact = async (data: ContactFormData): Promise<ContactResul
 			return { success: false, error: "INVALID_DATA" };
 		}
 
-		const { name, email, phone, message } = parsed.data;
+		let ip = "unknown";
+		try {
+			const headerList = await headers();
+			ip = resolveClientIp(headerList);
+		} catch {
+			// Outside Next.js request context (e.g. direct unit test invocation)
+		}
 
+		const rateLimitResult = rateLimit(`${ip}:contactAction`, CONTACT_ACTION_RATE_LIMIT);
+		if (!rateLimitResult.success) {
+			console.warn(`[contact/submit] Rate limit exceeded for IP: ${ip}`);
+			return { success: false, error: "TOO_MANY_REQUESTS" };
+		}
+
+		const { name, email, phone, message } = parsed.data;
 		const supabase = createServiceClient();
 
 		const { error: dbError } = await (
@@ -46,33 +80,7 @@ export const submitContact = async (data: ContactFormData): Promise<ContactResul
 			return { success: false, error: "INTERNAL_ERROR" };
 		}
 
-		const contactEmail = process.env.CONTACT_EMAIL;
-		console.warn("[contact/submit] CONTACT_EMAIL:", contactEmail);
-		if (contactEmail) {
-			try {
-				const resend = getResend();
-				console.warn("[contact/submit] Sending email via Resend...");
-				const { data: emailData, error: emailError } = await resend.emails.send({
-					from: "LK Gloss & Detail <onboarding@resend.dev>",
-					to: contactEmail,
-					subject: `Neue Kontaktanfrage von ${name}`,
-					text: `Name: ${name}\nE-Mail: ${email}\nTelefon: ${phone}\nNachricht: ${message}\n\nDiese Nachricht wurde über das Kontaktformular auf lkglossanddetail.de gesendet.`,
-				});
-				if (emailError) {
-					console.error("[contact/submit] Resend error:", JSON.stringify(emailError));
-				} else {
-					console.warn("[contact/submit] Email sent, ID:", emailData?.id);
-				}
-			} catch (emailError) {
-				console.error(
-					"[contact/submit] Email send exception:",
-					emailError instanceof Error ? emailError.message : emailError,
-				);
-			}
-		} else {
-			console.warn("[contact/submit] CONTACT_EMAIL is not set!");
-		}
-
+		revalidateAdminMessages();
 		return { success: true };
 	} catch (err: unknown) {
 		const errMsg = err instanceof Error ? err.message : "Unknown error";

@@ -2,12 +2,18 @@
 
 import { z } from "zod";
 
-import { createClient } from "@/lib/supabase/server";
+import { AdminMessageSchema } from "@/features/admin/schemas/messagesSchema";
+import { requireAdmin } from "@/lib/auth/requireAdmin";
+import { addDaysBerlinIso, getBerlinTodayIso } from "@/lib/date/berlinDate";
 
 import type {
 	AdminAppointment,
 	AppointmentServiceItem,
 } from "@/features/admin/types/appointmentsTypes";
+import type { AdminSidebarCounts, DashboardOverview } from "@/features/admin/types/dashboardTypes";
+import type { AdminMessage } from "@/features/admin/types/messagesTypes";
+
+export type ActionResult<T> = { success: true; data: T } | { success: false; error: string };
 
 // ── Zod Validation Schemas for Supabase Rows ─────────────────────────────
 
@@ -38,178 +44,187 @@ const RawAppointmentRowSchema = z.object({
 	appointment_services: z.array(SupabaseAppointmentJoinSchema).optional().nullable(),
 });
 
-export interface DashboardOverview {
-	todaysAppointments: AdminAppointment[];
-	upcomingAppointments: AdminAppointment[];
-	metrics: {
-		totalAppointments: number;
-		monthlySubmissions: number;
-		activeServices: number;
-		knowledgeChunks: number;
-		todayCount: number;
-		upcomingCount: number;
-		pendingCount: number;
-	};
-}
+const APPOINTMENT_SELECT =
+	"id, first_name, last_name, email, phone, car_description, booking_date, status, created_at, appointment_services(services(id, name, price_small, price_medium, price_large, price_suv, duration_hours))";
 
-/**
- * Formats a Date object into a YYYY-MM-DD string in local business time,
- * avoiding UTC date boundary shifts caused by toISOString().
- */
-function formatLocalDate(d: Date): string {
-	const year = d.getFullYear();
-	const month = String(d.getMonth() + 1).padStart(2, "0");
-	const day = String(d.getDate()).padStart(2, "0");
-	return `${year}-${month}-${day}`;
-}
+const parseAndMapAppointments = (rows: unknown[] | null): AdminAppointment[] => {
+	if (!rows || rows.length === 0) return [];
+	const mapped: AdminAppointment[] = [];
 
-export async function getDashboardOverviewAction(): Promise<{
-	success: boolean;
-	data?: DashboardOverview;
-	error?: string;
-}> {
+	for (const raw of rows) {
+		const parseResult = RawAppointmentRowSchema.safeParse(raw);
+		if (!parseResult.success) {
+			console.warn("[Dashboard] Appointment row validation failed:", parseResult.error.flatten());
+			continue;
+		}
+
+		const row = parseResult.data;
+		const joinedServices = row.appointment_services ?? [];
+
+		const services: AppointmentServiceItem[] = joinedServices
+			.map((j) => j.services)
+			.filter((s): s is z.infer<typeof SupabaseServiceRecordSchema> => s !== null)
+			.map((s) => ({
+				id: s.id,
+				name: s.name ?? "",
+				price_small: s.price_small ?? 0,
+				price_medium: s.price_medium ?? 0,
+				price_large: s.price_large ?? 0,
+				price_suv: s.price_suv ?? 0,
+				duration_hours: s.duration_hours ?? 0,
+			}));
+
+		mapped.push({
+			id: row.id,
+			first_name: row.first_name,
+			last_name: row.last_name,
+			email: row.email,
+			phone: row.phone,
+			car_description: row.car_description ?? null,
+			booking_date: row.booking_date,
+			status: row.status,
+			created_at: row.created_at,
+			services,
+		});
+	}
+
+	return mapped;
+};
+
+const parseMessages = (rows: unknown[] | null): AdminMessage[] => {
+	if (!rows || rows.length === 0) return [];
+	const parsed: AdminMessage[] = [];
+
+	for (const raw of rows) {
+		const res = AdminMessageSchema.safeParse(raw);
+		if (res.success) {
+			parsed.push(res.data);
+		} else {
+			console.warn("[Dashboard] Message row validation failed:", res.error.flatten());
+		}
+	}
+
+	return parsed;
+};
+
+export const getDashboardOverviewAction = async (): Promise<ActionResult<DashboardOverview>> => {
 	try {
-		const supabase = await createClient();
+		const auth = await requireAdmin();
+		if (!auth.authorized) {
+			return { success: false, error: auth.error };
+		}
 
-		const today = new Date();
-		const todayStr = formatLocalDate(today);
+		const { supabase } = auth;
+		const todayIso = getBerlinTodayIso();
+		const nextWeekIso = addDaysBerlinIso(todayIso, 7);
 
-		const nextWeek = new Date(today);
-		nextWeek.setDate(nextWeek.getDate() + 7);
-		const nextWeekStr = formatLocalDate(nextWeek);
+		const [todaysRes, upcomingRes, pendingRes, unreadCountRes, recentUnreadRes] = await Promise.all(
+			[
+				supabase
+					.from("appointments")
+					.select(APPOINTMENT_SELECT)
+					.eq("booking_date", todayIso)
+					.neq("status", "cancelled")
+					.order("created_at", { ascending: true }),
 
-		const monthStart = formatLocalDate(new Date(today.getFullYear(), today.getMonth(), 1));
+				supabase
+					.from("appointments")
+					.select(APPOINTMENT_SELECT)
+					.gt("booking_date", todayIso)
+					.lte("booking_date", nextWeekIso)
+					.neq("status", "cancelled")
+					.order("booking_date", { ascending: true }),
 
-		// Fetch all data in parallel
-		const [
-			todaysRes,
-			upcomingRes,
-			totalAppointmentsRes,
-			monthlyContactRes,
-			activeServicesRes,
-			knowledgeRes,
-			pendingRes,
-		] = await Promise.all([
-			// Today's appointments with services
-			supabase
-				.from("appointments")
-				.select(
-					"*, appointment_services(services(id, name, price_small, price_medium, price_large, price_suv, duration_hours))",
-				)
-				.eq("booking_date", todayStr)
-				.order("created_at", { ascending: true }),
+				supabase
+					.from("appointments")
+					.select("*", { count: "exact", head: true })
+					.eq("status", "pending"),
 
-			// Upcoming 7 days (excluding today)
-			supabase
-				.from("appointments")
-				.select(
-					"*, appointment_services(services(id, name, price_small, price_medium, price_large, price_suv, duration_hours))",
-				)
-				.gt("booking_date", todayStr)
-				.lte("booking_date", nextWeekStr)
-				.order("booking_date", { ascending: true }),
+				supabase
+					.from("contact_submissions")
+					.select("*", { count: "exact", head: true })
+					.eq("status", "unread"),
 
-			// Total appointments count
-			supabase.from("appointments").select("*", { count: "exact", head: true }),
+				supabase
+					.from("contact_submissions")
+					.select("id, name, email, phone, message, status, read_at, created_at")
+					.eq("status", "unread")
+					.order("created_at", { ascending: false })
+					.limit(5),
+			],
+		);
 
-			// Monthly contact submissions count
-			supabase
-				.from("contact_submissions")
-				.select("*", { count: "exact", head: true })
-				.gte("created_at", monthStart),
+		const queryError =
+			todaysRes.error ||
+			upcomingRes.error ||
+			pendingRes.error ||
+			unreadCountRes.error ||
+			recentUnreadRes.error;
 
-			// Active services count
-			supabase.from("services").select("*", { count: "exact", head: true }).eq("active", true),
+		if (queryError) {
+			console.error("[Dashboard] Database query error:", queryError.message);
+			return { success: false, error: "Failed to load dashboard data." };
+		}
 
-			// Knowledge chunks count
-			supabase.from("chatbot_knowledge").select("*", { count: "exact", head: true }),
+		const todaysAppointments = parseAndMapAppointments(todaysRes.data);
+		const upcomingAppointments = parseAndMapAppointments(upcomingRes.data);
+		const recentUnreadMessages = parseMessages(recentUnreadRes.data);
 
-			// Pending appointments count
+		return {
+			success: true,
+			data: {
+				todaysAppointments,
+				upcomingAppointments,
+				recentUnreadMessages,
+				metrics: {
+					pendingCount: pendingRes.count ?? 0,
+					unreadMessagesCount: unreadCountRes.count ?? 0,
+					todayCount: todaysAppointments.length,
+					upcomingCount: upcomingAppointments.length,
+				},
+			},
+		};
+	} catch (error: unknown) {
+		console.error("[Dashboard] Failed to fetch overview:", error);
+		return { success: false, error: "Failed to load dashboard data." };
+	}
+};
+
+export const getAdminSidebarCountsAction = async (): Promise<ActionResult<AdminSidebarCounts>> => {
+	try {
+		const auth = await requireAdmin();
+		if (!auth.authorized) {
+			return { success: false, error: auth.error };
+		}
+
+		const { supabase } = auth;
+
+		const [pendingRes, unreadRes] = await Promise.all([
 			supabase
 				.from("appointments")
 				.select("*", { count: "exact", head: true })
 				.eq("status", "pending"),
+			supabase
+				.from("contact_submissions")
+				.select("*", { count: "exact", head: true })
+				.eq("status", "unread"),
 		]);
 
-		// Check for query errors across all responses
-		const queryError =
-			todaysRes.error ||
-			upcomingRes.error ||
-			totalAppointmentsRes.error ||
-			monthlyContactRes.error ||
-			activeServicesRes.error ||
-			knowledgeRes.error ||
-			pendingRes.error;
-
-		if (queryError) {
-			console.error("[Dashboard] Database query error:", queryError.message);
-			return { success: false, error: queryError.message };
+		if (pendingRes.error || unreadRes.error) {
+			const msg = pendingRes.error?.message ?? unreadRes.error?.message ?? "Unknown error";
+			console.error("[Dashboard/SidebarCounts] DB error:", msg);
+			return { success: false, error: "Failed to fetch sidebar counts." };
 		}
 
-		const parseAndMapAppointments = (rows: unknown[] | null): AdminAppointment[] => {
-			if (!rows || rows.length === 0) return [];
-			const mapped: AdminAppointment[] = [];
-
-			for (const raw of rows) {
-				const parseResult = RawAppointmentRowSchema.safeParse(raw);
-				if (!parseResult.success) {
-					console.warn(
-						"[Dashboard] Appointment row validation failed:",
-						parseResult.error.flatten(),
-					);
-					continue;
-				}
-
-				const row = parseResult.data;
-				const joinedServices = row.appointment_services || [];
-
-				const services: AppointmentServiceItem[] = joinedServices
-					.map((j) => j.services)
-					.filter((s): s is z.infer<typeof SupabaseServiceRecordSchema> => s !== null)
-					.map((s) => ({
-						id: s.id,
-						name: s.name ?? "",
-						price_small: s.price_small ?? 0,
-						price_medium: s.price_medium ?? 0,
-						price_large: s.price_large ?? 0,
-						price_suv: s.price_suv ?? 0,
-						duration_hours: s.duration_hours ?? 0,
-					}));
-
-				mapped.push({
-					id: row.id,
-					first_name: row.first_name,
-					last_name: row.last_name,
-					email: row.email,
-					phone: row.phone,
-					car_description: row.car_description ?? null,
-					booking_date: row.booking_date,
-					status: row.status,
-					created_at: row.created_at,
-					services,
-				});
-			}
-
-			return mapped;
-		};
-
-		const data: DashboardOverview = {
-			todaysAppointments: parseAndMapAppointments(todaysRes.data),
-			upcomingAppointments: parseAndMapAppointments(upcomingRes.data),
-			metrics: {
-				totalAppointments: totalAppointmentsRes.count ?? 0,
-				monthlySubmissions: monthlyContactRes.count ?? 0,
-				activeServices: activeServicesRes.count ?? 0,
-				knowledgeChunks: knowledgeRes.count ?? 0,
-				todayCount: todaysRes.data?.length ?? 0,
-				upcomingCount: upcomingRes.data?.length ?? 0,
-				pendingCount: pendingRes.count ?? 0,
+		return {
+			success: true,
+			data: {
+				pendingAppointments: pendingRes.count ?? 0,
+				unreadMessages: unreadRes.count ?? 0,
 			},
 		};
-
-		return { success: true, data };
-	} catch (error) {
-		console.error("[Dashboard] Failed to fetch overview:", error);
-		return { success: false, error: "Failed to load dashboard data." };
+	} catch (error: unknown) {
+		console.error("[Dashboard/SidebarCounts] Unexpected error:", error);
+		return { success: false, error: "Failed to fetch sidebar counts." };
 	}
-}
+};

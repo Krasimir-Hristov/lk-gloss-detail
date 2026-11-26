@@ -1,4 +1,4 @@
-import { CalendarRange, User, Clock } from "lucide-react";
+import { CalendarRange, User, Clock, Phone } from "lucide-react";
 import React from "react";
 
 import {
@@ -19,6 +19,8 @@ const localeMap: Record<string, string> = {
 	en: "en-US",
 	el: "el-GR",
 };
+
+const sanitizeTel = (phone: string): string => phone.replace(/[^\d+]/g, "");
 
 export const UpcomingAppointmentsWidget: React.FC<UpcomingAppointmentsWidgetProps> = ({
 	appointments,
@@ -80,6 +82,7 @@ export const UpcomingAppointmentsWidget: React.FC<UpcomingAppointmentsWidgetProp
 								<div className="space-y-2">
 									{grouped[date].map((apt) => {
 										const serviceName = getAppointmentServiceNames(apt.services, locale);
+										const telTarget = sanitizeTel(apt.phone);
 
 										return (
 											<div
@@ -100,11 +103,23 @@ export const UpcomingAppointmentsWidget: React.FC<UpcomingAppointmentsWidgetProp
 														</span>
 													</div>
 												</div>
-												<span
-													className={`w-fit rounded-full border px-2.5 py-0.5 text-xs font-medium ${statusColors[apt.status] ?? statusColors.pending}`}
-												>
-													{t(`status.${apt.status}`)}
-												</span>
+												<div className="flex items-center gap-2">
+													{telTarget ? (
+														<a
+															href={`tel:${telTarget}`}
+															aria-label={`${t("actions.call")} ${apt.first_name} ${apt.last_name}`}
+															className="inline-flex items-center gap-1 rounded-lg border border-emerald-500/25 bg-emerald-500/10 px-2 py-0.5 text-xs font-semibold text-emerald-300 transition-colors hover:border-emerald-500/45 hover:bg-emerald-500/20"
+														>
+															<Phone className="h-3 w-3" />
+															<span>{t("actions.call")}</span>
+														</a>
+													) : null}
+													<span
+														className={`w-fit rounded-full border px-2.5 py-0.5 text-xs font-medium ${statusColors[apt.status] ?? statusColors.pending}`}
+													>
+														{t(`status.${apt.status}`)}
+													</span>
+												</div>
 											</div>
 										);
 									})}

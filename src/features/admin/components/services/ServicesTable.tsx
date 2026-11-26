@@ -1,12 +1,10 @@
-import { Edit2, Trash2, Image as ImageIcon } from "lucide-react";
+import { Edit2, Image as ImageIcon, Trash2 } from "lucide-react";
 import Image from "next/image";
 import { useLocale, useTranslations } from "next-intl";
 import React from "react";
 
-import { getLocalizedText } from "@/features/admin/types/servicesTypes";
+import { getLocalizedText, type AdminServiceItem } from "@/features/admin/types/servicesTypes";
 import { getIcon } from "@/lib/iconMap";
-
-import type { AdminServiceItem } from "@/features/admin/types/servicesTypes";
 
 interface ServicesTableProps {
 	services: AdminServiceItem[];
@@ -14,6 +12,8 @@ interface ServicesTableProps {
 	onDelete: (service: AdminServiceItem) => void;
 	onToggleActive: (id: string, currentStatus: boolean) => Promise<void>;
 }
+
+const KNOWN_CATEGORIES = new Set(["exterior", "interior", "paint", "protection", "other"]);
 
 export const ServicesTable: React.FC<ServicesTableProps> = ({
 	services,
@@ -52,10 +52,12 @@ export const ServicesTable: React.FC<ServicesTableProps> = ({
 						const IconComponent = getIcon(service.icon);
 						const nameStr = getLocalizedText(service.name, locale);
 						const descStr = getLocalizedText(service.short_description, locale);
+						const categoryLabel = KNOWN_CATEGORIES.has(service.category)
+							? t(`categories.${service.category}`)
+							: service.category;
 
 						return (
 							<tr key={service.id} className="transition-colors hover:bg-neutral-800/50">
-								{/* Image */}
 								<td className="px-4 py-3">
 									<div className="relative h-12 w-16 overflow-hidden rounded-md bg-neutral-800">
 										{service.image_url ? (
@@ -68,12 +70,11 @@ export const ServicesTable: React.FC<ServicesTableProps> = ({
 									</div>
 								</td>
 
-								{/* Name & Icon */}
 								<td className="px-4 py-3">
 									<div className="flex items-center gap-3">
-										<div className="flex h-8 w-8 items-center justify-center rounded-lg bg-neutral-800">
+										<div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg border border-purple-500/20 bg-purple-950/30">
 											{React.createElement(IconComponent, {
-												className: "h-4 w-4 text-blue-400",
+												className: "h-4 w-4 text-purple-400",
 											})}
 										</div>
 										<div>
@@ -85,14 +86,12 @@ export const ServicesTable: React.FC<ServicesTableProps> = ({
 									</div>
 								</td>
 
-								{/* Category */}
 								<td className="px-4 py-3">
-									<span className="inline-flex items-center rounded-full bg-neutral-800 px-2.5 py-0.5 text-xs font-medium text-neutral-300">
-										{service.category}
+									<span className="inline-flex items-center rounded-full border border-neutral-700 bg-neutral-800 px-2.5 py-0.5 text-xs font-medium text-neutral-300">
+										{categoryLabel}
 									</span>
 								</td>
 
-								{/* Pricing */}
 								<td className="px-4 py-3 text-xs">
 									<div className="flex flex-col gap-1 text-neutral-400">
 										<span>
@@ -104,16 +103,16 @@ export const ServicesTable: React.FC<ServicesTableProps> = ({
 									</div>
 								</td>
 
-								{/* Duration */}
 								<td className="px-4 py-3">{service.duration_hours}h</td>
 
-								{/* Active Toggle */}
 								<td className="px-4 py-3 text-center">
 									<button
 										type="button"
 										onClick={() => onToggleActive(service.id, service.active)}
+										aria-label={`${t("columns.active")}: ${nameStr}`}
+										aria-pressed={service.active}
 										className={`relative inline-flex h-5 w-9 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-hidden ${
-											service.active ? "bg-blue-600" : "bg-neutral-700"
+											service.active ? "bg-purple-600" : "bg-neutral-700"
 										}`}
 									>
 										<span
@@ -124,23 +123,23 @@ export const ServicesTable: React.FC<ServicesTableProps> = ({
 									</button>
 								</td>
 
-								{/* Sort Order */}
 								<td className="px-4 py-3 text-center text-neutral-400">{service.sort_order}</td>
 
-								{/* Actions */}
 								<td className="px-4 py-3 text-right">
 									<div className="flex items-center justify-end gap-2">
 										<button
+											type="button"
 											onClick={() => onEdit(service)}
-											className="rounded-lg bg-neutral-800 p-2 text-neutral-400 transition-colors hover:bg-neutral-700 hover:text-white"
-											title={t("edit")}
+											aria-label={`${t("edit")} ${nameStr}`}
+											className="cursor-pointer rounded-lg bg-neutral-800 p-2 text-neutral-400 transition-colors hover:bg-neutral-700 hover:text-white"
 										>
 											<Edit2 className="h-4 w-4" />
 										</button>
 										<button
+											type="button"
 											onClick={() => onDelete(service)}
-											className="rounded-lg bg-red-950/30 p-2 text-red-400 transition-colors hover:bg-red-900/50 hover:text-red-300"
-											title={t("delete.title")}
+											aria-label={`${t("delete.title")} ${nameStr}`}
+											className="cursor-pointer rounded-lg bg-red-950/30 p-2 text-red-400 transition-colors hover:bg-red-900/50 hover:text-red-300"
 										>
 											<Trash2 className="h-4 w-4" />
 										</button>

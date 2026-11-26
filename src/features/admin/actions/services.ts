@@ -1,45 +1,35 @@
 "use server";
 
-import { revalidatePath } from "next/cache";
 import { v4 as uuidv4 } from "uuid";
+import { z } from "zod";
 
-import { ServiceInputSchema, type ServiceInput } from "@/features/admin/schemas/servicesSchema";
-import { isAdminUser } from "@/features/admin/utils/auth";
-import { routing } from "@/i18n/routing";
-import { translateServiceText } from "@/lib/ai/translation";
-import { createClient } from "@/lib/supabase/server";
+import {
+	createService as createServiceMutation,
+	deleteService as deleteServiceMutation,
+	toggleServiceActive as toggleServiceActiveMutation,
+	updateService as updateServiceMutation,
+} from "@/features/admin/actions/serviceMutations";
+import { AdminServiceRowSchema } from "@/lib/admin/serviceHelpers";
+import { requireAdmin } from "@/lib/auth/requireAdmin";
 
+import type { ServiceFormInput } from "@/features/admin/schemas/servicesSchema";
 import type { AdminServiceItem } from "@/features/admin/types/servicesTypes";
 
 export type ActionResult<T> = { success: true; data: T } | { success: false; error: string };
 
-const revalidateServicePaths = () => {
-	for (const loc of routing.locales) {
-		try {
-			revalidatePath(`/${loc}/admin/services`);
-			revalidatePath(`/${loc}/services`);
-			revalidatePath(`/${loc}`);
-			revalidatePath(`/${loc}/assessment`);
-		} catch {
-			// Ignore if outside request context
-		}
-	}
+const MAX_IMAGE_BYTES = 5 * 1024 * 1024;
+const ALLOWED_IMAGE_MIME_TO_EXT: Record<string, string> = {
+	"image/jpeg": "jpg",
+	"image/png": "png",
+	"image/webp": "webp",
 };
 
 export const getAdminServices = async (): Promise<ActionResult<AdminServiceItem[]>> => {
 	try {
-		const supabase = await createClient();
+		const auth = await requireAdmin();
+		if (!auth.authorized) return { success: false, error: auth.error };
 
-		const {
-			data: { user },
-			error: authError,
-		} = await supabase.auth.getUser();
-
-		if (authError || !user || !(await isAdminUser(supabase, user.id))) {
-			return { success: false, error: "Unauthorized access" };
-		}
-
-		const { data, error } = await supabase
+		const { data, error } = await auth.supabase
 			.from("services")
 			.select("*")
 			.order("sort_order", { ascending: true });
@@ -49,219 +39,65 @@ export const getAdminServices = async (): Promise<ActionResult<AdminServiceItem[
 			return { success: false, error: "Failed to fetch services" };
 		}
 
-		return { success: true, data: data as AdminServiceItem[] };
+		const parsed = z.array(AdminServiceRowSchema).safeParse(data ?? []);
+		if (!parsed.success) {
+			console.error("[getAdminServices] Row validation error:", parsed.error.flatten());
+			return { success: false, error: "Invalid service records in database" };
+		}
+
+		return { success: true, data: parsed.data };
 	} catch (err: unknown) {
 		console.error("[getAdminServices] Uncaught error:", err);
 		return { success: false, error: "An unexpected error occurred" };
 	}
 };
 
-export const createService = async (input: ServiceInput): Promise<ActionResult<void>> => {
-	try {
-		const supabase = await createClient();
-
-		const {
-			data: { user },
-		} = await supabase.auth.getUser();
-
-		if (!user || !(await isAdminUser(supabase, user.id))) {
-			return { success: false, error: "Unauthorized access" };
-		}
-
-		const validated = ServiceInputSchema.safeParse(input);
-		if (!validated.success) {
-			return { success: false, error: "Invalid input data" };
-		}
-
-		// Run AI Auto-Translation for Multilingual JSONB
-		const nameObj = await translateServiceText(validated.data.name);
-		const descObj = validated.data.short_description
-			? await translateServiceText(validated.data.short_description)
-			: { de: "", en: "", el: "" };
-
-		const payload = {
-			...validated.data,
-			name: nameObj,
-			short_description: descObj,
-		};
-
-		const { error } = await supabase.from("services").insert(payload);
-
-		if (error) {
-			console.error("[createService] DB error:", error.message);
-			return { success: false, error: "Failed to create service" };
-		}
-
-		revalidateServicePaths();
-		return { success: true, data: undefined };
-	} catch (err: unknown) {
-		console.error("[createService] Uncaught error:", err);
-		return { success: false, error: "An unexpected error occurred" };
-	}
-};
+export const createService = async (
+	input: ServiceFormInput,
+): Promise<ActionResult<AdminServiceItem>> => createServiceMutation(input);
 
 export const updateService = async (
 	id: string,
-	input: ServiceInput,
-): Promise<ActionResult<void>> => {
-	try {
-		const supabase = await createClient();
-
-		const {
-			data: { user },
-		} = await supabase.auth.getUser();
-
-		if (!user || !(await isAdminUser(supabase, user.id))) {
-			return { success: false, error: "Unauthorized access" };
-		}
-
-		const validated = ServiceInputSchema.safeParse(input);
-		if (!validated.success) {
-			return { success: false, error: "Invalid input data" };
-		}
-
-		// Run AI Auto-Translation for Multilingual JSONB
-		const nameObj = await translateServiceText(validated.data.name);
-		const descObj = validated.data.short_description
-			? await translateServiceText(validated.data.short_description)
-			: { de: "", en: "", el: "" };
-
-		const payload = {
-			...validated.data,
-			name: nameObj,
-			short_description: descObj,
-		};
-
-		const { error } = await supabase.from("services").update(payload).eq("id", id);
-
-		if (error) {
-			console.error("[updateService] DB error:", error.message);
-			return { success: false, error: "Failed to update service" };
-		}
-
-		revalidateServicePaths();
-		return { success: true, data: undefined };
-	} catch (err: unknown) {
-		console.error("[updateService] Uncaught error:", err);
-		return { success: false, error: "An unexpected error occurred" };
-	}
-};
+	input: ServiceFormInput,
+): Promise<ActionResult<AdminServiceItem>> => updateServiceMutation(id, input);
 
 export const toggleServiceActive = async (
 	id: string,
 	active: boolean,
-): Promise<ActionResult<void>> => {
-	try {
-		const supabase = await createClient();
+): Promise<ActionResult<void>> => toggleServiceActiveMutation(id, active);
 
-		const {
-			data: { user },
-		} = await supabase.auth.getUser();
-
-		if (!user || !(await isAdminUser(supabase, user.id))) {
-			return { success: false, error: "Unauthorized access" };
-		}
-
-		const { error } = await supabase.from("services").update({ active }).eq("id", id);
-
-		if (error) {
-			console.error("[toggleServiceActive] DB error:", error.message);
-			return { success: false, error: "Failed to toggle service status" };
-		}
-
-		revalidateServicePaths();
-		return { success: true, data: undefined };
-	} catch (err: unknown) {
-		console.error("[toggleServiceActive] Uncaught error:", err);
-		return { success: false, error: "An unexpected error occurred" };
-	}
-};
-
-export const deleteService = async (id: string): Promise<ActionResult<void>> => {
-	try {
-		const supabase = await createClient();
-
-		const {
-			data: { user },
-		} = await supabase.auth.getUser();
-
-		if (!user || !(await isAdminUser(supabase, user.id))) {
-			return { success: false, error: "Unauthorized access" };
-		}
-
-		// First fetch the service to check if it has an image
-		const { data: service, error: fetchError } = await supabase
-			.from("services")
-			.select("image_url")
-			.eq("id", id)
-			.single();
-
-		if (fetchError) {
-			console.error("[deleteService] Fetch error:", fetchError.message);
-			return { success: false, error: "Failed to fetch service before deletion" };
-		}
-
-		// Delete the service from the DB
-		const { error: deleteError } = await supabase.from("services").delete().eq("id", id);
-
-		if (deleteError) {
-			console.error("[deleteService] DB delete error:", deleteError.message);
-			return { success: false, error: "Failed to delete service" };
-		}
-
-		// If an image URL exists, attempt to extract the storage path and delete the file
-		if (service.image_url) {
-			try {
-				const urlParts = service.image_url.split("/gallery/");
-				if (urlParts.length === 2) {
-					const filePath = urlParts[1];
-					await supabase.storage.from("gallery").remove([filePath]);
-				}
-			} catch (cleanupErr) {
-				console.error("[deleteService] Failed to clean up storage image:", cleanupErr);
-				// We don't fail the action if only image cleanup fails
-			}
-		}
-
-		revalidateServicePaths();
-		return { success: true, data: undefined };
-	} catch (err: unknown) {
-		console.error("[deleteService] Uncaught error:", err);
-		return { success: false, error: "An unexpected error occurred" };
-	}
-};
+export const deleteService = async (id: string): Promise<ActionResult<void>> =>
+	deleteServiceMutation(id);
 
 export const uploadServiceImage = async (formData: FormData): Promise<ActionResult<string>> => {
 	try {
-		const supabase = await createClient();
+		const auth = await requireAdmin();
+		if (!auth.authorized) return { success: false, error: auth.error };
 
-		const {
-			data: { user },
-		} = await supabase.auth.getUser();
-
-		if (!user || !(await isAdminUser(supabase, user.id))) {
-			return { success: false, error: "Unauthorized access" };
-		}
-
-		const file = formData.get("file") as File | null;
-		if (!file) {
+		const file = formData.get("file");
+		if (
+			!file ||
+			typeof file !== "object" ||
+			!("type" in file) ||
+			!("size" in file) ||
+			typeof file.type !== "string" ||
+			typeof file.size !== "number"
+		) {
 			return { success: false, error: "No file provided" };
 		}
 
-		if (!file.type.startsWith("image/")) {
-			return { success: false, error: "Only image files are allowed" };
+		const safeExt = ALLOWED_IMAGE_MIME_TO_EXT[file.type];
+		if (!safeExt) {
+			return { success: false, error: "Only JPEG, PNG, and WebP images are allowed" };
+		}
+		if (file.size <= 0 || file.size > MAX_IMAGE_BYTES) {
+			return { success: false, error: "Image size must be between 1 byte and 5MB" };
 		}
 
-		if (file.size > 5 * 1024 * 1024) {
-			return { success: false, error: "Image size must be less than 5MB" };
-		}
-
-		const fileExt = file.name.split(".").pop();
-		const fileName = `services/${uuidv4()}.${fileExt}`;
-
-		const { error: uploadError } = await supabase.storage
+		const fileName = `services/${uuidv4()}.${safeExt}`;
+		const { error: uploadError } = await auth.supabase.storage
 			.from("gallery")
-			.upload(fileName, file, { contentType: file.type, upsert: true });
+			.upload(fileName, file as Blob, { contentType: file.type, upsert: true });
 
 		if (uploadError) {
 			console.error("[uploadServiceImage] Upload error:", uploadError.message);
@@ -270,7 +106,7 @@ export const uploadServiceImage = async (formData: FormData): Promise<ActionResu
 
 		const {
 			data: { publicUrl },
-		} = supabase.storage.from("gallery").getPublicUrl(fileName);
+		} = auth.supabase.storage.from("gallery").getPublicUrl(fileName);
 
 		return { success: true, data: publicUrl };
 	} catch (err: unknown) {

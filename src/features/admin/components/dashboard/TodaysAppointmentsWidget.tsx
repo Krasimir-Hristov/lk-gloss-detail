@@ -1,4 +1,4 @@
-import { CalendarCheck, Clock, User, Car } from "lucide-react";
+import { CalendarCheck, Clock, User, Car, Phone } from "lucide-react";
 import React from "react";
 
 import {
@@ -13,6 +13,8 @@ interface TodaysAppointmentsWidgetProps {
 	locale: string;
 	t: (key: string) => string;
 }
+
+const sanitizeTel = (phone: string): string => phone.replace(/[^\d+]/g, "");
 
 export const TodaysAppointmentsWidget: React.FC<TodaysAppointmentsWidgetProps> = ({
 	appointments,
@@ -42,6 +44,7 @@ export const TodaysAppointmentsWidget: React.FC<TodaysAppointmentsWidgetProps> =
 			<div className="space-y-3">
 				{appointments.map((apt) => {
 					const serviceName = getAppointmentServiceNames(apt.services, locale);
+					const telTarget = sanitizeTel(apt.phone);
 
 					return (
 						<div
@@ -70,11 +73,23 @@ export const TodaysAppointmentsWidget: React.FC<TodaysAppointmentsWidgetProps> =
 									</div>
 								</div>
 							</div>
-							<span
-								className={`w-fit rounded-full border px-3 py-1 text-xs font-medium ${statusColors[apt.status] ?? statusColors.pending}`}
-							>
-								{t(`status.${apt.status}`)}
-							</span>
+							<div className="flex items-center gap-2">
+								{telTarget ? (
+									<a
+										href={`tel:${telTarget}`}
+										aria-label={`${t("actions.call")} ${apt.first_name} ${apt.last_name}`}
+										className="inline-flex items-center gap-1.5 rounded-lg border border-emerald-500/25 bg-emerald-500/10 px-2.5 py-1 text-xs font-semibold text-emerald-300 transition-colors hover:border-emerald-500/45 hover:bg-emerald-500/20"
+									>
+										<Phone className="h-3 w-3" />
+										<span>{t("actions.call")}</span>
+									</a>
+								) : null}
+								<span
+									className={`w-fit rounded-full border px-3 py-1 text-xs font-medium ${statusColors[apt.status] ?? statusColors.pending}`}
+								>
+									{t(`status.${apt.status}`)}
+								</span>
+							</div>
 						</div>
 					);
 				})}

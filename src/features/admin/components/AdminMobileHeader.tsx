@@ -32,6 +32,10 @@ export const AdminMobileHeader: React.FC<AdminMobileHeaderProps> = ({
 
 	const toggleOpen = () => setIsOpen((prev) => !prev);
 	const closeMenu = () => setIsOpen(false);
+	const totalBadges = items.reduce(
+		(sum, item) => sum + (item.badge && item.badge > 0 ? item.badge : 0),
+		0,
+	);
 
 	return (
 		<header className="fixed top-0 left-0 z-40 flex h-16 w-full items-center justify-between border-b border-neutral-800 bg-neutral-950 px-4 md:hidden">
@@ -48,10 +52,15 @@ export const AdminMobileHeader: React.FC<AdminMobileHeaderProps> = ({
 				<button
 					type="button"
 					onClick={toggleOpen}
-					className="flex h-10 w-10 items-center justify-center rounded-lg border border-neutral-800 bg-neutral-900 text-neutral-300 transition-colors hover:text-white"
+					className="relative flex h-10 w-10 items-center justify-center rounded-lg border border-neutral-800 bg-neutral-900 text-neutral-300 transition-colors hover:text-white"
 					aria-label={isOpen ? "Close menu" : "Open menu"}
 				>
 					{isOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
+					{!isOpen && totalBadges > 0 ? (
+						<span className="absolute -top-1.5 -right-1.5 inline-flex min-w-4.5 items-center justify-center rounded-full bg-purple-600 px-1 py-0.5 text-[10px] leading-none font-bold text-white shadow">
+							{totalBadges > 99 ? "99+" : totalBadges}
+						</span>
+					) : null}
 				</button>
 			</div>
 
@@ -84,6 +93,7 @@ export const AdminMobileHeader: React.FC<AdminMobileHeaderProps> = ({
 							>
 								<button
 									type="submit"
+									aria-label={logoutLabel}
 									className="flex w-full cursor-pointer items-center justify-center gap-2 rounded-md border border-red-500/20 bg-red-950/10 px-4 py-2.5 text-sm font-medium text-red-400 transition-all hover:border-red-500/40 hover:bg-red-950/30"
 								>
 									<LogOut className="h-4 w-4" />

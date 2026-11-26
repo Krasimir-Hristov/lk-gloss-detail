@@ -1,13 +1,32 @@
+"use client";
+
 import { zodResolver } from "@hookform/resolvers/zod";
-import { X, Loader2, Image as ImageIcon } from "lucide-react";
-import Image from "next/image";
+import { Loader2, X } from "lucide-react";
 import { useLocale, useTranslations } from "next-intl";
-import React, { useState, useRef } from "react";
+import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 
-import { uploadServiceImage } from "@/features/admin/actions/services";
-import { ServiceInputSchema, type ServiceInput } from "@/features/admin/schemas/servicesSchema";
+import { ServiceBasicFields } from "@/features/admin/components/services/ServiceBasicFields";
+import { ServiceImageUploader } from "@/features/admin/components/services/ServiceImageUploader";
+import { ServicePricingSection } from "@/features/admin/components/services/ServicePricingSection";
+import { ServiceTranslationsSection } from "@/features/admin/components/services/ServiceTranslationsSection";
+import {
+	ServiceInputSchema,
+	type ServiceFormInput,
+	type ServiceInput,
+	type ServiceLocale,
+} from "@/features/admin/schemas/servicesSchema";
 import { getLocalizedText, type AdminServiceItem } from "@/features/admin/types/servicesTypes";
+
+const SUPPORTED_LOCALES: readonly ServiceLocale[] = ["de", "en", "el"];
+
+const extractTranslationsMap = (
+	field: Record<string, string> | string | null | undefined,
+): Record<ServiceLocale, string> => ({
+	de: getLocalizedText(field, "de"),
+	en: getLocalizedText(field, "en"),
+	el: getLocalizedText(field, "el"),
+});
 
 interface ServiceModalProps {
 	isOpen: boolean;
@@ -18,12 +37,22 @@ interface ServiceModalProps {
 
 export const ServiceModal: React.FC<ServiceModalProps> = ({ isOpen, service, onClose, onSave }) => {
 	const t = useTranslations("Admin.services");
-	const locale = useLocale();
-	const [isUploading, setIsUploading] = useState(false);
-	const [uploadError, setUploadError] = useState<string | null>(null);
-	const fileInputRef = useRef<HTMLInputElement>(null);
+	const rawLocale = useLocale();
+	const activeLocale: ServiceLocale = SUPPORTED_LOCALES.includes(rawLocale as ServiceLocale)
+		? (rawLocale as ServiceLocale)
+		: "de";
 
-	const isEditing = !!service;
+	const [isUploading, setIsUploading] = useState(false);
+	const [showTranslations, setShowTranslations] = useState(false);
+	const [hasEditedTranslations, setHasEditedTranslations] = useState(false);
+	const [nameOverrides, setNameOverrides] = useState<Record<ServiceLocale, string>>(() =>
+		service ? extractTranslationsMap(service.name) : { de: "", en: "", el: "" },
+	);
+	const [descOverrides, setDescOverrides] = useState<Record<ServiceLocale, string>>(() =>
+		service ? extractTranslationsMap(service.short_description) : { de: "", en: "", el: "" },
+	);
+
+	const isEditing = Boolean(service);
 
 	const {
 		register,
@@ -32,12 +61,12 @@ export const ServiceModal: React.FC<ServiceModalProps> = ({ isOpen, service, onC
 		watch,
 		formState: { errors, isSubmitting },
 		reset,
-	} = useForm<ServiceInput>({
+	} = useForm<ServiceFormInput, unknown, ServiceInput>({
 		resolver: zodResolver(ServiceInputSchema),
 		defaultValues: service
 			? {
-					name: getLocalizedText(service.name, locale),
-					short_description: getLocalizedText(service.short_description, locale),
+					name: getLocalizedText(service.name, activeLocale),
+					short_description: getLocalizedText(service.short_description, activeLocale),
 					category: service.category,
 					icon: service.icon,
 					image_url: service.image_url,
@@ -48,6 +77,7 @@ export const ServiceModal: React.FC<ServiceModalProps> = ({ isOpen, service, onC
 					duration_hours: service.duration_hours,
 					active: service.active,
 					sort_order: service.sort_order,
+					locale: activeLocale,
 				}
 			: {
 					name: "",
@@ -62,273 +92,109 @@ export const ServiceModal: React.FC<ServiceModalProps> = ({ isOpen, service, onC
 					duration_hours: 1,
 					active: true,
 					sort_order: 0,
+					locale: activeLocale,
 				},
 	});
 
 	const imageUrl = watch("image_url");
+	const selectedIcon = watch("icon");
 
 	if (!isOpen) return null;
 
 	const onSubmit = async (data: ServiceInput) => {
-		await onSave(data);
+		const syncedNames: Record<ServiceLocale, string> = {
+			...nameOverrides,
+			[activeLocale]: data.name,
+		};
+		const syncedDescs: Record<ServiceLocale, string> = {
+			...descOverrides,
+			[activeLocale]: data.short_description ?? "",
+		};
+
+		const payload: ServiceInput = hasEditedTranslations
+			? {
+					...data,
+					locale: activeLocale,
+					translations: {
+						name: syncedNames,
+						short_description: syncedDescs,
+					},
+				}
+			: {
+					...data,
+					locale: activeLocale,
+				};
+
+		await onSave(payload);
 		if (!isEditing) reset();
 	};
 
-	const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
-		const file = e.target.files?.[0];
-		if (!file) return;
-
-		setUploadError(null);
-		setIsUploading(true);
-
-		try {
-			const formData = new FormData();
-			formData.append("file", file);
-
-			const result = await uploadServiceImage(formData);
-			if (result.success) {
-				setValue("image_url", result.data, { shouldValidate: true });
-			} else {
-				setUploadError(result.error);
-			}
-		} catch {
-			setUploadError("Image upload failed");
-		} finally {
-			setIsUploading(false);
-		}
-	};
-
-	const removeImage = () => {
-		setValue("image_url", null, { shouldValidate: true });
-		if (fileInputRef.current) {
-			fileInputRef.current.value = "";
-		}
-	};
-
 	return (
-		<div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-			<div className="absolute inset-0 bg-black/60 backdrop-blur-sm" onClick={onClose} />
+		<div
+			role="dialog"
+			aria-modal="true"
+			aria-labelledby="service-modal-title"
+			className="fixed inset-0 z-50 flex items-center justify-center p-4"
+		>
+			<div className="absolute inset-0 bg-black/65 backdrop-blur-sm" onClick={onClose} />
 
-			<div className="relative flex max-h-[90vh] w-full max-w-3xl flex-col overflow-hidden rounded-xl border border-neutral-800 bg-neutral-900 shadow-2xl">
-				<div className="absolute top-0 left-0 h-1 w-full bg-linear-to-r from-blue-500 to-cyan-400" />
+			<div className="relative flex max-h-[90vh] w-full max-w-2xl flex-col overflow-hidden rounded-xl border border-neutral-800 bg-neutral-900 shadow-2xl">
+				<div className="absolute top-0 left-0 h-1 w-full bg-linear-to-r from-purple-600 to-indigo-600" />
 
-				{/* Header */}
 				<div className="flex items-center justify-between border-b border-neutral-800 p-6">
-					<h3 className="Montserrat text-xl font-bold text-white">
+					<h3 id="service-modal-title" className="Montserrat text-xl font-bold text-white">
 						{isEditing ? t("form.editTitle") : t("form.addTitle")}
 					</h3>
 					<button
 						type="button"
 						onClick={onClose}
-						className="rounded-full p-2 text-neutral-400 transition-colors hover:bg-neutral-800 hover:text-white"
+						aria-label={t("cancel")}
+						className="cursor-pointer rounded-full p-2 text-neutral-400 transition-colors hover:bg-neutral-800 hover:text-white"
 					>
 						<X className="h-5 w-5" />
 					</button>
 				</div>
 
-				{/* Body */}
 				<div className="flex-1 overflow-y-auto p-6">
-					<form id="service-form" onSubmit={handleSubmit(onSubmit)} className="space-y-8">
-						{/* Basic Info */}
-						<div className="space-y-4">
-							<h4 className="text-sm font-semibold tracking-wider text-neutral-400 uppercase">
-								{t("form.sections.basic")}
-							</h4>
-							<div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-								<div>
-									<label className="mb-1 block text-sm font-medium text-neutral-300">
-										{t("form.name")}
-									</label>
-									<input
-										{...register("name")}
-										className="w-full rounded-md border border-neutral-700 bg-neutral-800 p-2.5 text-white outline-hidden focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
-									/>
-									{errors.name ? (
-										<p className="mt-1 text-xs text-red-400">{errors.name.message}</p>
-									) : null}
-								</div>
+					<form id="service-form" onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+						<ServiceBasicFields
+							register={register}
+							errors={errors}
+							selectedIcon={selectedIcon}
+							onIconChange={(iconName) => setValue("icon", iconName, { shouldValidate: true })}
+						/>
 
-								<div>
-									<label className="mb-1 block text-sm font-medium text-neutral-300">
-										{t("form.category")}
-									</label>
-									<select
-										{...register("category")}
-										className="w-full rounded-md border border-neutral-700 bg-neutral-800 p-2.5 text-white outline-hidden focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
-									>
-										<option value="exterior">Exterior</option>
-										<option value="interior">Interior</option>
-										<option value="paint">Paint Correction</option>
-										<option value="protection">Protection / Coating</option>
-										<option value="other">Other</option>
-									</select>
-									{errors.category ? (
-										<p className="mt-1 text-xs text-red-400">{errors.category.message}</p>
-									) : null}
-								</div>
+						<ServiceTranslationsSection
+							isExpanded={showTranslations}
+							nameOverrides={nameOverrides}
+							descOverrides={descOverrides}
+							t={t}
+							onToggle={() => setShowTranslations((prev) => !prev)}
+							onNameChange={(loc, val) => {
+								setHasEditedTranslations(true);
+								setNameOverrides((prev) => ({ ...prev, [loc]: val }));
+							}}
+							onDescChange={(loc, val) => {
+								setHasEditedTranslations(true);
+								setDescOverrides((prev) => ({ ...prev, [loc]: val }));
+							}}
+						/>
 
-								<div className="md:col-span-2">
-									<label className="mb-1 block text-sm font-medium text-neutral-300">
-										{t("form.shortDescription")}
-									</label>
-									<textarea
-										{...register("short_description")}
-										rows={2}
-										className="w-full rounded-md border border-neutral-700 bg-neutral-800 p-2.5 text-white outline-hidden focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
-									/>
-								</div>
+						<ServicePricingSection register={register} errors={errors} />
 
-								<div>
-									<label className="mb-1 block text-sm font-medium text-neutral-300">
-										{t("form.iconName")}
-									</label>
-									<input
-										{...register("icon")}
-										className="w-full rounded-md border border-neutral-700 bg-neutral-800 p-2.5 text-white outline-hidden focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
-										placeholder="e.g. Sparkles, ShieldCheck"
-									/>
-									{errors.icon ? (
-										<p className="mt-1 text-xs text-red-400">{errors.icon.message}</p>
-									) : null}
-								</div>
+						<ServiceImageUploader
+							imageUrl={imageUrl}
+							isUploading={isUploading}
+							onUploadingChange={setIsUploading}
+							onImageChange={(url) => setValue("image_url", url, { shouldValidate: true })}
+						/>
 
-								<div>
-									<label className="mb-1 block text-sm font-medium text-neutral-300">
-										{t("form.sortOrder")}
-									</label>
-									<input
-										type="number"
-										{...register("sort_order", { valueAsNumber: true })}
-										className="w-full rounded-md border border-neutral-700 bg-neutral-800 p-2.5 text-white outline-hidden focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
-									/>
-								</div>
-							</div>
-						</div>
-
-						{/* Pricing & Duration */}
-						<div className="space-y-4 rounded-xl border border-neutral-800 bg-neutral-900/50 p-5">
-							<h4 className="text-sm font-semibold tracking-wider text-neutral-400 uppercase">
-								{t("form.sections.pricing")}
-							</h4>
-							<div className="grid grid-cols-2 gap-4 md:grid-cols-4">
-								<div>
-									<label className="mb-1 block text-sm font-medium text-neutral-300">
-										Small (€)
-									</label>
-									<input
-										type="number"
-										step="0.01"
-										{...register("price_small", { valueAsNumber: true })}
-										className="w-full rounded-md border border-neutral-700 bg-neutral-800 p-2 text-white outline-hidden focus:border-blue-500"
-									/>
-								</div>
-								<div>
-									<label className="mb-1 block text-sm font-medium text-neutral-300">
-										Medium (€)
-									</label>
-									<input
-										type="number"
-										step="0.01"
-										{...register("price_medium", { valueAsNumber: true })}
-										className="w-full rounded-md border border-neutral-700 bg-neutral-800 p-2 text-white outline-hidden focus:border-blue-500"
-									/>
-								</div>
-								<div>
-									<label className="mb-1 block text-sm font-medium text-neutral-300">
-										Large (€)
-									</label>
-									<input
-										type="number"
-										step="0.01"
-										{...register("price_large", { valueAsNumber: true })}
-										className="w-full rounded-md border border-neutral-700 bg-neutral-800 p-2 text-white outline-hidden focus:border-blue-500"
-									/>
-								</div>
-								<div>
-									<label className="mb-1 block text-sm font-medium text-neutral-300">SUV (€)</label>
-									<input
-										type="number"
-										step="0.01"
-										{...register("price_suv", { valueAsNumber: true })}
-										className="w-full rounded-md border border-neutral-700 bg-neutral-800 p-2 text-white outline-hidden focus:border-blue-500"
-									/>
-								</div>
-							</div>
-							<div className="pt-2">
-								<label className="mb-1 block text-sm font-medium text-neutral-300">
-									{t("form.durationHours")}
-								</label>
-								<input
-									type="number"
-									step="0.5"
-									{...register("duration_hours", { valueAsNumber: true })}
-									className="max-w- w-full rounded-md border border-neutral-700 bg-neutral-800 p-2 text-white outline-hidden focus:border-blue-500"
-								/>
-								{errors.duration_hours ? (
-									<p className="mt-1 text-xs text-red-400">{errors.duration_hours.message}</p>
-								) : null}
-							</div>
-						</div>
-
-						{/* Image Upload */}
-						<div className="space-y-4">
-							<h4 className="text-sm font-semibold tracking-wider text-neutral-400 uppercase">
-								{t("form.sections.image")}
-							</h4>
-
-							<div className="flex flex-col items-start gap-4 sm:flex-row">
-								<div className="max-w- relative flex aspect-video w-full flex-col items-center justify-center overflow-hidden rounded-xl border-2 border-dashed border-neutral-700 bg-neutral-800/50 hover:border-blue-500/50">
-									{imageUrl ? (
-										<>
-											<Image src={imageUrl} alt="Preview" fill className="object-cover" />
-											<div className="absolute inset-0 flex items-center justify-center bg-black/40 opacity-0 transition-opacity hover:opacity-100">
-												<button
-													type="button"
-													onClick={removeImage}
-													className="rounded-full bg-red-500/80 p-2 text-white hover:bg-red-500"
-												>
-													<X className="h-5 w-5" />
-												</button>
-											</div>
-										</>
-									) : (
-										<div className="flex flex-col items-center justify-center p-6 text-neutral-500">
-											{isUploading ? (
-												<Loader2 className="mb-2 h-8 w-8 animate-spin text-blue-500" />
-											) : (
-												<ImageIcon className="mb-2 h-8 w-8" />
-											)}
-											<span className="text-sm">
-												{isUploading ? t("form.uploading") : t("form.uploadPrompt")}
-											</span>
-										</div>
-									)}
-									<input
-										type="file"
-										ref={fileInputRef}
-										accept="image/png, image/jpeg, image/webp"
-										onChange={handleImageUpload}
-										disabled={isUploading}
-										className="absolute inset-0 cursor-pointer opacity-0 disabled:cursor-not-allowed"
-									/>
-								</div>
-
-								<div className="flex flex-col gap-2 text-sm text-neutral-400">
-									<p>Format: PNG, JPG, WebP</p>
-									<p>Ratio: 16:10 or 16:9 recommended</p>
-									<p>Max Size: 5MB</p>
-									{uploadError ? <p className="text-red-400">{uploadError}</p> : null}
-								</div>
-							</div>
-						</div>
-
-						{/* Active Toggle */}
 						<div className="flex items-center gap-3 rounded-lg border border-neutral-800 bg-neutral-800/30 p-4">
 							<input
 								type="checkbox"
 								id="active-toggle"
 								{...register("active")}
-								className="h-5 w-5 rounded border-neutral-600 bg-neutral-700 text-blue-500 focus:ring-blue-500 focus:ring-offset-neutral-900"
+								className="h-5 w-5 rounded border-neutral-600 bg-neutral-700 text-purple-600 focus:ring-purple-500 focus:ring-offset-neutral-900"
 							/>
 							<label htmlFor="active-toggle" className="text-sm font-medium text-white">
 								{t("form.active")}
@@ -337,13 +203,13 @@ export const ServiceModal: React.FC<ServiceModalProps> = ({ isOpen, service, onC
 					</form>
 				</div>
 
-				{/* Footer */}
 				<div className="flex items-center justify-end gap-3 border-t border-neutral-800 bg-neutral-950 p-4">
 					<button
 						type="button"
 						onClick={onClose}
 						disabled={isSubmitting || isUploading}
-						className="rounded-lg px-4 py-2 text-sm font-medium text-neutral-400 transition-colors hover:bg-neutral-800 hover:text-white disabled:opacity-50"
+						aria-label={t("cancel")}
+						className="cursor-pointer rounded-lg px-4 py-2 text-sm font-medium text-neutral-400 transition-colors hover:bg-neutral-800 hover:text-white disabled:opacity-50"
 					>
 						{t("cancel")}
 					</button>
@@ -351,7 +217,8 @@ export const ServiceModal: React.FC<ServiceModalProps> = ({ isOpen, service, onC
 						type="submit"
 						form="service-form"
 						disabled={isSubmitting || isUploading}
-						className="flex items-center gap-2 rounded-lg bg-blue-600 px-5 py-2 text-sm font-medium text-white transition-colors hover:bg-blue-500 disabled:opacity-50"
+						aria-label={t("form.save")}
+						className="flex cursor-pointer items-center gap-2 rounded-lg bg-linear-to-r from-purple-600 to-indigo-600 px-5 py-2 text-sm font-semibold text-white shadow-md transition-opacity hover:opacity-90 disabled:opacity-50"
 					>
 						{isSubmitting ? <Loader2 className="h-4 w-4 animate-spin" /> : null}
 						{t("form.save")}

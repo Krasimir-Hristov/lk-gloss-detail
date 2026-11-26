@@ -1,11 +1,14 @@
+import { redirect } from "next/navigation";
 import { getTranslations } from "next-intl/server";
 import React from "react";
 
 import { getDashboardOverviewAction } from "@/features/admin/actions/dashboard";
 import { DashboardMetricsGrid } from "@/features/admin/components/dashboard/DashboardMetricsGrid";
 import { QuickActionsBar } from "@/features/admin/components/dashboard/QuickActionsBar";
+import { RecentMessagesWidget } from "@/features/admin/components/dashboard/RecentMessagesWidget";
 import { TodaysAppointmentsWidget } from "@/features/admin/components/dashboard/TodaysAppointmentsWidget";
 import { UpcomingAppointmentsWidget } from "@/features/admin/components/dashboard/UpcomingAppointmentsWidget";
+import { getCachedAdminSession } from "@/lib/auth/requireAdmin";
 
 interface DashboardPageProps {
 	params: Promise<{ locale: string }>;
@@ -13,8 +16,12 @@ interface DashboardPageProps {
 
 const DashboardPage: React.FC<DashboardPageProps> = async ({ params }) => {
 	const { locale } = await params;
-	const t = await getTranslations("Admin");
-	const result = await getDashboardOverviewAction();
+	const session = await getCachedAdminSession();
+	if (!session) {
+		redirect(`/${locale}/admin/login`);
+	}
+
+	const [t, result] = await Promise.all([getTranslations("Admin"), getDashboardOverviewAction()]);
 
 	if (!result.success || !result.data) {
 		return (
@@ -33,11 +40,11 @@ const DashboardPage: React.FC<DashboardPageProps> = async ({ params }) => {
 		);
 	}
 
-	const { todaysAppointments, upcomingAppointments, metrics } = result.data;
+	const { todaysAppointments, upcomingAppointments, recentUnreadMessages, metrics } = result.data;
 	const dt = (key: string) => t(`dashboard.${key}`);
 
 	return (
-		<div className="space-y-8">
+		<div className="space-y-6">
 			{/* Header */}
 			<div>
 				<h1 className="Montserrat text-3xl font-extrabold tracking-tight text-white">
@@ -46,19 +53,16 @@ const DashboardPage: React.FC<DashboardPageProps> = async ({ params }) => {
 				<p className="mt-2 text-sm text-neutral-400">{t("dashboard.subtitle")}</p>
 			</div>
 
-			{/* Metrics Grid */}
+			{/* 4 Clickable KPI Cards */}
 			<DashboardMetricsGrid
-				totalAppointments={metrics.totalAppointments}
+				pendingCount={metrics.pendingCount}
+				unreadMessagesCount={metrics.unreadMessagesCount}
 				todayCount={metrics.todayCount}
 				upcomingCount={metrics.upcomingCount}
-				pendingCount={metrics.pendingCount}
-				monthlySubmissions={metrics.monthlySubmissions}
-				activeServices={metrics.activeServices}
-				knowledgeChunks={metrics.knowledgeChunks}
 				t={dt}
 			/>
 
-			{/* Quick Actions */}
+			{/* 2 Compact Quick Actions */}
 			<QuickActionsBar t={dt} />
 
 			{/* Appointments Widgets */}
@@ -66,6 +70,9 @@ const DashboardPage: React.FC<DashboardPageProps> = async ({ params }) => {
 				<TodaysAppointmentsWidget appointments={todaysAppointments} locale={locale} t={dt} />
 				<UpcomingAppointmentsWidget appointments={upcomingAppointments} locale={locale} t={dt} />
 			</div>
+
+			{/* Recent Unread Messages */}
+			<RecentMessagesWidget messages={recentUnreadMessages} locale={locale} t={dt} />
 		</div>
 	);
 };
