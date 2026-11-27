@@ -94,10 +94,18 @@ export const loadKnowledgeChunks = async (searchQuery: string): Promise<string[]
 	});
 };
 
+export interface ChatbotLinkLabels {
+	services: string;
+	booking: string;
+	assessment: string;
+	contact: string;
+}
+
 export const buildChatbotSystemPrompt = (
 	locale: "de" | "en" | "el",
 	services: PublicService[],
 	knowledgeChunks: string[],
+	links: ChatbotLinkLabels,
 ): string => {
 	const localeInstructions: Record<"de" | "en" | "el", string> = {
 		de: "Antworte IMMER ausschließlich auf Deutsch. Sei freundlich, professionell und prägnant.",
@@ -105,31 +113,6 @@ export const buildChatbotSystemPrompt = (
 		el: "Πάντα να απαντάς αποκλειστικά στα Ελληνικά. Να είσαι φιλικός, επαγγελματίας και σύντομος.",
 	};
 
-	const localizedLinks: Record<
-		"de" | "en" | "el",
-		{ services: string; booking: string; assessment: string; contact: string }
-	> = {
-		de: {
-			services: "Dienstleistungen",
-			booking: "Termin buchen",
-			assessment: "KI-Fahrzeugbewertung",
-			contact: "Kontakt",
-		},
-		en: {
-			services: "Services",
-			booking: "Book Appointment",
-			assessment: "AI Vehicle Assessment",
-			contact: "Contact",
-		},
-		el: {
-			services: "Υπηρεσίες",
-			booking: "Κράτηση Ραντεβού",
-			assessment: "Αξιολόγηση Οχήματος",
-			contact: "Επικοινωνία",
-		},
-	};
-
-	const links = localizedLinks[locale];
 	const servicesSection = formatServicesCatalog(services, locale);
 	const kbSection =
 		knowledgeChunks.length > 0

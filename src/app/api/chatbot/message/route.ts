@@ -1,6 +1,7 @@
 import { AIMessage, HumanMessage, SystemMessage } from "@langchain/core/messages";
 import { ChatOpenAI } from "@langchain/openai";
 import { NextResponse } from "next/server";
+import { getTranslations } from "next-intl/server";
 import { z, ZodError } from "zod";
 
 import { getAiModelsConfig, type AiModelsConfig } from "@/config/aiModelsConfig";
@@ -8,7 +9,11 @@ import {
 	getPublicServices,
 	type PublicService,
 } from "@/features/services/actions/getPublicServices";
-import { buildChatbotSystemPrompt, loadKnowledgeChunks } from "@/lib/chatbot/promptBuilder";
+import {
+	buildChatbotSystemPrompt,
+	loadKnowledgeChunks,
+	type ChatbotLinkLabels,
+} from "@/lib/chatbot/promptBuilder";
 import {
 	InvalidJsonError,
 	PayloadTooLargeError,
@@ -110,7 +115,7 @@ export async function POST(request: NextRequest): Promise<Response> {
 
 		const combinedSearchText = [...history.slice(-3).map((h) => h.content), message].join(" ");
 
-		const [services, knowledgeChunks] = await Promise.all([
+		const [services, knowledgeChunks, tLinks] = await Promise.all([
 			getPublicServices().catch((err: unknown) => {
 				console.error("[chatbot] Failed to load public services:", err);
 				return [] as PublicService[];
@@ -119,10 +124,21 @@ export async function POST(request: NextRequest): Promise<Response> {
 				console.error("[chatbot] Failed to load knowledge chunks:", err);
 				return [] as string[];
 			}),
+			getTranslations({ locale, namespace: "Chatbot.links" }),
 		]);
 
+		const linkLabels: ChatbotLinkLabels = {
+			services: tLinks("services"),
+			booking: tLinks("booking"),
+			assessment: tLinks("assessment"),
+			contact: tLinks("contact"),
+		};
+
 		const messages: Array<{ role: "system" | "user" | "assistant"; content: string }> = [
-			{ role: "system", content: buildChatbotSystemPrompt(locale, services, knowledgeChunks) },
+			{
+				role: "system",
+				content: buildChatbotSystemPrompt(locale, services, knowledgeChunks, linkLabels),
+			},
 			...history.map((h) => ({ role: h.role, content: h.content })),
 			{ role: "user", content: message },
 		];

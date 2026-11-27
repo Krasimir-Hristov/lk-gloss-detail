@@ -40,3 +40,14 @@ export const MessagesFilterSchema = z.object({
 });
 
 export type MessagesFilter = z.infer<typeof MessagesFilterSchema>;
+
+/**
+ * Strips PostgREST `.or()` filter grammar characters while escaping SQL ILIKE wildcards
+ * (`%` and `_`) so literal underscores in emails/usernames match accurately.
+ */
+export const sanitizeMessageSearch = (raw: string): string =>
+	raw
+		.replace(/[,()*"\\]/g, " ")
+		.replace(/\s+/g, " ")
+		.trim()
+		.replace(/([%_])/g, "\\$1");

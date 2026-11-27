@@ -335,7 +335,13 @@
 		"typing": "Schreibt...",
 		"openChat": "Chat öffnen",
 		"closeChat": "Chat schließen",
-		"errorFallback": "Entschuldigung, etwas ist schiefgelaufen. Bitte versuchen Sie es erneut."
+		"errorFallback": "Entschuldigung, etwas ist schiefgelaufen. Bitte versuchen Sie es erneut.",
+		"links": {
+			"services": "Dienstleistungen",
+			"booking": "Termin buchen",
+			"assessment": "KI-Fahrzeugbewertung",
+			"contact": "Kontakt"
+		}
 	},
 	"Impressum": {
 		"title": "Impressum",

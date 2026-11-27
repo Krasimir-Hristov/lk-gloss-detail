@@ -7,6 +7,7 @@ import {
 	AdminMessageSchema,
 	DeleteMessageSchema,
 	MessagesFilterSchema,
+	sanitizeMessageSearch,
 	UpdateMessageStatusSchema,
 	type DeleteMessageInput,
 	type MessagesFilter,
@@ -54,57 +55,75 @@ export const getAdminMessages = async (
 
 		const { status, search, page, pageSize } = parsedFilter.data;
 		const { supabase } = auth;
-		const rangeFrom = (page - 1) * pageSize;
-		const rangeTo = rangeFrom + pageSize - 1;
+		const safeSearch = search ? sanitizeMessageSearch(search) : "";
+		const orFilter =
+			safeSearch.length > 0
+				? `name.ilike.%${safeSearch}%,email.ilike.%${safeSearch}%,phone.ilike.%${safeSearch}%,message.ilike.%${safeSearch}%`
+				: null;
 
-		let listQuery = supabase
-			.from("contact_submissions")
-			.select(MESSAGE_SELECT, { count: "exact" })
-			.order("created_at", { ascending: false })
-			.range(rangeFrom, rangeTo);
+		const fetchMessagePage = (targetPage: number) => {
+			const from = (targetPage - 1) * pageSize;
+			const to = from + pageSize - 1;
+			let query = supabase.from("contact_submissions").select(MESSAGE_SELECT, { count: "exact" });
+			if (status !== "all") query = query.eq("status", status);
+			if (orFilter) query = query.or(orFilter);
+			return query
+				.order("created_at", { ascending: false })
+				.order("id", { ascending: false })
+				.range(from, to);
+		};
 
-		if (status !== "all") {
-			listQuery = listQuery.eq("status", status);
-		}
+		const countQuery = () =>
+			supabase.from("contact_submissions").select("*", { count: "exact", head: true });
 
-		if (search && search.length > 0) {
-			const safeSearch = search
-				.replace(/[,()\\*%_"]/g, " ")
-				.replace(/\s+/g, " ")
-				.trim();
-			if (safeSearch.length > 0) {
-				listQuery = listQuery.or(
-					`name.ilike.%${safeSearch}%,email.ilike.%${safeSearch}%,phone.ilike.%${safeSearch}%,message.ilike.%${safeSearch}%`,
-				);
-			}
-		}
-
-		const [listRes, allRes, unreadRes, readRes, archivedRes] = await Promise.all([
-			listQuery,
-			supabase.from("contact_submissions").select("*", { count: "exact", head: true }),
-			supabase
-				.from("contact_submissions")
-				.select("*", { count: "exact", head: true })
-				.eq("status", "unread"),
-			supabase
-				.from("contact_submissions")
-				.select("*", { count: "exact", head: true })
-				.eq("status", "read"),
-			supabase
-				.from("contact_submissions")
-				.select("*", { count: "exact", head: true })
-				.eq("status", "archived"),
+		const [listRes, allRes, ...statusCounts] = await Promise.all([
+			fetchMessagePage(page),
+			countQuery(),
+			...(["unread", "read", "archived"] as const).map((s) => countQuery().eq("status", s)),
 		]);
 
-		const queryError =
-			listRes.error || allRes.error || unreadRes.error || readRes.error || archivedRes.error;
-
-		if (queryError) {
-			console.error("[getAdminMessages] DB error:", queryError.message);
+		const [unreadRes, readRes, archivedRes] = statusCounts;
+		const countsError = allRes.error || unreadRes.error || readRes.error || archivedRes.error;
+		if (countsError) {
+			console.error("[getAdminMessages] Counts DB error:", countsError.message);
 			return { success: false, error: "Failed to fetch messages" };
 		}
 
-		const parsedRows = z.array(AdminMessageSchema).safeParse(listRes.data ?? []);
+		let rawRows = listRes.data;
+		let effectivePage = page;
+		let totalFiltered = listRes.count ?? rawRows?.length ?? 0;
+
+		if (listRes.error) {
+			if (listRes.error.code === "PGRST103" && page > 1) {
+				let filteredCountQuery = countQuery();
+				if (status !== "all") filteredCountQuery = filteredCountQuery.eq("status", status);
+				if (orFilter) filteredCountQuery = filteredCountQuery.or(orFilter);
+				const countRes = await filteredCountQuery;
+				if (countRes.error) {
+					console.error("[getAdminMessages] Count fallback DB error:", countRes.error.message);
+					return { success: false, error: "Failed to fetch messages" };
+				}
+
+				totalFiltered = countRes.count ?? 0;
+				effectivePage = Math.max(1, Math.ceil(totalFiltered / pageSize));
+				if (totalFiltered === 0) {
+					rawRows = [];
+				} else {
+					const retryRes = await fetchMessagePage(effectivePage);
+					if (retryRes.error) {
+						console.error("[getAdminMessages] Clamped retry DB error:", retryRes.error.message);
+						return { success: false, error: "Failed to fetch messages" };
+					}
+					rawRows = retryRes.data;
+					totalFiltered = retryRes.count ?? totalFiltered;
+				}
+			} else {
+				console.error("[getAdminMessages] DB error:", listRes.error.message);
+				return { success: false, error: "Failed to fetch messages" };
+			}
+		}
+
+		const parsedRows = z.array(AdminMessageSchema).safeParse(rawRows ?? []);
 		if (!parsedRows.success) {
 			console.error("[getAdminMessages] Row validation error:", parsedRows.error.flatten());
 			return { success: false, error: "Invalid message records in database" };
@@ -117,9 +136,8 @@ export const getAdminMessages = async (
 			archived: archivedRes.count ?? 0,
 		};
 
-		const totalFiltered = listRes.count ?? parsedRows.data.length;
 		const pagination: MessagesPageMeta = {
-			page,
+			page: effectivePage,
 			pageSize,
 			totalFiltered,
 			totalPages: Math.max(1, Math.ceil(totalFiltered / pageSize)),

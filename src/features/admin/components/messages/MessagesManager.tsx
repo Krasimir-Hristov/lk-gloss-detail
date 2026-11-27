@@ -1,9 +1,10 @@
 "use client";
 
+import { keepPreviousData, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Inbox } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useLocale, useTranslations } from "next-intl";
-import React, { useCallback, useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 
 import { ConfirmModal } from "@/components/shared/ConfirmModal";
 import {
@@ -32,6 +33,8 @@ interface MessagesManagerProps {
 	initialError?: string | null;
 }
 
+const ADMIN_MESSAGES_QUERY_KEY = "admin-messages";
+
 const localeMap: Record<string, string> = {
 	de: "de-DE",
 	en: "en-US",
@@ -49,75 +52,28 @@ export const MessagesManager: React.FC<MessagesManagerProps> = ({
 	const tConfirm = useTranslations("ConfirmModal");
 	const locale = useLocale();
 	const router = useRouter();
+	const queryClient = useQueryClient();
 
-	const [messages, setMessages] = useState<AdminMessage[]>(initialMessages);
-	const [counts, setCounts] = useState<MessageCounts>(initialCounts);
-	const [pagination, setPagination] = useState<MessagesPageMeta>(initialPagination);
 	const [statusFilter, setStatusFilter] = useState<MessageStatus | "all">(initialStatus);
 	const [searchQuery, setSearchQuery] = useState("");
+	const [debouncedSearch, setDebouncedSearch] = useState("");
+	const [page, setPage] = useState(initialPagination.page);
 	const [selectedMessage, setSelectedMessage] = useState<AdminMessage | null>(null);
 	const [deletingId, setDeletingId] = useState<string | null>(null);
 	const [copiedKey, setCopiedKey] = useState<string | null>(null);
-	const [isLoading, setIsLoading] = useState(false);
 	const [isMutating, setIsMutating] = useState(false);
-	const [errorMsg, setErrorMsg] = useState<string | null>(initialError);
+	const [mutationError, setMutationError] = useState<string | null>(initialError);
+	const [dismissedQueryError, setDismissedQueryError] = useState<Error | null>(null);
 
-	const requestIdRef = useRef(0);
 	const searchMountedRef = useRef(false);
-	const pageSize = pagination.pageSize;
+	const pageSize = initialPagination.pageSize;
 	const dateLocale = localeMap[locale] ?? "de-DE";
-
-	const fetchServerMessages = useCallback(
-		async (
-			nextStatus: MessageStatus | "all",
-			nextSearch: string,
-			nextPage: number,
-			refreshRouter: boolean,
-		) => {
-			const reqId = ++requestIdRef.current;
-			setIsLoading(true);
-			setErrorMsg(null);
-			try {
-				const trimmedSearch = nextSearch.trim();
-				const searchParam = trimmedSearch.length > 0 ? trimmedSearch : undefined;
-				let res = await getAdminMessages({
-					status: nextStatus,
-					search: searchParam,
-					page: nextPage,
-					pageSize,
-				});
-				if (reqId !== requestIdRef.current) return;
-				if (!res.success) {
-					setErrorMsg(res.error ?? t("errors.loadFailed"));
-					return;
-				}
-				if (nextPage > res.data.pagination.totalPages) {
-					res = await getAdminMessages({
-						status: nextStatus,
-						search: searchParam,
-						page: res.data.pagination.totalPages,
-						pageSize,
-					});
-					if (reqId !== requestIdRef.current) return;
-					if (!res.success) {
-						setErrorMsg(res.error ?? t("errors.loadFailed"));
-						return;
-					}
-				}
-				setMessages(res.data.messages);
-				setCounts(res.data.counts);
-				setPagination(res.data.pagination);
-				if (refreshRouter) router.refresh();
-			} catch (err) {
-				if (reqId !== requestIdRef.current) return;
-				console.error("[MessagesManager] Fetch error:", err);
-				setErrorMsg(t("errors.loadFailed"));
-			} finally {
-				if (reqId === requestIdRef.current) setIsLoading(false);
-			}
-		},
-		[pageSize, router, t],
-	);
+	const trimmedSearch = debouncedSearch.trim();
+	const isInitialQuery =
+		statusFilter === initialStatus &&
+		trimmedSearch === "" &&
+		page === initialPagination.page &&
+		!initialError;
 
 	useEffect(() => {
 		if (!searchMountedRef.current) {
@@ -125,30 +81,69 @@ export const MessagesManager: React.FC<MessagesManagerProps> = ({
 			return;
 		}
 		const timer = setTimeout(() => {
-			void fetchServerMessages(statusFilter, searchQuery, 1, false);
+			setDebouncedSearch(searchQuery);
+			setPage(1);
 		}, 300);
 		return () => clearTimeout(timer);
-	}, [searchQuery, statusFilter, fetchServerMessages]);
+	}, [searchQuery]);
+
+	const {
+		data,
+		error: queryError,
+		isFetching,
+		refetch,
+	} = useQuery({
+		queryKey: [ADMIN_MESSAGES_QUERY_KEY, statusFilter, trimmedSearch, page, pageSize],
+		queryFn: async () => {
+			const res = await getAdminMessages({
+				status: statusFilter,
+				search: trimmedSearch.length > 0 ? trimmedSearch : undefined,
+				page,
+				pageSize,
+			});
+			if (!res.success) {
+				throw new Error(res.error ?? t("errors.loadFailed"));
+			}
+			return res.data;
+		},
+		initialData: isInitialQuery
+			? { messages: initialMessages, counts: initialCounts, pagination: initialPagination }
+			: undefined,
+		placeholderData: keepPreviousData,
+		staleTime: 10_000,
+	});
+
+	const messages = data?.messages ?? (isInitialQuery ? initialMessages : []);
+	const counts = data?.counts ?? initialCounts;
+	const pagination = data?.pagination ?? initialPagination;
+	const activeQueryError =
+		queryError instanceof Error && queryError !== dismissedQueryError ? queryError.message : null;
+	const errorMsg = mutationError ?? activeQueryError;
+
+	const invalidateMessages = async () => {
+		await queryClient.invalidateQueries({ queryKey: [ADMIN_MESSAGES_QUERY_KEY] });
+		router.refresh();
+	};
 
 	const handleStatusFilterChange = (nextStatus: MessageStatus | "all") => {
 		setStatusFilter(nextStatus);
-		void fetchServerMessages(nextStatus, searchQuery, 1, false);
+		setPage(1);
 	};
 
 	const handleStatusChange = async (id: string, nextStatus: MessageStatus) => {
 		setIsMutating(true);
-		setErrorMsg(null);
+		setMutationError(null);
 		try {
 			const res = await updateMessageStatus({ id, status: nextStatus });
 			if (res.success) {
 				setSelectedMessage((prev) => (prev && prev.id === id ? res.data : prev));
-				await fetchServerMessages(statusFilter, searchQuery, pagination.page, true);
+				await invalidateMessages();
 			} else {
-				setErrorMsg(res.error ?? t("errors.updateFailed"));
+				setMutationError(res.error ?? t("errors.updateFailed"));
 			}
 		} catch (err) {
 			console.error("[MessagesManager] Status update error:", err);
-			setErrorMsg(t("errors.updateFailed"));
+			setMutationError(t("errors.updateFailed"));
 		} finally {
 			setIsMutating(false);
 		}
@@ -164,17 +159,17 @@ export const MessagesManager: React.FC<MessagesManagerProps> = ({
 	const handleMarkAllRead = async () => {
 		if (counts.unread === 0 || isMutating) return;
 		setIsMutating(true);
-		setErrorMsg(null);
+		setMutationError(null);
 		try {
 			const res = await markAllMessagesRead();
 			if (res.success) {
-				await fetchServerMessages(statusFilter, searchQuery, pagination.page, true);
+				await invalidateMessages();
 			} else {
-				setErrorMsg(res.error ?? t("errors.updateFailed"));
+				setMutationError(res.error ?? t("errors.updateFailed"));
 			}
 		} catch (err) {
 			console.error("[MessagesManager] Mark all read error:", err);
-			setErrorMsg(t("errors.updateFailed"));
+			setMutationError(t("errors.updateFailed"));
 		} finally {
 			setIsMutating(false);
 		}
@@ -183,18 +178,21 @@ export const MessagesManager: React.FC<MessagesManagerProps> = ({
 	const handleConfirmDelete = async () => {
 		if (!deletingId || isMutating) return;
 		setIsMutating(true);
-		setErrorMsg(null);
+		setMutationError(null);
 		try {
 			const res = await deleteMessage({ id: deletingId });
 			if (res.success) {
 				if (selectedMessage?.id === deletingId) setSelectedMessage(null);
-				await fetchServerMessages(statusFilter, searchQuery, pagination.page, true);
+				if (messages.length <= 1 && page > 1) {
+					setPage((prev) => Math.max(1, prev - 1));
+				}
+				await invalidateMessages();
 			} else {
-				setErrorMsg(res.error ?? t("errors.deleteFailed"));
+				setMutationError(res.error ?? t("errors.deleteFailed"));
 			}
 		} catch (err) {
 			console.error("[MessagesManager] Delete error:", err);
-			setErrorMsg(t("errors.deleteFailed"));
+			setMutationError(t("errors.deleteFailed"));
 		} finally {
 			setIsMutating(false);
 			setDeletingId(null);
@@ -217,12 +215,20 @@ export const MessagesManager: React.FC<MessagesManagerProps> = ({
 				counts={counts}
 				statusFilter={statusFilter}
 				searchQuery={searchQuery}
-				isLoading={isLoading}
+				isLoading={isFetching}
 				isMutating={isMutating}
 				errorMsg={errorMsg}
-				onRefresh={() => void fetchServerMessages(statusFilter, searchQuery, pagination.page, true)}
+				onRefresh={() => {
+					setMutationError(null);
+					setDismissedQueryError(null);
+					void refetch();
+					router.refresh();
+				}}
 				onMarkAllRead={handleMarkAllRead}
-				onDismissError={() => setErrorMsg(null)}
+				onDismissError={() => {
+					setMutationError(null);
+					if (queryError instanceof Error) setDismissedQueryError(queryError);
+				}}
 				onStatusFilterChange={handleStatusFilterChange}
 				onSearchQueryChange={setSearchQuery}
 			/>
@@ -253,10 +259,8 @@ export const MessagesManager: React.FC<MessagesManagerProps> = ({
 
 			<MessagesPagination
 				pagination={pagination}
-				isLoading={isLoading}
-				onPageChange={(nextPage) =>
-					void fetchServerMessages(statusFilter, searchQuery, nextPage, false)
-				}
+				isLoading={isFetching}
+				onPageChange={(nextPage) => setPage(nextPage)}
 			/>
 
 			<MessageDetailModal

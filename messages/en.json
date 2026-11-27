@@ -334,7 +334,13 @@
 		"typing": "Typing...",
 		"openChat": "Open chat",
 		"closeChat": "Close chat",
-		"errorFallback": "Sorry, something went wrong. Please try again."
+		"errorFallback": "Sorry, something went wrong. Please try again.",
+		"links": {
+			"services": "Services",
+			"booking": "Book Appointment",
+			"assessment": "AI Vehicle Assessment",
+			"contact": "Contact"
+		}
 	},
 	"Impressum": {
 		"title": "Impressum",

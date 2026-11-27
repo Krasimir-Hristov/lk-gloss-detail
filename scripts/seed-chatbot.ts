@@ -149,6 +149,21 @@ const seedData: SeedEntry[] = [
 	},
 ];
 
+const LEGACY_SEED_LANGUAGES = ["de", "en", "el"] as const;
+const LEGACY_SEED_TOPICS = [
+	"about",
+	"pricing_interior",
+	"pricing_headlights",
+	"pricing_paint",
+	"booking",
+	"ai_assessment",
+	"b2b",
+	"mobile_service",
+	"interior_details",
+	"founder",
+	"contact",
+] as const;
+
 const main = async () => {
 	console.log("🚀 Generating embeddings for default chatbot knowledge rules...\n");
 
@@ -175,6 +190,26 @@ const main = async () => {
 	if (upsertError) {
 		console.error(`❌ Atomic seed upsert failed: ${upsertError.message}`);
 		process.exit(1);
+	}
+
+	const managedIds = `(${seedData.map((entry) => entry.id).join(",")})`;
+	const { data: removedLegacy, error: cleanupError } = await supabase
+		.from("chatbot_knowledge")
+		.delete()
+		.in("language", [...LEGACY_SEED_LANGUAGES])
+		.in("metadata->>topic", [...LEGACY_SEED_TOPICS])
+		.is("metadata->>title", null)
+		.is("metadata->>source", null)
+		.not("id", "in", managedIds)
+		.select("id");
+
+	if (cleanupError) {
+		console.error(`❌ Legacy seed cleanup failed: ${cleanupError.message}`);
+		process.exit(1);
+	}
+
+	if (removedLegacy && removedLegacy.length > 0) {
+		console.log(`🧹 Cleaned up ${removedLegacy.length} legacy multilingual seed rows.`);
 	}
 
 	console.log(`🎉 Done! ${rows.length} managed language-agnostic rules seeded/updated.`);
