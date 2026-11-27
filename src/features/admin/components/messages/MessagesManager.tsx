@@ -108,16 +108,16 @@ export const MessagesManager: React.FC<MessagesManagerProps> = ({
 				pageSize,
 			});
 			if (!res.success) {
-				throw new Error(res.error ?? t("errors.loadFailed"));
+				throw new Error(t("errors.loadFailed"));
 			}
 			const clampedPage = res.data.pagination.page;
 			if (clampedPage !== reqPage) {
-				queryClient.setQueryData(
-					[ADMIN_MESSAGES_QUERY_KEY, reqStatus, reqSearch, clampedPage, pageSize],
-					res.data,
-				);
 				const active = activeQueryRef.current;
 				if (active.status === reqStatus && active.search === reqSearch && active.page === reqPage) {
+					queryClient.setQueryData(
+						[ADMIN_MESSAGES_QUERY_KEY, reqStatus, reqSearch, clampedPage, pageSize],
+						res.data,
+					);
 					setPage(clampedPage);
 				}
 			}
@@ -135,7 +135,7 @@ export const MessagesManager: React.FC<MessagesManagerProps> = ({
 	const pagination = data?.pagination ?? initialPagination;
 	const hasRecoveredLoad = isSuccess && !isPlaceholderData;
 	const activeInitialError =
-		initialError && !initialErrorDismissed && !hasRecoveredLoad ? initialError : null;
+		initialError && !initialErrorDismissed && !hasRecoveredLoad ? t("errors.loadFailed") : null;
 	const activeQueryError =
 		queryError instanceof Error && queryError !== dismissedQueryError ? queryError.message : null;
 	const errorMsg = mutationError ?? activeQueryError ?? activeInitialError;
@@ -159,7 +159,7 @@ export const MessagesManager: React.FC<MessagesManagerProps> = ({
 				setSelectedMessage((prev) => (prev && prev.id === id ? res.data : prev));
 				await invalidateMessages();
 			} else {
-				setMutationError(res.error ?? t("errors.updateFailed"));
+				setMutationError(t("errors.updateFailed"));
 			}
 		} catch (err) {
 			console.error("[MessagesManager] Status update error:", err);
@@ -181,7 +181,7 @@ export const MessagesManager: React.FC<MessagesManagerProps> = ({
 		try {
 			const res = await markAllMessagesRead();
 			if (res.success) await invalidateMessages();
-			else setMutationError(res.error ?? t("errors.updateFailed"));
+			else setMutationError(t("errors.updateFailed"));
 		} catch (err) {
 			console.error("[MessagesManager] Mark all read error:", err);
 			setMutationError(t("errors.updateFailed"));
@@ -200,7 +200,7 @@ export const MessagesManager: React.FC<MessagesManagerProps> = ({
 				if (selectedMessage?.id === deletingId) setSelectedMessage(null);
 				await invalidateMessages();
 			} else {
-				setMutationError(res.error ?? t("errors.deleteFailed"));
+				setMutationError(t("errors.deleteFailed"));
 			}
 		} catch (err) {
 			console.error("[MessagesManager] Delete error:", err);
