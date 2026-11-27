@@ -34,12 +34,7 @@ interface MessagesManagerProps {
 }
 
 const ADMIN_MESSAGES_QUERY_KEY = "admin-messages";
-
-const localeMap: Record<string, string> = {
-	de: "de-DE",
-	en: "en-US",
-	el: "el-GR",
-};
+const LOCALE_MAP: Record<string, string> = { de: "de-DE", en: "en-US", el: "el-GR" };
 
 export const MessagesManager: React.FC<MessagesManagerProps> = ({
 	initialMessages,
@@ -62,18 +57,24 @@ export const MessagesManager: React.FC<MessagesManagerProps> = ({
 	const [deletingId, setDeletingId] = useState<string | null>(null);
 	const [copiedKey, setCopiedKey] = useState<string | null>(null);
 	const [isMutating, setIsMutating] = useState(false);
-	const [mutationError, setMutationError] = useState<string | null>(initialError);
+	const [mutationError, setMutationError] = useState<string | null>(null);
+	const [initialErrorDismissed, setInitialErrorDismissed] = useState(false);
 	const [dismissedQueryError, setDismissedQueryError] = useState<Error | null>(null);
 
 	const searchMountedRef = useRef(false);
 	const pageSize = initialPagination.pageSize;
-	const dateLocale = localeMap[locale] ?? "de-DE";
+	const dateLocale = LOCALE_MAP[locale] ?? "de-DE";
 	const trimmedSearch = debouncedSearch.trim();
 	const isInitialQuery =
 		statusFilter === initialStatus &&
 		trimmedSearch === "" &&
 		page === initialPagination.page &&
 		!initialError;
+
+	const activeQueryRef = useRef({ status: statusFilter, search: trimmedSearch, page });
+	useEffect(() => {
+		activeQueryRef.current = { status: statusFilter, search: trimmedSearch, page };
+	}, [statusFilter, trimmedSearch, page]);
 
 	useEffect(() => {
 		if (!searchMountedRef.current) {
@@ -91,18 +92,34 @@ export const MessagesManager: React.FC<MessagesManagerProps> = ({
 		data,
 		error: queryError,
 		isFetching,
+		isPlaceholderData,
+		isSuccess,
 		refetch,
 	} = useQuery({
 		queryKey: [ADMIN_MESSAGES_QUERY_KEY, statusFilter, trimmedSearch, page, pageSize],
 		queryFn: async () => {
+			const reqStatus = statusFilter;
+			const reqSearch = trimmedSearch;
+			const reqPage = page;
 			const res = await getAdminMessages({
-				status: statusFilter,
-				search: trimmedSearch.length > 0 ? trimmedSearch : undefined,
-				page,
+				status: reqStatus,
+				search: reqSearch.length > 0 ? reqSearch : undefined,
+				page: reqPage,
 				pageSize,
 			});
 			if (!res.success) {
 				throw new Error(res.error ?? t("errors.loadFailed"));
+			}
+			const clampedPage = res.data.pagination.page;
+			if (clampedPage !== reqPage) {
+				queryClient.setQueryData(
+					[ADMIN_MESSAGES_QUERY_KEY, reqStatus, reqSearch, clampedPage, pageSize],
+					res.data,
+				);
+				const active = activeQueryRef.current;
+				if (active.status === reqStatus && active.search === reqSearch && active.page === reqPage) {
+					setPage(clampedPage);
+				}
 			}
 			return res.data;
 		},
@@ -116,9 +133,12 @@ export const MessagesManager: React.FC<MessagesManagerProps> = ({
 	const messages = data?.messages ?? (isInitialQuery ? initialMessages : []);
 	const counts = data?.counts ?? initialCounts;
 	const pagination = data?.pagination ?? initialPagination;
+	const hasRecoveredLoad = isSuccess && !isPlaceholderData;
+	const activeInitialError =
+		initialError && !initialErrorDismissed && !hasRecoveredLoad ? initialError : null;
 	const activeQueryError =
 		queryError instanceof Error && queryError !== dismissedQueryError ? queryError.message : null;
-	const errorMsg = mutationError ?? activeQueryError;
+	const errorMsg = mutationError ?? activeQueryError ?? activeInitialError;
 
 	const invalidateMessages = async () => {
 		await queryClient.invalidateQueries({ queryKey: [ADMIN_MESSAGES_QUERY_KEY] });
@@ -151,9 +171,7 @@ export const MessagesManager: React.FC<MessagesManagerProps> = ({
 
 	const handleOpenMessage = (msg: AdminMessage) => {
 		setSelectedMessage(msg);
-		if (msg.status === "unread") {
-			void handleStatusChange(msg.id, "read");
-		}
+		if (msg.status === "unread") void handleStatusChange(msg.id, "read");
 	};
 
 	const handleMarkAllRead = async () => {
@@ -162,11 +180,8 @@ export const MessagesManager: React.FC<MessagesManagerProps> = ({
 		setMutationError(null);
 		try {
 			const res = await markAllMessagesRead();
-			if (res.success) {
-				await invalidateMessages();
-			} else {
-				setMutationError(res.error ?? t("errors.updateFailed"));
-			}
+			if (res.success) await invalidateMessages();
+			else setMutationError(res.error ?? t("errors.updateFailed"));
 		} catch (err) {
 			console.error("[MessagesManager] Mark all read error:", err);
 			setMutationError(t("errors.updateFailed"));
@@ -183,9 +198,6 @@ export const MessagesManager: React.FC<MessagesManagerProps> = ({
 			const res = await deleteMessage({ id: deletingId });
 			if (res.success) {
 				if (selectedMessage?.id === deletingId) setSelectedMessage(null);
-				if (messages.length <= 1 && page > 1) {
-					setPage((prev) => Math.max(1, prev - 1));
-				}
 				await invalidateMessages();
 			} else {
 				setMutationError(res.error ?? t("errors.deleteFailed"));
@@ -227,6 +239,7 @@ export const MessagesManager: React.FC<MessagesManagerProps> = ({
 				onMarkAllRead={handleMarkAllRead}
 				onDismissError={() => {
 					setMutationError(null);
+					setInitialErrorDismissed(true);
 					if (queryError instanceof Error) setDismissedQueryError(queryError);
 				}}
 				onStatusFilterChange={handleStatusFilterChange}
