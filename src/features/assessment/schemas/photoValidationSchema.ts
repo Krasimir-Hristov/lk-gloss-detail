@@ -1,5 +1,7 @@
 import { z } from "zod";
 
+import { AppLocaleSchema, DEFAULT_LOCALE } from "@/i18n/locales";
+
 export const PhotoValidationRequestSchema = z.object({
 	imageBase64: z
 		.string()
@@ -7,7 +9,7 @@ export const PhotoValidationRequestSchema = z.object({
 		.regex(/^data:image\/(jpeg|jpg|png|webp);base64,[A-Za-z0-9+/=]+$/),
 	expectedAngle: z.enum(["front", "rear", "side", "interior"]),
 	previousCarDescriptions: z.array(z.string().trim().max(200)).max(3).optional(),
-	locale: z.enum(["de", "en", "el"]).default("de"),
+	locale: AppLocaleSchema.default(DEFAULT_LOCALE),
 });
 
 export type PhotoValidationRequest = z.infer<typeof PhotoValidationRequestSchema>;

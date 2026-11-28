@@ -9,6 +9,7 @@ import {
 	getPublicServices,
 	type PublicService,
 } from "@/features/services/actions/getPublicServices";
+import { AppLocaleSchema, DEFAULT_LOCALE } from "@/i18n/locales";
 import {
 	buildChatbotSystemPrompt,
 	loadKnowledgeChunks,
@@ -28,7 +29,7 @@ const MAX_CHATBOT_BODY_BYTES = 32 * 1024;
 
 const ChatbotRequestSchema = z.object({
 	message: z.string().trim().min(1, "Message is required").max(2000, "Message too long"),
-	locale: z.enum(["de", "en", "el"]).default("de"),
+	locale: AppLocaleSchema.default(DEFAULT_LOCALE),
 	history: z
 		.array(
 			z.object({

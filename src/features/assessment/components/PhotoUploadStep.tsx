@@ -10,6 +10,7 @@ import { PhotoPreviewPanel } from "@/features/assessment/components/PhotoPreview
 import { useValidatePhoto } from "@/features/assessment/hooks/useAssessment";
 import { useAssessmentStore } from "@/features/assessment/stores/assessmentStore";
 import { compressImage } from "@/features/assessment/utils/imageCompressor";
+import { resolveAppLocale } from "@/i18n/locales";
 
 import type { PhotoAngle } from "@/features/assessment/schemas/assessmentSchema";
 
@@ -72,7 +73,7 @@ export const PhotoUploadStep: React.FC<PhotoUploadStepProps> = ({
 	const t = useTranslations("Assessment");
 	const tErrors = useTranslations("Errors");
 	const rawLocale = useLocale();
-	const locale: "de" | "en" | "el" = rawLocale === "en" || rawLocale === "el" ? rawLocale : "de";
+	const locale = resolveAppLocale(rawLocale);
 	const existingPhoto = useAssessmentStore((s) => s.photos.find((p) => p.angle === angle));
 
 	const [preview, setPreview] = useState<string | null>(() =>

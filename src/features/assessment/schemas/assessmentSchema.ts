@@ -1,5 +1,7 @@
 import { z } from "zod";
 
+import { AppLocaleSchema, DEFAULT_LOCALE } from "@/i18n/locales";
+
 // ── Photo Angle Enum (4 angles only) ───────────────────────────────────────
 
 export const PhotoAngleSchema = z.enum(["front", "rear", "side", "interior"]);
@@ -28,7 +30,7 @@ export const AnalyzeRequestSchema = z.object({
 	dirtLevel: z.enum(["light", "moderate", "heavy"]).default("moderate"),
 	brand: z.string().trim().max(160).nullable().default(null),
 	visualFindings: z.array(z.string().trim().max(200)).max(16).default([]),
-	locale: z.enum(["de", "en", "el"]).default("de"),
+	locale: AppLocaleSchema.default(DEFAULT_LOCALE),
 });
 export type AnalyzeRequest = z.infer<typeof AnalyzeRequestSchema>;
 

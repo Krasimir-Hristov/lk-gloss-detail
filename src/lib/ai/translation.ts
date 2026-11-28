@@ -7,6 +7,12 @@ import {
 	type ServiceLocale,
 	type TranslatedServicePair,
 } from "@/features/admin/schemas/servicesSchema";
+import { AI_LOCALE_NAMES, DEFAULT_LOCALE, SUPPORTED_LOCALES } from "@/i18n/locales";
+import {
+	createEmptyTextMap,
+	createUniformTextMap,
+	type LocalizedTextMap,
+} from "@/lib/admin/serviceHelpers";
 
 export interface TranslateServicePairInput {
 	name: string;
@@ -14,11 +20,9 @@ export interface TranslateServicePairInput {
 	sourceLocale?: ServiceLocale;
 }
 
-const LOCALE_LABELS: Record<ServiceLocale, string> = {
-	de: "German (de)",
-	en: "English (en)",
-	el: "Greek (el)",
-};
+const TARGET_LANGUAGES_LIST = SUPPORTED_LOCALES.map(
+	(loc) => `${AI_LOCALE_NAMES[loc]} (${loc})`,
+).join(", ");
 
 const createTranslationModel = (modelName: string, config: AiModelsConfig) =>
 	new ChatOpenAI({
@@ -34,43 +38,49 @@ const createTranslationModel = (modelName: string, config: AiModelsConfig) =>
 		method: "jsonSchema",
 	});
 
-const buildFallbackTriple = (text: string): { de: string; en: string; el: string } => ({
-	de: text,
-	en: text,
-	el: text,
-});
+const buildResolvedTextMap = (
+	translated: LocalizedTextMap,
+	sourceText: string,
+	sourceLocale: ServiceLocale,
+): LocalizedTextMap => {
+	const resolved = createEmptyTextMap();
+	for (const loc of SUPPORTED_LOCALES) {
+		resolved[loc] = loc === sourceLocale ? sourceText : translated[loc].trim() || sourceText;
+	}
+	return resolved;
+};
 
 /**
- * Translates a service name and short description into German (de), English (en),
- * and Greek (el) in a single structured LLM call with Primary + Fallback routing.
+ * Translates a service name and short description into all supported locales
+ * (de, en, el, sq, tr) in a single structured LLM call with Primary + Fallback routing.
  */
 export const translateServicePair = async ({
 	name,
 	shortDescription,
-	sourceLocale = "de",
+	sourceLocale = DEFAULT_LOCALE,
 }: TranslateServicePairInput): Promise<TranslatedServicePair> => {
 	const cleanName = name.trim();
 	const cleanDesc = (shortDescription ?? "").trim();
 
 	if (!cleanName && !cleanDesc) {
 		return {
-			name: { de: "", en: "", el: "" },
-			short_description: { de: "", en: "", el: "" },
+			name: createEmptyTextMap(),
+			short_description: createEmptyTextMap(),
 		};
 	}
 
 	const fallbackResult: TranslatedServicePair = {
-		name: buildFallbackTriple(cleanName),
-		short_description: cleanDesc ? buildFallbackTriple(cleanDesc) : { de: "", en: "", el: "" },
+		name: createUniformTextMap(cleanName),
+		short_description: cleanDesc ? createUniformTextMap(cleanDesc) : createEmptyTextMap(),
 	};
 
 	try {
 		const config = getAiModelsConfig();
-		const sourceLabel = LOCALE_LABELS[sourceLocale];
+		const sourceLabel = `${AI_LOCALE_NAMES[sourceLocale]} (${sourceLocale})`;
 
 		const messages = [
 			new SystemMessage(
-				"You are a professional automotive detailing translator for LK Gloss & Detail. Translate service titles and descriptions naturally and accurately into German (de), English (en), and Greek (el). Keep the source language text accurate and preserve detailing terminology. If short_description is empty, return empty strings for all three languages in short_description.",
+				`You are a professional automotive detailing translator for LK Gloss & Detail. Translate service titles and descriptions naturally and accurately into ${TARGET_LANGUAGES_LIST}. Keep the source language text accurate and preserve detailing terminology. If short_description is empty, return empty strings for all ${SUPPORTED_LOCALES.length} languages in short_description.`,
 			),
 			new HumanMessage(
 				`Source language: ${sourceLabel}\nService name: "${cleanName}"\nShort description: "${cleanDesc}"`,
@@ -101,18 +111,10 @@ export const translateServicePair = async ({
 		const { name: translatedName, short_description: translatedDesc } = validatedData;
 
 		return {
-			name: {
-				de: sourceLocale === "de" ? cleanName : translatedName.de.trim() || cleanName,
-				en: sourceLocale === "en" ? cleanName : translatedName.en.trim() || cleanName,
-				el: sourceLocale === "el" ? cleanName : translatedName.el.trim() || cleanName,
-			},
+			name: buildResolvedTextMap(translatedName, cleanName, sourceLocale),
 			short_description: cleanDesc
-				? {
-						de: sourceLocale === "de" ? cleanDesc : translatedDesc.de.trim() || cleanDesc,
-						en: sourceLocale === "en" ? cleanDesc : translatedDesc.en.trim() || cleanDesc,
-						el: sourceLocale === "el" ? cleanDesc : translatedDesc.el.trim() || cleanDesc,
-					}
-				: { de: "", en: "", el: "" },
+				? buildResolvedTextMap(translatedDesc, cleanDesc, sourceLocale)
+				: createEmptyTextMap(),
 		};
 	} catch (err: unknown) {
 		console.error("[translateServicePair] Translation failed:", err);

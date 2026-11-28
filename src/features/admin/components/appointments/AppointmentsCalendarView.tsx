@@ -12,21 +12,24 @@ import {
 	isSameDay,
 	addDays,
 } from "date-fns";
-import { de, el, enUS } from "date-fns/locale";
+import { de, el, enUS, sq, tr } from "date-fns/locale";
 import { ChevronLeft, ChevronRight, Calendar as CalendarIcon, CalendarOff } from "lucide-react";
 import { useTranslations, useLocale } from "next-intl";
 import React, { useState } from "react";
 
 import { blockDate, unblockDate } from "@/features/admin/actions/blockedDates";
 import { SelectedDayPanel } from "@/features/admin/components/appointments/SelectedDayPanel";
+import { resolveAppLocale, type AppLocale } from "@/i18n/locales";
 import { getBerlinTodayIso } from "@/lib/date/berlinDate";
 
 import type { AdminAppointment, BlockedDateItem } from "@/features/admin/types/appointmentsTypes";
 
-const localesMap = {
+const localesMap: Record<AppLocale, typeof de> = {
 	de,
 	el,
 	en: enUS,
+	sq,
+	tr,
 };
 
 interface AppointmentsCalendarViewProps {
@@ -44,7 +47,7 @@ export const AppointmentsCalendarView: React.FC<AppointmentsCalendarViewProps> =
 }) => {
 	const t = useTranslations("Admin.appointments");
 	const locale = useLocale();
-	const activeLocale = localesMap[locale as keyof typeof localesMap] || enUS;
+	const activeLocale = localesMap[resolveAppLocale(locale)] ?? de;
 
 	const [currentMonth, setCurrentMonth] = useState<Date>(() => {
 		const todayIso = getBerlinTodayIso();

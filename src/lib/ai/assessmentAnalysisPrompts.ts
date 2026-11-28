@@ -1,6 +1,7 @@
 import { z } from "zod";
 
 import { AssessmentDiagnosticSchema } from "@/features/assessment/schemas/assessmentSchema";
+import { AI_LOCALE_NAMES, resolveAppLocale } from "@/i18n/locales";
 
 // ── Structured Summary Output Schema ────────────────────────────────────────
 
@@ -33,15 +34,9 @@ Guidelines:
 - Generate 3-5 diagnostic findings relevant to the car's condition (car size, informational dirt level, real visual findings from the uploaded photos, and the accepted detailing services).
 - Include the estimated price range and duration naturally in summaryText.
 - Note that pricing is based on vehicle size and selected services; dirt level and visual findings guide the diagnostic explanation only.
-- Respond strictly in the language specified by the user's locale (de = German, en = English, el = Greek).`;
+- Respond strictly in the language specified by the user's locale (de = German, en = English, el = Greek, sq = Albanian, tr = Turkish).`;
 
 // ── Prompt Builder ──────────────────────────────────────────────────────────
-
-const LOCALE_NAMES: Record<string, string> = {
-	de: "German",
-	en: "English",
-	el: "Greek",
-};
 
 export interface SummaryPromptParams {
 	brand: string | null;
@@ -75,7 +70,7 @@ ${findingsText}
 Accepted services: ${serviceNames || "None"}
 Price estimate: €${priceMin} – €${priceMax}
 Duration: ~${durationHours} hours
-Language: ${LOCALE_NAMES[locale] ?? "German"}
+Language: ${AI_LOCALE_NAMES[resolveAppLocale(locale)]}
 
 Generate the structured assessment report.`;
 };

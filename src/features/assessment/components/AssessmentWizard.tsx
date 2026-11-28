@@ -23,13 +23,14 @@ import { useAnalyzeAssessment } from "@/features/assessment/hooks/useAssessment"
 import { PHOTO_STEPS } from "@/features/assessment/schemas/assessmentSchema";
 import { useAssessmentStore } from "@/features/assessment/stores/assessmentStore";
 import { extractVehicleTelemetry } from "@/features/assessment/types/assessmentService";
+import { resolveAppLocale } from "@/i18n/locales";
 
 import type { PhotoAngle, WizardStep } from "@/features/assessment/schemas/assessmentSchema";
 
 export const AssessmentWizard: React.FC = () => {
 	const t = useTranslations("Assessment");
 	const rawLocale = useLocale();
-	const locale: "de" | "en" | "el" = rawLocale === "en" || rawLocale === "el" ? rawLocale : "de";
+	const locale = resolveAppLocale(rawLocale);
 	const {
 		currentStep,
 		photos,
@@ -237,7 +238,7 @@ export const AssessmentWizard: React.FC = () => {
 
 								{/* Integrated Back Button for Photo Steps 2–4 */}
 								{isPhotoStep && currentStep !== "front" ? (
-									<div className="mt-6 border-t border-white/[0.07] pt-5">
+									<div className="mt-6 border-t border-white/7 pt-5">
 										<button
 											type="button"
 											disabled={isUploadingPhoto}

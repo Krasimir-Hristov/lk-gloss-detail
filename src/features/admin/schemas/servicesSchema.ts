@@ -1,6 +1,8 @@
 import { z } from "zod";
 
-export const ServiceLocaleSchema = z.enum(["de", "en", "el"]);
+import { AppLocaleSchema, DEFAULT_LOCALE } from "@/i18n/locales";
+
+export const ServiceLocaleSchema = AppLocaleSchema;
 
 export type ServiceLocale = z.infer<typeof ServiceLocaleSchema>;
 
@@ -8,6 +10,8 @@ export const LocalizedTextPartialSchema = z.object({
 	de: z.string().optional(),
 	en: z.string().optional(),
 	el: z.string().optional(),
+	sq: z.string().optional(),
+	tr: z.string().optional(),
 });
 
 export type LocalizedTextPartial = z.infer<typeof LocalizedTextPartialSchema>;
@@ -19,15 +23,19 @@ export const ServiceTranslationsSchema = z.object({
 
 export type ServiceTranslations = z.infer<typeof ServiceTranslationsSchema>;
 
-export const TranslatedTextTripleSchema = z.object({
+export const TranslatedTextMapSchema = z.object({
 	de: z.string(),
 	en: z.string(),
 	el: z.string(),
+	sq: z.string(),
+	tr: z.string(),
 });
 
+export const TranslatedTextTripleSchema = TranslatedTextMapSchema;
+
 export const TranslatedServicePairSchema = z.object({
-	name: TranslatedTextTripleSchema,
-	short_description: TranslatedTextTripleSchema,
+	name: TranslatedTextMapSchema,
+	short_description: TranslatedTextMapSchema,
 });
 
 export type TranslatedServicePair = z.infer<typeof TranslatedServicePairSchema>;
@@ -45,7 +53,7 @@ export const ServiceInputSchema = z.object({
 	duration_hours: z.number().min(0.5, "Duration must be at least 30 mins"),
 	active: z.boolean(),
 	sort_order: z.number().int(),
-	locale: ServiceLocaleSchema.default("de"),
+	locale: ServiceLocaleSchema.default(DEFAULT_LOCALE),
 	translations: ServiceTranslationsSchema.optional(),
 });
 

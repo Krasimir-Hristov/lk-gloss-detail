@@ -18,6 +18,7 @@ import { useLocale, useTranslations } from "next-intl";
 import React, { useEffect, useState } from "react";
 
 import { sanitizeTel, toWhatsappUrl } from "@/features/admin/components/messages/contactLinks";
+import { DATE_LOCALE_MAP, resolveAppLocale } from "@/i18n/locales";
 
 import type { AdminMessage, MessageStatus } from "@/features/admin/types/messagesTypes";
 
@@ -28,8 +29,6 @@ interface MessageDetailModalProps {
 	onStatusChange: (id: string, status: MessageStatus) => void;
 	onRequestDelete: (id: string) => void;
 }
-
-const localeMap: Record<string, string> = { de: "de-DE", en: "en-US", el: "el-GR" };
 
 const statusBadgeStyles: Record<MessageStatus, string> = {
 	unread: "border-purple-500/40 bg-purple-500/15 text-purple-300",
@@ -68,7 +67,7 @@ export const MessageDetailModal: React.FC<MessageDetailModalProps> = ({
 
 	const telTarget = message ? sanitizeTel(message.phone) : "";
 	const waUrl = message ? toWhatsappUrl(message.phone) : null;
-	const dateLocale = localeMap[locale] ?? "de-DE";
+	const dateLocale = DATE_LOCALE_MAP[resolveAppLocale(locale)];
 
 	return (
 		<AnimatePresence>

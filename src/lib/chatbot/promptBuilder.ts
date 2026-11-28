@@ -5,6 +5,7 @@ import { getOpenRouterEmbeddings } from "@/lib/chatbot/embeddings";
 import { createServiceClient } from "@/lib/supabase/service";
 
 import type { PublicService } from "@/features/services/actions/getPublicServices";
+import type { AppLocale } from "@/i18n/locales";
 
 const DIRECT_KB_ROW_LIMIT = 25;
 
@@ -102,15 +103,17 @@ export interface ChatbotLinkLabels {
 }
 
 export const buildChatbotSystemPrompt = (
-	locale: "de" | "en" | "el",
+	locale: AppLocale,
 	services: PublicService[],
 	knowledgeChunks: string[],
 	links: ChatbotLinkLabels,
 ): string => {
-	const localeInstructions: Record<"de" | "en" | "el", string> = {
+	const localeInstructions: Record<AppLocale, string> = {
 		de: "Antworte IMMER ausschließlich auf Deutsch. Sei freundlich, professionell und prägnant.",
 		en: "ALWAYS respond exclusively in English. Be friendly, professional, and concise.",
 		el: "Πάντα να απαντάς αποκλειστικά στα Ελληνικά. Να είσαι φιλικός, επαγγελματίας και σύντομος.",
+		sq: "Përgjigju GJITHMONË ekskluzivisht në shqip. Ji miqësor, profesional dhe i përmbledhur.",
+		tr: "HER ZAMAN yalnızca Türkçe yanıt ver. Nazik, profesyonel ve özlü ol.",
 	};
 
 	const servicesSection = formatServicesCatalog(services, locale);
