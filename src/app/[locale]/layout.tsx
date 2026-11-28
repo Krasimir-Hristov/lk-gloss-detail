@@ -49,6 +49,11 @@ export const generateMetadata = async ({ params }: Omit<Props, "children">): Pro
 	const t = await getTranslations({ locale, namespace: "Metadata" });
 	const baseUrl = getBaseUrl();
 
+	const alternateLanguages: Record<string, string> = {
+		...Object.fromEntries(routing.locales.map((loc) => [loc, `${baseUrl}/${loc}`])),
+		"x-default": `${baseUrl}/${routing.defaultLocale}`,
+	};
+
 	return {
 		metadataBase: new URL(baseUrl),
 		title: {
@@ -57,12 +62,7 @@ export const generateMetadata = async ({ params }: Omit<Props, "children">): Pro
 		},
 		description: t("description"),
 		alternates: {
-			languages: {
-				de: `${baseUrl}/de`,
-				en: `${baseUrl}/en`,
-				el: `${baseUrl}/el`,
-				"x-default": `${baseUrl}/de`,
-			},
+			languages: alternateLanguages,
 		},
 	};
 };
@@ -79,7 +79,8 @@ const LocaleLayout = async ({ children, params }: Props) => {
 
 	const headersList = await headers();
 	const pathname = headersList.get("x-pathname") || "";
-	const isAdminRoute = /^\/(de|en|el)\/admin(\/|$)/.test(pathname);
+	const isAdminRoute =
+		hasLocale(routing.locales, pathname.split("/")[1]) && /^\/[^/]+\/admin(\/|$)/.test(pathname);
 
 	return (
 		<html

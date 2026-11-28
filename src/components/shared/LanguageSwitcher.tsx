@@ -3,7 +3,7 @@
 import { motion, AnimatePresence } from "framer-motion";
 import { Globe, ChevronDown } from "lucide-react";
 import { useLocale, useTranslations } from "next-intl";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 import { routing } from "@/i18n/routing";
 
@@ -12,6 +12,31 @@ export const LanguageSwitcher = () => {
 	const locale = useLocale();
 	const [isNavigating, setIsNavigating] = useState(false);
 	const [isOpen, setIsOpen] = useState(false);
+	const containerRef = useRef<HTMLDivElement>(null);
+
+	useEffect(() => {
+		if (!isOpen) return;
+
+		const handleMouseDown = (event: MouseEvent) => {
+			if (containerRef.current && !containerRef.current.contains(event.target as Node)) {
+				setIsOpen(false);
+			}
+		};
+
+		const handleKeyDown = (event: KeyboardEvent) => {
+			if (event.key === "Escape") {
+				setIsOpen(false);
+			}
+		};
+
+		document.addEventListener("mousedown", handleMouseDown);
+		document.addEventListener("keydown", handleKeyDown);
+
+		return () => {
+			document.removeEventListener("mousedown", handleMouseDown);
+			document.removeEventListener("keydown", handleKeyDown);
+		};
+	}, [isOpen]);
 
 	const handleChange = (nextLocale: string) => {
 		setIsNavigating(true);
@@ -35,10 +60,10 @@ export const LanguageSwitcher = () => {
 	const currentName = t(`locales.${locale}.short`);
 
 	return (
-		<div className="relative">
+		<div ref={containerRef} className="relative">
 			<button
 				type="button"
-				onClick={() => setIsOpen(!isOpen)}
+				onClick={() => setIsOpen((prev) => !prev)}
 				className="flex cursor-pointer items-center gap-1.5 rounded-xl border border-white/10 bg-white/4 px-2.5 py-2 font-mono text-xs font-medium text-[#d5d0e3] transition-all hover:border-[#7b2dff]/50 hover:bg-white/8 hover:text-white sm:gap-2 sm:px-3"
 				aria-label={t("label")}
 				aria-expanded={isOpen}
@@ -55,7 +80,7 @@ export const LanguageSwitcher = () => {
 						animate={{ opacity: 1, y: 0, scale: 1 }}
 						exit={{ opacity: 0, y: -8, scale: 0.98 }}
 						transition={{ duration: 0.15 }}
-						className="absolute right-0 mt-2 w-36 overflow-hidden rounded-xl border border-white/10 bg-[#0d0d14]/95 p-1 shadow-[0_20px_50px_rgba(0,0,0,0.85)] backdrop-blur-2xl"
+						className="absolute right-0 z-50 mt-2 w-44 overflow-hidden rounded-xl border border-white/10 bg-[#0d0d14]/95 p-1 shadow-[0_20px_50px_rgba(0,0,0,0.85)] backdrop-blur-2xl"
 					>
 						{routing.locales.map((loc) => {
 							const isActive = loc === locale;

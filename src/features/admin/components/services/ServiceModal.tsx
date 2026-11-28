@@ -17,16 +17,22 @@ import {
 	type ServiceLocale,
 } from "@/features/admin/schemas/servicesSchema";
 import { getLocalizedText, type AdminServiceItem } from "@/features/admin/types/servicesTypes";
+import { SUPPORTED_LOCALES, resolveAppLocale } from "@/i18n/locales";
 
-const SUPPORTED_LOCALES: readonly ServiceLocale[] = ["de", "en", "el"];
+const buildTranslationsMap = (
+	getValue: (locale: ServiceLocale) => string,
+): Record<ServiceLocale, string> =>
+	Object.fromEntries(SUPPORTED_LOCALES.map((loc) => [loc, getValue(loc)])) as Record<
+		ServiceLocale,
+		string
+	>;
 
 const extractTranslationsMap = (
 	field: Record<string, string> | string | null | undefined,
-): Record<ServiceLocale, string> => ({
-	de: getLocalizedText(field, "de"),
-	en: getLocalizedText(field, "en"),
-	el: getLocalizedText(field, "el"),
-});
+): Record<ServiceLocale, string> => buildTranslationsMap((loc) => getLocalizedText(field, loc));
+
+const createEmptyTranslationsMap = (): Record<ServiceLocale, string> =>
+	buildTranslationsMap(() => "");
 
 interface ServiceModalProps {
 	isOpen: boolean;
@@ -38,18 +44,16 @@ interface ServiceModalProps {
 export const ServiceModal: React.FC<ServiceModalProps> = ({ isOpen, service, onClose, onSave }) => {
 	const t = useTranslations("Admin.services");
 	const rawLocale = useLocale();
-	const activeLocale: ServiceLocale = SUPPORTED_LOCALES.includes(rawLocale as ServiceLocale)
-		? (rawLocale as ServiceLocale)
-		: "de";
+	const activeLocale: ServiceLocale = resolveAppLocale(rawLocale);
 
 	const [isUploading, setIsUploading] = useState(false);
 	const [showTranslations, setShowTranslations] = useState(false);
 	const [hasEditedTranslations, setHasEditedTranslations] = useState(false);
 	const [nameOverrides, setNameOverrides] = useState<Record<ServiceLocale, string>>(() =>
-		service ? extractTranslationsMap(service.name) : { de: "", en: "", el: "" },
+		service ? extractTranslationsMap(service.name) : createEmptyTranslationsMap(),
 	);
 	const [descOverrides, setDescOverrides] = useState<Record<ServiceLocale, string>>(() =>
-		service ? extractTranslationsMap(service.short_description) : { de: "", en: "", el: "" },
+		service ? extractTranslationsMap(service.short_description) : createEmptyTranslationsMap(),
 	);
 
 	const isEditing = Boolean(service);

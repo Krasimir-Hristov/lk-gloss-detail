@@ -11,6 +11,8 @@ import {
 import { routing } from "@/i18n/routing";
 import {
 	AdminServiceRowSchema,
+	createEmptyTextMap,
+	createUniformTextMap,
 	extractGalleryStoragePath,
 	hasCompleteTranslations,
 	mergeOverrides,
@@ -70,15 +72,15 @@ export const createService = async (
 					sourceLocale: locale,
 				})
 			: {
-					name: { de: cleanName, en: cleanName, el: cleanName },
-					short_description: { de: cleanDesc, en: cleanDesc, el: cleanDesc },
+					name: createUniformTextMap(cleanName),
+					short_description: cleanDesc ? createUniformTextMap(cleanDesc) : createEmptyTextMap(),
 				};
 
 		const nameObj = mergeOverrides(translated.name, translations?.name);
 		nameObj[locale] = cleanName;
 		const descObj = cleanDesc
 			? mergeOverrides(translated.short_description, translations?.short_description)
-			: { de: "", en: "", el: "" };
+			: createEmptyTextMap();
 		if (cleanDesc) descObj[locale] = cleanDesc;
 
 		const { data, error } = await auth.supabase
@@ -168,7 +170,7 @@ export const updateService = async (
 		}
 
 		if (descChanged && !cleanDesc) {
-			descObj = { de: "", en: "", el: "" };
+			descObj = createEmptyTextMap();
 		}
 
 		const { data, error } = await auth.supabase

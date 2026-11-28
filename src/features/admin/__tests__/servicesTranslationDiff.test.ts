@@ -120,6 +120,30 @@ const BASE_INPUT: ServiceInput = {
 	locale: "de",
 };
 
+const EXISTING_NAME = {
+	de: "Außenwäsche",
+	en: "Exterior Wash",
+	el: "Εξωτερικό Πλύσιμο",
+	sq: "Larje e Jashtme",
+	tr: "Dış Yıkama",
+};
+
+const EXISTING_DESC = {
+	de: "Gründliche Handwäsche",
+	en: "Thorough hand wash",
+	el: "Ενδελεχές πλύσιμο στο χέρι",
+	sq: "Larje e plotë me dorë",
+	tr: "Detaylı el yıkama",
+};
+
+const PRO_NAME = {
+	de: "Außenwäsche Pro",
+	en: "Exterior Wash Pro",
+	el: "Εξωτερικό Πλύσιμο Pro",
+	sq: "Larje e Jashtme Pro",
+	tr: "Dış Yıkama Pro",
+};
+
 describe("Admin Services Translation Diff-Check", () => {
 	beforeEach(() => {
 		vi.clearAllMocks();
@@ -129,16 +153,8 @@ describe("Admin Services Translation Diff-Check", () => {
 
 		mockState.existingService = {
 			id: SERVICE_ID,
-			name: {
-				de: "Außenwäsche",
-				en: "Exterior Wash",
-				el: "Εξωτερικό Πλύσιμο",
-			},
-			short_description: {
-				de: "Gründliche Handwäsche",
-				en: "Thorough hand wash",
-				el: "Ενδελεχές πλύσιμο στο χέρι",
-			},
+			name: { ...EXISTING_NAME },
+			short_description: { ...EXISTING_DESC },
 			category: "exterior",
 			icon: "Sparkles",
 			image_url: null,
@@ -153,16 +169,8 @@ describe("Admin Services Translation Diff-Check", () => {
 		};
 
 		mockTranslateServicePair.mockResolvedValue({
-			name: {
-				de: "Außenwäsche Pro",
-				en: "Exterior Wash Pro",
-				el: "Εξωτερικό Πλύσιμο Pro",
-			},
-			short_description: {
-				de: "Gründliche Handwäsche",
-				en: "Thorough hand wash",
-				el: "Ενδελεχές πλύσιμο στο χέρι",
-			},
+			name: { ...PRO_NAME },
+			short_description: { ...EXISTING_DESC },
 		});
 
 		mockRequireAdmin.mockResolvedValue({
@@ -194,16 +202,8 @@ describe("Admin Services Translation Diff-Check", () => {
 		expect(mockTranslateServicePair).not.toHaveBeenCalled();
 		expect(mockUpdatePayloads).toHaveLength(1);
 		expect(mockUpdatePayloads[0]?.price_small).toBe(75);
-		expect(mockUpdatePayloads[0]?.name).toEqual({
-			de: "Außenwäsche",
-			en: "Exterior Wash",
-			el: "Εξωτερικό Πλύσιμο",
-		});
-		expect(mockUpdatePayloads[0]?.short_description).toEqual({
-			de: "Gründliche Handwäsche",
-			en: "Thorough hand wash",
-			el: "Ενδελεχές πλύσιμο στο χέρι",
-		});
+		expect(mockUpdatePayloads[0]?.name).toEqual(EXISTING_NAME);
+		expect(mockUpdatePayloads[0]?.short_description).toEqual(EXISTING_DESC);
 		expect(mockUpdateEqCalls).toContainEqual(["id", SERVICE_ID]);
 		expect(mockRevalidateTag).toHaveBeenCalledWith("services", "max");
 		expect(mockRevalidatePath).toHaveBeenCalled();
@@ -220,9 +220,8 @@ describe("Admin Services Translation Diff-Check", () => {
 		expect(res.success).toBe(true);
 		expect(mockTranslateServicePair).not.toHaveBeenCalled();
 		expect(mockUpdatePayloads[0]?.name).toEqual({
-			de: "Außenwäsche",
+			...EXISTING_NAME,
 			en: "Premium Exterior Wash",
-			el: "Εξωτερικό Πλύσιμο",
 		});
 		expect(mockRevalidateTag).toHaveBeenCalledWith("services", "max");
 	});
@@ -230,25 +229,52 @@ describe("Admin Services Translation Diff-Check", () => {
 	it("makes exactly 1 combined translateServicePair call when active locale text changes", async () => {
 		const res = await updateService(SERVICE_ID, {
 			...BASE_INPUT,
-			name: "Außenwäsche Pro",
+			name: PRO_NAME.de,
 		});
 
 		expect(res.success).toBe(true);
 		expect(mockTranslateServicePair).toHaveBeenCalledTimes(1);
 		expect(mockUpdatePayloads).toHaveLength(1);
-		expect(mockUpdatePayloads[0]?.name).toEqual({
-			de: "Außenwäsche Pro",
-			en: "Exterior Wash Pro",
-			el: "Εξωτερικό Πλύσιμο Pro",
-		});
+		expect(mockUpdatePayloads[0]?.name).toEqual(PRO_NAME);
 		expect(mockRevalidateTag).toHaveBeenCalledWith("services", "max");
 		expect(mockRevalidatePath).toHaveBeenCalled();
+	});
+
+	it("supports editing from sq (no-op diff) and tr (re-translate) locales across all 5 locales", async () => {
+		const sqPriceRes = await updateService(SERVICE_ID, {
+			...BASE_INPUT,
+			locale: "sq",
+			name: EXISTING_NAME.sq,
+			short_description: EXISTING_DESC.sq,
+			price_small: 60,
+		});
+
+		expect(sqPriceRes.success).toBe(true);
+		expect(mockTranslateServicePair).not.toHaveBeenCalled();
+		expect(mockUpdatePayloads[0]?.name).toEqual(EXISTING_NAME);
+
+		const trEditRes = await updateService(SERVICE_ID, {
+			...BASE_INPUT,
+			locale: "tr",
+			name: PRO_NAME.tr,
+			short_description: EXISTING_DESC.tr,
+		});
+
+		expect(trEditRes.success).toBe(true);
+		expect(mockTranslateServicePair).toHaveBeenCalledTimes(1);
+		expect(mockTranslateServicePair).toHaveBeenCalledWith(
+			expect.objectContaining({
+				name: PRO_NAME.tr,
+				sourceLocale: "tr",
+			}),
+		);
+		expect(mockUpdatePayloads[1]?.name).toEqual(PRO_NAME);
 	});
 
 	it("calls translateServicePair once on createService and invalidates services cache tag", async () => {
 		const res = await createService({
 			...BASE_INPUT,
-			name: "Außenwäsche Pro",
+			name: PRO_NAME.de,
 		});
 
 		expect(res.success).toBe(true);

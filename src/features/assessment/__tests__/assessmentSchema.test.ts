@@ -97,6 +97,21 @@ describe("Assessment Schemas", () => {
 			}
 		});
 
+		it("accepts all 5 supported locales including sq and tr, and rejects unsupported locales", () => {
+			for (const locale of ["de", "en", "el", "sq", "tr"] as const) {
+				const parsed = AnalyzeRequestSchema.safeParse({
+					acceptedServiceIds: [VALID_UUID],
+					locale,
+				});
+				expect(parsed.success).toBe(true);
+			}
+			for (const locale of ["fr", "it", ""]) {
+				expect(
+					AnalyzeRequestSchema.safeParse({ acceptedServiceIds: [VALID_UUID], locale }).success,
+				).toBe(false);
+			}
+		});
+
 		it("rejects invalid acceptedServiceIds, oversized bounds, and unsupported locale", () => {
 			const invalidPayloads = [
 				{ acceptedServiceIds: [] },
@@ -125,6 +140,25 @@ describe("Assessment Schemas", () => {
 				expect(parsed.success).toBe(true);
 				if (parsed.success) expect(parsed.data.locale).toBe("de");
 			}
+		});
+
+		it("accepts sq and tr locales and rejects unsupported locales on PhotoValidationRequestSchema", () => {
+			for (const locale of ["de", "en", "el", "sq", "tr"] as const) {
+				expect(
+					PhotoValidationRequestSchema.safeParse({
+						imageBase64: VALID_DATA_URI,
+						expectedAngle: "front",
+						locale,
+					}).success,
+				).toBe(true);
+			}
+			expect(
+				PhotoValidationRequestSchema.safeParse({
+					imageBase64: VALID_DATA_URI,
+					expectedAngle: "front",
+					locale: "fr",
+				}).success,
+			).toBe(false);
 		});
 
 		it("rejects external URLs (SSRF), svg+xml, and payloads > 4.5M chars", () => {

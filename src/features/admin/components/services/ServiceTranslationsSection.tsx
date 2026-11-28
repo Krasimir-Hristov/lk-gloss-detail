@@ -3,9 +3,9 @@
 import { ChevronDown, ChevronUp, Languages } from "lucide-react";
 import React from "react";
 
-import type { ServiceLocale } from "@/features/admin/schemas/servicesSchema";
+import { SUPPORTED_LOCALES } from "@/i18n/locales";
 
-const SUPPORTED_LOCALES: readonly ServiceLocale[] = ["de", "en", "el"];
+import type { ServiceLocale } from "@/features/admin/schemas/servicesSchema";
 
 interface ServiceTranslationsSectionProps {
 	isExpanded: boolean;

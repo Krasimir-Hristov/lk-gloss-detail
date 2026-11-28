@@ -4,6 +4,7 @@ import { ChatOpenAI } from "@langchain/openai";
 import { z } from "zod";
 
 import { getAiModelsConfig } from "@/config/aiModelsConfig";
+import { AI_LOCALE_NAMES, AppLocaleSchema, DEFAULT_LOCALE, resolveAppLocale } from "@/i18n/locales";
 
 import type { AiModelsConfig } from "@/config/aiModelsConfig";
 
@@ -42,7 +43,7 @@ const ValidationState = z.object({
 	imageBase64: z.string(),
 	expectedAngle: z.enum(["front", "rear", "side", "interior"]),
 	previousCarDescriptions: z.array(z.string()).default([]),
-	locale: z.enum(["de", "en", "el"]).default("de"),
+	locale: AppLocaleSchema.default(DEFAULT_LOCALE),
 	valid: z.boolean().default(false),
 	reason: z.string().default(""),
 	userMessage: z.string().nullable().default(null),
@@ -94,13 +95,7 @@ Visual Findings:
 - When valid is false or no specific detailing condition is visible, return an empty array [].
 
 Language:
-- Respond (userMessage and visualFindings) in the language specified in the request (de = German, en = English, el = Greek). Default to German if unspecified.`;
-
-const LOCALE_LABELS: Record<string, string> = {
-	de: "German",
-	en: "English",
-	el: "Greek",
-};
+- Respond (userMessage and visualFindings) in the language specified in the request (de = German, en = English, el = Greek, sq = Albanian, tr = Turkish). Default to German if unspecified.`;
 
 const sanitizeVisualFindings = (valid: boolean, findings: string[] | undefined): string[] => {
 	if (!valid || !Array.isArray(findings)) return [];
@@ -118,7 +113,7 @@ const validateImageAngle = async (
 ): Promise<Partial<ValidationStateType>> => {
 	const { imageBase64, expectedAngle, previousCarDescriptions, locale } = state;
 	const config = getAiModelsConfig();
-	const languageLabel = LOCALE_LABELS[locale] ?? "German";
+	const languageLabel = AI_LOCALE_NAMES[resolveAppLocale(locale)];
 
 	const messages = [
 		new SystemMessage(SYSTEM_PROMPT),

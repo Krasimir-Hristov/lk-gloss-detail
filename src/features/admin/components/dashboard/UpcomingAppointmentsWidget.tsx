@@ -5,6 +5,7 @@ import {
 	getAppointmentServiceNames,
 	statusColors,
 } from "@/features/admin/utils/appointmentHelpers";
+import { DATE_LOCALE_MAP, resolveAppLocale } from "@/i18n/locales";
 
 import type { AdminAppointment } from "@/features/admin/types/appointmentsTypes";
 
@@ -13,12 +14,6 @@ interface UpcomingAppointmentsWidgetProps {
 	locale: string;
 	t: (key: string) => string;
 }
-
-const localeMap: Record<string, string> = {
-	de: "de-DE",
-	en: "en-US",
-	el: "el-GR",
-};
 
 const sanitizeTel = (phone: string): string => phone.replace(/[^\d+]/g, "");
 
@@ -36,7 +31,7 @@ export const UpcomingAppointmentsWidget: React.FC<UpcomingAppointmentsWidgetProp
 	}, {});
 
 	const sortedDates = Object.keys(grouped).sort();
-	const dateLocale = localeMap[locale] ?? "de-DE";
+	const dateLocale = DATE_LOCALE_MAP[resolveAppLocale(locale)];
 
 	return (
 		<section

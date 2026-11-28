@@ -1,6 +1,7 @@
 import { MessageSquare, Phone, MessageCircle, ArrowRight } from "lucide-react";
 import React from "react";
 
+import { DATE_LOCALE_MAP, resolveAppLocale } from "@/i18n/locales";
 import { Link } from "@/i18n/routing";
 
 import type { AdminMessage } from "@/features/admin/types/messagesTypes";
@@ -10,12 +11,6 @@ interface RecentMessagesWidgetProps {
 	locale: string;
 	t: (key: string) => string;
 }
-
-const localeMap: Record<string, string> = {
-	de: "de-DE",
-	en: "en-US",
-	el: "el-GR",
-};
 
 const sanitizeTel = (phone: string): string => phone.replace(/[^\d+]/g, "");
 
@@ -36,7 +31,7 @@ export const RecentMessagesWidget: React.FC<RecentMessagesWidgetProps> = ({
 	t,
 }) => {
 	const visibleMessages = messages.slice(0, 5);
-	const dateLocale = localeMap[locale] ?? "de-DE";
+	const dateLocale = DATE_LOCALE_MAP[resolveAppLocale(locale)];
 
 	return (
 		<section

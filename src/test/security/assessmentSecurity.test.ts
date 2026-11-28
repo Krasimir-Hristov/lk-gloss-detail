@@ -29,9 +29,10 @@ vi.mock("next-intl/middleware", () => ({
 
 vi.mock("@/i18n/routing", () => ({
 	routing: {
-		locales: ["de", "en", "el"],
+		locales: ["de", "en", "el", "sq", "tr"],
 		defaultLocale: "de",
 		localePrefix: "always",
+		localeDetection: false,
 	},
 }));
 
@@ -253,6 +254,19 @@ describe("Assessment API & Proxy Security", () => {
 			expect(mockIntlMiddleware).toHaveBeenCalledTimes(1);
 			const forwardedRequest = mockIntlMiddleware.mock.calls[0][0];
 			expect(forwardedRequest.headers.get("x-middleware-subrequest")).toBeNull();
+		});
+	});
+
+	describe("src/proxy.ts admin guard for Phase D locales (sq, tr)", () => {
+		it.each([
+			["/sq/admin", "/sq/admin/login"],
+			["/tr/admin/messages", "/tr/admin/login"],
+		])("redirects unauthenticated %s to %s without reaching next-intl", async (path, target) => {
+			const response = await proxy(new NextRequest(`http://localhost:3000${path}`));
+			expect(response.status).toBeGreaterThanOrEqual(300);
+			expect(response.status).toBeLessThan(400);
+			expect(new URL(response.headers.get("location") ?? "").pathname).toBe(target);
+			expect(mockIntlMiddleware).not.toHaveBeenCalled();
 		});
 	});
 });

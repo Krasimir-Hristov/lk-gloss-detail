@@ -1,5 +1,6 @@
 import { CONTACT_INFO } from "@/constants/contact";
 import { getBaseUrl } from "@/constants/site";
+import { resolveAppLocale, type AppLocale } from "@/i18n/locales";
 
 const safeJsonLd = (data: Record<string, unknown>): string => {
 	return JSON.stringify(data).replace(/<\/script>/gi, "<\\/script>");
@@ -19,30 +20,37 @@ type LocalBusinessJsonLdProps = {
 
 export const LocalBusinessJsonLd = ({ locale }: LocalBusinessJsonLdProps) => {
 	const baseUrl = getBaseUrl();
+	const resolvedLocale = resolveAppLocale(locale);
 
-	const names: Record<string, string> = {
+	const names: Record<AppLocale, string> = {
 		de: "LK Gloss & Detail",
 		en: "LK Gloss & Detail",
 		el: "LK Gloss & Detail",
+		sq: "LK Gloss & Detail",
+		tr: "LK Gloss & Detail",
 	};
 
-	const descriptions: Record<string, string> = {
+	const descriptions: Record<AppLocale, string> = {
 		de: "Mobile Autopflege & Fahrzeugaufbereitung mit KI-gestützter Analyse. Professionelles Car Detailing in Deutschland.",
 		en: "Mobile car care & vehicle detailing with AI-powered analysis. Professional car detailing service in Germany.",
 		el: "Κινητή περιποίηση αυτοκινήτου με ανάλυση AI. Επαγγελματική υπηρεσία detailing στην Γερμανία.",
+		sq: "Përkujdesje mobile për automjete & detailing me analizë AI. Shërbim profesional detailing në Gjermani.",
+		tr: "Yapay zeka destekli analiz ile mobil araç bakımı ve detaylı temizlik. Almanya'da profesyonel araç detailing hizmeti.",
 	};
 
-	const serviceTypes: Record<string, string[]> = {
+	const serviceTypes: Record<AppLocale, string[]> = {
 		de: ["Innenaufbereitung", "Lackkorrektur", "Keramikversiegelung", "Mobile Autopflege"],
 		en: ["Interior Detailing", "Paint Correction", "Ceramic Coating", "Mobile Service"],
 		el: ["Εσωτερική Περιποίηση", "Διόρθωση Βαφής", "Κεραμική Επικάλυψη", "Κινητή Υπηρεσία"],
+		sq: ["Pastrim i Brendshëm", "Korrigjim i Bojësimit", "Veshje Qeramike", "Shërbim Mobil"],
+		tr: ["İç Detaylı Temizlik", "Boya Düzeltme", "Seramik Kaplama", "Mobil Hizmet"],
 	};
 
 	const jsonLd = {
 		"@context": "https://schema.org",
 		"@type": "AutomotiveBusiness",
-		name: names[locale] ?? names.de,
-		description: descriptions[locale] ?? descriptions.de,
+		name: names[resolvedLocale],
+		description: descriptions[resolvedLocale],
 		url: baseUrl,
 		telephone: CONTACT_INFO.phone,
 		email: CONTACT_INFO.email,
@@ -61,10 +69,10 @@ export const LocalBusinessJsonLd = ({ locale }: LocalBusinessJsonLdProps) => {
 			"@type": "Country",
 			name: "Germany",
 		},
-		serviceType: serviceTypes[locale] ?? serviceTypes.de,
+		serviceType: serviceTypes[resolvedLocale],
 		priceRange: "€€",
 		openingHours: "Mo-Sa 08:00-18:00",
-		inLanguage: locale,
+		inLanguage: resolvedLocale,
 	};
 
 	return <JsonLd data={jsonLd} />;

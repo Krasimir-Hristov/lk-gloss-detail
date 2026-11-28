@@ -6,19 +6,22 @@ import { motion } from "framer-motion";
 import { ArrowLeft, ArrowRight, CalendarCheck } from "lucide-react";
 import { useFormatter, useLocale, useTranslations } from "next-intl";
 import React from "react";
-import { de, el, enUS } from "react-day-picker/locale";
+import { de, el, enUS, sq, tr } from "react-day-picker/locale";
 
 import { getUnavailableDates } from "@/actions/booking";
 import { Button } from "@/components/ui/Button";
 import { Calendar } from "@/components/ui/Calendar";
 import { BookingErrorCard } from "@/features/booking/components/BookingErrorCard";
 import { useBookingStore } from "@/features/booking/stores/bookingStore";
+import { resolveAppLocale, type AppLocale } from "@/i18n/locales";
 
-const DAY_PICKER_LOCALES = {
+const DAY_PICKER_LOCALES: Record<AppLocale, typeof de> = {
 	de,
 	en: enUS,
 	el,
-} as const;
+	sq,
+	tr,
+};
 
 const CalendarSkeleton: React.FC = () => {
 	return (
@@ -57,8 +60,7 @@ export const StepDatePicker: React.FC = () => {
 	});
 
 	const selectedDate = bookingDate ? parseISO(bookingDate) : undefined;
-	const dayPickerLocale =
-		DAY_PICKER_LOCALES[locale as keyof typeof DAY_PICKER_LOCALES] ?? DAY_PICKER_LOCALES.de;
+	const dayPickerLocale = DAY_PICKER_LOCALES[resolveAppLocale(locale)];
 
 	const handleSelect = (date: Date | undefined) => {
 		if (date) {
@@ -137,7 +139,7 @@ export const StepDatePicker: React.FC = () => {
 				</div>
 
 				{/* Calendar Availability Legend */}
-				<div className="mt-4 flex flex-wrap items-center justify-center gap-x-4 gap-y-2 border-t border-white/[0.07] pt-3.5 font-mono text-[10px] text-[#9b93ad] sm:mt-5 sm:gap-x-5 sm:pt-4 sm:text-[11px]">
+				<div className="mt-4 flex flex-wrap items-center justify-center gap-x-4 gap-y-2 border-t border-white/7 pt-3.5 font-mono text-[10px] text-[#9b93ad] sm:mt-5 sm:gap-x-5 sm:pt-4 sm:text-[11px]">
 					<span className="inline-flex items-center gap-1.5 sm:gap-2">
 						<span className="h-2.5 w-2.5 rounded-full border border-white/30 bg-white/10" />
 						<span>{t("available")}</span>

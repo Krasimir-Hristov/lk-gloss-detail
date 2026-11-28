@@ -263,6 +263,7 @@
 	"Contact": {
 		"title": "Contact",
 		"description": "Contact LK Gloss & Detail for mobile car care inquiries in Neuhausen auf den Fildern",
+		"subtitle": "Have questions or want to arrange a special appointment? Write to us or call us directly.",
 		"mapTitle": "Our Location",
 		"whatsappMessage": "Hello! I have a question about your services.",
 		"whatsappAria": "Contact us on WhatsApp",
@@ -312,6 +313,14 @@
 			"el": {
 				"short": "ΕΛ",
 				"full": "Ελληνικά"
+			},
+			"sq": {
+				"short": "SQ",
+				"full": "Shqip"
+			},
+			"tr": {
+				"short": "TR",
+				"full": "Türkçe"
 			}
 		}
 	},
@@ -619,7 +628,7 @@
 				"imageRatioHint": "Recommended aspect ratio: 16:9",
 				"imageMaxSizeHint": "Maximum file size: 5 MB",
 				"translations": {
-					"toggle": "Customize Translations (DE / EN / EL)",
+					"toggle": "Customize Translations (DE / EN / EL / SQ / TR)",
 					"hint": "Optional: Override automatic AI translations for specific languages.",
 					"nameLabel": "Name",
 					"descLabel": "Description"
@@ -673,7 +682,7 @@
 			"editor": {
 				"addTitle": "Add Knowledge Entry",
 				"editTitle": "Edit Knowledge Entry",
-				"autoReplyHint": "Write in any language you prefer — the AI chatbot automatically replies to customers in German, English, or Greek.",
+				"autoReplyHint": "Write in any language you prefer — the AI chatbot automatically replies to customers in German, English, Greek, Albanian, or Turkish.",
 				"titleLabel": "Title",
 				"titlePlaceholder": "e.g. Travel Fees & Service Area",
 				"categoryLabel": "Category",

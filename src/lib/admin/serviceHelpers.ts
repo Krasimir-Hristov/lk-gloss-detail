@@ -1,12 +1,12 @@
 import { z } from "zod";
 
 import { getLocalizedText } from "@/features/admin/types/servicesTypes";
+import { SUPPORTED_LOCALES } from "@/i18n/locales";
 
 import type { LocalizedTextPartial, ServiceLocale } from "@/features/admin/schemas/servicesSchema";
 
-export type LocalizedTriple = { de: string; en: string; el: string };
-
-const LOCALES: readonly ServiceLocale[] = ["de", "en", "el"];
+export type LocalizedTextMap = Record<ServiceLocale, string>;
+export type LocalizedTriple = LocalizedTextMap;
 
 const LocalizedFieldSchema = z.union([z.record(z.string(), z.string()), z.string()]);
 
@@ -27,22 +27,26 @@ export const AdminServiceRowSchema = z.object({
 	created_at: z.string(),
 });
 
+export const createUniformTextMap = (text: string): LocalizedTextMap =>
+	Object.fromEntries(SUPPORTED_LOCALES.map((loc) => [loc, text])) as LocalizedTextMap;
+
+export const createEmptyTextMap = (): LocalizedTextMap => createUniformTextMap("");
+
 export const normalizeTriple = (
 	field: Record<string, string> | string | null | undefined,
-): LocalizedTriple => ({
-	de: getLocalizedText(field, "de"),
-	en: getLocalizedText(field, "en"),
-	el: getLocalizedText(field, "el"),
-});
+): LocalizedTextMap =>
+	Object.fromEntries(
+		SUPPORTED_LOCALES.map((loc) => [loc, getLocalizedText(field, loc)]),
+	) as LocalizedTextMap;
 
 export const mergeOverrides = (
-	base: LocalizedTriple,
+	base: LocalizedTextMap,
 	override: LocalizedTextPartial | undefined,
-	existing?: LocalizedTriple,
-): LocalizedTriple => {
-	if (!override) return base;
-	const result: LocalizedTriple = { ...base };
-	for (const loc of LOCALES) {
+	existing?: LocalizedTextMap,
+): LocalizedTextMap => {
+	const result: LocalizedTextMap = { ...base };
+	if (!override) return result;
+	for (const loc of SUPPORTED_LOCALES) {
 		const candidate = override[loc];
 		if (typeof candidate !== "string") continue;
 		const trimmed = candidate.trim();
@@ -55,7 +59,7 @@ export const mergeOverrides = (
 };
 
 export const hasCompleteTranslations = (override: LocalizedTextPartial | undefined): boolean =>
-	Boolean(override && LOCALES.every((loc) => Boolean(override[loc]?.trim())));
+	Boolean(override && SUPPORTED_LOCALES.every((loc) => Boolean(override[loc]?.trim())));
 
 export const extractGalleryStoragePath = (imageUrl: string): string | null => {
 	try {

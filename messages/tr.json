@@ -1,0 +1,1041 @@
+{
+	"Metadata": {
+		"title": "LK Gloss & Detail | Mobil Araç Bakımı",
+		"description": "Yapay zeka destekli analiz ile mobil araç bakımı ve detaylı temizlik. Almanya'da profesyonel araç detailing hizmeti.",
+		"template": "%s | LK Gloss & Detail"
+	},
+	"Navigation": {
+		"home": "Ana Sayfa",
+		"services": "Hizmetler",
+		"assessment": "Yapay Zeka Analizi",
+		"gallery": "Galeri",
+		"contact": "İletişim",
+		"bookNow": "Randevu Al",
+		"openMenu": "Menüyü aç",
+		"closeMenu": "Menüyü kapat"
+	},
+	"HomePage": {
+		"hero": {
+			"title": "Mükemmellikte Premium Araç Bakımı & Detailing.",
+			"subtitle": "Yapay zeka destekli analiz ile profesyonel mobil araç bakımı. Aracınızı tam kapınızın önünde yeniden ışıldatıyoruz.",
+			"ctaPrimary": "Yapay Zeka Analizini Başlat",
+			"ctaSecondary": "Hizmetleri Keşfet",
+			"badgeTitle": "Sertifikalı",
+			"badgeSubtitle": "Detailing Stüdyosu",
+			"imageAlt": "Profesyonel araç bakımı — siyah Porsche cilalanıyor"
+		},
+		"servicesPreview": {
+			"title": "Hizmetlerimiz",
+			"description": "Doğrudan kapınızda profesyonel araç bakımı",
+			"from": "Başlangıç"
+		},
+		"services": {
+			"interior": {
+				"title": "Profesyonel İç Temizlik",
+				"subtitle": "Derinlemesine temizlik & bakım",
+				"features": [
+					"Tüm yüzeylerin kapsamlı temizliği",
+					"Deri bakımı ve koruma",
+					"Koku nötralizasyonu"
+				]
+			},
+			"headlights": {
+				"title": "Far Restorasyonu",
+				"subtitle": "Net görüş & güvenlik",
+				"features": [
+					"Sararma ve matlığın giderilmesi",
+					"Far camlarının parlatılması",
+					"Uzun ömürlü UV koruma"
+				]
+			},
+			"paintCorrection": {
+				"title": "Boya Düzeltme, Pasta Cila & Koruma",
+				"subtitle": "3 Aşamalı yüksek parlaklık & koruma",
+				"features": [
+					"Çizik ve hare izlerinin giderilmesi",
+					"Yüksek parlaklığa kadar polisaj",
+					"Uzun süreli koruma için kaplama"
+				]
+			}
+		},
+		"mobileService": {
+			"title": "Mobil Hizmet",
+			"description": "Doğrudan evinize veya iş yerinize geliyoruz. Araç taşıma zahmeti yok — kapınızın önünde profesyonel araç bakımı.",
+			"features": {
+				"onSite": {
+					"title": "Yerinde Hizmet",
+					"desc": "Doğrudan size geliyoruz"
+				},
+				"valueIncrease": {
+					"title": "Değer Artışı",
+					"desc": "Profesyonel bakım ve yenileme"
+				},
+				"noAppointment": {
+					"title": "Esnek Randevular",
+					"desc": "Randevu ile — hafta sonları dahil"
+				},
+				"noStress": {
+					"title": "Stres Yok",
+					"desc": "Her şey kapınızın önünde"
+				}
+			}
+		},
+		"aiValuation": {
+			"title": "İkinci El Değerini Artırın.",
+			"description": "Yapay zekamız aracınızın durumunu analiz eder ve size özel bir bakım planı oluşturur. Profesyonel bakım her zaman kazandırır.",
+			"formTitle": "Yapay Zeka Araç Değerlendirmesi",
+			"labels": {
+				"model": "Araç modeli",
+				"year": "Model yılı",
+				"condition": "Durum"
+			},
+			"mockValues": {
+				"model": "Porsche 911 Carrera S",
+				"year": "2022",
+				"condition": "İyi — hafif kullanım izleri"
+			},
+			"ctaButton": "Analizi başlat",
+			"stats": {
+				"valueIncrease": {
+					"value": "+15%",
+					"label": "Değer artışı"
+				},
+				"fastAnalysis": {
+					"value": "48h",
+					"label": "Hızlı analiz"
+				},
+				"happyCustomers": {
+					"value": "250+",
+					"label": "Memnun müşteri"
+				}
+			}
+		},
+		"whyLK": {
+			"title": "Neden LK Gloss & Detail?",
+			"mobile": "Bulunduğunuz Yerde Mobil Hizmet",
+			"mobileDesc": "Evinize veya iş yerinize kadar geliyoruz",
+			"professional": "Profesyonel Kalite",
+			"professionalDesc": "Üst düzey ürünler ve modern teknikler",
+			"aiPowered": "Yapay Zeka Destekli Analiz",
+			"aiPoweredDesc": "Yapay zeka ile hassas durum değerlendirmesi"
+		},
+		"howItWorks": {
+			"title": "Nasıl Çalışır?",
+			"step1": "Fotoğrafları Yükleyin",
+			"step1Desc": "Aracınızın fotoğraflarını çekin",
+			"step2": "Yapay Zeka Analizi",
+			"step2Desc": "Yapay zekamız aracın durumunu değerlendirir",
+			"step3": "Randevu Alın",
+			"step3Desc": "Uygun tarih ve saati seçin"
+		},
+		"cta": {
+			"title": "Profesyonel Bir Bakıma Hazır mısınız?",
+			"subtitle": "Randevunuzu bugün oluşturun"
+		},
+		"b2b": {
+			"title": "B2B & Filo Yönetimi",
+			"subtitle": "Şirketler ve filolar için profesyonel araç bakımı",
+			"description": "Çalışanlarınıza veya müşterilerinize birinci sınıf araç bakımı sunun. Şirketler, oto galeriler, leasing firmaları, araç kiralama şirketleri ve filo yöneticileri ile çalışıyoruz.",
+			"features": {
+				"fleet": {
+					"title": "Filo İndirimleri",
+					"desc": "Birden fazla araç için özel fiyatlandırma"
+				},
+				"contracts": {
+					"title": "Uzun Vadeli Sözleşmeler",
+					"desc": "İhtiyaçlarınıza özel esnek anlaşmalar"
+				},
+				"priority": {
+					"title": "Öncelikli Hizmet",
+					"desc": "Hızlı planlama ve öncelikli servis"
+				}
+			},
+			"ctaButton": "Teklif için bizimle iletişime geçin"
+		}
+	},
+	"Services": {
+		"title": "Hizmetlerimiz",
+		"description": "Aracınız için kapsamlı profesyonel bakım"
+	},
+	"Booking": {
+		"title": "Randevu Al",
+		"description": "LK Gloss & Detail ile mobil araç bakım randevunuzu şimdi çevrimiçi oluşturun",
+		"subtitle": "İstediğiniz hizmetleri ve tercih ettiğiniz tarihi seçin",
+		"badge": "Mobil Concierge · Yerinde Hizmet",
+		"stepCounter": "Adım {current} / {total}",
+		"edit": "Düzenle",
+		"progress": {
+			"step1": "Bilgileriniz",
+			"step2": "Hizmetler",
+			"step3": "Tarih",
+			"step4": "Onay"
+		},
+		"step1": {
+			"title": "İletişim Bilgileriniz",
+			"firstName": "Ad",
+			"lastName": "Soyad",
+			"email": "E-posta",
+			"phone": "Telefon",
+			"carDescription": "Araç açıklaması",
+			"carDescriptionHint": "Neler yapılmasını istersiniz? (isteğe bağlı)",
+			"gdpr": "Gizlilik politikasını ve kullanım koşullarını kabul ediyorum",
+			"privacyLink": "Gizlilik Politikası",
+			"firstNameRequired": "Lütfen adınızı girin",
+			"lastNameRequired": "Lütfen soyadınızı girin",
+			"invalidEmail": "Lütfen geçerli bir e-posta adresi girin",
+			"invalidPhone": "Lütfen geçerli bir telefon numarası girin",
+			"gdprRequired": "Lütfen gizlilik politikasını onaylayın",
+			"next": "İleri"
+		},
+		"step2": {
+			"title": "İstediğiniz Hizmetler",
+			"loading": "Hizmetler yükleniyor...",
+			"loadingError": "Hizmetler yüklenirken hata oluştu",
+			"selectMin": "Lütfen en az bir hizmet seçin",
+			"selectedCount": "{count, plural, =0 {Seçim yok} one {1 hizmet seçildi} other {# hizmet seçildi}}",
+			"fromPrice": "€{price} 'den başlayan fiyatlarla",
+			"back": "Geri",
+			"next": "İleri"
+		},
+		"step3": {
+			"title": "Tarih Seçin",
+			"loading": "Müsait tarihler yükleniyor...",
+			"selected": "Seçilen Tarih",
+			"available": "Müsait",
+			"unavailable": "Dolu",
+			"selectedLegend": "Seçili",
+			"chooseAnotherDate": "Başka bir tarih seçin",
+			"back": "Geri",
+			"next": "İleri"
+		},
+		"step4": {
+			"title": "Özet",
+			"yourData": "Bilgileriniz",
+			"name": "Ad Soyad",
+			"email": "E-posta",
+			"phone": "Telefon",
+			"carDescription": "Araç açıklaması",
+			"selectedServices": "Seçilen Hizmetler",
+			"date": "Randevu",
+			"dateAndTime": "Tarih & Saat",
+			"submit": "Randevuyu Onayla",
+			"confirm": "Randevuyu Onayla",
+			"submitting": "Randevu oluşturuluyor...",
+			"back": "Geri",
+			"dateTaken": "Bu tarih maalesef az önce rezerve edildi. Lütfen başka bir tarih seçin.",
+			"generic": "Bir hata oluştu. Lütfen tekrar deneyin."
+		},
+		"dossier": {
+			"title": "Randevu Özeti",
+			"statusOpen": "Canlı Önizleme",
+			"client": "Müşteri",
+			"vehicle": "Araç",
+			"services": "Seçilen Hizmetler",
+			"date": "Tercih Edilen Tarih",
+			"estimatedStart": "Tahmini başlangıç",
+			"estimatedDuration": "Tahmini süre",
+			"pending": "Henüz seçilmedi",
+			"needHelp": "Sorunuz mu var? Doğrudan iletişim:",
+			"whatsappCta": "WhatsApp",
+			"callCta": "Ara"
+		},
+		"success": {
+			"badge": "Rezervasyon Alındı",
+			"title": "Randevunuz Başarıyla Oluşturuldu!",
+			"message": "Kısa süre içinde sizinle iletişime geçeceğiz.",
+			"nextSteps": "Tercih ettiğiniz tarihi kontrol ediyoruz ve tüm detayları sizinle kişisel olarak teyit edeceğiz.",
+			"contactEmail": "{email} e-posta adresi üzerinden",
+			"contactPhone": "veya {phone} numarasından telefonla",
+			"backHome": "Ana Sayfaya Dön"
+		},
+		"error": {
+			"dateTaken": "Bu tarih maalesef az önce rezerve edildi. Lütfen başka bir tarih seçin.",
+			"generic": "Bir hata oluştu. Lütfen tekrar deneyin."
+		}
+	},
+	"Gallery": {
+		"title": "Galeri – Öncesi & Sonrası",
+		"filterAll": "Tümü",
+		"filterInterior": "İç Mekan",
+		"filterExterior": "Dış Mekan",
+		"filterPaint": "Boya Düzeltme"
+	},
+	"Contact": {
+		"title": "İletişim",
+		"description": "Neuhausen auf den Fildern'de mobil araç bakımı ve sorularınız için LK Gloss & Detail ile iletişime geçin",
+		"subtitle": "Sorularınız mı var veya özel bir randevu mu planlamak istiyorsunuz? Bize yazın veya doğrudan arayın.",
+		"mapTitle": "Konumumuz",
+		"whatsappMessage": "Merhaba! Hizmetleriniz hakkında bir sorum var.",
+		"whatsappAria": "WhatsApp ile iletişim",
+		"form": {
+			"name": "Ad Soyad",
+			"namePlaceholder": "Tam adınız",
+			"email": "E-posta",
+			"phone": "Telefon",
+			"message": "Mesaj",
+			"submit": "Mesaj Gönder",
+			"submitting": "Gönderiliyor...",
+			"submitSuccess": "Teşekkürler! Kısa süre içinde size dönüş yapacağız.",
+			"submitError": "Bir hata oluştu. Lütfen tekrar deneyin.",
+			"nameRequired": "Ad soyad gereklidir",
+			"invalidEmail": "Geçerli bir e-posta adresi gereklidir",
+			"invalidPhone": "Geçerli bir telefon numarası gereklidir",
+			"messageRequired": "Mesaj gereklidir",
+			"messagePlaceholder": "Bize iletmek istediğiniz mesaj..."
+		},
+		"details": {
+			"title": "İletişim Bilgileri",
+			"phone": "Telefon",
+			"email": "E-posta",
+			"callNow": "Şimdi ara",
+			"emailUs": "E-posta gönder",
+			"whatsapp": "WhatsApp"
+		}
+	},
+	"Footer": {
+		"copyright": "© {year} LK Gloss & Detail. Tüm hakları saklıdır.",
+		"impressum": "Künye",
+		"privacy": "Gizlilik Politikası",
+		"services": "Hizmetler",
+		"contact": "İletişim"
+	},
+	"LanguageSwitcher": {
+		"label": "Dil seçin",
+		"locales": {
+			"de": {
+				"short": "DE",
+				"full": "Deutsch"
+			},
+			"en": {
+				"short": "EN",
+				"full": "English"
+			},
+			"el": {
+				"short": "ΕΛ",
+				"full": "Ελληνικά"
+			},
+			"sq": {
+				"short": "SQ",
+				"full": "Shqip"
+			},
+			"tr": {
+				"short": "TR",
+				"full": "Türkçe"
+			}
+		}
+	},
+	"Common": {
+		"loading": "Yükleniyor...",
+		"error": "Bir hata oluştu",
+		"retry": "Tekrar dene",
+		"close": "Kapat",
+		"back": "Geri",
+		"next": "İleri"
+	},
+	"Chatbot": {
+		"placeholder": "Bir mesaj yazın...",
+		"greeting": "Merhaba! Size nasıl yardımcı olabilirim?",
+		"userLabel": "Siz",
+		"botName": "Lulezim Kodhimaj AI",
+		"online": "Çevrimiçi",
+		"close": "Kapat",
+		"send": "Gönder",
+		"typing": "Yazıyor...",
+		"openChat": "Sohbeti aç",
+		"closeChat": "Sohbeti kapat",
+		"errorFallback": "Üzgünüz, bir sorun oluştu. Lütfen tekrar deneyin.",
+		"links": {
+			"services": "Hizmetler",
+			"booking": "Randevu Al",
+			"assessment": "Yapay Zeka Araç Analizi",
+			"contact": "İletişim"
+		}
+	},
+	"Impressum": {
+		"title": "Künye (Impressum)",
+		"description": "LK Gloss & Detail künye ve yasal bilgileri",
+		"noticeTitle": "Uyarı / Notice:",
+		"noticeText": "Şirket henüz kuruluş/kayıt aşamasında olduğundan bu sayfadaki bilgiler geçici olarak örnek veriler içermektedir. Kayıt tamamlandığında bunlar gerçek şirket bilgileriyle değiştirilecektir.",
+		"tmgTitle": "§ 5 TMG uyarınca yasal bilgiler",
+		"ownerTitle": "Hizmet Sağlayıcı / İşletme Sahibi",
+		"addressTitle": "Adres",
+		"contactTitle": "İletişim",
+		"phoneTitle": "Telefon",
+		"emailTitle": "E-posta",
+		"taxTitle": "KDV Kimlik No / Vergi Numarası",
+		"taxSub": "Alman KDV Yasası § 27 a uyarınca KDV Kimlik Numarası",
+		"professionTitle": "Mesleki Unvan & Düzenlemeler",
+		"profession": "Araç Bakımı / Car Detailing (Almanya)",
+		"authority": "Yetkili Oda (IHK / Handwerkskammer — kayıt sonrası eklenecektir)",
+		"disputeTitle": "Tüketici Uyuşmazlık Çözümü",
+		"disputeText": "Avrupa Komisyonu çevrimiçi uyuşmazlık çözümü (OS) için bir platform sunmaktadır: https://ec.europa.eu/consumers/odr . E-posta adresimizi yukarıdaki künye bölümünde bulabilirsiniz.",
+		"disputeNotice": "Bir tüketici tahkim kurulu önündeki uyuşmazlık çözüm süreçlerine katılmaya istekli veya yükümlü değiliz.",
+		"legalTitle": "Yasal Uyarılar",
+		"liabilityContentTitle": "İçerik Sorumluluğu",
+		"liabilityContentText": "Bir hizmet sağlayıcı olarak, genel yasalar uyarınca (§ 7 Abs.1 TMG) bu sayfalardaki kendi içeriğimizden sorumluyuz. Ancak §§ 8 ila 10 TMG uyarınca, iletilen veya saklanan üçüncü taraf bilgilerini izlemek ya da yasa dışı faaliyetlere işaret eden durumları araştırmakla yükümlü değiliz. Genel yasalar kapsamındaki bilgilerin kaldırılması veya kullanımının engellenmesi yükümlülükleri bundan etkilenmez. Ancak bu konudaki sorumluluk yalnızca somut bir hukuk ihlalinden haberdar olunduğu andan itibaren mümkündür. İlgili ihlallerin bildirilmesi halinde söz konusu içeriği derhal kaldıracağız.",
+		"liabilityLinksTitle": "Bağlantı Sorumluluğu",
+		"liabilityLinksText": "Web sitemiz, içeriği üzerinde hiçbir etkimizin bulunmadığı harici üçüncü taraf web sitelerine bağlantılar içermektedir. Bu nedenle söz konusu harici içerikler için herhangi bir garanti veremeyiz. Bağlantı verilen sayfaların içeriğinden her zaman ilgili sağlayıcı veya işletmeci sorumludur. Bağlantı verilen sayfalar, bağlantı oluşturulduğu sırada olası hukuk ihlalleri açısından kontrol edilmiş olup yasa dışı içerik tespit edilmemiştir. Ancak somut bir hukuk ihlali göstergesi olmadan bağlantı verilen sayfaların sürekli kontrol edilmesi beklenemez. Hak ihlallerinin bildirilmesi durumunda bu tür bağlantıları derhal kaldıracağız.",
+		"copyrightTitle": "Telif Hakkı",
+		"copyrightText": "Site işletmecileri tarafından bu sayfalarda oluşturulan içerik ve eserler Alman telif hakkı yasasına tabidir. Telif hakkı sınırları dışındaki çoğaltma, işleme, dağıtım ve her türlü kullanım ilgili yazarın veya oluşturucunun yazılı onayını gerektirir. Bu sayfanın indirilmesi ve kopyalanması yalnızca özel, ticari olmayan kullanım için serbesttir. Bu sitedeki içerik işletmeci tarafından oluşturulmadığı ölçüde üçüncü tarafların telif haklarına saygı gösterilir. Buna rağmen bir telif hakkı ihlali fark ederseniz lütfen bize bildirin. İhlal bildirimi üzerine söz konusu içeriği derhal kaldıracağız."
+	},
+	"Privacy": {
+		"title": "Gizlilik Politikası",
+		"description": "LK Gloss & Detail gizlilik politikası ve GDPR (KVKK/DSGVO) bilgileri"
+	},
+	"Assessment": {
+		"title": "Yapay Zeka Fotoğraf Analizi",
+		"description": "Araç bakımınız için ücretsiz yapay zeka araç değerlendirmesi ve durum tahmini",
+		"badge": "AI Vision Lab · Ücretsiz Analiz",
+		"subtitle": "Aracınızın 4 açısını yükleyin — yapay zekamız durumunu analiz eder ve size özel fiyat ile süre tahmini oluşturur.",
+		"stepCounter": "Adım {current} / {total}",
+		"trust": {
+			"gdpr": "GDPR Uyumlu",
+			"noAccount": "Kayıt Gerektirmez",
+			"instant": "Anında Değerlendirme"
+		},
+		"steps": {
+			"front": "Ön Görünüm",
+			"rear": "Arka Görünüm",
+			"side": "Yan Görünüm",
+			"left": "Sol Taraf",
+			"right": "Sağ Taraf",
+			"interior": "İç Mekan"
+		},
+		"angleHints": {
+			"front": "Kaputu, farları ve ön tamponu iyi bir ışıkta net şekilde çekin",
+			"rear": "Bagaj kapağını, arka farları ve arka tamponu tam kadraja alın",
+			"side": "Kapılar, jantlar ve çamurluklar dahil tam yan profili çekin",
+			"interior": "Kapı açıkken koltukları, kokpiti ve paspas alanını net şekilde fotoğraflayın"
+		},
+		"upload": {
+			"dragDrop": "Fotoğrafı buraya sürükleyin",
+			"orClick": "veya seçmek için tıklayın",
+			"chooseFile": "Dosya Seç",
+			"takePhoto": "Fotoğraf Çek",
+			"validating": "Fotoğraf doğrulanıyor...",
+			"formats": "JPG, PNG, WEBP · Otomatik Yapay Zeka Kontrolü",
+			"scanning": "Yapay zeka tarayıcı açı ve görüntü kalitesini kontrol ediyor...",
+			"cancel": "İptal",
+			"error": "Bu fotoğraf beklenen açıya uymuyor. Lütfen tekrar deneyin.",
+			"errors": {
+				"FILE_INVALID": "Geçersiz görüntü dosyası formatı.",
+				"FILE_READ_FAILED": "Görüntü dosyası okunamadı.",
+				"IMAGE_DECODE_FAILED": "Görüntü çözümlenemedi.",
+				"HEIC_UNSUPPORTED": "HEIC/HEIF fotoğraflar bu tarayıcı tarafından desteklenmiyor. Lütfen JPG, PNG veya WEBP formatında bir görüntü yükleyin.",
+				"CANVAS_CONTEXT_FAILED": "Görüntü işleme başarısız oldu.",
+				"FILE_TOO_LARGE": "Görüntü dosyası çok büyük. Lütfen daha küçük bir fotoğraf yükleyin.",
+				"RATE_LIMITED": "Kısa sürede çok fazla istek gönderildi. Lütfen biraz bekleyip tekrar deneyin.",
+				"VALIDATION_FAILED": "Fotoğraf doğrulaması başarısız oldu. Lütfen tekrar deneyin."
+			}
+		},
+		"validation": {
+			"validating": "Fotoğraf doğrulanıyor...",
+			"valid": "Fotoğraf geçerli!",
+			"invalid": "Geçersiz fotoğraf",
+			"tryAgain": "Tekrar Dene",
+			"uploadDifferent": "Farklı Fotoğraf Yükle",
+			"continue": "Devam Et"
+		},
+		"navigation": {
+			"back": "Geri",
+			"skip": "Atla (test için)"
+		},
+		"progress": {
+			"step": "Adım",
+			"of": "/"
+		},
+		"swipe": {
+			"title": "Hizmetlerinizi Seçin",
+			"accept": "Kabul Et",
+			"reject": "Reddet",
+			"hint": "Eklemek için sağa kaydırın veya butonları kullanın",
+			"selectedCount": "{count, plural, =0 {Henüz seçim yok} one {1 seçildi} other {# seçildi}}"
+		},
+		"dossier": {
+			"title": "Canlı Tarama Dosyası",
+			"statusLive": "AI Hazır",
+			"statusActive": "Tarama Aktif",
+			"anglesTitle": "Açı Durumu",
+			"verified": "Doğrulandı",
+			"activeNow": "Aktif Adım",
+			"awaiting": "Bekliyor",
+			"telemetryTitle": "Tespit Edilen Veriler",
+			"vehicleLabel": "Araç",
+			"sizeLabel": "Segment",
+			"conditionLabel": "Kirlenme",
+			"servicesLabel": "Seçilen Hizmetler",
+			"pendingScan": "Fotoğraf yüklendikten sonra tespit edilir",
+			"privacyTitle": "Gizlilik Garantisi",
+			"privacyDesc": "Fotoğraflarınız yalnızca yapay zeka analizi için işlenir ve işlem tamamlandığında bellekten hemen silinir.",
+			"needHelp": "Fotoğraflarla ilgili yardım mı lazım? Doğrudan iletişim:",
+			"callCta": "Ara",
+			"whatsappCta": "WhatsApp",
+			"dirtLevels": {
+				"light": "Hafif",
+				"moderate": "Orta",
+				"heavy": "Yoğun"
+			}
+		},
+		"services": {
+			"headingTag": "Yapılandırıcı",
+			"headingTitle": "Hizmetlerinizi seçin",
+			"headingDescription": "Aracınızın hak ettiği bakımları seçin. Onaylamak için sağa kaydırın.",
+			"loading": "Hizmetler yükleniyor...",
+			"loadingError": "Hizmetler yüklenirken hata oluştu",
+			"retry": "Tekrar dene",
+			"cards": {
+				"interior": {
+					"title": "Profesyonel İç Temizlik",
+					"description": "Buharlı temizleyici ve özel ürünlerle derinlemesine temizlik ve bakım",
+					"tag": "Premium Bakım"
+				},
+				"headlights": {
+					"title": "Far Restorasyonu",
+					"description": "Net görüş için sararma ve çiziklerin giderilmesi",
+					"tag": "Güvenlik"
+				},
+				"paintCorrection": {
+					"title": "Boya Düzeltme & Seramik Kaplama",
+					"description": "Uzun ömürlü koruma için seramik kaplamalı 3 aşamalı yüksek parlaklık polisajı",
+					"tag": "Premium Koruma"
+				}
+			},
+			"completeTitle": "Hizmetler yapılandırıldı!",
+			"completeDescription": "Seçiminiz kaydedildi. Yapay zeka analizine geçiliyor..."
+		},
+		"analyzing": {
+			"badge": "Yapay Zeka Değerlendirmesi Sürüyor",
+			"title": "Yapay zeka aracınızı analiz ediyor...",
+			"description": "Yapay zekamız fotoğraflarınızı inceliyor ve sizin için en uygun tahmini hesaplıyor.",
+			"stage1": "Araç segmenti ve durumu değerlendiriliyor",
+			"stage2": "Kişiye özel hizmet ve süre hesaplaması",
+			"stage3": "Uzman bakım raporu hazırlanıyor"
+		},
+		"results": {
+			"title": "Sonucunuz",
+			"errorTitle": "Analiz Başarısız",
+			"retry": "Tekrar dene",
+			"comingSoon": "Sonuç ekranı yakında eklenecektir."
+		},
+		"result": {
+			"title": "Değerlendirme Sonucunuz",
+			"priceRange": "Fiyat Aralığı",
+			"duration": "Tahmini Süre",
+			"carSize": "Araç Boyutu",
+			"summary": "Özet",
+			"bookNow": "Randevu Al",
+			"carSizes": {
+				"small": "Küçük",
+				"medium": "Orta",
+				"large": "Büyük",
+				"suv": "SUV"
+			}
+		},
+		"report": {
+			"badge": "AI Vision Sonucu",
+			"title": "Analiz Raporu",
+			"subtitle": "Araç fotoğraflarınıza ve seçtiğiniz bakımlara dayalı kişiselleştirilmiş bakım önerisi.",
+			"vehicle": "Aracınız",
+			"aiDiagnostics": "Yapay Zeka Teşhisi",
+			"expertVerdict": "Uzman Değerlendirmesi",
+			"expertAttribution": "LK Gloss & Detail · Yapay Zeka Destekli Değerlendirme",
+			"investment": "Tahmini Tutar",
+			"priceNote": "Bağlayıcı olmayan tahmini fiyat göstergesi",
+			"timeline": "Süre",
+			"durationNote": "Doğrudan adresinizde mobil hizmet",
+			"bookAppointment": "Randevu Al",
+			"startNew": "Yeni Analiz Başlat",
+			"durationValue": "~{hours} saat",
+			"noServicesTitle": "Hiç Hizmet Seçilmedi",
+			"noServicesDesc": "Herhangi bir bakım seçmediniz. Hizmet seçimine geri dönün veya doğrudan özel bir randevu oluşturun.",
+			"backToServices": "Hizmetleri Tekrar Seç"
+		}
+	},
+	"CookieConsent": {
+		"message": "Web sitemizdeki deneyiminizi geliştirmek için çerezler kullanıyoruz. Daha fazla bilgiyi Gizlilik Politikamızda bulabilirsiniz.",
+		"accept": "Tümünü kabul et",
+		"decline": "Yalnızca zorunlular",
+		"privacy": "Gizlilik Politikası"
+	},
+	"ConfirmModal": {
+		"deleteTitle": "Randevuyu sil",
+		"deleteDescription": "Bu randevuyu silmek istediğinizden emin misiniz? Bu işlem geri alınamaz.",
+		"confirm": "Silmeyi onayla",
+		"cancel": "İptal"
+	},
+	"Admin": {
+		"services": {
+			"title": "Hizmet Yönetimi",
+			"subtitle": "Mevcut tüm bakım hizmetlerini, fiyatları ve aktif durumları yönetin.",
+			"addService": "Hizmet Ekle",
+			"syncBanner": "Hizmetlerdeki değişiklikler web sitesi, randevu akışı, yapay zeka analizi ve sohbet botu ile otomatik olarak senkronize edilir.",
+			"searchPlaceholder": "Ada göre ara...",
+			"loadingError": "Hizmetler yüklenirken hata oluştu",
+			"categories": {
+				"exterior": "Dış Temizlik",
+				"interior": "İç Mekan",
+				"paint": "Boya & Polisaj",
+				"protection": "Koruma & Kaplama",
+				"other": "Diğer"
+			},
+			"filters": {
+				"allCategories": "Tüm Kategoriler",
+				"allStatuses": "Tüm Durumlar",
+				"active": "Aktif",
+				"inactive": "Pasif"
+			},
+			"empty": "Hizmet bulunamadı.",
+			"columns": {
+				"image": "Görsel",
+				"name": "Ad",
+				"category": "Kategori",
+				"pricing": "Fiyatlar (S/M/L/SUV)",
+				"duration": "Süre",
+				"active": "Aktif",
+				"order": "Sıralama",
+				"actions": "İşlemler"
+			},
+			"edit": "Düzenle",
+			"delete": {
+				"title": "Hizmeti Sil",
+				"message": "{name} hizmetini silmek istediğinizden emin misiniz?",
+				"warning": "Bu işlem geri alınamaz.",
+				"confirm": "Silmeyi onayla",
+				"deleting": "Siliniyor..."
+			},
+			"cancel": "İptal",
+			"form": {
+				"addTitle": "Yeni Hizmet",
+				"editTitle": "Hizmeti Düzenle",
+				"sections": {
+					"basic": "Temel Bilgiler",
+					"pricing": "Fiyatlandırma & Süre",
+					"image": "Kapak Görseli"
+				},
+				"name": "Hizmet Adı",
+				"category": "Kategori",
+				"shortDescription": "Kısa Açıklama",
+				"iconName": "Lucide İkon Adı",
+				"sortOrder": "Sıralama",
+				"durationHours": "Süre (Saat)",
+				"uploadPrompt": "Görsel yüklemek için tıklayın veya sürükleyin",
+				"uploading": "Yükleniyor...",
+				"imageInvalidType": "Yalnızca JPG, PNG veya WebP görsellerine izin verilir.",
+				"imageTooLarge": "Görsel boyutu en fazla 5 MB olabilir.",
+				"uploadFailed": "Görsel yüklenemedi. Lütfen tekrar deneyin.",
+				"removeImage": "Görseli kaldır",
+				"imageFormatHint": "Desteklenen formatlar: JPG, PNG, WebP",
+				"imageRatioHint": "Önerilen en-boy oranı: 16:9",
+				"imageMaxSizeHint": "Maksimum dosya boyutu: 5 MB",
+				"translations": {
+					"toggle": "Çevirileri özelleştir (DE / EN / EL / SQ / TR)",
+					"hint": "İsteğe bağlı: Belirli diller için otomatik yapay zeka çevirisini geçersiz kılın.",
+					"nameLabel": "Ad",
+					"descLabel": "Açıklama"
+				},
+				"active": "Aktif (web sitesinde görünür)",
+				"save": "Hizmeti Kaydet",
+				"sizes": {
+					"small": "Küçük Araç",
+					"medium": "Orta Sınıf",
+					"large": "Büyük / Station Wagon",
+					"suv": "SUV"
+				}
+			},
+			"toast": {
+				"createSuccess": "Hizmet başarıyla oluşturuldu",
+				"updateSuccess": "Hizmet başarıyla güncellendi",
+				"deleteSuccess": "Hizmet başarıyla silindi",
+				"statusUpdateSuccess": "Durum güncellendi"
+			}
+		},
+		"chatbotKb": {
+			"pageTitle": "RAG Bilgi Bankası",
+			"pageSubtitle": "Yapay zeka sohbet botu için vektör bilgi bankasını yönetin. Metin, hizmet veya kural ekleyin; yapay zeka ajanı bunları yapılandırıp vektörleştirir.",
+			"servicesSyncBanner": "Hizmetleriniz ve fiyatlarınız hizmet kataloğundan otomatik olarak canlı okunur. Buraya şirket politikalarını, çalışma saatlerini, B2B bilgilerini ve SSS'leri ekleyin.",
+			"allLanguages": "Tüm Diller",
+			"allCategories": "Tüm Kategoriler",
+			"refresh": "Yenile",
+			"testSearch": "Aramayı Test Et (RAG)",
+			"addEntry": "Kayıt Ekle",
+			"editEntry": "Kaydı Düzenle",
+			"addAiKnowledge": "Yapay Zeka Bilgisi Ekle",
+			"loading": "Yükleniyor...",
+			"loadError": "Bilgi bankası kayıtları yüklenemedi.",
+			"empty": "Bilgi bankasında kayıt bulunamadı.",
+			"deleteConfirmTitle": "Bilgi kaydını sil?",
+			"deleteConfirmDesc": "Bu bilgi kaydını silmek istediğinizden emin misiniz? Bu işlem geri alınamaz.",
+			"deleteError": "Kayıt silinemedi.",
+			"categories": {
+				"all": "Tüm Kategoriler",
+				"interior": "İç Mekan",
+				"exterior": "Dış Temizlik",
+				"paint_correction": "Boya Düzeltme & Kaplama",
+				"headlights_special": "Farlar & Özel",
+				"company_policy": "Şirket Politikaları & Bilgi",
+				"booking_process": "Randevu Süreci",
+				"mobile_service": "Mobil Hizmet",
+				"b2b": "B2B & Filolar",
+				"faq": "Sıkça Sorulan Sorular (SSS)",
+				"general": "Genel Bilgi"
+			},
+			"editor": {
+				"addTitle": "Yeni Bilgi Kaydı Ekle",
+				"editTitle": "Bilgi Kaydını Düzenle",
+				"autoReplyHint": "İstediğiniz dilde yazın — yapay zeka sohbet botu müşterilere Almanca, İngilizce, Yunanca, Arnavutça veya Türkçe olarak otomatik yanıt verir.",
+				"titleLabel": "Başlık",
+				"titlePlaceholder": "örn. Ulaşım Ücretleri & Hizmet Bölgesi",
+				"categoryLabel": "Kategori",
+				"contentLabel": "İçerik",
+				"contentPlaceholder": "Bilgiyi, kuralı veya yanıtı mümkün olduğunca net açıklayın...",
+				"keywordsLabel": "Anahtar kelimeler (virgülle ayrılmış, isteğe bağlı)",
+				"keywordsPlaceholder": "örn. çalışma saatleri, cumartesi, ulaşım, su",
+				"saveButton": "Kaydet",
+				"saving": "Kaydediliyor...",
+				"cancel": "İptal",
+				"saveError": "Bilgi kaydı kaydedilemedi."
+			},
+			"wizard": {
+				"title": "Hibrit Yapay Zeka Bilgi Ajanı",
+				"serviceForm": "Yeni Hizmet Kaydı",
+				"companyInfo": "Genel Şirket Bilgisi & Politika",
+				"serviceTitleLabel": "Hizmet Adı / Başlık",
+				"serviceTitlePlaceholder": "örn. Tekne Seramik Kaplama",
+				"categoryLabel": "Kategori",
+				"priceLabel": "Fiyat (€)",
+				"pricePlaceholder": "örn. 500€'dan başlayan veya 150€",
+				"durationLabel": "Çalışma Süresi (Saat / Gün)",
+				"durationPlaceholder": "örn. 3-4 saat veya 1 gün",
+				"descriptionLabel": "Detaylı Açıklama & Dahil Hizmetler",
+				"descriptionPlaceholder": "örn. Tam dış yıkama, 2 aşamalı boya düzeltme, 9H kaplama...",
+				"requirementsLabel": "Özel Kurallar & Gereksinimler (İsteğe Bağlı)",
+				"requirementsPlaceholder": "örn. Müşteri elektrik ve su sağlamalıdır; Sadece kuru havalarda.",
+				"companyInfoLabel": "Genel Şirket Bilgisi, Kurallar, Çalışma Saatleri veya Konum Notları",
+				"companyInfoPlaceholder": "örn. Paskalya Pazarı kapalıyız. 25 km'ye kadar ulaşım ücretsizdir...",
+				"formatButton": "Gemini 2.5 Flash ile Oluştur",
+				"formatting": "Gemini 2.5 Flash çalışıyor...",
+				"reviewTitle": "İncele & Kaydet",
+				"backToInput": "← Girişe dön",
+				"aiClarification": "Yapay zeka açıklama istiyor!",
+				"titleLabel": "Başlık",
+				"contentLabel": "Vektör Bilgi İçeriği",
+				"keywordsLabel": "Anahtar Kelimeler",
+				"saveButton": "Kaydet & Vektörleştir (DE, EL, EN)",
+				"errTitle": "Lütfen bir hizmet başlığı girin.",
+				"errPrice": "Lütfen fiyat bilgisini girin.",
+				"errDuration": "Lütfen tahmini çalışma süresini girin.",
+				"errDescription": "Lütfen bir açıklama girin.",
+				"errCompanyInfo": "Lütfen şirket bilgisi veya politika girin.",
+				"genericError": "Bir hata oluştu"
+			},
+			"testModal": {
+				"title": "RAG Semantik Aramayı Test Et",
+				"placeholder": "Bir soru sorun (örn. Cumartesi günleri saat kaçta açıksınız?)",
+				"searchButton": "Ara",
+				"topMatches": "En İyi Vektör Eşleşmeleri",
+				"noMatches": "Eşik değerinin üzerinde eşleşen vektör bulunamadı.",
+				"searchFailed": "Arama başarısız oldu",
+				"similarity": "Benzerlik",
+				"closeButton": "Kapat"
+			}
+		},
+		"loginTitle": "Yönetici Girişi",
+		"loginSubtitle": "LK Gloss & Detail Yönetim Paneline Erişim",
+		"emailLabel": "E-posta Adresi",
+		"emailPlaceholder": "admin@lkglossanddetail.de",
+		"passwordLabel": "Şifre",
+		"passwordPlaceholder": "••••••••",
+		"submitButton": "Giriş Yap",
+		"loggingIn": "Giriş yapılıyor...",
+		"logoutButton": "Çıkış Yap",
+		"email": "E-posta",
+		"password": "Şifre",
+		"signIn": "Giriş Yap",
+		"signingIn": "Giriş yapılıyor...",
+		"logout": "Çıkış Yap",
+		"unauthorized": "Yönetici erişimi yok.",
+		"invalidCredentials": "Geçersiz e-posta adresi veya şifre.",
+		"unexpectedError": "Beklenmeyen bir hata oluştu.",
+		"welcome": "Yönetim Paneline Hoş Geldiniz!",
+		"welcomeDescription": "Yönetici olarak başarıyla giriş yaptınız. Randevuları, hizmetleri ve sohbet botu bilgi bankasını yönetmek için bu portalı kullanın.",
+		"errors": {
+			"invalid_credentials": "Girdiğiniz e-posta adresi veya şifre hatalı.",
+			"not_admin": "Yönetici yetkiniz bulunmamaktadır.",
+			"server_error": "Dahili sunucu hatası oluştu. Lütfen tekrar deneyin.",
+			"validation_error": "Lütfen tüm alanları doğru şekilde doldurun.",
+			"emailRequired": "E-posta adresi gereklidir.",
+			"invalidEmail": "Geçerli bir e-posta adresi gereklidir.",
+			"passwordTooShort": "Şifre en az 6 karakter olmalıdır.",
+			"too_many_attempts": "Çok fazla giriş denemesi. Lütfen bir dakika sonra tekrar deneyin."
+		},
+		"dashboard": {
+			"title": "Yönetici Paneli",
+			"welcome": "Tekrar hoş geldiniz, Yönetici!",
+			"subtitle": "Randevular, hizmetler ve sohbet botu bilgi bankasına genel bakış.",
+			"error": {
+				"title": "Veritabanı Hatası",
+				"message": "Panel verileri yüklenemedi. Lütfen veritabanı bağlantısını kontrol edip tekrar deneyin."
+			},
+			"cards": {
+				"appointments": {
+					"title": "Toplam Randevu",
+					"desc": "Kayıtlı tüm rezervasyonlar"
+				},
+				"today": {
+					"title": "Bugün",
+					"desc": "Bugün için planlanan"
+				},
+				"pending": {
+					"title": "Bekleyen",
+					"desc": "Onay bekliyor"
+				},
+				"unreadMessages": {
+					"title": "Okunmamış Mesajlar",
+					"desc": "Yeni iletişim talepleri"
+				},
+				"upcoming": {
+					"title": "Önümüzdeki 7 Gün",
+					"desc": "Yaklaşan rezervasyonlar"
+				},
+				"services": {
+					"title": "Aktif Hizmetler",
+					"desc": "Mevcut katalog kayıtları"
+				},
+				"contact": {
+					"title": "Aylık Talepler",
+					"desc": "Bu ayki iletişim talepleri"
+				},
+				"chatbot": {
+					"title": "Bilgi Bankası",
+					"desc": "Vektörleştirilmiş bilgi blokları"
+				}
+			},
+			"todaysAppointments": {
+				"title": "Bugünün Programı",
+				"subtitle": "Bugün için alınan randevular",
+				"empty": "Bugün için planlanmış randevu yok."
+			},
+			"upcomingAppointments": {
+				"title": "Yaklaşanlar (Önümüzdeki 7 Gün)",
+				"subtitle": "Önümüzdeki haftanın rezervasyonları",
+				"empty": "Önümüzdeki 7 gün içinde yaklaşan randevu yok."
+			},
+			"recentMessages": {
+				"title": "Son Okunmamış Mesajlar",
+				"subtitle": "Müşterilerden gelen son iletişim talepleri",
+				"viewAll": "Tümünü gör",
+				"empty": "Şu anda okunmamış mesaj bulunmuyor.",
+				"openInbox": "Gelen Kutusu"
+			},
+			"actions": {
+				"call": "Ara",
+				"whatsapp": "WhatsApp"
+			},
+			"quickActions": {
+				"title": "Hızlı İşlemler",
+				"appointments": "Randevular",
+				"blockSlot": "Tarih Engelle",
+				"newService": "Yeni Hizmet",
+				"addKnowledge": "Bilgi Ekle",
+				"services": "Hizmetleri Yönet"
+			},
+			"status": {
+				"pending": "Beklemede",
+				"confirmed": "Onaylandı",
+				"completed": "Tamamlandı",
+				"cancelled": "İptal Edildi"
+			},
+			"sidebar": {
+				"management": "Yönetim",
+				"overview": "Genel Bakış",
+				"appointments": "Randevular",
+				"messages": "Mesajlar",
+				"servicesCrud": "Hizmetler",
+				"chatbotKb": "Chatbot Bilgisi"
+			},
+			"loadingLabel": "Yönetici paneli yükleniyor"
+		},
+		"messages": {
+			"title": "Mesajlar & Talepler",
+			"subtitle": "Gelen iletişim taleplerini yönetin, müşterileri doğrudan geri arayın veya WhatsApp üzerinden yanıtlayın.",
+			"searchPlaceholder": "Ad, e-posta, telefon veya mesaja göre ara...",
+			"empty": "Bu görünümde mesaj bulunamadı.",
+			"tabs": {
+				"all": "Tümü",
+				"unread": "Okunmamış",
+				"read": "Okunmuş",
+				"archived": "Arşivlenmiş"
+			},
+			"status": {
+				"unread": "Okunmamış",
+				"read": "Okunmuş",
+				"archived": "Arşivlenmiş"
+			},
+			"actions": {
+				"refresh": "Yenile",
+				"markAllRead": "Tümünü okundu işaretle",
+				"open": "Mesajı aç",
+				"call": "Ara",
+				"email": "E-posta",
+				"copy": "Kopyala",
+				"copied": "Kopyalandı",
+				"copyPhone": "Telefon numarasını kopyala",
+				"copyEmail": "E-posta adresini kopyala",
+				"markRead": "Okundu olarak işaretle",
+				"markUnread": "Okunmadı olarak işaretle",
+				"archive": "Arşivle",
+				"unarchive": "Arşivden çıkar",
+				"delete": "Sil"
+			},
+			"modal": {
+				"close": "Kapat",
+				"phone": "Telefon",
+				"email": "E-posta",
+				"messageLabel": "Mesaj"
+			},
+			"errors": {
+				"loadFailed": "Mesajlar yüklenemedi.",
+				"updateFailed": "Mesaj durumu güncellenemedi.",
+				"deleteFailed": "Mesaj silinemedi."
+			},
+			"deleteConfirm": {
+				"title": "Mesajı sil?",
+				"description": "Bu iletişim talebini kalıcı olarak silmek istediğinizden emin misiniz?"
+			},
+			"pagination": {
+				"showing": "Sayfa {page} / {totalPages} (Toplam {total} kayıt)",
+				"prev": "Önceki",
+				"next": "Sonraki"
+			}
+		},
+		"appointments": {
+			"title": "Randevular & Rezervasyon Takvimi",
+			"subtitle": "Gelen rezervasyonları yönetin, randevu durumlarını güncelleyin ve müsait olmayan günleri engelleyin.",
+			"refresh": "Yenile",
+			"blockDate": "Tarih Engelle",
+			"today": "Bugün",
+			"previousMonth": "Önceki Ay",
+			"nextMonth": "Sonraki Ay",
+			"blockDay": "Günü engelle",
+			"unblockDay": "Günü aç",
+			"call": "Ara",
+			"calendar": "Takvim",
+			"listView": "Liste Görünümü",
+			"searchPlaceholder": "Müşteri adı, e-posta, telefon, araç veya tarihe göre ara...",
+			"filterLabel": "Filtre:",
+			"allStatuses": "Tüm Durumlar",
+			"noAppointments": "Seçilen kriterlere uyan randevu bulunamadı.",
+			"errors": {
+				"statusUpdateFailed": "Randevu durumu güncellenemedi.",
+				"blockToggleFailed": "Gün durumu değiştirilemedi.",
+				"refreshFailed": "Randevular yenilenemedi.",
+				"deleteFailed": "Randevu silinemedi.",
+				"selectOneService": "Lütfen en az bir hizmet seçin.",
+				"saveFailed": "Değişiklikler kaydedilemedi."
+			},
+			"table": {
+				"date": "Tarih",
+				"client": "Müşteri",
+				"services": "Hizmetler",
+				"total": "Toplam",
+				"status": "Durum",
+				"actions": "İşlemler"
+			},
+			"status": {
+				"pending": "Beklemede",
+				"confirmed": "Onaylandı",
+				"completed": "Tamamlandı",
+				"cancelled": "İptal Edildi"
+			},
+			"modals": {
+				"details": {
+					"title": "Rezervasyon Detayları",
+					"clientName": "Müşteri Adı",
+					"email": "E-posta Adresi",
+					"phone": "Telefon",
+					"car": "Araç Açıklaması",
+					"bookedServices": "Rezerve Edilen Hizmetler",
+					"total": "Toplam",
+					"updateStatus": "Durumu Güncelle",
+					"delete": "Sil",
+					"edit": "Düzenle",
+					"close": "Kapat"
+				},
+				"edit": {
+					"title": "Randevuyu Düzenle",
+					"firstName": "Ad",
+					"lastName": "Soyad",
+					"email": "E-posta Adresi",
+					"phone": "Telefon Numarası",
+					"car": "Araç Açıklaması",
+					"date": "Randevu Tarihi",
+					"status": "Durum",
+					"services": "Hizmetler",
+					"cancel": "İptal",
+					"save": "Değişiklikleri Kaydet"
+				},
+				"block": {
+					"title": "Engellenen Tarihler",
+					"subtitle": "Belirli takvim günlerinde rezervasyon alınmasını engelleyin",
+					"modeSingle": "Tek Gün",
+					"modeRange": "Tarih Aralığı",
+					"blockNew": "Yeni Tarih Engelle",
+					"blockRangeTitle": "Tarih Aralığını Engelle",
+					"selectDate": "Tarih seçin",
+					"startDate": "Başlangıç tarihi",
+					"endDate": "Bitiş tarihi",
+					"reason": "Neden (isteğe bağlı)",
+					"reasonPlaceholder": "örn. Tatil, Resmi Tatil, Bakım...",
+					"submit": "Tarihi Engelle",
+					"submitRange": "Aralığı Engelle",
+					"unblock": "Engeli Kaldır",
+					"blockFailed": "Tarih engellenemedi.",
+					"unblockFailed": "Tarih engeli kaldırılamadı.",
+					"conflictTitle": "Seçilen aralıkta {count} mevcut randevu var",
+					"conflictDesc": "Bu günlerde zaten aktif randevular bulunuyor. Yine de bu aralığı engellemek istiyor musunuz?",
+					"confirmConflict": "Yine de Engelle",
+					"cancelConflict": "İptal",
+					"currentlyBlocked": "Şu anda engelli",
+					"noBlocked": "Şu anda engellenmiş tarih yok.",
+					"done": "Tamam"
+				}
+			}
+		}
+	},
+	"Errors": {
+		"technicalDifficulties": "Teknik sorunlar yaşanıyor, lütfen daha sonra tekrar deneyin.",
+		"servicesUnavailable": {
+			"title": "Hizmet kataloğu geçici olarak kullanılamıyor",
+			"description": "Teknik bakım nedeniyle hizmet kataloğumuz şu anda yüklenemiyor. Lütfen daha sonra tekrar deneyin.",
+			"contactCallout": "Yine de yanınızdayız! Bizi arayabilir, e-posta gönderebilir veya iletişim formumuzdan bilgilerinizi bırakabilirsiniz:",
+			"phone": "Şimdi ara",
+			"email": "E-posta gönder",
+			"leaveNumber": "İletişim formuna git"
+		},
+		"bookingUnavailable": {
+			"title": "Randevu sistemi geçici olarak kullanılamıyor",
+			"description": "Teknik sorunlar nedeniyle randevu takvimi şu anda yüklenemiyor. Lütfen kısa süre sonra tekrar deneyin.",
+			"retry": "Tekrar dene",
+			"callUs": "Telefonla randevu al",
+			"emailUs": "E-posta ile sor",
+			"submitError": "Teknik bir sorun nedeniyle randevunuz kaydedilemedi. Bilgileriniz korundu. Lütfen biraz sonra tekrar deneyin veya doğrudan bizimle iletişime geçin."
+		},
+		"aiUnavailable": {
+			"title": "Yapay zeka analizi geçici olarak kullanılamıyor",
+			"description": "Yapay zeka sistemimiz şu anda yoğun talep görüyor veya kısa bir bakımdan geçiyor. Lütfen birkaç dakika içinde tekrar deneyin.",
+			"retry": "Tekrar dene",
+			"serverError": "Yapay zeka işlemi sırasında teknik hata oluştu. Lütfen daha sonra tekrar deneyin."
+		},
+		"global": {
+			"title": "Teknik bir sorun oluştu",
+			"description": "Verdiğimiz rahatsızlık için özür dileriz. Lütfen sayfayı yenilemeyi deneyin veya ana sayfaya dönün.",
+			"retry": "Sayfayı yenile",
+			"backHome": "Ana sayfaya dön"
+		},
+		"notFound": {
+			"title": "Sayfa bulunamadı",
+			"description": "Aradığınız sayfa mevcut değil veya taşınmış olabilir.",
+			"backHome": "Ana sayfaya dön"
+		}
+	}
+}

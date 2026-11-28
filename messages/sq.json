@@ -1,0 +1,1041 @@
+{
+	"Metadata": {
+		"title": "LK Gloss & Detail | Përkujdesje Mobile e Automjeteve",
+		"description": "Përkujdesje mobile e automjeteve & pastrim profesional me analizë të asistuar nga AI. Car Detailing profesional në Gjermani.",
+		"template": "%s | LK Gloss & Detail"
+	},
+	"Navigation": {
+		"home": "Kryefaqja",
+		"services": "Shërbimet",
+		"assessment": "Vlerësimi AI",
+		"gallery": "Galeria",
+		"contact": "Kontakti",
+		"bookNow": "Rezervo Termin",
+		"openMenu": "Hap menynë",
+		"closeMenu": "Mbyll menynë"
+	},
+	"HomePage": {
+		"hero": {
+			"title": "Përkujdesje Premium e Automjeteve & Detailing në Perfeksion.",
+			"subtitle": "Pastrim dhe restaurim profesional mobil i automjeteve me analizë AI. Ne e sjellim makinën tuaj në shkëlqim pikërisht para derës suaj.",
+			"ctaPrimary": "Fillo Vlerësimin AI",
+			"ctaSecondary": "Zbulo Shërbimet",
+			"badgeTitle": "I Certifikuar",
+			"badgeSubtitle": "Detailing Studio",
+			"imageAlt": "Përkujdesje profesionale e automjeteve — Porsche i zi duke u lustruar"
+		},
+		"servicesPreview": {
+			"title": "Shërbimet Tona",
+			"description": "Përkujdesje profesionale e automjetit direkt te ju",
+			"from": "Nga"
+		},
+		"services": {
+			"interior": {
+				"title": "Pastrim Profesional i Brendshëm",
+				"subtitle": "Pastrim i thellë & kujdes",
+				"features": [
+					"Pastrim i plotë i të gjitha sipërfaqeve",
+					"Trajtim dhe mbrojtje e lëkurës",
+					"Neutralizim i aromave"
+				]
+			},
+			"headlights": {
+				"title": "Restaurimi i Fenerëve",
+				"subtitle": "Pamje e qartë & siguri",
+				"features": [
+					"Heqja e zverdhjes dhe mjegullimit",
+					"Lustrimi i xhamave të fenerëve",
+					"Mbrojtje afatgjatë nga rrezet UV"
+				]
+			},
+			"paintCorrection": {
+				"title": "Korrigjim i Bojësimit, Lustrim & Mbrojtje",
+				"subtitle": "Shkëlqim i lartë në 3 faza & mbrojtje",
+				"features": [
+					"Heqja e gërvishtjeve dhe shenjave rrethore",
+					"Lustrim deri në shkëlqim maksimal",
+					"Veshje mbrojtëse për jetëgjatësi"
+				]
+			}
+		},
+		"mobileService": {
+			"title": "Shërbim Mobil",
+			"description": "Ne vijmë direkt në shtëpinë ose vendin tuaj të punës. Nuk nevojitet transport — përkujdesje profesionale para derës suaj.",
+			"features": {
+				"onSite": {
+					"title": "Shërbim në Vend",
+					"desc": "Ne vijmë direkt te ju"
+				},
+				"valueIncrease": {
+					"title": "Rritja e Vlerës",
+					"desc": "Përkujdesje profesionale"
+				},
+				"noAppointment": {
+					"title": "Termine Fleksibël",
+					"desc": "Me marrëveshje — edhe në fundjavë"
+				},
+				"noStress": {
+					"title": "Pa Stres",
+					"desc": "Gjithçka para derës suaj"
+				}
+			}
+		},
+		"aiValuation": {
+			"title": "Rritni Vlerën e Rishitjes.",
+			"description": "AI ynë analizon gjendjen e automjetit tuaj dhe krijon një plan të personalizuar trajtimi. Përkujdesja profesionale shpërblehet.",
+			"formTitle": "Vlerësimi i Automjetit me AI",
+			"labels": {
+				"model": "Modeli i automjetit",
+				"year": "Viti i prodhimit",
+				"condition": "Gjendja"
+			},
+			"mockValues": {
+				"model": "Porsche 911 Carrera S",
+				"year": "2022",
+				"condition": "E mirë — shenja të lehta përdorimi"
+			},
+			"ctaButton": "Fillo vlerësimin",
+			"stats": {
+				"valueIncrease": {
+					"value": "+15%",
+					"label": "Rritje e vlerës"
+				},
+				"fastAnalysis": {
+					"value": "48h",
+					"label": "Analizë e shpejtë"
+				},
+				"happyCustomers": {
+					"value": "250+",
+					"label": "Klientë të kënaqur"
+				}
+			}
+		},
+		"whyLK": {
+			"title": "Pse LK Gloss & Detail?",
+			"mobile": "Mobil direkt te ju",
+			"mobileDesc": "Ne vijmë në shtëpinë ose vendin tuaj të punës",
+			"professional": "Cilësi Profesionale",
+			"professionalDesc": "Produkte premium dhe teknika moderne",
+			"aiPowered": "Analizë e Asistuar nga AI",
+			"aiPoweredDesc": "Vlerësim i saktë përmes inteligjencës artificiale"
+		},
+		"howItWorks": {
+			"title": "Si Funksionon",
+			"step1": "Ngarkoni Fotot",
+			"step1Desc": "Bëni foto të automjetit tuaj",
+			"step2": "Analiza AI",
+			"step2Desc": "AI ynë vlerëson gjendjen",
+			"step3": "Rezervoni Terminin",
+			"step3Desc": "Zgjidhni datën dhe orën"
+		},
+		"cta": {
+			"title": "Gati për një Përkujdesje Profesionale?",
+			"subtitle": "Caktoni terminin tuaj që sot"
+		},
+		"b2b": {
+			"title": "B2B & Menaxhimi i Flotave",
+			"subtitle": "Përkujdesje profesionale për biznese dhe flota automjetesh",
+			"description": "Ofroni punonjësve ose klientëve tuaj përkujdesje të klasit të parë. Ne bashkëpunojmë me kompani, sallone automjetesh, kompani leasing, rent-a-car dhe menaxherë flotash.",
+			"features": {
+				"fleet": {
+					"title": "Zbritje për Flota",
+					"desc": "Çmime speciale për disa automjete"
+				},
+				"contracts": {
+					"title": "Kontrata Afatgjata",
+					"desc": "Marrëveshje fleksibël sipas nevojave tuaja"
+				},
+				"priority": {
+					"title": "Shërbim me Prioritet",
+					"desc": "Termine të shpejta dhe trajtim me përparësi"
+				}
+			},
+			"ctaButton": "Na kontaktoni për një ofertë"
+		}
+	},
+	"Services": {
+		"title": "Shërbimet Tona",
+		"description": "Përkujdesje e plotë dhe profesionale për automjetin tuaj"
+	},
+	"Booking": {
+		"title": "Rezervo Termin",
+		"description": "Rezervoni tani online terminin tuaj për përkujdesje mobile te LK Gloss & Detail",
+		"subtitle": "Zgjidhni shërbimet dhe datën tuaj të preferuar",
+		"badge": "Mobile Concierge · Shërbim në Vend",
+		"stepCounter": "Hapi {current} nga {total}",
+		"edit": "Ndrysho",
+		"progress": {
+			"step1": "Të Dhënat Tuaja",
+			"step2": "Shërbimet",
+			"step3": "Data",
+			"step4": "Konfirmimi"
+		},
+		"step1": {
+			"title": "Të Dhënat e Kontaktit",
+			"firstName": "Emri",
+			"lastName": "Mbiemri",
+			"email": "Email",
+			"phone": "Telefoni",
+			"carDescription": "Përshkrimi i automjetit",
+			"carDescriptionHint": "Çfarë dëshironi të bëhet? (opsionale)",
+			"gdpr": "Pajtohem me politikën e privatësisë dhe kushtet e shërbimit",
+			"privacyLink": "Politika e Privatësisë",
+			"firstNameRequired": "Ju lutemi shkruani emrin tuaj",
+			"lastNameRequired": "Ju lutemi shkruani mbiemrin tuaj",
+			"invalidEmail": "Ju lutemi shkruani një adresë email të vlefshme",
+			"invalidPhone": "Ju lutemi shkruani një numër telefoni të vlefshëm",
+			"gdprRequired": "Ju lutemi pranoni politikën e privatësisë",
+			"next": "Vazhdo"
+		},
+		"step2": {
+			"title": "Shërbimet e Dëshiruara",
+			"loading": "Po ngarkohen shërbimet...",
+			"loadingError": "Gabim gjatë ngarkimit të shërbimeve",
+			"selectMin": "Ju lutemi zgjidhni të paktën një shërbim",
+			"selectedCount": "{count, plural, =0 {Asnjë zgjedhje} one {1 shërbim i zgjedhur} other {# shërbime të zgjedhura}}",
+			"fromPrice": "Nga €{price}",
+			"back": "Kthehu",
+			"next": "Vazhdo"
+		},
+		"step3": {
+			"title": "Zgjidhni Datën",
+			"loading": "Po ngarkohen datat e lira...",
+			"selected": "Data e zgjedhur",
+			"available": "E lirë",
+			"unavailable": "E zënë",
+			"selectedLegend": "E zgjedhur",
+			"chooseAnotherDate": "Zgjidhni një datë tjetër",
+			"back": "Kthehu",
+			"next": "Vazhdo"
+		},
+		"step4": {
+			"title": "Përmbledhja",
+			"yourData": "Të dhënat tuaja",
+			"name": "Emri",
+			"email": "Email",
+			"phone": "Telefoni",
+			"carDescription": "Përshkrimi i automjetit",
+			"selectedServices": "Shërbimet e zgjedhura",
+			"date": "Termini",
+			"dateAndTime": "Data & Ora",
+			"submit": "Konfirmo rezervimin",
+			"confirm": "Konfirmo rezervimin",
+			"submitting": "Po rezervohet...",
+			"back": "Kthehu",
+			"dateTaken": "Kjo datë sapo u rezervua. Ju lutemi zgjidhni një datë tjetër.",
+			"generic": "Ndodhi një gabim. Ju lutemi provoni përsëri."
+		},
+		"dossier": {
+			"title": "Përmbledhja e Rezervimit",
+			"statusOpen": "Parapamje Live",
+			"client": "Klienti",
+			"vehicle": "Automjeti",
+			"services": "Shërbimet e zgjedhura",
+			"date": "Data e preferuar",
+			"estimatedStart": "Çmimi orientues nga",
+			"estimatedDuration": "Kohëzgjatja e vlerësuar",
+			"pending": "Ende në pritje",
+			"needHelp": "Keni pyetje? Kontakt i drejtpërdrejtë:",
+			"whatsappCta": "WhatsApp",
+			"callCta": "Telefono"
+		},
+		"success": {
+			"badge": "Rezervimi u pranua",
+			"title": "Termini u rezervua me sukses!",
+			"message": "Do t'ju kontaktojmë shumë shpejt.",
+			"nextSteps": "Po shqyrtojmë datën tuaj të preferuar dhe do të konfirmojmë personalisht të gjitha detajet me ju.",
+			"contactEmail": "përmes emailit në {email}",
+			"contactPhone": "ose me telefon në {phone}",
+			"backHome": "Kthehu në Kryefaqe"
+		},
+		"error": {
+			"dateTaken": "Kjo datë sapo u rezervua. Ju lutemi zgjidhni një datë tjetër.",
+			"generic": "Ndodhi një gabim. Ju lutemi provoni përsëri."
+		}
+	},
+	"Gallery": {
+		"title": "Galeria – Para & Pas",
+		"filterAll": "Të gjitha",
+		"filterInterior": "Brendësia",
+		"filterExterior": "Jashtë",
+		"filterPaint": "Korrigjim Boje"
+	},
+	"Contact": {
+		"title": "Kontakti",
+		"description": "Kontaktoni LK Gloss & Detail për përkujdesje mobile të automjeteve dhe pyetje në Neuhausen auf den Fildern",
+		"subtitle": "Keni pyetje ose dëshironi të caktoni një termin të veçantë? Na shkruani ose na telefononi direkt.",
+		"mapTitle": "Vendndodhja Jonë",
+		"whatsappMessage": "Përshëndetje! Kam një pyetje rreth shërbimeve tuaja.",
+		"whatsappAria": "Kontakto në WhatsApp",
+		"form": {
+			"name": "Emri",
+			"namePlaceholder": "Emri juaj i plotë",
+			"email": "Email",
+			"phone": "Telefoni",
+			"message": "Mesazhi",
+			"submit": "Dërgo Mesazhin",
+			"submitting": "Po dërgohet...",
+			"submitSuccess": "Faleminderit! Do t'ju kontaktojmë shumë shpejt.",
+			"submitError": "Ndodhi një gabim. Ju lutemi provoni përsëri.",
+			"nameRequired": "Emri është i detyrueshëm",
+			"invalidEmail": "Kërkohet adresë email e vlefshme",
+			"invalidPhone": "Kërkohet numër telefoni i vlefshëm",
+			"messageRequired": "Mesazhi është i detyrueshëm",
+			"messagePlaceholder": "Mesazhi juaj për ne..."
+		},
+		"details": {
+			"title": "Të Dhënat e Kontaktit",
+			"phone": "Telefoni",
+			"email": "Email",
+			"callNow": "Telefono tani",
+			"emailUs": "Dërgo email",
+			"whatsapp": "WhatsApp"
+		}
+	},
+	"Footer": {
+		"copyright": "© {year} LK Gloss & Detail. Të gjitha të drejtat e rezervuara.",
+		"impressum": "Impressum",
+		"privacy": "Privatësia",
+		"services": "Shërbimet",
+		"contact": "Kontakti"
+	},
+	"LanguageSwitcher": {
+		"label": "Zgjidhni gjuhën",
+		"locales": {
+			"de": {
+				"short": "DE",
+				"full": "Deutsch"
+			},
+			"en": {
+				"short": "EN",
+				"full": "English"
+			},
+			"el": {
+				"short": "ΕΛ",
+				"full": "Ελληνικά"
+			},
+			"sq": {
+				"short": "SQ",
+				"full": "Shqip"
+			},
+			"tr": {
+				"short": "TR",
+				"full": "Türkçe"
+			}
+		}
+	},
+	"Common": {
+		"loading": "Po ngarkohet...",
+		"error": "Ndodhi një gabim",
+		"retry": "Provo përsëri",
+		"close": "Mbyll",
+		"back": "Kthehu",
+		"next": "Vazhdo"
+	},
+	"Chatbot": {
+		"placeholder": "Shkruani një mesazh...",
+		"greeting": "Përshëndetje! Si mund t'ju ndihmoj?",
+		"userLabel": "Ti",
+		"botName": "Lulezim Kodhimaj AI",
+		"online": "Online",
+		"close": "Mbyll",
+		"send": "Dërgo",
+		"typing": "Po shkruan...",
+		"openChat": "Hap bisedën",
+		"closeChat": "Mbyll bisedën",
+		"errorFallback": "Na vjen keq, diçka shkoi keq. Ju lutemi provoni përsëri.",
+		"links": {
+			"services": "Shërbimet",
+			"booking": "Rezervo Termin",
+			"assessment": "Vlerësimi AI i Automjetit",
+			"contact": "Kontakti"
+		}
+	},
+	"Impressum": {
+		"title": "Impressum",
+		"description": "Impressum dhe të dhëna ligjore të LK Gloss & Detail",
+		"noticeTitle": "Shënim / Notice:",
+		"noticeText": "Të dhënat në këtë faqe përmbajnë përkohësisht të dhëna shembull, pasi kompania është ende në proces regjistrimi. Sapo të përfundojë regjistrimi, ato do të zëvendësohen me të dhënat reale të kompanisë.",
+		"tmgTitle": "Informacione sipas § 5 TMG",
+		"ownerTitle": "Ofruesi i shërbimit / Pronari",
+		"addressTitle": "Adresa",
+		"contactTitle": "Kontakti",
+		"phoneTitle": "Telefoni",
+		"emailTitle": "Email",
+		"taxTitle": "Numri i TVSH-së / Numri Tatimor",
+		"taxSub": "Numri i identifikimit tatimor sipas § 27 a të Ligjit Gjerman të TVSH-së",
+		"professionTitle": "Titulli Profesional & Rregulloret",
+		"profession": "Përkujdesje e Automjeteve / Car Detailing (Gjermani)",
+		"authority": "Dhoma kompetente (IHK / Handwerkskammer — do të shtohet pas regjistrimit)",
+		"disputeTitle": "Zgjidhja e Mosmarrëveshjeve Konsumatore",
+		"disputeText": "Komisioni Evropian ofron një platformë për zgjidhjen online të mosmarrëveshjeve (OS): https://ec.europa.eu/consumers/odr . Adresën tonë të emailit e gjeni më lart në Impressum.",
+		"disputeNotice": "Ne nuk jemi të gatshëm dhe as të detyruar të marrim pjesë në procedura të zgjidhjes së mosmarrëveshjeve para një organi arbitrazhi konsumator.",
+		"legalTitle": "Njoftime Ligjore",
+		"liabilityContentTitle": "Përgjegjësia për Përmbajtjen",
+		"liabilityContentText": "Si ofrues shërbimesh, ne jemi përgjegjës për përmbajtjen tonë në këto faqe sipas ligjeve të përgjithshme (§ 7 Abs.1 TMG). Sipas §§ 8 deri 10 TMG, megjithatë, ne nuk jemi të detyruar të monitorojmë informacionin e transmetuar ose të ruajtur nga palë të treta ose të hetojmë rrethana që tregojnë veprimtari të paligjshme. Detyrimet për heqjen ose bllokimin e përdorimit të informacionit sipas ligjeve të përgjithshme mbeten të paprekura. Megjithatë, përgjegjësia në këtë drejtim është e mundur vetëm nga momenti i njohjes së një shkeljeje konkrete ligjore. Pas njoftimit për shkelje përkatëse, ne do ta heqim menjëherë këtë përmbajtje.",
+		"liabilityLinksTitle": "Përgjegjësia për Lidhjet (Links)",
+		"liabilityLinksText": "Oferta jonë përmban lidhje me faqe të jashtme interneti të palëve të treta, mbi përmbajtjen e të cilave ne nuk kemi ndikim. Prandaj, ne nuk mund të mbajmë asnjë garanci për këtë përmbajtje të jashtme. Për përmbajtjen e faqeve të lidhura është gjithmonë përgjegjës ofruesi ose operatori përkatës i faqeve. Faqet e lidhura u kontrolluan për shkelje të mundshme ligjore në momentin e lidhjes. Përmbajtje të paligjshme nuk ishin të dukshme në atë moment. Megjithatë, kontrolli i përhershëm i përmbajtjes së faqeve të lidhura nuk është i arsyeshëm pa indikacione konkrete të një shkeljeje ligjore. Pas njoftimit për shkelje, ne do t'i heqim menjëherë këto lidhje.",
+		"copyrightTitle": "E Drejta e Autorit",
+		"copyrightText": "Përmbajtja dhe veprat e krijuara nga operatorët e kësaj faqeje i nënshtrohen ligjit gjerman për të drejtën e autorit. Riprodhimi, përpunimi, shpërndarja dhe çdo lloj shfrytëzimi jashtë kufijve të së drejtës së autorit kërkon pëlqimin me shkrim të autorit ose krijuesit përkatës. Shkarkimet dhe kopjet e kësaj faqeje lejohen vetëm për përdorim privat, jo-komercial. Për aq sa përmbajtja në këtë faqe nuk është krijuar nga operatori, respektohen të drejtat e autorit të palëve të treta. Nëse megjithatë vini re një shkelje të së drejtës së autorit, ju lutemi na njoftoni. Pas njoftimit për shkelje, ne do ta heqim menjëherë atë përmbajtje."
+	},
+	"Privacy": {
+		"title": "Politika e Privatësisë",
+		"description": "Politika e privatësisë dhe informacionet GDPR të LK Gloss & Detail"
+	},
+	"Assessment": {
+		"title": "Analiza e Fotove me AI",
+		"description": "Vlerësim falas me AI i automjetit dhe vlerësim i gjendjes për përkujdesjen e makinës suaj",
+		"badge": "AI Vision Lab · Analizë Falas",
+		"subtitle": "Ngarkoni 4 kënde të automjetit tuaj — AI ynë analizon gjendjen dhe përgatit një vlerësim individual të çmimit dhe kohës.",
+		"stepCounter": "Hapi {current} nga {total}",
+		"trust": {
+			"gdpr": "Në përputhje me GDPR",
+			"noAccount": "Pa Regjistrim",
+			"instant": "Vlerësim i Menjëhershëm"
+		},
+		"steps": {
+			"front": "Pamja e përparme",
+			"rear": "Pamja e pasme",
+			"side": "Pamja anësore",
+			"left": "Ana e majtë",
+			"right": "Ana e djathtë",
+			"interior": "Brendësia"
+		},
+		"angleHints": {
+			"front": "Përfshini kofanon, fenerët dhe parakolpin e përparmë në dritë të mirë",
+			"rear": "Mbani bagazhin, stopat dhe parakolpin e pasmë plotësisht në kornizë",
+			"side": "Fotografoni të gjithë profilin anësor me dyer, disqe dhe parafango",
+			"interior": "Fotografoni ulëset, kroskotin dhe dyshemenë qartë me derën e hapur"
+		},
+		"upload": {
+			"dragDrop": "Tërhiqni foton këtu",
+			"orClick": "ose klikoni për të zgjedhur",
+			"chooseFile": "Zgjidh Skedarin",
+			"takePhoto": "Bëj Foto",
+			"validating": "Po verifikohet fotoja...",
+			"formats": "JPG, PNG, WEBP · Kontroll automatik AI",
+			"scanning": "Skaneri AI po verifikon këndin & cilësinë e imazhit...",
+			"cancel": "Anulo",
+			"error": "Kjo foto nuk përputhet me këndin e pritur. Ju lutemi provoni përsëri.",
+			"errors": {
+				"FILE_INVALID": "Format i pavlefshëm i skedarit të imazhit.",
+				"FILE_READ_FAILED": "Dështoi leximi i skedarit të imazhit.",
+				"IMAGE_DECODE_FAILED": "Imazhi nuk mund të dekodohej.",
+				"HEIC_UNSUPPORTED": "Fotot HEIC/HEIF nuk mbështeten nga ky shfletues. Ju lutemi ngarkoni një imazh JPG, PNG ose WEBP.",
+				"CANVAS_CONTEXT_FAILED": "Përpunimi i imazhit dështoi.",
+				"FILE_TOO_LARGE": "Skedari i imazhit është shumë i madh. Ju lutemi ngarkoni një foto më të vogël.",
+				"RATE_LIMITED": "Shumë kërkesa brenda një kohe të shkurtër. Ju lutemi prisni pak dhe provoni përsëri.",
+				"VALIDATION_FAILED": "Verifikimi i fotos dështoi. Ju lutemi provoni përsëri."
+			}
+		},
+		"validation": {
+			"validating": "Po verifikohet fotoja...",
+			"valid": "Fotoja është e vlefshme!",
+			"invalid": "Foto e pavlefshme",
+			"tryAgain": "Provo Përsëri",
+			"uploadDifferent": "Ngarko një Foto Tjetër",
+			"continue": "Vazhdo"
+		},
+		"navigation": {
+			"back": "Kthehu",
+			"skip": "Kalo (për testim)"
+		},
+		"progress": {
+			"step": "Hapi",
+			"of": "nga"
+		},
+		"swipe": {
+			"title": "Zgjidhni Shërbimet Tuaja",
+			"accept": "Prano",
+			"reject": "Refuzo",
+			"hint": "Rrëshqitni djathtas për ta shtuar ose përdorni butonat",
+			"selectedCount": "{count, plural, =0 {Ende asnjë e zgjedhur} one {1 e zgjedhur} other {# të zgjedhura}}"
+		},
+		"dossier": {
+			"title": "Dosja Live e Skanimit",
+			"statusLive": "AI Gati",
+			"statusActive": "Skanim Aktiv",
+			"anglesTitle": "Statusi i Këndeve",
+			"verified": "E verifikuar",
+			"activeNow": "Hapi Aktiv",
+			"awaiting": "Në pritje",
+			"telemetryTitle": "Të Dhënat e Zbuluara",
+			"vehicleLabel": "Automjeti",
+			"sizeLabel": "Kategoria",
+			"conditionLabel": "Ndotja",
+			"servicesLabel": "Shërbimet e Zgjedhura",
+			"pendingScan": "Zbulohet pas ngarkimit të fotove",
+			"privacyTitle": "Garancia e Privatësisë",
+			"privacyDesc": "Fotot tuaja përpunohen vetëm për analizën AI dhe fshihen menjëherë nga memoria pas përfundimit.",
+			"needHelp": "Ndihmë me fotot? Kontakt direkt:",
+			"callCta": "Telefono",
+			"whatsappCta": "WhatsApp",
+			"dirtLevels": {
+				"light": "E lehtë",
+				"moderate": "Mesatare",
+				"heavy": "E rëndë"
+			}
+		},
+		"services": {
+			"headingTag": "Konfiguratori",
+			"headingTitle": "Zgjidhni shërbimet tuaja",
+			"headingDescription": "Vendosni cilat trajtime meriton automjeti juaj. Rrëshqitni djathtas për konfirmim.",
+			"loading": "Po ngarkohen shërbimet...",
+			"loadingError": "Gabim gjatë ngarkimit të shërbimeve",
+			"retry": "Provo përsëri",
+			"cards": {
+				"interior": {
+					"title": "Pastrim Profesional i Brendshëm",
+					"description": "Pastrim i thellë dhe kujdes me avull dhe produkte speciale",
+					"tag": "Kujdes Premium"
+				},
+				"headlights": {
+					"title": "Restaurimi i Fenerëve",
+					"description": "Heqja e zverdhjes dhe gërvishtjeve për shikueshmëri të qartë",
+					"tag": "Siguri"
+				},
+				"paintCorrection": {
+					"title": "Korrigjim Boje & Veshje Qeramike",
+					"description": "Lustrim 3-fazor me shkëlqim të lartë dhe veshje qeramike për mbrojtje afatgjatë",
+					"tag": "Mbrojtje Premium"
+				}
+			},
+			"completeTitle": "Shërbimet u konfiguruan!",
+			"completeDescription": "Zgjedhja juaj u ruajt. Po kalohet te analiza AI..."
+		},
+		"analyzing": {
+			"badge": "Vlerësimi AI në proces",
+			"title": "AI po analizon automjetin tuaj...",
+			"description": "AI ynë po vlerëson fotot tuaja dhe po llogarit çmimin më të mirë për ju.",
+			"stage1": "Po vlerësohet segmenti & gjendja e automjetit",
+			"stage2": "Llogaritja e shërbimeve & kohëzgjatjes së personalizuar",
+			"stage3": "Po hartohet raporti i ekspertit"
+		},
+		"results": {
+			"title": "Rezultati Juaj",
+			"errorTitle": "Analiza Dështoi",
+			"retry": "Provo përsëri",
+			"comingSoon": "Shfaqja e rezultateve do të implementohet së shpejti."
+		},
+		"result": {
+			"title": "Rezultati i Vlerësimit Tuaj",
+			"priceRange": "Diapazoni i Çmimit",
+			"duration": "Kohëzgjatja e Vlerësuar",
+			"carSize": "Madhësia e Automjetit",
+			"summary": "Përmbledhja",
+			"bookNow": "Rezervo Termin",
+			"carSizes": {
+				"small": "I vogël",
+				"medium": "Mesatar",
+				"large": "I madh",
+				"suv": "SUV"
+			}
+		},
+		"report": {
+			"badge": "Rezultati AI Vision",
+			"title": "Raporti i Analizës",
+			"subtitle": "Rekomandim i personalizuar bazuar në fotot e automjetit tuaj dhe shërbimet e zgjedhura.",
+			"vehicle": "Automjeti Juaj",
+			"aiDiagnostics": "Diagnostika AI",
+			"expertVerdict": "Vlerësimi i Ekspertit",
+			"expertAttribution": "LK Gloss & Detail · Vlerësim me AI",
+			"investment": "Investimi",
+			"priceNote": "Indikacion orientues çmimi pa detyrim",
+			"timeline": "Kohëzgjatja",
+			"durationNote": "Shërbim mobil direkt te ju",
+			"bookAppointment": "Rezervo Termin",
+			"startNew": "Fillo Vlerësim të Ri",
+			"durationValue": "~{hours} orë",
+			"noServicesTitle": "Asnjë shërbim i zgjedhur",
+			"noServicesDesc": "Nuk keni zgjedhur asnjë trajtim. Kthehuni te përzgjedhja ose rezervoni direkt një termin të personalizuar.",
+			"backToServices": "Zgjidh shërbimet përsëri"
+		}
+	},
+	"CookieConsent": {
+		"message": "Ne përdorim cookies për të përmirësuar përvojën tuaj në faqen tonë. Më shumë informacion gjeni në Politikën tonë të Privatësisë.",
+		"accept": "Prano të gjitha",
+		"decline": "Vetëm të domosdoshmet",
+		"privacy": "Politika e Privatësisë"
+	},
+	"ConfirmModal": {
+		"deleteTitle": "Fshi terminin",
+		"deleteDescription": "Jeni i sigurt që dëshironi ta fshini këtë termin? Ky veprim nuk mund të zhbëhet.",
+		"confirm": "Konfirmo fshirjen",
+		"cancel": "Anulo"
+	},
+	"Admin": {
+		"services": {
+			"title": "Menaxhimi i Shërbimeve",
+			"subtitle": "Menaxhoni të gjitha shërbimet e disponueshme, çmimet dhe statusin aktiv.",
+			"addService": "Shto Shërbim",
+			"syncBanner": "Ndryshimet në shërbime sinkronizohen automatikisht në faqe, rezervim, vlerësimin AI dhe chatbot.",
+			"searchPlaceholder": "Kërko sipas emrit...",
+			"loadingError": "Gabim gjatë ngarkimit të shërbimeve",
+			"categories": {
+				"exterior": "Pastrim i Jashtëm",
+				"interior": "Brendësia",
+				"paint": "Bojë & Lustrim",
+				"protection": "Veshje & Mbrojtje",
+				"other": "Të tjera"
+			},
+			"filters": {
+				"allCategories": "Të gjitha kategoritë",
+				"allStatuses": "Të gjitha statuset",
+				"active": "Aktiv",
+				"inactive": "Joaktiv"
+			},
+			"empty": "Nuk u gjet asnjë shërbim.",
+			"columns": {
+				"image": "Foto",
+				"name": "Emri",
+				"category": "Kategoria",
+				"pricing": "Çmimet (S/M/L/SUV)",
+				"duration": "Kohëzgjatja",
+				"active": "Aktiv",
+				"order": "Renditja",
+				"actions": "Veprimet"
+			},
+			"edit": "Ndrysho",
+			"delete": {
+				"title": "Fshi shërbimin",
+				"message": "Jeni i sigurt që dëshironi të fshini {name}?",
+				"warning": "Ky veprim nuk mund të zhbëhet.",
+				"confirm": "Konfirmo fshirjen",
+				"deleting": "Po fshihet..."
+			},
+			"cancel": "Anulo",
+			"form": {
+				"addTitle": "Shërbim i Ri",
+				"editTitle": "Ndrysho Shërbimin",
+				"sections": {
+					"basic": "Informacioni Bazë",
+					"pricing": "Çmimet & Kohëzgjatja",
+					"image": "Fotoja Kryesore"
+				},
+				"name": "Emri i shërbimit",
+				"category": "Kategoria",
+				"shortDescription": "Përshkrim i shkurtër",
+				"iconName": "Emri i ikonës Lucide",
+				"sortOrder": "Renditja",
+				"durationHours": "Kohëzgjatja (Orë)",
+				"uploadPrompt": "Kliko ose tërhiq për të ngarkuar një foto",
+				"uploading": "Po ngarkohet...",
+				"imageInvalidType": "Lejohen vetëm imazhe JPG, PNG ose WebP.",
+				"imageTooLarge": "Madhësia e fotos nuk mund të kalojë 5 MB.",
+				"uploadFailed": "Ngarkimi i fotos dështoi. Ju lutemi provoni përsëri.",
+				"removeImage": "Hiq foton",
+				"imageFormatHint": "Formatet e mbështetura: JPG, PNG, WebP",
+				"imageRatioHint": "Raporti i rekomanduar: 16:9",
+				"imageMaxSizeHint": "Madhësia maksimale e skedarit: 5 MB",
+				"translations": {
+					"toggle": "Përshtat përkthimet (DE / EN / EL / SQ / TR)",
+					"hint": "Opsionale: Mbishkruani përkthimin automatik AI për gjuhë të veçanta.",
+					"nameLabel": "Emri",
+					"descLabel": "Përshkrimi"
+				},
+				"active": "Aktiv (i dukshëm në faqe)",
+				"save": "Ruaj Shërbimin",
+				"sizes": {
+					"small": "I vogël",
+					"medium": "Mesatar",
+					"large": "I madh / Kombi",
+					"suv": "SUV"
+				}
+			},
+			"toast": {
+				"createSuccess": "Shërbimi u krijua me sukses",
+				"updateSuccess": "Shërbimi u përditësua me sukses",
+				"deleteSuccess": "Shërbimi u fshi me sukses",
+				"statusUpdateSuccess": "Statusi u përditësua"
+			}
+		},
+		"chatbotKb": {
+			"pageTitle": "Baza e Njohurive RAG",
+			"pageSubtitle": "Menaxhoni bazën vektoriale të njohurive për Chatbot-in AI. Shtoni tekste, shërbime ose rregulla dhe agjenti AI i strukturon dhe vektorizon ato.",
+			"servicesSyncBanner": "Shërbimet dhe çmimet tuaja lexohen automatikisht live nga katalogu i shërbimeve. Shtoni këtu politikat e kompanisë, orarin, informacionet B2B dhe pyetjet e shpeshta.",
+			"allLanguages": "Të gjitha gjuhët",
+			"allCategories": "Të gjitha kategoritë",
+			"refresh": "Rifresko",
+			"testSearch": "Testo Kërkimin (RAG)",
+			"addEntry": "Shto Hyrje",
+			"editEntry": "Ndrysho Hyrjen",
+			"addAiKnowledge": "Shto Njohuri AI",
+			"loading": "Po ngarkohet...",
+			"loadError": "Gabim gjatë ngarkimit të bazës së njohurive.",
+			"empty": "Nuk u gjet asnjë hyrje në bazën e njohurive.",
+			"deleteConfirmTitle": "Fshi hyrjen e njohurive?",
+			"deleteConfirmDesc": "Jeni i sigurt që dëshironi ta fshini këtë hyrje? Ky veprim nuk mund të zhbëhet.",
+			"deleteError": "Gabim gjatë fshirjes së hyrjes.",
+			"categories": {
+				"all": "Të gjitha kategoritë",
+				"interior": "Brendësia",
+				"exterior": "Pastrim i Jashtëm",
+				"paint_correction": "Korrigjim Boje & Veshje",
+				"headlights_special": "Fenerë & Speciale",
+				"company_policy": "Politikat & Info e Kompanisë",
+				"booking_process": "Procesi i Rezervimit",
+				"mobile_service": "Shërbim Mobil",
+				"b2b": "B2B & Flota",
+				"faq": "Pyetje të Shpeshta (FAQ)",
+				"general": "Njohuri të Përgjithshme"
+			},
+			"editor": {
+				"addTitle": "Shto Hyrje të Re Njohurish",
+				"editTitle": "Ndrysho Hyrjen e Njohurive",
+				"autoReplyHint": "Shkruani thjesht në gjuhën që preferoni — chatbot-i AI u përgjigjet klientëve automatikisht në gjermanisht, anglisht, greqisht, shqip ose turqisht.",
+				"titleLabel": "Titulli",
+				"titlePlaceholder": "p.sh. Kostot e udhëtimit & zona e shërbimit",
+				"categoryLabel": "Kategoria",
+				"contentLabel": "Përmbajtja",
+				"contentPlaceholder": "Përshkruani informacionin, rregullin ose përgjigjen sa më qartë...",
+				"keywordsLabel": "Fjalë kyçe (të ndara me presje, opsionale)",
+				"keywordsPlaceholder": "p.sh. orari, e shtunë, udhëtim, ujë",
+				"saveButton": "Ruaj",
+				"saving": "Po ruhet...",
+				"cancel": "Anulo",
+				"saveError": "Ruajtja e hyrjes së njohurive dështoi."
+			},
+			"wizard": {
+				"title": "Agjent Hibrid i Njohurive AI",
+				"serviceForm": "Shërbim i Ri",
+				"companyInfo": "Info e Përgjithshme & Politika e Kompanisë",
+				"serviceTitleLabel": "Emri i Shërbimit / Titulli",
+				"serviceTitlePlaceholder": "p.sh. Veshje Qeramike për Varka",
+				"categoryLabel": "Kategoria",
+				"priceLabel": "Çmimi (€)",
+				"pricePlaceholder": "p.sh. Nga 500€ ose 150€",
+				"durationLabel": "Kohëzgjatja e Punës (Orë / Ditë)",
+				"durationPlaceholder": "p.sh. 3-4 orë ose 1 ditë",
+				"descriptionLabel": "Përshkrim i Detajuar & Shërbimet e Përfshira",
+				"descriptionPlaceholder": "p.sh. Larje e plotë e jashtme, korrigjim boje 2-fazor, veshje 9H...",
+				"requirementsLabel": "Rregulla Speciale & Kërkesa (Opsionale)",
+				"requirementsPlaceholder": "p.sh. Klienti duhet të sigurojë rrymë & ujë; Vetëm në mot të thatë.",
+				"companyInfoLabel": "Informacion i Përgjithshëm, Rregulla, Orari ose Shënime Vendndodhjeje",
+				"companyInfoPlaceholder": "p.sh. Të dielën e Pashkëve jemi mbyllur. Udhëtimi deri 25km është falas...",
+				"formatButton": "Gjenero me Gemini 2.5 Flash",
+				"formatting": "Gemini 2.5 Flash po punon...",
+				"reviewTitle": "Rishiko & Ruaj",
+				"backToInput": "← Kthehu te të dhënat",
+				"aiClarification": "AI ka nevojë për sqarim!",
+				"titleLabel": "Titulli",
+				"contentLabel": "Përmbajtja Vektoriale e Njohurisë",
+				"keywordsLabel": "Fjalë kyçe",
+				"saveButton": "Ruaj & Vektorizo (DE, EL, EN)",
+				"errTitle": "Ju lutemi shkruani titullin e shërbimit.",
+				"errPrice": "Ju lutemi shkruani çmimin.",
+				"errDuration": "Ju lutemi shkruani kohëzgjatjen e punës.",
+				"errDescription": "Ju lutemi shkruani një përshkrim.",
+				"errCompanyInfo": "Ju lutemi shkruani informacionin ose politikën e kompanisë.",
+				"genericError": "Ndodhi një gabim"
+			},
+			"testModal": {
+				"title": "Testo Kërkimin Semantik RAG",
+				"placeholder": "Bëni një pyetje (p.sh. Kur jeni hapur të shtunën?)",
+				"searchButton": "Kërko",
+				"topMatches": "Përputhjet më të Mira Vektoriale",
+				"noMatches": "Nuk u gjetën vektorë përputhës mbi pragun.",
+				"searchFailed": "Kërkimi dështoi",
+				"similarity": "Ngjashmëria",
+				"closeButton": "Mbyll"
+			}
+		},
+		"loginTitle": "Hyrja e Administratorit",
+		"loginSubtitle": "Qasje në Panelin e Kontrollit LK Gloss & Detail",
+		"emailLabel": "Adresa Email",
+		"emailPlaceholder": "admin@lkglossanddetail.de",
+		"passwordLabel": "Fjalëkalimi",
+		"passwordPlaceholder": "••••••••",
+		"submitButton": "Hyr",
+		"loggingIn": "Po hyhet...",
+		"logoutButton": "Dil",
+		"email": "Email",
+		"password": "Fjalëkalimi",
+		"signIn": "Hyr",
+		"signingIn": "Po hyhet...",
+		"logout": "Dil",
+		"unauthorized": "Nuk keni qasje administratori.",
+		"invalidCredentials": "Email ose fjalëkalim i pavlefshëm.",
+		"unexpectedError": "Ndodhi një gabim i papritur.",
+		"welcome": "Mirë se vini në Panelin e Administratorit!",
+		"welcomeDescription": "Jeni kyçur me sukses si administrator. Përdorni këtë portal për të menaxhuar terminet, shërbimet dhe bazën e njohurive të chatbot-it.",
+		"errors": {
+			"invalid_credentials": "Emaili ose fjalëkalimi i futur është i pasaktë.",
+			"not_admin": "Nuk keni të drejta administratori.",
+			"server_error": "Ndodhi një gabim i brendshëm i serverit. Ju lutemi provoni përsëri.",
+			"validation_error": "Ju lutemi plotësoni saktë të gjitha fushat.",
+			"emailRequired": "Adresa email është e detyrueshme.",
+			"invalidEmail": "Kërkohet adresë email e vlefshme.",
+			"passwordTooShort": "Fjalëkalimi duhet të ketë të paktën 6 karaktere.",
+			"too_many_attempts": "Shumë tentativa hyrjeje. Ju lutemi provoni përsëri pas një minute."
+		},
+		"dashboard": {
+			"title": "Paneli i Administratorit",
+			"welcome": "Mirë se u kthyet, Administrator!",
+			"subtitle": "Pasqyrë e termineve, shërbimeve dhe bazës së njohurive të chatbot-it.",
+			"error": {
+				"title": "Gabim i Bazës së të Dhënave",
+				"message": "Gabim gjatë ngarkimit të të dhënave të panelit. Ju lutemi kontrolloni lidhjen me bazën e të dhënave dhe provoni përsëri."
+			},
+			"cards": {
+				"appointments": {
+					"title": "Termine Gjithsej",
+					"desc": "Të gjitha rezervimet e regjistruara"
+				},
+				"today": {
+					"title": "Sot",
+					"desc": "Të planifikuara për sot"
+				},
+				"pending": {
+					"title": "Në Pritje",
+					"desc": "Presin konfirmimin"
+				},
+				"unreadMessages": {
+					"title": "Mesazhe të Palexuara",
+					"desc": "Kërkesa të reja kontakti"
+				},
+				"upcoming": {
+					"title": "7 Ditët e Ardhshme",
+					"desc": "Rezervimet e ardhshme"
+				},
+				"services": {
+					"title": "Shërbime Aktive",
+					"desc": "Hyrje të disponueshme në katalog"
+				},
+				"contact": {
+					"title": "Kërkesa Mujore",
+					"desc": "Kërkesa kontakti këtë muaj"
+				},
+				"chatbot": {
+					"title": "Baza e Njohurive",
+					"desc": "Blloqe vektoriale njohurish"
+				}
+			},
+			"todaysAppointments": {
+				"title": "Orari i Sotëm",
+				"subtitle": "Terminet e rezervuara për sot",
+				"empty": "Nuk ka termine të planifikuara për sot."
+			},
+			"upcomingAppointments": {
+				"title": "Të Ardhshmet (7 Ditët e Ardhshme)",
+				"subtitle": "Rezervimet për javën e ardhshme",
+				"empty": "Nuk ka termine të ardhshme në 7 ditët e ardhshme."
+			},
+			"recentMessages": {
+				"title": "Mesazhet e Fundit të Palexuara",
+				"subtitle": "Kërkesat më të fundit nga klientët",
+				"viewAll": "Shiko të gjitha",
+				"empty": "Nuk ka mesazhe të palexuara për momentin.",
+				"openInbox": "Kutia"
+			},
+			"actions": {
+				"call": "Telefono",
+				"whatsapp": "WhatsApp"
+			},
+			"quickActions": {
+				"title": "Veprime të Shpejta",
+				"appointments": "Terminet",
+				"blockSlot": "Blloko Datën",
+				"newService": "Shërbim i Ri",
+				"addKnowledge": "Shto Njohuri",
+				"services": "Menaxho Shërbimet"
+			},
+			"status": {
+				"pending": "Në pritje",
+				"confirmed": "Konfirmuar",
+				"completed": "Përfunduar",
+				"cancelled": "Anuluar"
+			},
+			"sidebar": {
+				"management": "Menaxhimi",
+				"overview": "Pasqyra",
+				"appointments": "Terminet",
+				"messages": "Mesazhet",
+				"servicesCrud": "Shërbimet",
+				"chatbotKb": "Njohuritë Chatbot"
+			},
+			"loadingLabel": "Po ngarkohet paneli i administratorit"
+		},
+		"messages": {
+			"title": "Mesazhet & Kërkesat",
+			"subtitle": "Menaxhoni kërkesat hyrëse të kontaktit, telefononi klientët direkt ose përgjigjuni përmes WhatsApp.",
+			"searchPlaceholder": "Kërko sipas emrit, emailit, telefonit ose mesazhit...",
+			"empty": "Nuk u gjet asnjë mesazh në këtë pamje.",
+			"tabs": {
+				"all": "Të gjitha",
+				"unread": "Të palexuara",
+				"read": "Të lexuara",
+				"archived": "Të arkivuara"
+			},
+			"status": {
+				"unread": "E palexuar",
+				"read": "E lexuar",
+				"archived": "E arkivuar"
+			},
+			"actions": {
+				"refresh": "Rifresko",
+				"markAllRead": "Shëno të gjitha si të lexuara",
+				"open": "Hap mesazhin",
+				"call": "Telefono",
+				"email": "Email",
+				"copy": "Kopjo",
+				"copied": "U kopjua",
+				"copyPhone": "Kopjo numrin e telefonit",
+				"copyEmail": "Kopjo adresën email",
+				"markRead": "Shëno si të lexuar",
+				"markUnread": "Shëno si të palexuar",
+				"archive": "Arkivo",
+				"unarchive": "Hiq nga arkivi",
+				"delete": "Fshi"
+			},
+			"modal": {
+				"close": "Mbyll",
+				"phone": "Telefoni",
+				"email": "Email",
+				"messageLabel": "Mesazhi"
+			},
+			"errors": {
+				"loadFailed": "Mesazhet nuk mund të ngarkoheshin.",
+				"updateFailed": "Statusi nuk mund të përditësohej.",
+				"deleteFailed": "Mesazhi nuk mund të fshihej."
+			},
+			"deleteConfirm": {
+				"title": "Fshi mesazhin?",
+				"description": "Jeni i sigurt që dëshironi ta fshini përgjithmonë këtë kërkesë kontakti?"
+			},
+			"pagination": {
+				"showing": "Faqja {page} nga {totalPages} ({total} gjithsej)",
+				"prev": "Mbrapa",
+				"next": "Para"
+			}
+		},
+		"appointments": {
+			"title": "Terminet & Kalendari i Rezervimeve",
+			"subtitle": "Menaxhoni rezervimet hyrëse, përditësoni statuset e termineve dhe bllokoni datat e padisponueshme.",
+			"refresh": "Rifresko",
+			"blockDate": "Blloko Datën",
+			"today": "Sot",
+			"previousMonth": "Muaji i kaluar",
+			"nextMonth": "Muaji tjetër",
+			"blockDay": "Blloko ditën",
+			"unblockDay": "Liro ditën",
+			"call": "Telefono",
+			"calendar": "Kalendari",
+			"listView": "Pamja në listë",
+			"searchPlaceholder": "Kërko sipas emrit të klientit, emailit, telefonit, makinës ose datës...",
+			"filterLabel": "Filtri:",
+			"allStatuses": "Të gjitha statuset",
+			"noAppointments": "Asnjë termin nuk përputhet me kriteret e zgjedhura.",
+			"errors": {
+				"statusUpdateFailed": "Statusi nuk mund të përditësohej.",
+				"blockToggleFailed": "Statusi i ditës nuk mund të ndryshohej.",
+				"refreshFailed": "Terminet nuk mund të rifreskoheshin.",
+				"deleteFailed": "Termini nuk mund të fshihej.",
+				"selectOneService": "Ju lutemi zgjidhni të paktën një shërbim.",
+				"saveFailed": "Ndryshimet nuk mund të ruheshin."
+			},
+			"table": {
+				"date": "Data",
+				"client": "Klienti",
+				"services": "Shërbimet",
+				"total": "Totali",
+				"status": "Statusi",
+				"actions": "Veprimet"
+			},
+			"status": {
+				"pending": "Në pritje",
+				"confirmed": "Konfirmuar",
+				"completed": "Përfunduar",
+				"cancelled": "Anuluar"
+			},
+			"modals": {
+				"details": {
+					"title": "Detajet e Rezervimit",
+					"clientName": "Emri i klientit",
+					"email": "Adresa Email",
+					"phone": "Telefoni",
+					"car": "Përshkrimi i automjetit",
+					"bookedServices": "Shërbimet e rezervuara",
+					"total": "Totali",
+					"updateStatus": "Përditëso statusin",
+					"delete": "Fshi",
+					"edit": "Ndrysho",
+					"close": "Mbyll"
+				},
+				"edit": {
+					"title": "Ndrysho Terminin",
+					"firstName": "Emri",
+					"lastName": "Mbiemri",
+					"email": "Adresa Email",
+					"phone": "Numri i telefonit",
+					"car": "Përshkrimi i automjetit",
+					"date": "Data e rezervimit",
+					"status": "Statusi",
+					"services": "Shërbimet",
+					"cancel": "Anulo",
+					"save": "Ruaj ndryshimet"
+				},
+				"block": {
+					"title": "Datat e Bllokuara",
+					"subtitle": "Parandaloni rezervimet në ditë të caktuara të kalendarit",
+					"modeSingle": "Një ditë e vetme",
+					"modeRange": "Periudhë datash",
+					"blockNew": "Blloko datë të re",
+					"blockRangeTitle": "Blloko periudhë datash",
+					"selectDate": "Zgjidhni datën",
+					"startDate": "Data e fillimit",
+					"endDate": "Data e mbarimit",
+					"reason": "Arsyeja (opsionale)",
+					"reasonPlaceholder": "p.sh. Pushime, Festë, Mirëmbajtje...",
+					"submit": "Blloko datën",
+					"submitRange": "Blloko periudhën",
+					"unblock": "Liro",
+					"blockFailed": "Data nuk mund të bllokohej.",
+					"unblockFailed": "Bllokimi nuk mund të hiqej.",
+					"conflictTitle": "{count} rezervim(e) ekzistuese në periudhën e zgjedhur",
+					"conflictDesc": "Këto ditë kanë tashmë termine aktive. Dëshironi ta bllokoni gjithsesi këtë periudhë?",
+					"confirmConflict": "Blloko gjithsesi",
+					"cancelConflict": "Anulo",
+					"currentlyBlocked": "Aktualisht të bllokuara",
+					"noBlocked": "Aktualisht nuk ka data të bllokuara.",
+					"done": "Përfundo"
+				}
+			}
+		}
+	},
+	"Errors": {
+		"technicalDifficulties": "Probleme teknike, ju lutemi provoni përsëri më vonë.",
+		"servicesUnavailable": {
+			"title": "Katalogu i shërbimeve përkohësisht i padisponueshëm",
+			"description": "Për shkak të mirëmbajtjes teknike, katalogu ynë i shërbimeve nuk mund të ngarkohet për momentin. Ju lutemi provoni përsëri më vonë.",
+			"contactCallout": "Ne jemi gjithsesi pranë jush! Na telefononi, na dërgoni një email ose lini të dhënat tuaja në formularin tonë të kontaktit:",
+			"phone": "Telefono tani",
+			"email": "Dërgo email",
+			"leaveNumber": "Te formulari i kontaktit"
+		},
+		"bookingUnavailable": {
+			"title": "Sistemi i rezervimeve përkohësisht i padisponueshëm",
+			"description": "Për shkak të problemeve teknike, kalendari i rezervimeve nuk mund të ngarkohet për momentin. Ju lutemi provoni përsëri së shpejti.",
+			"retry": "Provo përsëri",
+			"callUs": "Rezervo me telefon",
+			"emailUs": "Kërko me email",
+			"submitError": "Për shkak të një problemi teknik, termini juaj nuk mund të ruhej. Të dhënat tuaja janë ruajtur. Ju lutemi provoni përsëri ose na kontaktoni direkt."
+		},
+		"aiUnavailable": {
+			"title": "Analiza AI përkohësisht e padisponueshme",
+			"description": "Sistemi ynë AI aktualisht ka ngarkesë të lartë ose ndodhet në mirëmbajtje të shkurtër. Ju lutemi provoni përsëri pas pak minutash.",
+			"retry": "Provo përsëri",
+			"serverError": "Gabim teknik gjatë përpunimit AI. Ju lutemi provoni përsëri më vonë."
+		},
+		"global": {
+			"title": "Ndodhi një problem teknik",
+			"description": "Na vjen keq për shqetësimin. Ju lutemi provoni të ringarkoni faqen ose kthehuni në kryefaqe.",
+			"retry": "Ringarko faqen",
+			"backHome": "Kthehu në kryefaqe"
+		},
+		"notFound": {
+			"title": "Faqja nuk u gjet",
+			"description": "Faqja që po kërkoni nuk ekziston ose është zhvendosur.",
+			"backHome": "Kthehu në kryefaqe"
+		}
+	}
+}

@@ -17,6 +17,7 @@ import { MessageCard } from "@/features/admin/components/messages/MessageCard";
 import { MessageDetailModal } from "@/features/admin/components/messages/MessageDetailModal";
 import { MessagesPagination } from "@/features/admin/components/messages/MessagesPagination";
 import { MessagesToolbar } from "@/features/admin/components/messages/MessagesToolbar";
+import { DATE_LOCALE_MAP, resolveAppLocale } from "@/i18n/locales";
 
 import type {
 	AdminMessage,
@@ -34,7 +35,6 @@ interface MessagesManagerProps {
 }
 
 const ADMIN_MESSAGES_QUERY_KEY = "admin-messages";
-const LOCALE_MAP: Record<string, string> = { de: "de-DE", en: "en-US", el: "el-GR" };
 
 export const MessagesManager: React.FC<MessagesManagerProps> = ({
 	initialMessages,
@@ -63,7 +63,7 @@ export const MessagesManager: React.FC<MessagesManagerProps> = ({
 
 	const searchMountedRef = useRef(false);
 	const pageSize = initialPagination.pageSize;
-	const dateLocale = LOCALE_MAP[locale] ?? "de-DE";
+	const dateLocale = DATE_LOCALE_MAP[resolveAppLocale(locale)];
 	const trimmedSearch = debouncedSearch.trim();
 	const isInitialQuery =
 		statusFilter === initialStatus &&

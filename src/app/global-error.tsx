@@ -2,44 +2,51 @@
 
 import React, { useEffect, useSyncExternalStore } from "react";
 
+import { DEFAULT_LOCALE, resolveAppLocale, type AppLocale } from "@/i18n/locales";
+
 interface GlobalErrorProps {
 	error: Error & { digest?: string };
 	reset: () => void;
 }
 
-type SupportedLocale = "de" | "en" | "el";
+const translations: Record<AppLocale, { title: string; description: string; retry: string }> = {
+	de: {
+		title: "Technisches Problem",
+		description:
+			"Ein kritischer technischer Fehler ist aufgetreten. Bitte versuchen Sie es erneut.",
+		retry: "Seite neu laden",
+	},
+	en: {
+		title: "Technical Problem",
+		description: "A critical technical error occurred. Please try again.",
+		retry: "Reload Page",
+	},
+	el: {
+		title: "Τεχνικό Πρόβλημα",
+		description: "Παρουσιάστηκε κρίσιμο τεχνικό σφάλμα. Παρακαλώ δοκιμάστε ξανά.",
+		retry: "Επαναφόρτωση σελίδας",
+	},
+	sq: {
+		title: "Problem teknik",
+		description: "Ndodhi një gabim teknik kritik. Ju lutemi provoni përsëri.",
+		retry: "Ringarko faqen",
+	},
+	tr: {
+		title: "Teknik Sorun",
+		description: "Kritik bir teknik hata oluştu. Lütfen tekrar deneyin.",
+		retry: "Sayfayı yenile",
+	},
+};
 
-const translations: Record<SupportedLocale, { title: string; description: string; retry: string }> =
-	{
-		de: {
-			title: "Technisches Problem",
-			description:
-				"Ein kritischer technischer Fehler ist aufgetreten. Bitte versuchen Sie es erneut.",
-			retry: "Seite neu laden",
-		},
-		en: {
-			title: "Technical Problem",
-			description: "A critical technical error occurred. Please try again.",
-			retry: "Reload Page",
-		},
-		el: {
-			title: "Τεχνικό Πρόβλημα",
-			description: "Παρουσιάστηκε κρίσιμο τεχνικό σφάλμα. Παρακαλώ δοκιμάστε ξανά.",
-			retry: "Επαναφόρτωση σελίδας",
-		},
-	};
-
-const getLocaleFromPath = (): SupportedLocale => {
-	if (typeof window === "undefined") return "de";
-	const segment = window.location.pathname.split("/")[1];
-	if (segment === "en" || segment === "el") return segment;
-	return "de";
+const getLocaleFromPath = (): AppLocale => {
+	if (typeof window === "undefined") return DEFAULT_LOCALE;
+	return resolveAppLocale(window.location.pathname.split("/")[1]);
 };
 
 const emptySubscribe = () => () => {};
 
 const GlobalError: React.FC<GlobalErrorProps> = ({ error, reset }) => {
-	const locale = useSyncExternalStore(emptySubscribe, getLocaleFromPath, () => "de" as const);
+	const locale = useSyncExternalStore(emptySubscribe, getLocaleFromPath, () => DEFAULT_LOCALE);
 
 	useEffect(() => {
 		console.error("[GlobalError Root Boundary caught error]:", error);
@@ -75,6 +82,7 @@ const GlobalError: React.FC<GlobalErrorProps> = ({ error, reset }) => {
 					<button
 						type="button"
 						onClick={reset}
+						aria-label={content.retry}
 						className="inline-flex items-center justify-center rounded-xl bg-linear-to-r from-[#7b2dff] to-[#b303f2] px-6 py-3.5 text-sm font-bold text-white shadow-lg transition-all hover:opacity-90 active:scale-95"
 					>
 						{content.retry}
