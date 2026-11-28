@@ -37,7 +37,7 @@ export const CtaBanner = ({ locale }: CtaBannerProps) => {
 								/>
 							</div>
 
-							<h2 className="font-display text-2xl leading-[1.12] font-black tracking-[-0.025em] break-words hyphens-auto sm:text-4xl md:text-5xl">
+							<h2 className="font-display text-2xl leading-[1.12] font-black tracking-tight wrap-break-word hyphens-auto sm:text-4xl md:text-5xl">
 								<span className="metallic-text">{t("cta.title")}</span>
 							</h2>
 							<p className="mt-4 max-w-xl text-base leading-relaxed text-[#c6c0d6] sm:text-lg">

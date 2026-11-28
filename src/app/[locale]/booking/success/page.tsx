@@ -65,7 +65,7 @@ const BookingSuccessPage = async ({
 		<section className="relative flex min-h-[calc(100vh-5rem)] items-center justify-center overflow-hidden bg-[#07070a] px-4 py-14 sm:py-20">
 			{/* Atelier Grid & Celebratory Ambient Studio Aura */}
 			<div className="atelier-grid pointer-events-none absolute inset-0 mask-[radial-gradient(ellipse_at_center,black_25%,transparent_78%)] opacity-50" />
-			<div className="pointer-events-none absolute top-1/2 left-1/2 h-112 w-112 -translate-x-1/2 -translate-y-1/2 rounded-full bg-[#7b2dff]/18 blur-[150px]" />
+			<div className="pointer-events-none absolute top-1/2 left-1/2 h-112 w-md -translate-x-1/2 -translate-y-1/2 rounded-full bg-[#7b2dff]/18 blur-[150px]" />
 			<div className="pointer-events-none absolute top-1/3 right-1/4 h-72 w-72 rounded-full bg-emerald-500/10 blur-[130px]" />
 
 			<article className="obsidian-card relative w-full max-w-xl overflow-hidden rounded-3xl p-6 text-center sm:p-10">
@@ -102,13 +102,13 @@ const BookingSuccessPage = async ({
 
 				{/* Contact Confirmation Pills */}
 				{email || phone ? (
-					<div className="mt-7 space-y-2.5 rounded-2xl border border-white/[0.08] bg-white/[0.025] p-4 text-left">
+					<div className="mt-7 space-y-2.5 rounded-2xl border border-white/8 bg-white/2.5 p-4 text-left">
 						{email ? (
 							<div className="flex items-center gap-3 text-sm text-[#e5e2e1]">
 								<div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg border border-[#7b2dff]/35 bg-[#7b2dff]/15 text-[#d8b4fe]">
 									<Mail className="h-4 w-4" aria-hidden="true" />
 								</div>
-								<p className="min-w-0 break-all sm:break-words">
+								<p className="min-w-0 break-all sm:wrap-break-word">
 									{t("success.contactEmail", { email })}
 								</p>
 							</div>
@@ -119,7 +119,7 @@ const BookingSuccessPage = async ({
 								<div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg border border-[#7b2dff]/35 bg-[#7b2dff]/15 text-[#d8b4fe]">
 									<Phone className="h-4 w-4" aria-hidden="true" />
 								</div>
-								<p className="min-w-0 break-words">{t("success.contactPhone", { phone })}</p>
+								<p className="min-w-0 wrap-break-word">{t("success.contactPhone", { phone })}</p>
 							</div>
 						) : null}
 					</div>

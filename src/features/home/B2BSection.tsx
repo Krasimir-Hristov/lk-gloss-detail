@@ -27,7 +27,7 @@ export const B2BSection = ({ locale }: B2BSectionProps) => {
 				<RevealSection>
 					<div className="obsidian-card overflow-hidden rounded-3xl">
 						{/* Cinematic Architectural Fleet Visual Header */}
-						<div className="group relative flex min-h-[260px] w-full flex-col justify-end overflow-hidden sm:aspect-[21/9] sm:min-h-[300px]">
+						<div className="group relative flex min-h-65 w-full flex-col justify-end overflow-hidden sm:aspect-21/9 sm:min-h-75">
 							<Image
 								src={b2bLuxuryFleet}
 								alt={t("b2b.title")}
@@ -46,7 +46,7 @@ export const B2BSection = ({ locale }: B2BSectionProps) => {
 										05 · B2B
 									</span>
 								</div>
-								<h2 className="font-display text-2xl leading-[1.1] font-extrabold tracking-[-0.02em] break-words hyphens-auto sm:text-4xl md:text-5xl">
+								<h2 className="font-display text-2xl leading-[1.1] font-extrabold tracking-[-0.02em] wrap-break-word hyphens-auto sm:text-4xl md:text-5xl">
 									<span className="metallic-text">{t("b2b.title")}</span>
 								</h2>
 								<p className="mt-2 max-w-2xl text-sm leading-relaxed text-[#d1cbe0] sm:text-lg">
@@ -88,7 +88,7 @@ export const B2BSection = ({ locale }: B2BSectionProps) => {
 									return (
 										<div
 											key={key}
-											className="group flex items-start gap-3.5 rounded-2xl border border-white/[0.07] bg-white/[0.025] p-4 transition-all duration-300 hover:border-[#a855f7]/45 hover:bg-white/[0.045] sm:gap-4 sm:p-5"
+											className="group flex items-start gap-3.5 rounded-2xl border border-white/[0.07] bg-white/2.5 p-4 transition-all duration-300 hover:border-[#a855f7]/45 hover:bg-white/4.5 sm:gap-4 sm:p-5"
 										>
 											<div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl border border-[#7b2dff]/35 bg-[#7b2dff]/15 text-[#d8b4fe] transition-colors group-hover:bg-[#7b2dff] group-hover:text-white sm:h-12 sm:w-12">
 												<Icon className="h-5 w-5" aria-hidden="true" />

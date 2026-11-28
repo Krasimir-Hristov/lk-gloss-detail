@@ -64,7 +64,7 @@ export const BookingDossier: React.FC = () => {
 			<div className="pointer-events-none absolute top-0 right-8 left-8 z-20 h-px bg-linear-to-r from-transparent via-[#c026ff]/70 to-transparent" />
 
 			{/* Rim-Lit Studio Header */}
-			<div className="relative aspect-16/9 w-full overflow-hidden bg-[#0a0a0f]">
+			<div className="relative aspect-video w-full overflow-hidden bg-[#0a0a0f]">
 				<Image
 					src={heroShowroom}
 					alt="LK Gloss & Detail Mobile Detailing Studio"
@@ -97,7 +97,7 @@ export const BookingDossier: React.FC = () => {
 							<span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-[#c026ff] opacity-75" />
 							<span className="relative inline-flex h-2 w-2 rounded-full bg-[#d8b4fe]" />
 						</span>
-						<span className="truncate font-mono text-[9px] font-semibold tracking-[0.1em] text-[#e9d5ff] uppercase min-[390px]:text-[10px] sm:tracking-[0.14em]">
+						<span className="truncate font-mono text-[9px] font-semibold tracking-widest text-[#e9d5ff] uppercase min-[390px]:text-[10px] sm:tracking-[0.14em]">
 							{t("statusOpen")}
 						</span>
 					</div>
@@ -120,7 +120,7 @@ export const BookingDossier: React.FC = () => {
 			<div className="space-y-4 p-4 sm:p-6">
 				<dl className="space-y-3">
 					{/* Client */}
-					<div className="flex items-center justify-between gap-4 rounded-2xl border border-white/[0.07] bg-white/[0.025] px-4 py-3">
+					<div className="flex items-center justify-between gap-4 rounded-2xl border border-white/[0.07] bg-white/2.5 px-4 py-3">
 						<dt className="flex items-center gap-2 font-mono text-[11px] font-semibold tracking-wider text-[#9b93ad] uppercase">
 							<User className="h-3.5 w-3.5 text-[#a855f7]" aria-hidden="true" />
 							<span>{t("client")}</span>
@@ -132,7 +132,7 @@ export const BookingDossier: React.FC = () => {
 
 					{/* Vehicle (shown when provided) */}
 					{trimmedVehicle ? (
-						<div className="flex items-start justify-between gap-4 rounded-2xl border border-white/[0.07] bg-white/[0.025] px-4 py-3">
+						<div className="flex items-start justify-between gap-4 rounded-2xl border border-white/[0.07] bg-white/2.5 px-4 py-3">
 							<dt className="flex shrink-0 items-center gap-2 font-mono text-[11px] font-semibold tracking-wider text-[#9b93ad] uppercase">
 								<Car className="h-3.5 w-3.5 text-[#a855f7]" aria-hidden="true" />
 								<span>{t("vehicle")}</span>
@@ -144,7 +144,7 @@ export const BookingDossier: React.FC = () => {
 					) : null}
 
 					{/* Selected Services */}
-					<div className="rounded-2xl border border-white/[0.07] bg-white/[0.025] px-4 py-3.5">
+					<div className="rounded-2xl border border-white/[0.07] bg-white/2.5 px-4 py-3.5">
 						<dt className="mb-2.5 flex items-center justify-between gap-2">
 							<span className="flex items-center gap-2 font-mono text-[11px] font-semibold tracking-wider text-[#9b93ad] uppercase">
 								<Sparkles className="h-3.5 w-3.5 text-[#a855f7]" aria-hidden="true" />
@@ -196,7 +196,7 @@ export const BookingDossier: React.FC = () => {
 							) : null}
 
 							{estimatedDuration > 0 ? (
-								<div className="min-w-0 rounded-2xl border border-white/[0.08] bg-white/[0.03] px-3 py-2.5 sm:px-4 sm:py-3">
+								<div className="min-w-0 rounded-2xl border border-white/8 bg-white/3 px-3 py-2.5 sm:px-4 sm:py-3">
 									<p className="truncate font-mono text-[10px] font-semibold tracking-wider text-[#9b93ad] uppercase">
 										{t("estimatedDuration")}
 									</p>
@@ -214,7 +214,7 @@ export const BookingDossier: React.FC = () => {
 						className={
 							formattedDate
 								? "flex flex-wrap items-center justify-between gap-x-3 gap-y-1 rounded-2xl border border-[#a855f7]/40 bg-[#7b2dff]/12 px-4 py-3"
-								: "flex flex-wrap items-center justify-between gap-x-3 gap-y-1 rounded-2xl border border-white/[0.07] bg-white/[0.025] px-4 py-3"
+								: "flex flex-wrap items-center justify-between gap-x-3 gap-y-1 rounded-2xl border border-white/[0.07] bg-white/2.5 px-4 py-3"
 						}
 					>
 						<dt className="flex shrink-0 items-center gap-2 font-mono text-[11px] font-semibold tracking-wider text-[#d1bcff] uppercase">
@@ -254,7 +254,7 @@ export const BookingDossier: React.FC = () => {
 						<a
 							href={`tel:${CONTACT_INFO.phoneRaw}`}
 							aria-label={`${t("callCta")}: ${CONTACT_INFO.phone}`}
-							className="inline-flex items-center justify-center gap-2 rounded-xl border border-white/[0.1] bg-white/[0.03] px-3 py-2.5 text-xs font-semibold text-[#e5e2e1] transition-all hover:border-[#a855f7]/60 hover:bg-[#7b2dff]/15 hover:text-white"
+							className="inline-flex items-center justify-center gap-2 rounded-xl border border-white/10 bg-white/3 px-3 py-2.5 text-xs font-semibold text-[#e5e2e1] transition-all hover:border-[#a855f7]/60 hover:bg-[#7b2dff]/15 hover:text-white"
 						>
 							<Phone className="h-3.5 w-3.5 text-[#d1bcff]" aria-hidden="true" />
 							<span>{t("callCta")}</span>
@@ -264,7 +264,7 @@ export const BookingDossier: React.FC = () => {
 							target="_blank"
 							rel="noopener noreferrer"
 							aria-label={`${t("whatsappCta")}: ${CONTACT_INFO.phone}`}
-							className="inline-flex items-center justify-center gap-2 rounded-xl border border-emerald-400/25 bg-emerald-500/[0.08] px-3 py-2.5 text-xs font-semibold text-emerald-200 transition-all hover:border-emerald-400/55 hover:bg-emerald-500/20 hover:text-white"
+							className="inline-flex items-center justify-center gap-2 rounded-xl border border-emerald-400/25 bg-emerald-500/8 px-3 py-2.5 text-xs font-semibold text-emerald-200 transition-all hover:border-emerald-400/55 hover:bg-emerald-500/20 hover:text-white"
 						>
 							<MessageCircle className="h-3.5 w-3.5 text-emerald-400" aria-hidden="true" />
 							<span>{t("whatsappCta")}</span>

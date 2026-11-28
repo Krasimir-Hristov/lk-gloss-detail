@@ -45,7 +45,7 @@ export const DossierAngleGrid: React.FC<DossierAngleGridProps> = ({ currentStep,
 									? "border-emerald-400/40 bg-emerald-500/[0.07]"
 									: isActive
 										? "border-[#a855f7]/55 bg-[#7b2dff]/14 shadow-[0_0_20px_rgba(123,45,255,0.2)]"
-										: "border-white/[0.07] bg-white/[0.025]",
+										: "border-white/[0.07] bg-white/2.5",
 							)}
 						>
 							<div className="flex items-center gap-2.5">

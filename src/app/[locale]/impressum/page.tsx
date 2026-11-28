@@ -65,7 +65,7 @@ const ImpressumPage = async ({ params }: { params: Promise<Params> }) => {
 			/>
 			<section className="min-h-screen bg-[#121212] py-16 md:py-24">
 				<div className="mx-auto max-w-4xl px-4 md:px-8">
-					<h1 className="mb-8 text-3xl font-extrabold tracking-tight break-words text-white sm:text-4xl md:text-5xl">
+					<h1 className="mb-8 text-3xl font-extrabold tracking-tight wrap-break-word text-white sm:text-4xl md:text-5xl">
 						{t("title")}
 					</h1>
 

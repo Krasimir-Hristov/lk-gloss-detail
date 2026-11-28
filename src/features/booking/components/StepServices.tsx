@@ -20,15 +20,15 @@ const ServicesSkeleton: React.FC = () => {
 			{[0, 1, 2].map((item) => (
 				<div
 					key={item}
-					className="flex items-center gap-4 rounded-2xl border border-white/[0.07] bg-white/[0.025] p-4"
+					className="flex items-center gap-4 rounded-2xl border border-white/[0.07] bg-white/2.5 p-4"
 				>
-					<div className="h-16 w-16 shrink-0 animate-pulse rounded-xl bg-white/[0.06]" />
+					<div className="h-16 w-16 shrink-0 animate-pulse rounded-xl bg-white/6" />
 					<div className="flex-1 space-y-2.5">
-						<div className="h-4 w-44 animate-pulse rounded bg-white/[0.08]" />
-						<div className="h-3 w-full max-w-xs animate-pulse rounded bg-white/[0.05]" />
+						<div className="h-4 w-44 animate-pulse rounded bg-white/8" />
+						<div className="h-3 w-full max-w-xs animate-pulse rounded bg-white/5" />
 						<div className="flex gap-2">
-							<div className="h-5 w-16 animate-pulse rounded-full bg-white/[0.06]" />
-							<div className="h-5 w-12 animate-pulse rounded-full bg-white/[0.05]" />
+							<div className="h-5 w-16 animate-pulse rounded-full bg-white/6" />
+							<div className="h-5 w-12 animate-pulse rounded-full bg-white/5" />
 						</div>
 					</div>
 					<div className="h-6 w-6 shrink-0 animate-pulse rounded-lg bg-white/[0.07]" />
@@ -89,7 +89,7 @@ export const StepServices: React.FC = () => {
 						variant="outline"
 						onClick={prevStep}
 						aria-label={t("back")}
-						className="h-12 flex-1 cursor-pointer gap-2 rounded-xl border-white/12 bg-white/[0.03] text-sm font-semibold text-[#e5e2e1] hover:border-white/25 hover:bg-white/[0.08] hover:text-white"
+						className="h-12 flex-1 cursor-pointer gap-2 rounded-xl border-white/12 bg-white/3 text-sm font-semibold text-[#e5e2e1] hover:border-white/25 hover:bg-white/8 hover:text-white"
 					>
 						<ArrowLeft className="h-4 w-4" aria-hidden="true" />
 						<span>{t("back")}</span>
@@ -108,7 +108,7 @@ export const StepServices: React.FC = () => {
 						"inline-flex items-center gap-2 rounded-full border px-3 py-1 font-mono text-[11px] font-semibold tracking-wider uppercase transition-colors",
 						selectedServiceIds.length > 0
 							? "border-[#a855f7]/45 bg-[#7b2dff]/18 text-[#e9d5ff]"
-							: "border-white/[0.08] bg-white/[0.03] text-[#9b93ad]",
+							: "border-white/8 bg-white/3 text-[#9b93ad]",
 					)}
 				>
 					<Sparkles className="h-3.5 w-3.5 text-[#c026ff]" aria-hidden="true" />
@@ -137,8 +137,8 @@ export const StepServices: React.FC = () => {
 							className={cn(
 								"group relative flex w-full cursor-pointer items-center gap-3 overflow-hidden rounded-2xl border p-3.5 text-left transition-all duration-300 focus-visible:outline-2 focus-visible:outline-[#7b2dff] sm:gap-4 sm:p-4",
 								isSelected
-									? "border-[#a855f7]/75 bg-linear-to-r from-[#7b2dff]/[0.16] via-[#7b2dff]/[0.08] to-[#c026ff]/[0.08] shadow-[0_14px_38px_-14px_rgba(123,45,255,0.48)]"
-									: "border-white/[0.08] bg-[#0c0c13]/85 hover:border-[#7b2dff]/45 hover:bg-[#12111d]",
+									? "border-[#a855f7]/75 bg-linear-to-r from-[#7b2dff]/16 via-[#7b2dff]/8 to-[#c026ff]/8 shadow-[0_14px_38px_-14px_rgba(123,45,255,0.48)]"
+									: "border-white/8 bg-[#0c0c13]/85 hover:border-[#7b2dff]/45 hover:bg-[#12111d]",
 							)}
 						>
 							{/* Top Specular Edge when selected */}
@@ -154,7 +154,7 @@ export const StepServices: React.FC = () => {
 							{service.image_url ? (
 								<div
 									className={cn(
-										"relative h-14 w-14 shrink-0 overflow-hidden rounded-xl border transition-colors sm:h-[4.5rem] sm:w-[4.5rem]",
+										"relative h-14 w-14 shrink-0 overflow-hidden rounded-xl border transition-colors sm:h-18 sm:w-18",
 										isSelected ? "border-[#c026ff]/65" : "border-white/10",
 									)}
 								>
@@ -204,7 +204,7 @@ export const StepServices: React.FC = () => {
 											</span>
 										) : null}
 										{typeof service.duration_hours === "number" ? (
-											<span className="inline-flex items-center gap-1 rounded-full border border-white/[0.08] bg-white/[0.03] px-2.5 py-0.5 font-mono text-[11px] font-medium text-[#b8b2c7]">
+											<span className="inline-flex items-center gap-1 rounded-full border border-white/8 bg-white/3 px-2.5 py-0.5 font-mono text-[11px] font-medium text-[#b8b2c7]">
 												<Clock className="h-3 w-3 text-[#a855f7]" aria-hidden="true" />
 												<span>{service.duration_hours}h</span>
 											</span>
@@ -220,10 +220,10 @@ export const StepServices: React.FC = () => {
 									"flex h-6 w-6 shrink-0 items-center justify-center rounded-lg border transition-all duration-200",
 									isSelected
 										? "border-[#d8b4fe]/70 bg-linear-to-br from-[#7b2dff] to-[#c026ff] text-white shadow-[0_0_16px_rgba(192,38,255,0.6)]"
-										: "border-white/20 bg-white/[0.03] text-transparent group-hover:border-[#a855f7]/60",
+										: "border-white/20 bg-white/3 text-transparent group-hover:border-[#a855f7]/60",
 								)}
 							>
-								<Check className="h-3.5 w-3.5 stroke-[3]" />
+								<Check className="h-3.5 w-3.5 stroke-3" />
 							</span>
 						</button>
 					);
@@ -244,7 +244,7 @@ export const StepServices: React.FC = () => {
 					variant="outline"
 					onClick={prevStep}
 					aria-label={t("back")}
-					className="font-display h-13 w-full cursor-pointer gap-2 rounded-xl border-white/12 bg-white/[0.03] text-sm font-bold text-[#e5e2e1] transition-all hover:border-white/25 hover:bg-white/[0.08] hover:text-white sm:flex-1"
+					className="font-display h-13 w-full cursor-pointer gap-2 rounded-xl border-white/12 bg-white/3 text-sm font-bold text-[#e5e2e1] transition-all hover:border-white/25 hover:bg-white/8 hover:text-white sm:flex-1"
 				>
 					<ArrowLeft className="h-4 w-4" aria-hidden="true" />
 					<span>{t("back")}</span>

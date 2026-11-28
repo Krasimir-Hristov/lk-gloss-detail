@@ -18,7 +18,7 @@ export const AiValuationSection = () => {
 	const t = useTranslations("HomePage");
 
 	return (
-		<section className="relative overflow-hidden border-t border-white/[0.06] bg-[#08080c] px-4 py-16 sm:py-24 md:px-12 md:py-32">
+		<section className="relative overflow-hidden border-t border-white/6 bg-[#08080c] px-4 py-16 sm:py-24 md:px-12 md:py-32">
 			<div className="relative mx-auto max-w-7xl">
 				<RevealSection>
 					<div className="relative overflow-hidden rounded-3xl border border-[#7b2dff]/35 bg-linear-to-br from-[#130a26] via-[#0c0c12] to-[#110820] p-5 shadow-[0_0_90px_-20px_rgba(123,45,255,0.35),inset_0_1px_0_rgba(255,255,255,0.1)] sm:p-10 lg:p-14">
@@ -39,7 +39,7 @@ export const AiValuationSection = () => {
 									</span>
 								</div>
 
-								<h2 className="font-display text-2xl leading-[1.1] font-black tracking-[-0.025em] break-words hyphens-auto sm:text-4xl md:text-5xl">
+								<h2 className="font-display text-2xl leading-[1.1] font-black tracking-tight wrap-break-word hyphens-auto sm:text-4xl md:text-5xl">
 									<span className="metallic-text">{t("aiValuation.title")}</span>
 								</h2>
 
@@ -76,7 +76,7 @@ export const AiValuationSection = () => {
 												<p className="violet-text font-display text-xl font-black tracking-tight min-[400px]:text-2xl sm:text-3xl md:text-4xl">
 													{stat.value}
 												</p>
-												<p className="mt-1 font-mono text-[9.5px] leading-snug break-words hyphens-auto text-[#b8b2c7] min-[390px]:text-[11px] sm:text-xs">
+												<p className="mt-1 font-mono text-[9.5px] leading-snug wrap-break-word hyphens-auto text-[#b8b2c7] min-[390px]:text-[11px] sm:text-xs">
 													{stat.label}
 												</p>
 											</div>
@@ -89,7 +89,7 @@ export const AiValuationSection = () => {
 							<div className="min-w-0 lg:col-span-5">
 								<div className="relative overflow-hidden rounded-2xl border border-white/12 bg-[#09090e]/90 p-4 shadow-[0_24px_60px_rgba(0,0,0,0.75)] backdrop-blur-xl sm:p-6">
 									{/* Scanner Header */}
-									<div className="mb-4 flex items-center justify-between gap-2 border-b border-white/[0.08] pb-3.5">
+									<div className="mb-4 flex items-center justify-between gap-2 border-b border-white/8 pb-3.5">
 										<div className="flex min-w-0 items-center gap-2 text-[#d8b4fe]">
 											<ScanLine className="h-4 w-4 shrink-0" aria-hidden="true" />
 											<span className="truncate font-mono text-[10px] font-bold tracking-[0.14em] uppercase sm:text-[11px] sm:tracking-[0.16em]">
@@ -100,7 +100,7 @@ export const AiValuationSection = () => {
 									</div>
 
 									{/* Visual Scan Viewport */}
-									<div className="relative mb-4 aspect-16/9 overflow-hidden rounded-xl border border-[#7b2dff]/35 bg-black sm:mb-5">
+									<div className="relative mb-4 aspect-video overflow-hidden rounded-xl border border-[#7b2dff]/35 bg-black sm:mb-5">
 										<Image
 											src={paintGlossMacro}
 											alt={t("aiValuation.mockValues.model")}
@@ -120,7 +120,7 @@ export const AiValuationSection = () => {
 
 									{/* Localized Telemetry Readout Rows */}
 									<dl className="space-y-2.5 sm:space-y-3">
-										<div className="flex flex-wrap items-center justify-between gap-x-3 gap-y-1 rounded-xl border border-white/[0.07] bg-white/[0.025] px-3.5 py-2.5 sm:px-4 sm:py-3">
+										<div className="flex flex-wrap items-center justify-between gap-x-3 gap-y-1 rounded-xl border border-white/[0.07] bg-white/2.5 px-3.5 py-2.5 sm:px-4 sm:py-3">
 											<dt className="font-mono text-[10px] tracking-wider text-[#9b93ad] uppercase sm:text-[11px]">
 												{t("aiValuation.labels.model")}
 											</dt>
@@ -128,7 +128,7 @@ export const AiValuationSection = () => {
 												{t("aiValuation.mockValues.model")}
 											</dd>
 										</div>
-										<div className="flex items-center justify-between gap-3 rounded-xl border border-white/[0.07] bg-white/[0.025] px-3.5 py-2.5 sm:px-4 sm:py-3">
+										<div className="flex items-center justify-between gap-3 rounded-xl border border-white/[0.07] bg-white/2.5 px-3.5 py-2.5 sm:px-4 sm:py-3">
 											<dt className="font-mono text-[10px] tracking-wider text-[#9b93ad] uppercase sm:text-[11px]">
 												{t("aiValuation.labels.year")}
 											</dt>

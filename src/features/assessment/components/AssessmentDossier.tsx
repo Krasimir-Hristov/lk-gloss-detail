@@ -56,7 +56,7 @@ export const AssessmentDossier: React.FC = () => {
 			<div className="pointer-events-none absolute top-0 right-8 left-8 z-20 h-px bg-linear-to-r from-transparent via-[#c026ff]/70 to-transparent" />
 
 			{/* Rim-Lit Optical Scanner Header */}
-			<div className="relative aspect-16/9 w-full overflow-hidden bg-[#0a0a0f]">
+			<div className="relative aspect-video w-full overflow-hidden bg-[#0a0a0f]">
 				<Image
 					src={paintGlossMacro}
 					alt="LK Gloss & Detail AI Paint Inspection"
@@ -94,7 +94,7 @@ export const AssessmentDossier: React.FC = () => {
 							<span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-75" />
 							<span className="relative inline-flex h-2 w-2 rounded-full bg-emerald-400" />
 						</span>
-						<span className="truncate font-mono text-[9px] font-semibold tracking-[0.1em] text-[#e9d5ff] uppercase min-[390px]:text-[10px] sm:tracking-[0.14em]">
+						<span className="truncate font-mono text-[9px] font-semibold tracking-widest text-[#e9d5ff] uppercase min-[390px]:text-[10px] sm:tracking-[0.14em]">
 							{validatedCount > 0 ? tDossier("statusActive") : tDossier("statusLive")}
 						</span>
 					</div>
@@ -119,7 +119,7 @@ export const AssessmentDossier: React.FC = () => {
 				<DossierAngleGrid currentStep={currentStep} validPhotos={validPhotos} />
 
 				{/* Live Detected Vehicle Telemetry */}
-				<div className="rounded-2xl border border-white/[0.07] bg-white/[0.025] p-4">
+				<div className="rounded-2xl border border-white/[0.07] bg-white/2.5 p-4">
 					<p className="mb-3 flex items-center gap-2 font-mono text-[10px] font-semibold tracking-[0.16em] text-[#9b93ad] uppercase">
 						<Car className="h-3.5 w-3.5 text-[#a855f7]" aria-hidden="true" />
 						<span>{tDossier("telemetryTitle")}</span>
@@ -153,11 +153,11 @@ export const AssessmentDossier: React.FC = () => {
 								</div>
 							) : null}
 							{visualFindings.length > 0 ? (
-								<div className="flex flex-wrap gap-1.5 border-t border-white/[0.06] pt-2">
+								<div className="flex flex-wrap gap-1.5 border-t border-white/6 pt-2">
 									{visualFindings.slice(0, 4).map((finding) => (
 										<span
 											key={finding}
-											className="rounded-md border border-white/10 bg-white/[0.04] px-2 py-0.5 text-[10px] font-medium text-[#d1bcff]"
+											className="rounded-md border border-white/10 bg-white/4 px-2 py-0.5 text-[10px] font-medium text-[#d1bcff]"
 										>
 											{finding}
 										</span>
@@ -200,7 +200,7 @@ export const AssessmentDossier: React.FC = () => {
 				) : null}
 
 				{/* DSGVO Privacy Guarantee */}
-				<div className="flex items-start gap-3 rounded-2xl border border-white/[0.07] bg-white/[0.02] p-3.5">
+				<div className="flex items-start gap-3 rounded-2xl border border-white/[0.07] bg-white/2 p-3.5">
 					<div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg border border-[#7b2dff]/35 bg-[#7b2dff]/15 text-[#d8b4fe]">
 						<Lock className="h-4 w-4" aria-hidden="true" />
 					</div>
@@ -221,7 +221,7 @@ export const AssessmentDossier: React.FC = () => {
 						<a
 							href={`tel:${CONTACT_INFO.phoneRaw}`}
 							aria-label={`${tDossier("callCta")}: ${CONTACT_INFO.phone}`}
-							className="inline-flex items-center justify-center gap-2 rounded-xl border border-white/[0.1] bg-white/[0.03] px-3 py-2.5 text-xs font-semibold text-[#e5e2e1] transition-all hover:border-[#a855f7]/60 hover:bg-[#7b2dff]/15 hover:text-white"
+							className="inline-flex items-center justify-center gap-2 rounded-xl border border-white/10 bg-white/3 px-3 py-2.5 text-xs font-semibold text-[#e5e2e1] transition-all hover:border-[#a855f7]/60 hover:bg-[#7b2dff]/15 hover:text-white"
 						>
 							<Phone className="h-3.5 w-3.5 text-[#d1bcff]" aria-hidden="true" />
 							<span>{tDossier("callCta")}</span>
@@ -231,7 +231,7 @@ export const AssessmentDossier: React.FC = () => {
 							target="_blank"
 							rel="noopener noreferrer"
 							aria-label={`${tDossier("whatsappCta")}: ${CONTACT_INFO.phone}`}
-							className="inline-flex items-center justify-center gap-2 rounded-xl border border-emerald-400/25 bg-emerald-500/[0.08] px-3 py-2.5 text-xs font-semibold text-emerald-200 transition-all hover:border-emerald-400/55 hover:bg-emerald-500/20 hover:text-white"
+							className="inline-flex items-center justify-center gap-2 rounded-xl border border-emerald-400/25 bg-emerald-500/8 px-3 py-2.5 text-xs font-semibold text-emerald-200 transition-all hover:border-emerald-400/55 hover:bg-emerald-500/20 hover:text-white"
 						>
 							<MessageCircle className="h-3.5 w-3.5 text-emerald-400" aria-hidden="true" />
 							<span>{tDossier("whatsappCta")}</span>

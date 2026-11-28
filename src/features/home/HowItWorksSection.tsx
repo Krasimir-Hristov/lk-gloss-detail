@@ -13,9 +13,9 @@ export const HowItWorksSection = () => {
 	const t = useTranslations("HomePage");
 
 	return (
-		<section className="relative overflow-hidden border-y border-white/[0.06] bg-[#050508] px-4 py-16 sm:py-24 md:px-12 md:py-32">
+		<section className="relative overflow-hidden border-y border-white/6 bg-[#050508] px-4 py-16 sm:py-24 md:px-12 md:py-32">
 			{/* Ambient center glow */}
-			<div className="pointer-events-none absolute top-1/2 left-1/2 h-96 w-144 -translate-x-1/2 -translate-y-1/2 rounded-full bg-[#7b2dff]/10 blur-[140px]" />
+			<div className="pointer-events-none absolute top-1/2 left-1/2 h-96 w-xl -translate-x-1/2 -translate-y-1/2 rounded-full bg-[#7b2dff]/10 blur-[140px]" />
 
 			<div className="relative mx-auto max-w-7xl">
 				{/* Section Header */}
@@ -27,7 +27,7 @@ export const HowItWorksSection = () => {
 						</span>
 						<span className="h-px w-8 bg-linear-to-l from-transparent to-[#7b2dff]" />
 					</div>
-					<h2 className="font-display text-2xl font-extrabold tracking-[-0.02em] break-words sm:text-4xl md:text-5xl">
+					<h2 className="font-display text-2xl font-extrabold tracking-[-0.02em] wrap-break-word sm:text-4xl md:text-5xl">
 						<span className="metallic-text">{t("howItWorks.title")}</span>
 					</h2>
 				</RevealSection>
@@ -77,7 +77,7 @@ export const HowItWorksSection = () => {
 												className={`rounded-full px-3 py-1 font-mono text-xs font-bold tracking-widest ${
 													isHighlighted
 														? "border border-[#c026ff]/50 bg-[#7b2dff]/25 text-[#f3e8ff]"
-														: "border border-white/10 bg-white/[0.04] text-[#b8b2c7]"
+														: "border border-white/10 bg-white/4 text-[#b8b2c7]"
 												}`}
 											>
 												{stepNum}

@@ -49,7 +49,7 @@ export const BookingProgress: React.FC<BookingProgressProps> = ({ currentStep, o
 										"border-[#d8b4fe]/50 bg-linear-to-br from-[#7b2dff] to-[#c026ff] text-white shadow-[0_0_24px_rgba(192,38,255,0.55)]",
 									isCompleted &&
 										"border-[#7b2dff]/60 bg-[#7b2dff]/20 text-[#e9d5ff] group-hover:border-[#c026ff]/80 group-hover:bg-[#7b2dff]/35",
-									!isActive && !isCompleted && "border-white/[0.08] bg-white/[0.03] text-[#7a738c]",
+									!isActive && !isCompleted && "border-white/8 bg-white/3 text-[#7a738c]",
 								)}
 							>
 								{isCompleted ? (
@@ -61,7 +61,7 @@ export const BookingProgress: React.FC<BookingProgressProps> = ({ currentStep, o
 
 							<span
 								className={cn(
-									"font-display line-clamp-2 max-w-full text-[10px] leading-tight font-semibold tracking-tight break-words transition-colors sm:text-xs",
+									"font-display line-clamp-2 max-w-full text-[10px] leading-tight font-semibold tracking-tight wrap-break-word transition-colors sm:text-xs",
 									isActive && "text-white",
 									isCompleted && "text-[#cfc9de] group-hover:text-white",
 									!isActive && !isCompleted && "text-[#7a738c]",
@@ -92,7 +92,7 @@ export const BookingProgress: React.FC<BookingProgressProps> = ({ currentStep, o
 			</ol>
 
 			{/* Illuminated bottom progress rail */}
-			<div className="mt-4 h-1 w-full overflow-hidden rounded-full bg-white/[0.06]">
+			<div className="mt-4 h-1 w-full overflow-hidden rounded-full bg-white/6">
 				<motion.div
 					className="h-full rounded-full bg-linear-to-r from-[#7b2dff] via-[#a855f7] to-[#c026ff] shadow-[0_0_14px_rgba(192,38,255,0.75)]"
 					initial={false}

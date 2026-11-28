@@ -24,16 +24,16 @@ const CalendarSkeleton: React.FC = () => {
 	return (
 		<div
 			aria-busy="true"
-			className="mx-auto flex w-full max-w-sm flex-col gap-4 rounded-2xl border border-white/[0.08] bg-[#0b0b11]/90 p-5"
+			className="mx-auto flex w-full max-w-sm flex-col gap-4 rounded-2xl border border-white/8 bg-[#0b0b11]/90 p-5"
 		>
 			<div className="flex items-center justify-between">
-				<div className="h-8 w-8 animate-pulse rounded-lg bg-white/[0.06]" />
-				<div className="h-5 w-32 animate-pulse rounded bg-white/[0.08]" />
-				<div className="h-8 w-8 animate-pulse rounded-lg bg-white/[0.06]" />
+				<div className="h-8 w-8 animate-pulse rounded-lg bg-white/6" />
+				<div className="h-5 w-32 animate-pulse rounded bg-white/8" />
+				<div className="h-8 w-8 animate-pulse rounded-lg bg-white/6" />
 			</div>
 			<div className="grid grid-cols-7 gap-2">
 				{Array.from({ length: 35 }).map((_, idx) => (
-					<div key={idx} className="aspect-square animate-pulse rounded-lg bg-white/[0.05]" />
+					<div key={idx} className="aspect-square animate-pulse rounded-lg bg-white/5" />
 				))}
 			</div>
 		</div>
@@ -90,7 +90,7 @@ export const StepDatePicker: React.FC = () => {
 						variant="outline"
 						onClick={prevStep}
 						aria-label={t("back")}
-						className="h-12 flex-1 cursor-pointer gap-2 rounded-xl border-white/12 bg-white/[0.03] text-sm font-semibold text-[#e5e2e1] hover:border-white/25 hover:bg-white/[0.08] hover:text-white"
+						className="h-12 flex-1 cursor-pointer gap-2 rounded-xl border-white/12 bg-white/3 text-sm font-semibold text-[#e5e2e1] hover:border-white/25 hover:bg-white/8 hover:text-white"
 					>
 						<ArrowLeft className="h-4 w-4" aria-hidden="true" />
 						<span>{t("back")}</span>
@@ -103,7 +103,7 @@ export const StepDatePicker: React.FC = () => {
 	return (
 		<div className="flex flex-col gap-5">
 			{/* Sculpted Obsidian Calendar Frame */}
-			<div className="relative overflow-hidden rounded-2xl border border-white/[0.08] bg-[#0b0b11]/90 p-2.5 shadow-[inset_0_1px_0_rgba(255,255,255,0.05)] sm:p-6">
+			<div className="relative overflow-hidden rounded-2xl border border-white/8 bg-[#0b0b11]/90 p-2.5 shadow-[inset_0_1px_0_rgba(255,255,255,0.05)] sm:p-6">
 				<div className="pointer-events-none absolute top-0 right-12 left-12 h-px bg-linear-to-r from-transparent via-[#7b2dff]/55 to-transparent" />
 
 				<div className="flex justify-center">
@@ -113,18 +113,18 @@ export const StepDatePicker: React.FC = () => {
 						selected={selectedDate}
 						onSelect={handleSelect}
 						disabled={[{ before: new Date() }, (date) => isDateUnavailable(date)]}
-						className="w-full max-w-[380px] bg-transparent p-0 [--cell-radius:0.65rem] [--cell-size:2rem] min-[375px]:[--cell-size:2.3rem] min-[420px]:[--cell-size:2.65rem] sm:[--cell-radius:0.75rem] sm:[--cell-size:3rem] [&_button:disabled]:line-through [&_button:disabled]:decoration-white/25 [&_button:disabled]:opacity-30 [&_button[data-selected-single=true]]:rounded-xl [&_button[data-selected-single=true]]:bg-linear-to-br [&_button[data-selected-single=true]]:from-[#7b2dff] [&_button[data-selected-single=true]]:to-[#c026ff] [&_button[data-selected-single=true]]:font-bold [&_button[data-selected-single=true]]:text-white [&_button[data-selected-single=true]]:shadow-[0_0_22px_rgba(192,38,255,0.62)]"
+						className="w-full max-w-95 bg-transparent p-0 [--cell-radius:0.65rem] [--cell-size:2rem] min-[375px]:[--cell-size:2.3rem] min-[420px]:[--cell-size:2.65rem] sm:[--cell-radius:0.75rem] sm:[--cell-size:3rem] [&_button:disabled]:line-through [&_button:disabled]:decoration-white/25 [&_button:disabled]:opacity-30 [&_button[data-selected-single=true]]:rounded-xl [&_button[data-selected-single=true]]:bg-linear-to-br [&_button[data-selected-single=true]]:from-[#7b2dff] [&_button[data-selected-single=true]]:to-[#c026ff] [&_button[data-selected-single=true]]:font-bold [&_button[data-selected-single=true]]:text-white [&_button[data-selected-single=true]]:shadow-[0_0_22px_rgba(192,38,255,0.62)]"
 						classNames={{
-							root: "mx-auto w-full max-w-[380px]",
-							months: "relative mx-auto flex w-full max-w-[380px] flex-col gap-4",
+							root: "mx-auto w-full max-w-95",
+							months: "relative mx-auto flex w-full max-w-95 flex-col gap-4",
 							month: "flex w-full flex-col gap-3 sm:gap-4",
 							nav: "absolute inset-x-0 top-0 z-10 flex w-full items-center justify-between",
 							month_caption:
 								"flex h-9 w-full items-center justify-center px-10 font-display text-sm font-bold text-white capitalize sm:px-11 sm:text-base",
 							button_previous:
-								"flex h-9 w-9 cursor-pointer items-center justify-center rounded-xl border border-white/10 bg-white/[0.04] text-[#d1bcff] transition-all hover:border-[#a855f7]/60 hover:bg-[#7b2dff]/20 hover:text-white",
+								"flex h-9 w-9 cursor-pointer items-center justify-center rounded-xl border border-white/10 bg-white/4 text-[#d1bcff] transition-all hover:border-[#a855f7]/60 hover:bg-[#7b2dff]/20 hover:text-white",
 							button_next:
-								"flex h-9 w-9 cursor-pointer items-center justify-center rounded-xl border border-white/10 bg-white/[0.04] text-[#d1bcff] transition-all hover:border-[#a855f7]/60 hover:bg-[#7b2dff]/20 hover:text-white",
+								"flex h-9 w-9 cursor-pointer items-center justify-center rounded-xl border border-white/10 bg-white/4 text-[#d1bcff] transition-all hover:border-[#a855f7]/60 hover:bg-[#7b2dff]/20 hover:text-white",
 							weekday:
 								"flex-1 pb-1 text-center font-mono text-[10px] font-semibold tracking-wider text-[#8c859e] uppercase select-none sm:text-[11px]",
 							week: "mt-1.5 flex w-full gap-0.5 sm:gap-1",
@@ -167,7 +167,7 @@ export const StepDatePicker: React.FC = () => {
 						<p className="font-mono text-[10px] font-semibold tracking-[0.16em] text-[#d8b4fe] uppercase">
 							{t("selected")}
 						</p>
-						<p className="font-display text-sm leading-snug font-bold break-words text-white sm:text-base">
+						<p className="font-display text-sm leading-snug font-bold wrap-break-word text-white sm:text-base">
 							{formatter.dateTime(selectedDate, { dateStyle: "full" })}
 						</p>
 					</div>
@@ -181,7 +181,7 @@ export const StepDatePicker: React.FC = () => {
 					variant="outline"
 					onClick={prevStep}
 					aria-label={t("back")}
-					className="font-display h-13 w-full cursor-pointer gap-2 rounded-xl border-white/12 bg-white/[0.03] text-sm font-bold text-[#e5e2e1] transition-all hover:border-white/25 hover:bg-white/[0.08] hover:text-white sm:flex-1"
+					className="font-display h-13 w-full cursor-pointer gap-2 rounded-xl border-white/12 bg-white/3 text-sm font-bold text-[#e5e2e1] transition-all hover:border-white/25 hover:bg-white/8 hover:text-white sm:flex-1"
 				>
 					<ArrowLeft className="h-4 w-4" aria-hidden="true" />
 					<span>{t("back")}</span>

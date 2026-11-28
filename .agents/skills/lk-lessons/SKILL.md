@@ -40,6 +40,7 @@ description: Compact curated lessons learned from CodeRabbit PR reviews and secu
 - **[Server Data Fetching]** Не дублирай `fetch` заявки в `useEffect`, когато вече има TanStack Query ключ -> споделяй един `queryKey` _(елиминира двойни HTTP заявки)_.
 - **[UI Telemetry & Refetch]** Не показвай fallback default стойности като засечена телеметрия и не индексирай списъци по числов индекс при refetch -> ползвай реални флагове и стабилно ID _(гарантира коректни UI данни)_.
 - **[Effect Ordering]** Когато компонент синхронизира Zustand store и вика completion callback, декларирай reconciliation `useEffect` преди completion `useEffect` и пази с `isSuccess` _(предотвратява stale store reads и блокиране при празен каталог)_.
+- **[Tailwind v4 Canonical Classes]** Ползвай каноничния Tailwind v4 синтаксис (`border-white/6`, `wrap-break-word`, `min-h-60`, `aspect-video`, `z-60`, `w-md`) вместо legacy/bracket форми (`border-white/[0.06]`, `break-words`, `min-h-[240px]`) _(0 IDE warnings и по-чист CSS)_.
 
 ### Multi-Agent & Worktrees
 

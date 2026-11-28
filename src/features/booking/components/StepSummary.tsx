@@ -130,7 +130,7 @@ export const StepSummary: React.FC = () => {
 						<a
 							href={`tel:${CONTACT_INFO.phoneRaw}`}
 							aria-label={`${tErrors("bookingUnavailable.callUs")}: ${CONTACT_INFO.phone}`}
-							className="inline-flex items-center gap-2 rounded-lg border border-white/15 bg-white/[0.05] px-3.5 py-1.5 text-xs font-semibold text-[#e9d5ff] transition-colors hover:border-[#a855f7]/60 hover:text-white"
+							className="inline-flex items-center gap-2 rounded-lg border border-white/15 bg-white/5 px-3.5 py-1.5 text-xs font-semibold text-[#e9d5ff] transition-colors hover:border-[#a855f7]/60 hover:text-white"
 						>
 							<Phone className="h-3.5 w-3.5 text-[#c026ff]" aria-hidden="true" />
 							<span>
@@ -149,7 +149,7 @@ export const StepSummary: React.FC = () => {
 					onClick={prevStep}
 					disabled={isSubmitting}
 					aria-label={t("back")}
-					className="font-display h-13 w-full cursor-pointer gap-2 rounded-xl border-white/12 bg-white/[0.03] text-sm font-bold text-[#e5e2e1] transition-all hover:border-white/25 hover:bg-white/[0.08] hover:text-white disabled:opacity-45 sm:flex-1"
+					className="font-display h-13 w-full cursor-pointer gap-2 rounded-xl border-white/12 bg-white/3 text-sm font-bold text-[#e5e2e1] transition-all hover:border-white/25 hover:bg-white/8 hover:text-white disabled:opacity-45 sm:flex-1"
 				>
 					<ArrowLeft className="h-4 w-4" aria-hidden="true" />
 					<span>{t("back")}</span>

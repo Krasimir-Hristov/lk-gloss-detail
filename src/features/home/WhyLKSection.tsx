@@ -16,7 +16,7 @@ export const WhyLKSection = () => {
 	const t = useTranslations("HomePage");
 
 	return (
-		<section className="relative overflow-hidden border-t border-white/[0.06] bg-[#07070a] px-4 py-16 sm:py-24 md:px-12 md:py-32">
+		<section className="relative overflow-hidden border-t border-white/6 bg-[#07070a] px-4 py-16 sm:py-24 md:px-12 md:py-32">
 			<div className="pointer-events-none absolute top-1/2 -left-24 h-80 w-80 -translate-y-1/2 rounded-full bg-[#7b2dff]/10 blur-[130px]" />
 
 			<div className="relative mx-auto max-w-7xl">
@@ -28,7 +28,7 @@ export const WhyLKSection = () => {
 							03
 						</span>
 					</div>
-					<h2 className="font-display text-2xl font-extrabold tracking-[-0.02em] break-words sm:text-4xl md:text-5xl">
+					<h2 className="font-display text-2xl font-extrabold tracking-[-0.02em] wrap-break-word sm:text-4xl md:text-5xl">
 						<span className="metallic-text">{t("whyLK.title")}</span>
 					</h2>
 				</RevealSection>
@@ -37,7 +37,7 @@ export const WhyLKSection = () => {
 				<div className="grid items-stretch gap-6 lg:grid-cols-12 lg:gap-7">
 					{/* Left: Macro Hydrophobic Paint Showcase */}
 					<RevealSection className="min-w-0 lg:col-span-5">
-						<div className="obsidian-card group relative h-full min-h-[260px] overflow-hidden rounded-3xl sm:min-h-[380px]">
+						<div className="obsidian-card group relative h-full min-h-65 overflow-hidden rounded-3xl sm:min-h-95">
 							<Image
 								src={paintGlossMacro}
 								alt={t("whyLK.title")}

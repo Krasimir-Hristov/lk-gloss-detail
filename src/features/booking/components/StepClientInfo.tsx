@@ -19,7 +19,7 @@ import { cn } from "@/lib/utils";
 import type { BookingClientInfo } from "@/features/booking/schemas/bookingSchema";
 
 const INPUT_CLASS =
-	"h-12 rounded-xl border-white/[0.1] bg-[#0b0b11]/90 pl-11 pr-4 text-base text-white placeholder:text-[#6f6882] transition-all duration-200 hover:border-white/[0.18] focus-visible:border-[#a855f7]/75 focus-visible:bg-[#10101a] focus-visible:ring-2 focus-visible:ring-[#7b2dff]/30 aria-invalid:border-rose-500/60 aria-invalid:ring-rose-500/20 sm:text-sm";
+	"h-12 rounded-xl border-white/10 bg-[#0b0b11]/90 pl-11 pr-4 text-base text-white placeholder:text-[#6f6882] transition-all duration-200 hover:border-white/18 focus-visible:border-[#a855f7]/75 focus-visible:bg-[#10101a] focus-visible:ring-2 focus-visible:ring-[#7b2dff]/30 aria-invalid:border-rose-500/60 aria-invalid:ring-rose-500/20 sm:text-sm";
 
 export const StepClientInfo: React.FC = () => {
 	const t = useTranslations("Booking.step1");
@@ -199,7 +199,7 @@ export const StepClientInfo: React.FC = () => {
 					{...register("carDescription")}
 					placeholder={t("carDescriptionHint")}
 					rows={4}
-					className="min-h-28 rounded-xl border-white/[0.1] bg-[#0b0b11]/90 px-4 py-3 text-base leading-relaxed text-white transition-all duration-200 placeholder:text-[#6f6882] hover:border-white/[0.18] focus-visible:border-[#a855f7]/75 focus-visible:bg-[#10101a] focus-visible:ring-2 focus-visible:ring-[#7b2dff]/30 sm:text-sm"
+					className="min-h-28 rounded-xl border-white/10 bg-[#0b0b11]/90 px-4 py-3 text-base leading-relaxed text-white transition-all duration-200 placeholder:text-[#6f6882] hover:border-white/18 focus-visible:border-[#a855f7]/75 focus-visible:bg-[#10101a] focus-visible:ring-2 focus-visible:ring-[#7b2dff]/30 sm:text-sm"
 				/>
 			</div>
 
@@ -208,10 +208,10 @@ export const StepClientInfo: React.FC = () => {
 				className={cn(
 					"rounded-2xl border p-4 transition-all duration-200",
 					gdprValue
-						? "border-[#7b2dff]/45 bg-[#7b2dff]/[0.09]"
+						? "border-[#7b2dff]/45 bg-[#7b2dff]/9"
 						: errors.gdprAccepted
-							? "border-rose-500/45 bg-rose-500/[0.06]"
-							: "border-white/[0.08] bg-white/[0.025] hover:border-white/[0.15]",
+							? "border-rose-500/45 bg-rose-500/6"
+							: "border-white/8 bg-white/2.5 hover:border-white/15",
 				)}
 			>
 				<div className="flex items-start gap-3.5">

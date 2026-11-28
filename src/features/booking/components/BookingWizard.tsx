@@ -25,17 +25,17 @@ const BookingWizardSkeleton: React.FC = () => {
 	return (
 		<div className="mx-auto w-full max-w-7xl px-4 md:px-12">
 			<div className="mb-10 flex flex-col items-center gap-4">
-				<div className="h-7 w-56 animate-pulse rounded-full bg-white/[0.06]" />
-				<div className="h-12 w-72 animate-pulse rounded-xl bg-white/[0.08]" />
-				<div className="h-5 w-80 max-w-full animate-pulse rounded-lg bg-white/[0.05]" />
+				<div className="h-7 w-56 animate-pulse rounded-full bg-white/6" />
+				<div className="h-12 w-72 animate-pulse rounded-xl bg-white/8" />
+				<div className="h-5 w-80 max-w-full animate-pulse rounded-lg bg-white/5" />
 			</div>
 			<div className="grid grid-cols-1 gap-7 lg:grid-cols-12">
 				<div className="space-y-6 lg:col-span-7">
-					<div className="h-24 animate-pulse rounded-2xl bg-white/[0.05]" />
-					<div className="h-112 animate-pulse rounded-3xl bg-white/[0.05]" />
+					<div className="h-24 animate-pulse rounded-2xl bg-white/5" />
+					<div className="h-112 animate-pulse rounded-3xl bg-white/5" />
 				</div>
 				<div className="lg:col-span-5">
-					<div className="h-128 animate-pulse rounded-3xl bg-white/[0.05]" />
+					<div className="h-128 animate-pulse rounded-3xl bg-white/5" />
 				</div>
 			</div>
 		</div>
@@ -94,7 +94,7 @@ const BookingWizardContent: React.FC = () => {
 				</div>
 
 				<div className="min-w-0 space-y-2.5">
-					<h1 className="font-display text-[1.75rem] leading-[1.08] font-black tracking-[-0.03em] break-words min-[390px]:text-3xl sm:text-5xl lg:text-[3.25rem]">
+					<h1 className="font-display text-[1.75rem] leading-[1.08] font-black tracking-[-0.03em] wrap-break-word min-[390px]:text-3xl sm:text-5xl lg:text-[3.25rem]">
 						<span className="metallic-text">{t("title")}</span>
 					</h1>
 					<p className="max-w-2xl text-sm leading-relaxed text-[#b8b2c7] sm:text-lg">
@@ -124,13 +124,13 @@ const BookingWizardContent: React.FC = () => {
 									<p className="font-mono text-[10px] font-semibold tracking-[0.16em] text-[#b996ff] uppercase sm:text-[11px] sm:tracking-[0.18em]">
 										{t("stepCounter", { current: step, total: 4 })}
 									</p>
-									<h2 className="font-display mt-0.5 text-lg font-extrabold tracking-tight break-words text-white sm:text-2xl">
+									<h2 className="font-display mt-0.5 text-lg font-extrabold tracking-tight wrap-break-word text-white sm:text-2xl">
 										{t(activeMeta.titleKey)}
 									</h2>
 								</div>
 							</div>
 
-							<span className="hidden shrink-0 rounded-full border border-white/[0.08] bg-white/[0.03] px-3 py-1 font-mono text-xs font-bold tracking-widest text-[#9b93ad] sm:inline-flex">
+							<span className="hidden shrink-0 rounded-full border border-white/8 bg-white/3 px-3 py-1 font-mono text-xs font-bold tracking-widest text-[#9b93ad] sm:inline-flex">
 								0{step} / 04
 							</span>
 						</div>

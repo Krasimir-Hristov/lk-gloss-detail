@@ -49,9 +49,7 @@ export const ProgressIndicator: React.FC<ProgressIndicatorProps> = ({
 										!isCompleted &&
 											isActive &&
 											"border-[#d8b4fe]/55 bg-linear-to-br from-[#7b2dff] to-[#c026ff] text-white shadow-[0_0_24px_rgba(192,38,255,0.55)]",
-										!isCompleted &&
-											!isActive &&
-											"border-white/[0.08] bg-white/[0.03] text-[#7a738c]",
+										!isCompleted && !isActive && "border-white/8 bg-white/3 text-[#7a738c]",
 									)}
 								>
 									{isCompleted ? (
@@ -66,7 +64,7 @@ export const ProgressIndicator: React.FC<ProgressIndicatorProps> = ({
 
 								<span
 									className={cn(
-										"font-display line-clamp-2 max-w-full text-[10px] leading-tight font-semibold tracking-tight break-words transition-colors sm:text-xs",
+										"font-display line-clamp-2 max-w-full text-[10px] leading-tight font-semibold tracking-tight wrap-break-word transition-colors sm:text-xs",
 										isActive && "text-white",
 										isCompleted && !isActive && "text-emerald-200/90",
 										!isActive && !isCompleted && "text-[#7a738c]",
@@ -81,7 +79,7 @@ export const ProgressIndicator: React.FC<ProgressIndicatorProps> = ({
 			</ol>
 
 			{/* Illuminated bottom progress rail */}
-			<div className="mt-4 h-1 w-full overflow-hidden rounded-full bg-white/[0.06]">
+			<div className="mt-4 h-1 w-full overflow-hidden rounded-full bg-white/6">
 				<motion.div
 					className="h-full rounded-full bg-linear-to-r from-[#7b2dff] via-[#a855f7] to-[#c026ff] shadow-[0_0_14px_rgba(192,38,255,0.75)]"
 					initial={false}

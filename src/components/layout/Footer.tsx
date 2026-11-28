@@ -25,7 +25,7 @@ const Footer: React.FC = () => {
 	}));
 
 	return (
-		<footer className="relative w-full overflow-hidden border-t border-white/[0.08] bg-[#050508] pt-16 pb-32 md:pt-24 md:pb-16">
+		<footer className="relative w-full overflow-hidden border-t border-white/8 bg-[#050508] pt-16 pb-32 md:pt-24 md:pb-16">
 			{/* Top hairline violet accent */}
 			<div className="pointer-events-none absolute top-0 left-1/2 h-px w-2/3 -translate-x-1/2 bg-linear-to-r from-transparent via-[#7b2dff]/70 to-transparent" />
 			<div className="pointer-events-none absolute -top-24 left-1/2 h-48 w-full max-w-96 -translate-x-1/2 rounded-full bg-[#7b2dff]/10 blur-3xl" />
@@ -91,7 +91,7 @@ const Footer: React.FC = () => {
 								<a
 									href={`tel:${CONTACT_INFO.phoneRaw}`}
 									aria-label={CONTACT_INFO.phone}
-									className="group flex items-center justify-between rounded-xl border border-white/[0.07] bg-white/[0.02] px-4 py-3 transition-all hover:border-[#7b2dff]/45 hover:bg-white/[0.04]"
+									className="group flex items-center justify-between rounded-xl border border-white/[0.07] bg-white/2 px-4 py-3 transition-all hover:border-[#7b2dff]/45 hover:bg-white/4"
 								>
 									<span className="flex items-center gap-3">
 										<Phone className="size-4 text-[#b37cff]" />
@@ -106,7 +106,7 @@ const Footer: React.FC = () => {
 								<a
 									href={`mailto:${CONTACT_INFO.email}`}
 									aria-label={CONTACT_INFO.email}
-									className="group flex items-center justify-between rounded-xl border border-white/[0.07] bg-white/[0.02] px-4 py-3 transition-all hover:border-[#7b2dff]/45 hover:bg-white/[0.04]"
+									className="group flex items-center justify-between rounded-xl border border-white/[0.07] bg-white/2 px-4 py-3 transition-all hover:border-[#7b2dff]/45 hover:bg-white/4"
 								>
 									<span className="flex min-w-0 items-center gap-3">
 										<Mail className="size-4 shrink-0 text-[#b37cff]" />
@@ -122,7 +122,7 @@ const Footer: React.FC = () => {
 				</div>
 
 				{/* Bottom divider bar */}
-				<div className="mt-12 flex flex-col items-center justify-between gap-3 border-t border-white/[0.06] pt-6 sm:flex-row">
+				<div className="mt-12 flex flex-col items-center justify-between gap-3 border-t border-white/6 pt-6 sm:flex-row">
 					<p className="font-mono text-[11px] text-[#7c758f]">{t("copyright", { year })}</p>
 					<span className="font-mono text-[10px] tracking-[0.22em] text-[#7c758f] uppercase">
 						LK Gloss &amp; Detail • Mobile Detailing

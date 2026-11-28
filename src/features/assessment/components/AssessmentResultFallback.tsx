@@ -48,7 +48,7 @@ export const AssessmentErrorCard: React.FC<AssessmentErrorCardProps> = ({ onRetr
 				<a
 					href={`tel:${CONTACT_INFO.phoneRaw}`}
 					aria-label={`${tErrors("bookingUnavailable.callUs")}: ${CONTACT_INFO.phone}`}
-					className="inline-flex items-center justify-center gap-2 rounded-xl border border-white/15 bg-white/[0.04] px-5 py-3.5 text-sm font-semibold text-white transition-all hover:border-[#a855f7]/60 hover:bg-[#7b2dff]/15"
+					className="inline-flex items-center justify-center gap-2 rounded-xl border border-white/15 bg-white/4 px-5 py-3.5 text-sm font-semibold text-white transition-all hover:border-[#a855f7]/60 hover:bg-[#7b2dff]/15"
 				>
 					<Phone className="h-4 w-4 text-[#d8b4fe]" aria-hidden="true" />
 					<span>{CONTACT_INFO.phone}</span>
@@ -59,7 +59,7 @@ export const AssessmentErrorCard: React.FC<AssessmentErrorCardProps> = ({ onRetr
 					target="_blank"
 					rel="noopener noreferrer"
 					aria-label={`WhatsApp: ${CONTACT_INFO.phone}`}
-					className="inline-flex items-center justify-center gap-2 rounded-xl border border-emerald-400/25 bg-emerald-500/[0.08] px-5 py-3.5 text-sm font-semibold text-emerald-200 transition-all hover:border-emerald-400/55 hover:bg-emerald-500/20 hover:text-white"
+					className="inline-flex items-center justify-center gap-2 rounded-xl border border-emerald-400/25 bg-emerald-500/8 px-5 py-3.5 text-sm font-semibold text-emerald-200 transition-all hover:border-emerald-400/55 hover:bg-emerald-500/20 hover:text-white"
 				>
 					<MessageCircle className="h-4 w-4 text-emerald-400" aria-hidden="true" />
 					<span>WhatsApp</span>
@@ -98,7 +98,7 @@ export const NoServicesSelectedCard: React.FC<NoServicesSelectedCardProps> = ({
 					type="button"
 					onClick={onBackToServices}
 					aria-label={t("backToServices")}
-					className="inline-flex cursor-pointer items-center justify-center gap-2 rounded-xl border border-white/15 bg-white/[0.04] px-6 py-3.5 text-sm font-semibold text-white transition-all hover:border-[#a855f7]/60 hover:bg-[#7b2dff]/15"
+					className="inline-flex cursor-pointer items-center justify-center gap-2 rounded-xl border border-white/15 bg-white/4 px-6 py-3.5 text-sm font-semibold text-white transition-all hover:border-[#a855f7]/60 hover:bg-[#7b2dff]/15"
 				>
 					<RotateCcw className="h-4 w-4 text-[#d8b4fe]" aria-hidden="true" />
 					<span>{t("backToServices")}</span>

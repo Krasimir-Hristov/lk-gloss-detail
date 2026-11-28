@@ -111,7 +111,7 @@ export const PhotoDropzoneBay: React.FC<PhotoDropzoneBayProps> = ({
 								onCancel();
 							}}
 							aria-label={t("upload.cancel")}
-							className="inline-flex cursor-pointer items-center gap-1.5 rounded-xl border border-white/15 bg-white/[0.06] px-4 py-2 text-xs font-semibold text-white transition-colors hover:bg-white/15"
+							className="inline-flex cursor-pointer items-center gap-1.5 rounded-xl border border-white/15 bg-white/6 px-4 py-2 text-xs font-semibold text-white transition-colors hover:bg-white/15"
 						>
 							<X className="h-3.5 w-3.5" aria-hidden="true" />
 							<span>{t("upload.cancel")}</span>
@@ -159,7 +159,7 @@ export const PhotoDropzoneBay: React.FC<PhotoDropzoneBayProps> = ({
 									if (isUploading) e.preventDefault();
 								}}
 								className={cn(
-									"inline-flex w-full cursor-pointer items-center justify-center gap-2 rounded-xl border border-white/15 bg-white/[0.05] px-5 py-3.5 text-sm font-semibold text-white backdrop-blur-md transition-all hover:border-[#a855f7]/60 hover:bg-[#7b2dff]/18 sm:w-auto sm:px-6",
+									"inline-flex w-full cursor-pointer items-center justify-center gap-2 rounded-xl border border-white/15 bg-white/5 px-5 py-3.5 text-sm font-semibold text-white backdrop-blur-md transition-all hover:border-[#a855f7]/60 hover:bg-[#7b2dff]/18 sm:w-auto sm:px-6",
 									isUploading && "pointer-events-none opacity-50",
 								)}
 							>
@@ -198,7 +198,7 @@ export const PhotoDropzoneBay: React.FC<PhotoDropzoneBayProps> = ({
 				<div
 					role="alert"
 					aria-live="assertive"
-					className="mt-4 flex flex-col items-center gap-3 rounded-2xl border border-rose-500/35 bg-rose-500/[0.08] p-4 text-center sm:flex-row sm:justify-between sm:text-left"
+					className="mt-4 flex flex-col items-center gap-3 rounded-2xl border border-rose-500/35 bg-rose-500/8 p-4 text-center sm:flex-row sm:justify-between sm:text-left"
 				>
 					<div className="flex items-center gap-2.5 text-sm text-rose-200">
 						<XCircle className="h-5 w-5 shrink-0 text-rose-400" aria-hidden="true" />
@@ -208,7 +208,7 @@ export const PhotoDropzoneBay: React.FC<PhotoDropzoneBayProps> = ({
 						type="button"
 						onClick={onReset}
 						aria-label={t("validation.tryAgain")}
-						className="inline-flex shrink-0 cursor-pointer items-center gap-1.5 rounded-xl border border-white/15 bg-white/[0.05] px-4 py-2 text-xs font-semibold text-white transition-colors hover:bg-white/10"
+						className="inline-flex shrink-0 cursor-pointer items-center gap-1.5 rounded-xl border border-white/15 bg-white/5 px-4 py-2 text-xs font-semibold text-white transition-colors hover:bg-white/10"
 					>
 						<RotateCcw className="h-3.5 w-3.5" aria-hidden="true" />
 						<span>{t("validation.tryAgain")}</span>

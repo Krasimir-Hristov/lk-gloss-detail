@@ -67,7 +67,7 @@ export const AssessmentAnalyzing: React.FC = () => {
 						</div>
 					</div>
 
-					<h2 className="font-display text-xl font-black tracking-tight break-words min-[390px]:text-2xl sm:text-3xl">
+					<h2 className="font-display text-xl font-black tracking-tight wrap-break-word min-[390px]:text-2xl sm:text-3xl">
 						<span className="metallic-text">{t("title")}</span>
 					</h2>
 					<p className="mt-3 max-w-md text-sm leading-relaxed text-[#b8b2c7] sm:text-base">
@@ -89,7 +89,7 @@ export const AssessmentAnalyzing: React.FC = () => {
 											? "flex items-center gap-3 rounded-2xl border border-[#a855f7]/45 bg-[#7b2dff]/14 px-4 py-3 text-white transition-all duration-300"
 											: isDone
 												? "flex items-center gap-3 rounded-2xl border border-emerald-400/30 bg-emerald-500/[0.07] px-4 py-3 text-emerald-200 transition-all duration-300"
-												: "flex items-center gap-3 rounded-2xl border border-white/[0.06] bg-white/[0.02] px-4 py-3 text-[#7a738c] transition-all duration-300"
+												: "flex items-center gap-3 rounded-2xl border border-white/6 bg-white/2 px-4 py-3 text-[#7a738c] transition-all duration-300"
 									}
 								>
 									{isDone ? (

@@ -24,7 +24,7 @@ export const ServicesSection: React.FC<ServicesSectionProps> = ({ services }) =>
 	return (
 		<section
 			id="services"
-			className="relative scroll-mt-20 overflow-x-clip border-t border-white/[0.06] bg-[#08080c] px-4 py-16 sm:py-24 md:px-12 md:py-32"
+			className="relative scroll-mt-20 overflow-x-clip border-t border-white/6 bg-[#08080c] px-4 py-16 sm:py-24 md:px-12 md:py-32"
 		>
 			{/* Ambient subtle glow */}
 			<div className="pointer-events-none absolute top-0 left-1/2 h-px w-1/2 -translate-x-1/2 bg-linear-to-r from-transparent via-[#7b2dff]/60 to-transparent" />
@@ -40,7 +40,7 @@ export const ServicesSection: React.FC<ServicesSectionProps> = ({ services }) =>
 								01
 							</span>
 						</div>
-						<h2 className="font-display text-2xl font-extrabold tracking-[-0.02em] break-words sm:text-4xl md:text-5xl">
+						<h2 className="font-display text-2xl font-extrabold tracking-[-0.02em] wrap-break-word sm:text-4xl md:text-5xl">
 							<span className="metallic-text">{t("servicesPreview.title")}</span>
 						</h2>
 					</div>
@@ -120,7 +120,7 @@ export const ServicesSection: React.FC<ServicesSectionProps> = ({ services }) =>
 														€{service.price_small}
 													</span>
 												</div>
-												<div className="inline-flex items-center gap-1.5 rounded-full border border-white/[0.08] bg-white/[0.03] px-3 py-1 font-mono text-xs text-[#d1bcff]">
+												<div className="inline-flex items-center gap-1.5 rounded-full border border-white/8 bg-white/3 px-3 py-1 font-mono text-xs text-[#d1bcff]">
 													<Clock className="h-3.5 w-3.5 text-[#a855f7]" aria-hidden="true" />
 													<span>{service.duration_hours}h</span>
 												</div>

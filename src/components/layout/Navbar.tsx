@@ -56,7 +56,7 @@ const DesktopNavLink = ({
 				"relative rounded-full px-4 py-1.5 font-mono text-xs tracking-[0.12em] uppercase transition-all duration-200",
 				isActive
 					? "bg-[#7b2dff]/20 font-semibold text-white shadow-[inset_0_0_0_1px_rgba(168,85,247,0.45)]"
-					: "font-medium text-[#b8b2c7] hover:bg-white/[0.05] hover:text-white",
+					: "font-medium text-[#b8b2c7] hover:bg-white/5 hover:text-white",
 			)}
 		>
 			{children}
@@ -85,7 +85,7 @@ const MobileNavLink = ({
 				"font-display block rounded-xl px-4 py-3 text-base font-semibold transition-all",
 				isActive
 					? "border border-[#7b2dff]/40 bg-[#7b2dff]/20 text-white"
-					: "text-[#d5d0e3] hover:bg-white/[0.05] hover:text-white",
+					: "text-[#d5d0e3] hover:bg-white/5 hover:text-white",
 			)}
 		>
 			{children}
@@ -209,7 +209,7 @@ const Navbar = () => {
 		>
 			<nav
 				aria-label="Primary Navigation"
-				className="mx-auto flex h-14 max-w-7xl items-center justify-between gap-2 rounded-2xl border border-white/[0.08] bg-[#0a0a0f]/82 px-2.5 shadow-[0_12px_40px_-10px_rgba(0,0,0,0.85),inset_0_1px_0_rgba(255,255,255,0.06)] backdrop-blur-2xl sm:h-16 sm:px-5"
+				className="mx-auto flex h-14 max-w-7xl items-center justify-between gap-2 rounded-2xl border border-white/8 bg-[#0a0a0f]/82 px-2.5 shadow-[0_12px_40px_-10px_rgba(0,0,0,0.85),inset_0_1px_0_rgba(255,255,255,0.06)] backdrop-blur-2xl sm:h-16 sm:px-5"
 			>
 				{/* ----- Logo ----- */}
 				<Link
@@ -221,7 +221,7 @@ const Navbar = () => {
 				</Link>
 
 				{/* ----- Desktop Links ----- */}
-				<div className="hidden items-center gap-1 rounded-full border border-white/[0.06] bg-white/[0.025] p-1 lg:flex">
+				<div className="hidden items-center gap-1 rounded-full border border-white/6 bg-white/2.5 p-1 lg:flex">
 					{navLinks.map((l) => (
 						<DesktopNavLink key={l.href} href={l.href} activeSection={activeSection}>
 							{l.label}
@@ -247,7 +247,7 @@ const Navbar = () => {
 					<button
 						type="button"
 						onClick={() => setMobileOpen((prev) => !prev)}
-						className="inline-flex cursor-pointer items-center justify-center rounded-xl border border-white/10 bg-white/[0.04] p-2 text-[#ccc3d9] transition-colors hover:border-[#7b2dff]/50 hover:text-white lg:hidden"
+						className="inline-flex cursor-pointer items-center justify-center rounded-xl border border-white/10 bg-white/4 p-2 text-[#ccc3d9] transition-colors hover:border-[#7b2dff]/50 hover:text-white lg:hidden"
 						aria-label={mobileOpen ? t("closeMenu") : t("openMenu")}
 						aria-expanded={mobileOpen}
 					>

@@ -246,7 +246,7 @@ export const AssessmentWizard: React.FC = () => {
 												prevStep();
 											}}
 											aria-label={t("navigation.back")}
-											className="inline-flex cursor-pointer items-center gap-2 rounded-xl border border-white/10 bg-white/[0.03] px-4 py-2.5 text-sm font-medium text-[#ccc3d9] transition-all hover:border-[#a855f7]/50 hover:bg-[#7b2dff]/12 hover:text-white disabled:cursor-not-allowed disabled:opacity-50"
+											className="inline-flex cursor-pointer items-center gap-2 rounded-xl border border-white/10 bg-white/3 px-4 py-2.5 text-sm font-medium text-[#ccc3d9] transition-all hover:border-[#a855f7]/50 hover:bg-[#7b2dff]/12 hover:text-white disabled:cursor-not-allowed disabled:opacity-50"
 										>
 											<ArrowLeft className="h-4 w-4" aria-hidden="true" />
 											<span>{t("navigation.back")}</span>

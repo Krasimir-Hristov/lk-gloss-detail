@@ -22,7 +22,7 @@ export const MobileServiceSection = () => {
 	const t = useTranslations("HomePage");
 
 	return (
-		<section className="relative overflow-hidden border-t border-white/[0.06] bg-[#060609] px-4 py-16 sm:py-24 md:px-12 md:py-28">
+		<section className="relative overflow-hidden border-t border-white/6 bg-[#060609] px-4 py-16 sm:py-24 md:px-12 md:py-28">
 			{/* Ambient spotlight */}
 			<div className="pointer-events-none absolute top-1/2 left-1/4 h-96 w-96 -translate-y-1/2 rounded-full bg-[#7b2dff]/12 blur-[140px]" />
 
@@ -36,7 +36,7 @@ export const MobileServiceSection = () => {
 								02
 							</span>
 						</div>
-						<h2 className="font-display text-2xl font-extrabold tracking-[-0.02em] break-words sm:text-4xl md:text-5xl">
+						<h2 className="font-display text-2xl font-extrabold tracking-[-0.02em] wrap-break-word sm:text-4xl md:text-5xl">
 							<span className="metallic-text">{t("mobileService.title")}</span>
 						</h2>
 					</div>
@@ -49,7 +49,7 @@ export const MobileServiceSection = () => {
 				<div className="grid items-stretch gap-5 lg:grid-cols-12 lg:gap-6">
 					{/* Left: Framed Editorial Photography (6 cols) */}
 					<RevealSection className="min-w-0 lg:col-span-6">
-						<div className="obsidian-card group relative h-full min-h-[240px] overflow-hidden rounded-3xl sm:min-h-[340px]">
+						<div className="obsidian-card group relative h-full min-h-60 overflow-hidden rounded-3xl sm:min-h-85">
 							<Image
 								src={mobileBioDetailing}
 								alt={t("mobileService.title")}

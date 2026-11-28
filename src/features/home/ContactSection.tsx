@@ -13,7 +13,7 @@ export const ContactSection: React.FC = () => {
 	return (
 		<section
 			id="contact"
-			className="relative scroll-mt-20 overflow-x-clip border-t border-white/[0.06] bg-[#060609] px-4 py-16 sm:py-24 md:px-12 md:py-32"
+			className="relative scroll-mt-20 overflow-x-clip border-t border-white/6 bg-[#060609] px-4 py-16 sm:py-24 md:px-12 md:py-32"
 		>
 			<div className="pointer-events-none absolute top-0 left-1/2 h-px w-1/2 -translate-x-1/2 bg-linear-to-r from-transparent via-[#7b2dff]/60 to-transparent" />
 			<div className="pointer-events-none absolute right-0 bottom-16 h-80 w-80 rounded-full bg-[#7b2dff]/10 blur-[130px]" />
@@ -28,7 +28,7 @@ export const ContactSection: React.FC = () => {
 						</span>
 						<span className="h-px w-8 bg-linear-to-l from-transparent to-[#7b2dff]" />
 					</div>
-					<h2 className="font-display text-2xl font-extrabold tracking-[-0.02em] break-words sm:text-4xl md:text-5xl">
+					<h2 className="font-display text-2xl font-extrabold tracking-[-0.02em] wrap-break-word sm:text-4xl md:text-5xl">
 						<span className="metallic-text">{t("title")}</span>
 					</h2>
 				</RevealSection>

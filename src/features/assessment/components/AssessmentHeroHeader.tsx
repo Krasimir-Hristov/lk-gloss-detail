@@ -22,7 +22,7 @@ export const AssessmentHeroHeader: React.FC = () => {
 			</div>
 
 			<div className="min-w-0 space-y-2.5">
-				<h1 className="font-display text-[1.75rem] leading-[1.08] font-black tracking-[-0.03em] break-words min-[390px]:text-3xl sm:text-5xl lg:text-[3.25rem]">
+				<h1 className="font-display text-[1.75rem] leading-[1.08] font-black tracking-[-0.03em] wrap-break-word min-[390px]:text-3xl sm:text-5xl lg:text-[3.25rem]">
 					<span className="metallic-text">{t("title")}</span>
 				</h1>
 				<p className="max-w-2xl text-sm leading-relaxed text-[#b8b2c7] sm:text-lg">
@@ -32,15 +32,15 @@ export const AssessmentHeroHeader: React.FC = () => {
 
 			{/* Trust Micro-Badges */}
 			<div className="flex flex-wrap items-center gap-2 pt-1">
-				<span className="inline-flex items-center gap-1.5 rounded-full border border-white/[0.08] bg-white/[0.03] px-2.5 py-1 font-mono text-[10px] font-medium text-[#ccc3d9] sm:px-3 sm:text-[11px]">
+				<span className="inline-flex items-center gap-1.5 rounded-full border border-white/8 bg-white/3 px-2.5 py-1 font-mono text-[10px] font-medium text-[#ccc3d9] sm:px-3 sm:text-[11px]">
 					<ShieldCheck className="h-3.5 w-3.5 shrink-0 text-emerald-400" aria-hidden="true" />
 					<span>{t("trust.gdpr")}</span>
 				</span>
-				<span className="inline-flex items-center gap-1.5 rounded-full border border-white/[0.08] bg-white/[0.03] px-2.5 py-1 font-mono text-[10px] font-medium text-[#ccc3d9] sm:px-3 sm:text-[11px]">
+				<span className="inline-flex items-center gap-1.5 rounded-full border border-white/8 bg-white/3 px-2.5 py-1 font-mono text-[10px] font-medium text-[#ccc3d9] sm:px-3 sm:text-[11px]">
 					<Lock className="h-3.5 w-3.5 shrink-0 text-[#d8b4fe]" aria-hidden="true" />
 					<span>{t("trust.noAccount")}</span>
 				</span>
-				<span className="inline-flex items-center gap-1.5 rounded-full border border-white/[0.08] bg-white/[0.03] px-2.5 py-1 font-mono text-[10px] font-medium text-[#ccc3d9] sm:px-3 sm:text-[11px]">
+				<span className="inline-flex items-center gap-1.5 rounded-full border border-white/8 bg-white/3 px-2.5 py-1 font-mono text-[10px] font-medium text-[#ccc3d9] sm:px-3 sm:text-[11px]">
 					<Zap className="h-3.5 w-3.5 shrink-0 text-[#c026ff]" aria-hidden="true" />
 					<span>{t("trust.instant")}</span>
 				</span>
@@ -78,14 +78,14 @@ export const AssessmentStageHeader: React.FC<AssessmentStageHeaderProps> = ({
 							? t("stepCounter", { current: photoStepNumber, total: 4 })
 							: t("services.headingTag")}
 					</p>
-					<h2 className="font-display mt-0.5 text-lg font-extrabold tracking-tight break-words text-white sm:text-2xl">
+					<h2 className="font-display mt-0.5 text-lg font-extrabold tracking-tight wrap-break-word text-white sm:text-2xl">
 						{isPhotoStep ? t(`steps.${currentStep}`) : t("services.headingTitle")}
 					</h2>
 				</div>
 			</div>
 
 			{isPhotoStep ? (
-				<span className="hidden shrink-0 rounded-full border border-white/[0.08] bg-white/[0.03] px-3 py-1 font-mono text-xs font-bold tracking-widest text-[#9b93ad] sm:inline-flex">
+				<span className="hidden shrink-0 rounded-full border border-white/8 bg-white/3 px-3 py-1 font-mono text-xs font-bold tracking-widest text-[#9b93ad] sm:inline-flex">
 					0{photoStepNumber} / 04
 				</span>
 			) : null}

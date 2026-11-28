@@ -56,7 +56,7 @@ export const BookingErrorCard: React.FC<BookingErrorCardProps> = ({
 				<a
 					href={`tel:${CONTACT_INFO.phoneRaw}`}
 					aria-label={`${t("callUs")}: ${CONTACT_INFO.phone}`}
-					className="inline-flex h-11 items-center justify-center gap-2 rounded-xl border border-white/15 bg-white/[0.04] px-5 text-sm font-semibold text-[#f1eff7] transition-all hover:border-[#a855f7]/60 hover:bg-[#7b2dff]/15 hover:text-white"
+					className="inline-flex h-11 items-center justify-center gap-2 rounded-xl border border-white/15 bg-white/4 px-5 text-sm font-semibold text-[#f1eff7] transition-all hover:border-[#a855f7]/60 hover:bg-[#7b2dff]/15 hover:text-white"
 				>
 					<Phone className="h-4 w-4 text-[#d1bcff]" aria-hidden="true" />
 					<span>{t("callUs")}</span>
@@ -65,7 +65,7 @@ export const BookingErrorCard: React.FC<BookingErrorCardProps> = ({
 				<a
 					href={`mailto:${CONTACT_INFO.email}`}
 					aria-label={`${t("emailUs")}: ${CONTACT_INFO.email}`}
-					className="inline-flex h-11 items-center justify-center gap-2 rounded-xl border border-white/15 bg-white/[0.04] px-5 text-sm font-semibold text-[#f1eff7] transition-all hover:border-[#a855f7]/60 hover:bg-[#7b2dff]/15 hover:text-white"
+					className="inline-flex h-11 items-center justify-center gap-2 rounded-xl border border-white/15 bg-white/4 px-5 text-sm font-semibold text-[#f1eff7] transition-all hover:border-[#a855f7]/60 hover:bg-[#7b2dff]/15 hover:text-white"
 				>
 					<Mail className="h-4 w-4 text-[#d1bcff]" aria-hidden="true" />
 					<span>{t("emailUs")}</span>

@@ -94,7 +94,7 @@ export const AssessmentReport: React.FC<AssessmentReportProps> = ({ result }) =>
 						<Sparkles className="h-7 w-7 text-white sm:h-8 sm:w-8" aria-hidden="true" />
 					</div>
 
-					<h1 className="font-display text-2xl leading-[1.08] font-black tracking-[-0.03em] break-words min-[390px]:text-3xl sm:text-5xl">
+					<h1 className="font-display text-2xl leading-[1.08] font-black tracking-[-0.03em] wrap-break-word min-[390px]:text-3xl sm:text-5xl">
 						<span className="metallic-text">{t("report.title")}</span>
 					</h1>
 					<p className="mt-3 max-w-xl text-sm leading-relaxed text-[#b8b2c7] sm:text-base">
@@ -103,14 +103,14 @@ export const AssessmentReport: React.FC<AssessmentReportProps> = ({ result }) =>
 
 					{/* Detected Vehicle Telemetry Chips */}
 					<div className="mt-6 flex flex-wrap items-center justify-center gap-2.5">
-						<span className="inline-flex items-center gap-2 rounded-full border border-white/12 bg-white/[0.04] px-4 py-1.5 text-xs font-semibold text-white">
+						<span className="inline-flex items-center gap-2 rounded-full border border-white/12 bg-white/4 px-4 py-1.5 text-xs font-semibold text-white">
 							<Car className="h-3.5 w-3.5 text-[#d8b4fe]" aria-hidden="true" />
 							<span>{brand ?? t("report.vehicle")}</span>
 						</span>
 						<span className="inline-flex items-center gap-1.5 rounded-full border border-[#7b2dff]/40 bg-[#7b2dff]/15 px-3.5 py-1.5 font-mono text-xs font-bold text-[#e9d5ff]">
 							{carSizeLabel[carSize]}
 						</span>
-						<span className="inline-flex items-center gap-1.5 rounded-full border border-white/10 bg-white/[0.04] px-3.5 py-1.5 text-xs font-medium text-[#ccc3d9]">
+						<span className="inline-flex items-center gap-1.5 rounded-full border border-white/10 bg-white/4 px-3.5 py-1.5 text-xs font-medium text-[#ccc3d9]">
 							<Gauge className="h-3.5 w-3.5 text-[#a855f7]" aria-hidden="true" />
 							<span>{t(`dossier.dirtLevels.${dirtLevel}`)}</span>
 						</span>
@@ -147,7 +147,7 @@ export const AssessmentReport: React.FC<AssessmentReportProps> = ({ result }) =>
 
 					<div className="relative">
 						<div className="mb-3 flex items-center gap-2.5">
-							<div className="flex h-9 w-9 items-center justify-center rounded-xl border border-white/12 bg-white/[0.05] text-[#d8b4fe]">
+							<div className="flex h-9 w-9 items-center justify-center rounded-xl border border-white/12 bg-white/5 text-[#d8b4fe]">
 								<Clock className="h-4 w-4" aria-hidden="true" />
 							</div>
 							<h2 className="font-mono text-[11px] font-bold tracking-[0.16em] text-[#b8b2c7] uppercase">
@@ -223,7 +223,7 @@ export const AssessmentReport: React.FC<AssessmentReportProps> = ({ result }) =>
 							&ldquo;{expertVerdict}&rdquo;
 						</blockquote>
 
-						<div className="mt-5 flex items-center gap-2.5 border-t border-white/[0.08] pt-4">
+						<div className="mt-5 flex items-center gap-2.5 border-t border-white/8 pt-4">
 							<div className="relative h-6 w-6 overflow-hidden rounded-md border border-[#7b2dff]/50 bg-black">
 								<Image
 									src={lkLogo}
@@ -260,7 +260,7 @@ export const AssessmentReport: React.FC<AssessmentReportProps> = ({ result }) =>
 						type="button"
 						onClick={reset}
 						aria-label={t("report.startNew")}
-						className="inline-flex cursor-pointer items-center justify-center gap-2 rounded-xl border border-white/12 bg-white/[0.03] px-4 py-3.5 text-sm font-semibold text-[#d1bcff] transition-all hover:border-[#a855f7]/55 hover:bg-[#7b2dff]/15 hover:text-white sm:px-5"
+						className="inline-flex cursor-pointer items-center justify-center gap-2 rounded-xl border border-white/12 bg-white/3 px-4 py-3.5 text-sm font-semibold text-[#d1bcff] transition-all hover:border-[#a855f7]/55 hover:bg-[#7b2dff]/15 hover:text-white sm:px-5"
 					>
 						<RotateCcw className="h-4 w-4 shrink-0" aria-hidden="true" />
 						<span>{t("report.startNew")}</span>
@@ -271,7 +271,7 @@ export const AssessmentReport: React.FC<AssessmentReportProps> = ({ result }) =>
 						target="_blank"
 						rel="noopener noreferrer"
 						aria-label={`WhatsApp: ${CONTACT_INFO.phone}`}
-						className="inline-flex items-center justify-center gap-2 rounded-xl border border-emerald-400/25 bg-emerald-500/[0.08] px-4 py-3.5 text-xs font-semibold text-emerald-200 transition-all hover:border-emerald-400/55 hover:bg-emerald-500/20 hover:text-white sm:px-5 sm:text-sm"
+						className="inline-flex items-center justify-center gap-2 rounded-xl border border-emerald-400/25 bg-emerald-500/8 px-4 py-3.5 text-xs font-semibold text-emerald-200 transition-all hover:border-emerald-400/55 hover:bg-emerald-500/20 hover:text-white sm:px-5 sm:text-sm"
 					>
 						<MessageCircle className="h-4 w-4 shrink-0 text-emerald-400" aria-hidden="true" />
 						<span className="truncate">WhatsApp · {CONTACT_INFO.phone}</span>

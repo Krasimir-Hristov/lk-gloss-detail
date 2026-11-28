@@ -113,7 +113,7 @@ export const PhotoPreviewPanel: React.FC<PhotoPreviewPanelProps> = ({
 						type="button"
 						onClick={onReset}
 						aria-label={t("validation.uploadDifferent")}
-						className="inline-flex cursor-pointer items-center justify-center gap-2 rounded-xl border border-white/15 bg-white/[0.04] px-5 py-3 text-sm font-semibold text-[#e5e2e1] transition-all hover:border-[#a855f7]/60 hover:bg-[#7b2dff]/15 hover:text-white"
+						className="inline-flex cursor-pointer items-center justify-center gap-2 rounded-xl border border-white/15 bg-white/4 px-5 py-3 text-sm font-semibold text-[#e5e2e1] transition-all hover:border-[#a855f7]/60 hover:bg-[#7b2dff]/15 hover:text-white"
 					>
 						<RotateCcw className="h-4 w-4" aria-hidden="true" />
 						<span>{t("validation.uploadDifferent")}</span>
@@ -136,7 +136,7 @@ export const PhotoPreviewPanel: React.FC<PhotoPreviewPanelProps> = ({
 				<div
 					role="alert"
 					aria-live="assertive"
-					className="flex flex-col items-center gap-4 rounded-2xl border border-rose-500/35 bg-rose-500/[0.08] p-5 text-center"
+					className="flex flex-col items-center gap-4 rounded-2xl border border-rose-500/35 bg-rose-500/8 p-5 text-center"
 				>
 					<p className="text-sm leading-relaxed text-rose-200">{validationReason}</p>
 					<button
