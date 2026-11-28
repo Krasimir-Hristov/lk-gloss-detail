@@ -2,6 +2,8 @@ export interface MultilingualText {
 	de?: string;
 	en?: string;
 	el?: string;
+	sq?: string;
+	tr?: string;
 	[key: string]: string | undefined;
 }
 
@@ -50,7 +52,8 @@ export function getLocalizedText(
 		const obj = parsedField as Record<string, string>;
 
 		// Wait, if the user manually pasted JSON inside a single key, obj[locale] might still be a stringified JSON!
-		let value = obj[locale] || obj.de || obj.en || obj.el || Object.values(obj)[0] || "";
+		let value =
+			obj[locale] || obj.de || obj.en || obj.el || obj.sq || obj.tr || Object.values(obj)[0] || "";
 
 		// If the value itself is a stringified JSON, parse it too!
 		while (typeof value === "string") {
@@ -63,6 +66,8 @@ export function getLocalizedText(
 						innerObj.de ||
 						innerObj.en ||
 						innerObj.el ||
+						innerObj.sq ||
+						innerObj.tr ||
 						Object.values(innerObj)[0] ||
 						value;
 					break;
