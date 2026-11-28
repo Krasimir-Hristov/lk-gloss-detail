@@ -16,7 +16,11 @@ import {
 	type ServiceInput,
 	type ServiceLocale,
 } from "@/features/admin/schemas/servicesSchema";
-import { getLocalizedText, type AdminServiceItem } from "@/features/admin/types/servicesTypes";
+import {
+	getExactLocalizedText,
+	getLocalizedText,
+	type AdminServiceItem,
+} from "@/features/admin/types/servicesTypes";
 import { SUPPORTED_LOCALES, resolveAppLocale } from "@/i18n/locales";
 
 const buildTranslationsMap = (
@@ -29,7 +33,8 @@ const buildTranslationsMap = (
 
 const extractTranslationsMap = (
 	field: Record<string, string> | string | null | undefined,
-): Record<ServiceLocale, string> => buildTranslationsMap((loc) => getLocalizedText(field, loc));
+): Record<ServiceLocale, string> =>
+	buildTranslationsMap((loc) => getExactLocalizedText(field, loc));
 
 const createEmptyTranslationsMap = (): Record<ServiceLocale, string> =>
 	buildTranslationsMap(() => "");
@@ -106,14 +111,19 @@ export const ServiceModal: React.FC<ServiceModalProps> = ({ isOpen, service, onC
 	if (!isOpen) return null;
 
 	const onSubmit = async (data: ServiceInput) => {
-		const syncedNames: Record<ServiceLocale, string> = {
-			...nameOverrides,
-			[activeLocale]: data.name,
-		};
-		const syncedDescs: Record<ServiceLocale, string> = {
-			...descOverrides,
-			[activeLocale]: data.short_description ?? "",
-		};
+		const shouldSyncActiveName =
+			!service || data.name.trim() !== getLocalizedText(service.name, activeLocale).trim();
+		const shouldSyncActiveDesc =
+			!service ||
+			(data.short_description ?? "").trim() !==
+				getLocalizedText(service.short_description, activeLocale).trim();
+
+		const syncedNames: Record<ServiceLocale, string> = shouldSyncActiveName
+			? { ...nameOverrides, [activeLocale]: data.name }
+			: { ...nameOverrides };
+		const syncedDescs: Record<ServiceLocale, string> = shouldSyncActiveDesc
+			? { ...descOverrides, [activeLocale]: data.short_description ?? "" }
+			: { ...descOverrides };
 
 		const payload: ServiceInput = hasEditedTranslations
 			? {

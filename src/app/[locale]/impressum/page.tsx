@@ -187,17 +187,7 @@ const ImpressumPage = async ({ params }: { params: Promise<Params> }) => {
 								{t("disputeTitle")}
 							</h2>
 
-							<p className="text-sm leading-relaxed">
-								{t("disputeText")}{" "}
-								<a
-									href="https://ec.europa.eu/consumers/odr"
-									target="_blank"
-									rel="noopener noreferrer"
-									className="break-all text-[#d1bcff] underline transition-colors hover:text-white"
-								>
-									https://ec.europa.eu/consumers/odr
-								</a>
-							</p>
+							<p className="text-sm leading-relaxed">{t("disputeText")}</p>
 							<p className="mt-4 text-sm leading-relaxed">{t("disputeNotice")}</p>
 						</article>
 

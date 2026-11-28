@@ -9,6 +9,8 @@ interface GlobalErrorProps {
 	reset: () => void;
 }
 
+// Intentionally isolated from next-intl so the root error boundary still renders if
+// the locale layout or message catalogs fail; Record<AppLocale, ...> enforces parity.
 const translations: Record<AppLocale, { title: string; description: string; retry: string }> = {
 	de: {
 		title: "Technisches Problem",

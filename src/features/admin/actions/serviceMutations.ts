@@ -8,22 +8,21 @@ import {
 	ToggleServiceActiveSchema,
 	type ServiceFormInput,
 } from "@/features/admin/schemas/servicesSchema";
+import { getLocalizedText, type AdminServiceItem } from "@/features/admin/types/servicesTypes";
 import { routing } from "@/i18n/routing";
 import {
 	AdminServiceRowSchema,
 	createEmptyTextMap,
 	createUniformTextMap,
 	extractGalleryStoragePath,
+	extractStoredTranslations,
 	hasCompleteTranslations,
 	mergeOverrides,
-	normalizeTriple,
-	type LocalizedTriple,
 } from "@/lib/admin/serviceHelpers";
 import { translateServicePair } from "@/lib/ai/translation";
 import { requireAdmin } from "@/lib/auth/requireAdmin";
 
 import type { ActionResult } from "@/features/admin/actions/services";
-import type { AdminServiceItem } from "@/features/admin/types/servicesTypes";
 
 const UuidSchema = z.string().uuid();
 
@@ -136,16 +135,21 @@ export const updateService = async (
 		const { locale, translations, name, short_description, ...rest } = validated.data;
 		const cleanName = name.trim();
 		const cleanDesc = (short_description ?? "").trim();
-		const existingName = normalizeTriple(existing.name as Record<string, string> | string | null);
-		const existingDesc = normalizeTriple(
-			existing.short_description as Record<string, string> | string | null,
+		const existingNameField = existing.name as Record<string, string> | string | null;
+		const existingDescField = existing.short_description as Record<string, string> | string | null;
+		const existingName = extractStoredTranslations(existingNameField);
+		const existingDesc = extractStoredTranslations(existingDescField);
+		const displayedExistingName = getLocalizedText(existingNameField, locale).trim();
+		const displayedExistingDesc = getLocalizedText(existingDescField, locale).trim();
+
+		const nameChanged = cleanName !== displayedExistingName;
+		const descChanged = cleanDesc !== displayedExistingDesc;
+
+		let nameObj: Record<string, string> = mergeOverrides(existingName, translations?.name);
+		let descObj: Record<string, string> = mergeOverrides(
+			existingDesc,
+			translations?.short_description,
 		);
-
-		const nameChanged = cleanName !== existingName[locale].trim();
-		const descChanged = cleanDesc !== existingDesc[locale].trim();
-
-		let nameObj: LocalizedTriple = mergeOverrides(existingName, translations?.name);
-		let descObj: LocalizedTriple = mergeOverrides(existingDesc, translations?.short_description);
 
 		const needsLlm = nameChanged || (descChanged && cleanDesc.length > 0);
 		if (needsLlm) {

@@ -39,6 +39,17 @@ vi.mock("@/lib/ai/translation", () => ({
 	translateServiceText: vi.fn(),
 }));
 
+const wrapWriteResult = (record: AdminServiceItem) => {
+	const result = { data: record, error: null as null };
+	return {
+		select: () => ({ single: async () => result, maybeSingle: async () => result }),
+		then: (
+			onfulfilled?: (val: { data: AdminServiceItem; error: null }) => unknown,
+			onrejected?: (reason: unknown) => unknown,
+		) => Promise.resolve(result).then(onfulfilled, onrejected),
+	};
+};
+
 const createMockSupabase = () => ({
 	from: vi.fn((_table: string) => ({
 		select: vi.fn(() => ({
@@ -55,45 +66,21 @@ const createMockSupabase = () => ({
 		})),
 		insert: vi.fn((payload: Record<string, unknown>) => {
 			mockInsertPayloads.push(payload);
-			const created: AdminServiceItem = {
+			return wrapWriteResult({
 				...(mockState.existingService as AdminServiceItem),
 				...payload,
 				id: SERVICE_ID,
-			};
-			return {
-				select: () => ({
-					single: async () => ({ data: created, error: null }),
-					maybeSingle: async () => ({ data: created, error: null }),
-				}),
-				then(
-					onfulfilled?: (val: { data: AdminServiceItem; error: null }) => unknown,
-					onrejected?: (reason: unknown) => unknown,
-				) {
-					return Promise.resolve({ data: created, error: null }).then(onfulfilled, onrejected);
-				},
-			};
+			});
 		}),
 		update: vi.fn((payload: Record<string, unknown>) => {
 			mockUpdatePayloads.push(payload);
-			const updated: AdminServiceItem = {
-				...(mockState.existingService as AdminServiceItem),
-				...payload,
-			};
 			return {
 				eq: vi.fn((column: string, value: string) => {
 					mockUpdateEqCalls.push([column, value]);
-					return {
-						select: () => ({
-							single: async () => ({ data: updated, error: null }),
-							maybeSingle: async () => ({ data: updated, error: null }),
-						}),
-						then(
-							onfulfilled?: (val: { data: AdminServiceItem; error: null }) => unknown,
-							onrejected?: (reason: unknown) => unknown,
-						) {
-							return Promise.resolve({ data: updated, error: null }).then(onfulfilled, onrejected);
-						},
-					};
+					return wrapWriteResult({
+						...(mockState.existingService as AdminServiceItem),
+						...payload,
+					});
 				}),
 			};
 		}),
@@ -282,5 +269,25 @@ describe("Admin Services Translation Diff-Check", () => {
 		expect(mockInsertPayloads).toHaveLength(1);
 		expect(mockRevalidateTag).toHaveBeenCalledWith("services", "max");
 		expect(mockRevalidatePath).toHaveBeenCalled();
+	});
+
+	it("preserves missing sq/tr keys without persisting German fallback on price-only edits", async () => {
+		const legacyName = { de: EXISTING_NAME.de, en: EXISTING_NAME.en, el: EXISTING_NAME.el };
+		const legacyDesc = { de: EXISTING_DESC.de, en: EXISTING_DESC.en, el: EXISTING_DESC.el };
+		mockState.existingService = {
+			...(mockState.existingService as AdminServiceItem),
+			name: legacyName,
+			short_description: legacyDesc,
+		};
+
+		const deRes = await updateService(SERVICE_ID, { ...BASE_INPUT, price_small: 70 });
+		const sqRes = await updateService(SERVICE_ID, { ...BASE_INPUT, locale: "sq", price_small: 72 });
+
+		expect(deRes.success).toBe(true);
+		expect(sqRes.success).toBe(true);
+		expect(mockTranslateServicePair).not.toHaveBeenCalled();
+		expect(mockUpdatePayloads[0]?.name).toEqual(legacyName);
+		expect(mockUpdatePayloads[0]?.short_description).toEqual(legacyDesc);
+		expect(mockUpdatePayloads[1]?.name).toEqual(legacyName);
 	});
 });

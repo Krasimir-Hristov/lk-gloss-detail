@@ -1,11 +1,12 @@
 import { z } from "zod";
 
-import { getLocalizedText } from "@/features/admin/types/servicesTypes";
+import { getExactLocalizedText } from "@/features/admin/types/servicesTypes";
 import { SUPPORTED_LOCALES } from "@/i18n/locales";
 
 import type { LocalizedTextPartial, ServiceLocale } from "@/features/admin/schemas/servicesSchema";
 
 export type LocalizedTextMap = Record<ServiceLocale, string>;
+export type StoredLocalizedMap = Partial<LocalizedTextMap>;
 export type LocalizedTriple = LocalizedTextMap;
 
 const LocalizedFieldSchema = z.union([z.record(z.string(), z.string()), z.string()]);
@@ -32,30 +33,37 @@ export const createUniformTextMap = (text: string): LocalizedTextMap =>
 
 export const createEmptyTextMap = (): LocalizedTextMap => createUniformTextMap("");
 
-export const normalizeTriple = (
+/** Extracts only locales actually stored in `field`, avoiding synthetic fallback entries. */
+export const extractStoredTranslations = (
 	field: Record<string, string> | string | null | undefined,
-): LocalizedTextMap =>
-	Object.fromEntries(
-		SUPPORTED_LOCALES.map((loc) => [loc, getLocalizedText(field, loc)]),
-	) as LocalizedTextMap;
+): Record<string, string> => {
+	const result: Record<string, string> = {};
+	for (const loc of SUPPORTED_LOCALES) {
+		const value = getExactLocalizedText(field, loc).trim();
+		if (value) {
+			result[loc] = value;
+		}
+	}
+	return result;
+};
 
-export const mergeOverrides = (
-	base: LocalizedTextMap,
+export const mergeOverrides = <T extends Record<string, string>>(
+	base: T,
 	override: LocalizedTextPartial | undefined,
-	existing?: LocalizedTextMap,
-): LocalizedTextMap => {
-	const result: LocalizedTextMap = { ...base };
-	if (!override) return result;
+	existing?: Record<string, string>,
+): T & Record<string, string> => {
+	const result: Record<string, string> = { ...base };
+	if (!override) return result as T & Record<string, string>;
 	for (const loc of SUPPORTED_LOCALES) {
 		const candidate = override[loc];
 		if (typeof candidate !== "string") continue;
 		const trimmed = candidate.trim();
 		if (!trimmed) continue;
-		if (!existing || trimmed !== existing[loc].trim()) {
+		if (!existing || trimmed !== (existing[loc] ?? "").trim()) {
 			result[loc] = trimmed;
 		}
 	}
-	return result;
+	return result as T & Record<string, string>;
 };
 
 export const hasCompleteTranslations = (override: LocalizedTextPartial | undefined): boolean =>

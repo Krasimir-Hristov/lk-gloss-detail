@@ -13,6 +13,7 @@ export const LanguageSwitcher = () => {
 	const [isNavigating, setIsNavigating] = useState(false);
 	const [isOpen, setIsOpen] = useState(false);
 	const containerRef = useRef<HTMLDivElement>(null);
+	const toggleRef = useRef<HTMLButtonElement>(null);
 
 	useEffect(() => {
 		if (!isOpen) return;
@@ -26,6 +27,7 @@ export const LanguageSwitcher = () => {
 		const handleKeyDown = (event: KeyboardEvent) => {
 			if (event.key === "Escape") {
 				setIsOpen(false);
+				toggleRef.current?.focus();
 			}
 		};
 
@@ -62,6 +64,7 @@ export const LanguageSwitcher = () => {
 	return (
 		<div ref={containerRef} className="relative">
 			<button
+				ref={toggleRef}
 				type="button"
 				onClick={() => setIsOpen((prev) => !prev)}
 				className="flex cursor-pointer items-center gap-1.5 rounded-xl border border-white/10 bg-white/4 px-2.5 py-2 font-mono text-xs font-medium text-[#d5d0e3] transition-all hover:border-[#7b2dff]/50 hover:bg-white/8 hover:text-white sm:gap-2 sm:px-3"

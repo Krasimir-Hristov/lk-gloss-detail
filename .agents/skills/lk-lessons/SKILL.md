@@ -41,6 +41,7 @@ description: Compact curated lessons learned from CodeRabbit PR reviews and secu
 - **[UI Telemetry & Refetch]** Не показвай fallback default стойности като засечена телеметрия и не индексирай списъци по числов индекс при refetch -> ползвай реални флагове и стабилно ID _(гарантира коректни UI данни)_.
 - **[Effect Ordering]** Когато компонент синхронизира Zustand store и вика completion callback, декларирай reconciliation `useEffect` преди completion `useEffect` и пази с `isSuccess` _(предотвратява stale store reads и блокиране при празен каталог)_.
 - **[Tailwind v4 Canonical Classes]** Ползвай каноничния Tailwind v4 синтаксис (`border-white/6`, `wrap-break-word`, `min-h-60`, `aspect-video`, `z-60`, `w-md`) вместо legacy/bracket форми (`border-white/[0.06]`, `break-words`, `min-h-[240px]`) _(0 IDE warnings и по-чист CSS)_.
+- **[Dropdown Escape Focus]** При затваряне на dropdown/popover с `Escape` връщай фокуса към бутона-тригер чрез `ref`, без да местиш фокуса при клик извън менюто _(WCAG keyboard accessibility)_.
 
 ### Multi-Agent & Worktrees
 
@@ -59,3 +60,4 @@ description: Compact curated lessons learned from CodeRabbit PR reviews and secu
 - **[Server Pagination & Preserving Upserts]** Филтрирай и страницирай admin таблици на сървъра (над 1000-row лимита) и ползвай `ignoreDuplicates: true` / стабилни seed IDs с embeddings преди запис _(пази сървърни данни и броячи)_.
 - **[PostgREST Pagination & Escaping]** При сървърна пагинация добавяй вторичен уникален `.order("id")`, обработвай `PGRST103` извън обхват и escape-вай `\_`/`\%` вместо подмяна с интервал _(стабилни страници и точен email search)_.
 - **[Query Cache & Async Filters]** Ползвай `@tanstack/react-query` (`useQuery` + `invalidateQueries`) вместо ръчни ref-ове след `await` и инвалидирай кеша при конфликтни грешки (`DATE_BLOCKED`/`DATE_TAKEN`) _(без stale табове или остарели дати)_.
+- **[Read Fallback vs DB Persistence]** Не записвай display fallback (напр. немски от `getLocalizedText`) обратно в БД за липсващи локали при `UPDATE` -> извличай само реално записаните ключове и прилагай fallback само при визуализация _(пази целостта на преводите при добавяне на нови езици)_.
