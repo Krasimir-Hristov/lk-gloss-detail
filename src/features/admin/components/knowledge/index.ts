@@ -1,3 +1,3 @@
+export { KnowledgeEditorModal } from "./KnowledgeEditorModal";
 export { KnowledgeList } from "./KnowledgeList";
-export { AiKnowledgeWizard } from "./AiKnowledgeWizard";
 export { SemanticSearchTestModal } from "./SemanticSearchTestModal";

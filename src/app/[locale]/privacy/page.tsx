@@ -234,12 +234,11 @@ const PrivacyPage = async ({ params }: { params: Promise<Params> }) => {
 								Buchungssystem vereinbaren, werden Ihre Angaben aus dem jeweiligen Formular
 								inklusive der von Ihnen dort angegebenen Kontaktdaten (Name, E-Mail-Adresse,
 								Telefonnummer, Fahrzeugdetails, Wunschtermin) zur Bearbeitung der Anfrage und für
-								den Fall von Anschlussfragen bei uns gespeichert. Diese Daten werden in unserer
-								sicheren Datenbank (Supabase) gespeichert. Zur Versendung von
-								E-Mail-Benachrichtigungen werden die Daten an den E-Mail-Dienstanbieter{" "}
-								<strong>Resend Inc.</strong> (601 Marshall St, Redwood City, CA 94063, USA)
-								übermittelt. Die Verarbeitung dieser Daten erfolgt auf Grundlage von Art. 6 Abs. 1
-								lit. b DSGVO zur Durchführung vorvertraglicher Maßnahmen oder zur Vertragserfüllung.
+								den Fall von Anschlussfragen bei uns gespeichert. Diese Daten werden ausschließlich
+								zur Bearbeitung Ihrer Anfrage direkt in unserer verschlüsselten Datenbank (Supabase)
+								gespeichert und nicht an externe E-Mail-Dienste übermittelt. Die Verarbeitung dieser
+								Daten erfolgt auf Grundlage von Art. 6 Abs. 1 lit. b DSGVO zur Durchführung
+								vorvertraglicher Maßnahmen oder zur Vertragserfüllung.
 							</p>
 
 							<h3 className="mt-6 font-semibold text-white">KI-Fahrzeugbewertung & Fotoanalyse</h3>

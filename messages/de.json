@@ -302,9 +302,18 @@
 	"LanguageSwitcher": {
 		"label": "Sprache wählen",
 		"locales": {
-			"de": { "short": "DE", "full": "Deutsch" },
-			"en": { "short": "EN", "full": "English" },
-			"el": { "short": "ΕΛ", "full": "Ελληνικά" }
+			"de": {
+				"short": "DE",
+				"full": "Deutsch"
+			},
+			"en": {
+				"short": "EN",
+				"full": "English"
+			},
+			"el": {
+				"short": "ΕΛ",
+				"full": "Ελληνικά"
+			}
 		}
 	},
 	"Common": {
@@ -326,7 +335,13 @@
 		"typing": "Schreibt...",
 		"openChat": "Chat öffnen",
 		"closeChat": "Chat schließen",
-		"errorFallback": "Entschuldigung, etwas ist schiefgelaufen. Bitte versuchen Sie es erneut."
+		"errorFallback": "Entschuldigung, etwas ist schiefgelaufen. Bitte versuchen Sie es erneut.",
+		"links": {
+			"services": "Dienstleistungen",
+			"booking": "Termin buchen",
+			"assessment": "KI-Fahrzeugbewertung",
+			"contact": "Kontakt"
+		}
 	},
 	"Impressum": {
 		"title": "Impressum",
@@ -545,8 +560,16 @@
 			"title": "Dienstleistungsverwaltung",
 			"subtitle": "Verwalten Sie alle verfügbaren Dienstleistungen, Preise und aktiven Status.",
 			"addService": "Dienstleistung hinzufügen",
+			"syncBanner": "Änderungen an Dienstleistungen werden automatisch auf der Website, bei der Buchung, der KI-Bewertung und im Chatbot übernommen.",
 			"searchPlaceholder": "Nach Name suchen...",
 			"loadingError": "Fehler beim Laden der Dienste",
+			"categories": {
+				"exterior": "Außenreinigung",
+				"interior": "Innenraum",
+				"paint": "Lack & Politur",
+				"protection": "Versiegelung & Schutz",
+				"other": "Sonstiges"
+			},
 			"filters": {
 				"allCategories": "Alle Kategorien",
 				"allStatuses": "Alle Status",
@@ -589,8 +612,27 @@
 				"durationHours": "Dauer (Stunden)",
 				"uploadPrompt": "Klicken oder ziehen, um ein Bild hochzuladen",
 				"uploading": "Wird hochgeladen...",
+				"imageInvalidType": "Nur JPG-, PNG- oder WebP-Bilder sind erlaubt.",
+				"imageTooLarge": "Das Bild darf maximal 5 MB groß sein.",
+				"uploadFailed": "Bild-Upload fehlgeschlagen. Bitte versuchen Sie es erneut.",
+				"removeImage": "Bild entfernen",
+				"imageFormatHint": "Unterstützte Formate: JPG, PNG, WebP",
+				"imageRatioHint": "Empfohlenes Seitenverhältnis: 16:9",
+				"imageMaxSizeHint": "Maximale Dateigröße: 5 MB",
+				"translations": {
+					"toggle": "Übersetzungen anpassen (DE / EN / EL)",
+					"hint": "Optional: Überschreiben Sie die automatische KI-Übersetzung für einzelne Sprachen.",
+					"nameLabel": "Name",
+					"descLabel": "Beschreibung"
+				},
 				"active": "Aktiv (sichtbar auf der Website)",
-				"save": "Dienstleistung speichern"
+				"save": "Dienstleistung speichern",
+				"sizes": {
+					"small": "Kleinwagen",
+					"medium": "Mittelklasse",
+					"large": "Groß / Kombi",
+					"suv": "SUV"
+				}
 			},
 			"toast": {
 				"createSuccess": "Dienstleistung erfolgreich erstellt",
@@ -602,11 +644,16 @@
 		"chatbotKb": {
 			"pageTitle": "RAG-Wissensdatenbank",
 			"pageSubtitle": "Verwalten Sie die Vektor-Wissensdatenbank für den KI-Chatbot. Fügen Sie Texte, Dienste oder Regeln hinzu und der KI-Agent strukturiert und vektorisiert sie.",
+			"servicesSyncBanner": "Ihre Dienstleistungen & Preise werden automatisch live aus dem Dienstleistungskatalog gelesen. Tragen Sie hier Firmenrichtlinien, Öffnungszeiten, B2B-Infos und FAQs ein.",
 			"allLanguages": "Alle Sprachen",
 			"allCategories": "Alle Kategorien",
+			"refresh": "Aktualisieren",
 			"testSearch": "Suche testen (RAG)",
+			"addEntry": "Eintrag hinzufügen",
+			"editEntry": "Eintrag bearbeiten",
 			"addAiKnowledge": "KI-Wissen hinzufügen",
 			"loading": "Wird geladen...",
+			"loadError": "Fehler beim Laden der Wissenseinträge.",
 			"empty": "Keine Einträge in der Wissensdatenbank gefunden.",
 			"deleteConfirmTitle": "Wissenseintrag löschen?",
 			"deleteConfirmDesc": "Sind Sie sicher, dass Sie diesen Eintrag löschen möchten? Diese Aktion kann nicht rückgängig gemacht werden.",
@@ -618,7 +665,27 @@
 				"paint_correction": "Lackkorrektur & Versiegelung",
 				"headlights_special": "Scheinwerfer & Spezial",
 				"company_policy": "Firmenrichtlinien & Infos",
+				"booking_process": "Buchungsprozess",
+				"mobile_service": "Mobiler Service",
+				"b2b": "B2B & Flotten",
+				"faq": "Häufige Fragen (FAQ)",
 				"general": "Allgemeines Wissen"
+			},
+			"editor": {
+				"addTitle": "Neuen Wissenseintrag hinzufügen",
+				"editTitle": "Wissenseintrag bearbeiten",
+				"autoReplyHint": "Schreiben Sie einfach in Ihrer bevorzugten Sprache — der KI-Chatbot antwortet Kunden automatisch auf Deutsch, Englisch oder Griechisch.",
+				"titleLabel": "Titel",
+				"titlePlaceholder": "z. B. Anfahrtskosten & Einsatzgebiet",
+				"categoryLabel": "Kategorie",
+				"contentLabel": "Inhalt",
+				"contentPlaceholder": "Beschreiben Sie die Information, Regel oder Antwort möglichst klar...",
+				"keywordsLabel": "Schlüsselwörter (kommagetrennt, optional)",
+				"keywordsPlaceholder": "z. B. öffnungszeiten, samstag, anfahrt, wasser",
+				"saveButton": "Speichern",
+				"saving": "Wird gespeichert...",
+				"cancel": "Abbrechen",
+				"saveError": "Speichern des Wissenseintrags fehlgeschlagen."
 			},
 			"wizard": {
 				"title": "Hybrider KI-Wissensagent",
@@ -660,6 +727,7 @@
 				"topMatches": "Beste Vektor-Übereinstimmungen",
 				"noMatches": "Keine passenden Vektoren über dem Schwellenwert gefunden.",
 				"searchFailed": "Suche fehlgeschlagen",
+				"similarity": "Ähnlichkeit",
 				"closeButton": "Schließen"
 			}
 		},
@@ -713,6 +781,10 @@
 					"title": "Ausstehend",
 					"desc": "Warten auf Bestätigung"
 				},
+				"unreadMessages": {
+					"title": "Ungelesene Nachrichten",
+					"desc": "Neue Kontaktanfragen"
+				},
 				"upcoming": {
 					"title": "Nächste 7 Tage",
 					"desc": "Kommende Buchungen"
@@ -740,10 +812,22 @@
 				"subtitle": "Buchungen für die nächste Woche",
 				"empty": "Keine anstehenden Termine in den nächsten 7 Tagen."
 			},
+			"recentMessages": {
+				"title": "Neueste ungelesene Nachrichten",
+				"subtitle": "Aktuelle Kontaktanfragen von Kunden",
+				"viewAll": "Alle anzeigen",
+				"empty": "Keine ungelesenen Nachrichten vorhanden.",
+				"openInbox": "Postfach"
+			},
+			"actions": {
+				"call": "Anrufen",
+				"whatsapp": "WhatsApp"
+			},
 			"quickActions": {
 				"title": "Schnellaktionen",
 				"appointments": "Termine",
 				"blockSlot": "Termin blockieren",
+				"newService": "Neue Leistung",
 				"addKnowledge": "Wissen hinzufügen",
 				"services": "Leistungen verwalten"
 			},
@@ -757,8 +841,63 @@
 				"management": "Verwaltung",
 				"overview": "Übersicht",
 				"appointments": "Termine",
+				"messages": "Nachrichten",
 				"servicesCrud": "Dienstleistungen",
 				"chatbotKb": "Chatbot-Wissen"
+			},
+			"loadingLabel": "Admin-Bereich wird geladen"
+		},
+		"messages": {
+			"title": "Nachrichten & Anfragen",
+			"subtitle": "Verwalten Sie eingehende Kontaktanfragen, rufen Sie Kunden direkt zurück oder schreiben Sie per WhatsApp.",
+			"searchPlaceholder": "Nach Name, E-Mail, Telefon oder Nachricht suchen...",
+			"empty": "Keine Nachrichten in dieser Ansicht gefunden.",
+			"tabs": {
+				"all": "Alle",
+				"unread": "Ungelesen",
+				"read": "Gelesen",
+				"archived": "Archiviert"
+			},
+			"status": {
+				"unread": "Ungelesen",
+				"read": "Gelesen",
+				"archived": "Archiviert"
+			},
+			"actions": {
+				"refresh": "Aktualisieren",
+				"markAllRead": "Alle als gelesen markieren",
+				"open": "Nachricht öffnen",
+				"call": "Anrufen",
+				"email": "E-Mail",
+				"copy": "Kopieren",
+				"copied": "Kopiert",
+				"copyPhone": "Telefonnummer kopieren",
+				"copyEmail": "E-Mail-Adresse kopieren",
+				"markRead": "Als gelesen markieren",
+				"markUnread": "Als ungelesen markieren",
+				"archive": "Archivieren",
+				"unarchive": "Aus Archiv holen",
+				"delete": "Löschen"
+			},
+			"modal": {
+				"close": "Schließen",
+				"phone": "Telefon",
+				"email": "E-Mail",
+				"messageLabel": "Nachricht"
+			},
+			"errors": {
+				"loadFailed": "Nachrichten konnten nicht geladen werden.",
+				"updateFailed": "Status konnte nicht aktualisiert werden.",
+				"deleteFailed": "Nachricht konnte nicht gelöscht werden."
+			},
+			"deleteConfirm": {
+				"title": "Nachricht löschen?",
+				"description": "Sind Sie sicher, dass Sie diese Kontaktanfrage dauerhaft löschen möchten?"
+			},
+			"pagination": {
+				"showing": "Seite {page} von {totalPages} ({total} Einträge)",
+				"prev": "Zurück",
+				"next": "Weiter"
 			}
 		},
 		"appointments": {
@@ -767,12 +906,25 @@
 			"refresh": "Aktualisieren",
 			"blockDate": "Datum blockieren",
 			"today": "Heute",
+			"previousMonth": "Vorheriger Monat",
+			"nextMonth": "Nächster Monat",
+			"blockDay": "Tag blockieren",
+			"unblockDay": "Tag freigeben",
+			"call": "Anrufen",
 			"calendar": "Kalender",
 			"listView": "Listenansicht",
 			"searchPlaceholder": "Suchen nach Kundenname, E-Mail, Telefon, Auto oder Datum...",
 			"filterLabel": "Filter:",
 			"allStatuses": "Alle Status",
 			"noAppointments": "Keine Termine entsprechen den ausgewählten Kriterien.",
+			"errors": {
+				"statusUpdateFailed": "Status konnte nicht aktualisiert werden.",
+				"blockToggleFailed": "Tagesstatus konnte nicht geändert werden.",
+				"refreshFailed": "Termine konnten nicht aktualisiert werden.",
+				"deleteFailed": "Termin konnte nicht gelöscht werden.",
+				"selectOneService": "Bitte wählen Sie mindestens eine Leistung aus.",
+				"saveFailed": "Änderungen konnten nicht gespeichert werden."
+			},
 			"table": {
 				"date": "Datum",
 				"client": "Kunde",
@@ -817,10 +969,24 @@
 				"block": {
 					"title": "Blockierte Termine",
 					"subtitle": "Buchungen an bestimmten Kalendertagen verhindern",
+					"modeSingle": "Einzelner Tag",
+					"modeRange": "Zeitraum",
 					"blockNew": "Neues Datum blockieren",
+					"blockRangeTitle": "Zeitraum blockieren",
 					"selectDate": "Datum auswählen",
+					"startDate": "Startdatum",
+					"endDate": "Enddatum",
 					"reason": "Grund (optional)",
+					"reasonPlaceholder": "z. B. Urlaub, Feiertag, Wartung...",
 					"submit": "Datum blockieren",
+					"submitRange": "Zeitraum blockieren",
+					"unblock": "Freigeben",
+					"blockFailed": "Datum konnte nicht blockiert werden.",
+					"unblockFailed": "Blockierung konnte nicht aufgehoben werden.",
+					"conflictTitle": "{count} bestehende Buchung(en) im gewählten Zeitraum",
+					"conflictDesc": "Diese Tage haben bereits aktive Termine. Möchten Sie den Zeitraum trotzdem blockieren?",
+					"confirmConflict": "Trotzdem blockieren",
+					"cancelConflict": "Abbrechen",
 					"currentlyBlocked": "Derzeit blockiert",
 					"noBlocked": "Derzeit sind keine Termine blockiert.",
 					"done": "Fertig"

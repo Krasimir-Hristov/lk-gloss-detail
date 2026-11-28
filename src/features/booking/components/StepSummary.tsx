@@ -59,7 +59,11 @@ export const StepSummary: React.FC = () => {
 			});
 
 			if (!result.success) {
-				setSubmitError(result.error === "DATE_TAKEN" ? "dateTaken" : "generic");
+				const isDateConflict = result.error === "DATE_TAKEN" || result.error === "DATE_BLOCKED";
+				if (isDateConflict) {
+					await queryClient.invalidateQueries({ queryKey: ["unavailable-dates"] });
+				}
+				setSubmitError(isDateConflict ? "dateTaken" : "generic");
 				return;
 			}
 

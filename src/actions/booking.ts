@@ -1,7 +1,10 @@
 "use server";
 
+import { revalidatePath } from "next/cache";
 import { z } from "zod";
 
+import { routing } from "@/i18n/routing";
+import { getBerlinTodayIso } from "@/lib/date/berlinDate";
 import { createServiceClient } from "@/lib/supabase/service";
 
 const CreateBookingSchema = z.object({
@@ -14,59 +17,107 @@ const CreateBookingSchema = z.object({
 	bookingDate: z.iso.date(),
 });
 
+interface CreateBookingRpcArgs {
+	p_first_name: string;
+	p_last_name: string;
+	p_email: string;
+	p_phone: string;
+	p_car_description: string | null;
+	p_booking_date: string;
+	p_service_ids: string[];
+}
+
+interface BookingRpcClient {
+	rpc: (
+		fn: "create_booking",
+		args: CreateBookingRpcArgs,
+	) => Promise<{ data: unknown; error: { message: string; code?: string } | null }>;
+}
+
 type BookingResult =
 	| { success: true; appointmentId: string }
-	| { success: false; error: "DATE_TAKEN" | "INVALID_DATA" | "INTERNAL_ERROR" };
+	| { success: false; error: "DATE_TAKEN" | "DATE_BLOCKED" | "INVALID_DATA" | "INTERNAL_ERROR" };
+
+const revalidateBookingPaths = (): void => {
+	for (const loc of routing.locales) {
+		try {
+			revalidatePath(`/${loc}/admin`);
+			revalidatePath(`/${loc}/admin/appointments`);
+			revalidatePath(`/${loc}/booking`);
+		} catch {
+			// Ignore if called outside Next.js request context (e.g. unit tests)
+		}
+	}
+};
 
 export const createBooking = async (
 	data: z.infer<typeof CreateBookingSchema>,
 ): Promise<BookingResult> => {
-	const parsed = CreateBookingSchema.safeParse(data);
-	if (!parsed.success) {
-		console.error(
-			"[booking/create] Validation error:",
-			parsed.error.issues.map(({ code, path }) => ({ code, path })),
-		);
-		return { success: false, error: "INVALID_DATA" };
-	}
-
-	const { firstName, lastName, email, phone, carDescription, selectedServiceIds, bookingDate } =
-		parsed.data;
-
-	const supabase = createServiceClient();
-
-	// eslint-disable-next-line @typescript-eslint/no-explicit-any
-	const { data: appointmentId, error } = await (supabase.rpc as any)("create_booking", {
-		p_first_name: firstName,
-		p_last_name: lastName,
-		p_email: email,
-		p_phone: phone,
-		p_car_description: carDescription ?? null,
-		p_booking_date: bookingDate,
-		p_service_ids: selectedServiceIds,
-	});
-
-	if (error) {
-		if (error.message === "DATE_TAKEN") {
-			return { success: false, error: "DATE_TAKEN" };
+	try {
+		const parsed = CreateBookingSchema.safeParse(data);
+		if (!parsed.success) {
+			console.error(
+				"[booking/create] Validation error:",
+				parsed.error.issues.map(({ code, path }) => ({ code, path })),
+			);
+			return { success: false, error: "INVALID_DATA" };
 		}
-		console.error("[booking/create] RPC error:", error.message);
+
+		const { firstName, lastName, email, phone, carDescription, selectedServiceIds, bookingDate } =
+			parsed.data;
+
+		const supabase = createServiceClient();
+		const rpcClient = supabase as unknown as BookingRpcClient;
+
+		const { data: appointmentId, error } = await rpcClient.rpc("create_booking", {
+			p_first_name: firstName,
+			p_last_name: lastName,
+			p_email: email,
+			p_phone: phone,
+			p_car_description: carDescription ?? null,
+			p_booking_date: bookingDate,
+			p_service_ids: selectedServiceIds,
+		});
+
+		if (error) {
+			if (error.message.includes("DATE_BLOCKED")) {
+				return { success: false, error: "DATE_BLOCKED" };
+			}
+			if (error.message.includes("DATE_TAKEN") || error.code === "23505") {
+				return { success: false, error: "DATE_TAKEN" };
+			}
+			console.error("[booking/create] RPC error:", error.message);
+			return { success: false, error: "INTERNAL_ERROR" };
+		}
+
+		if (typeof appointmentId !== "string" || appointmentId.length === 0) {
+			console.error("[booking/create] RPC returned invalid appointment ID");
+			return { success: false, error: "INTERNAL_ERROR" };
+		}
+
+		revalidateBookingPaths();
+		return { success: true, appointmentId };
+	} catch (err: unknown) {
+		const msg = err instanceof Error ? err.message : "Unknown error";
+		console.error("[booking/create] Unexpected error:", msg);
 		return { success: false, error: "INTERNAL_ERROR" };
 	}
-
-	return { success: true, appointmentId: appointmentId as string };
 };
 
 export const getUnavailableDates = async (): Promise<string[]> => {
 	try {
 		const supabase = createServiceClient();
-		const today = new Date().toISOString().slice(0, 10);
+		const today = getBerlinTodayIso();
 
 		const [
 			{ data: appointments, error: appointmentsError },
 			{ data: blockedDates, error: blockedDatesError },
 		] = await Promise.all([
-			supabase.from("appointments").select("booking_date").gte("booking_date", today),
+			supabase
+				.from("appointments")
+				.select("booking_date")
+				.gte("booking_date", today)
+				.neq("status", "cancelled"),
 			supabase.from("blocked_dates").select("blocked_date").gte("blocked_date", today),
 		]);
 

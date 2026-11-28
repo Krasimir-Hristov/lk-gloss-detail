@@ -13,7 +13,23 @@ import {
 	type LucideIcon,
 } from "lucide-react";
 
-const iconMap: Record<string, LucideIcon> = {
+export const SERVICE_ICON_NAMES = [
+	"Sparkles",
+	"Lightbulb",
+	"ShieldCheck",
+	"Car",
+	"Droplets",
+	"Wind",
+	"Wrench",
+	"Star",
+	"Palette",
+	"Brush",
+	"Camera",
+] as const;
+
+export type ServiceIconName = (typeof SERVICE_ICON_NAMES)[number];
+
+export const SERVICE_ICON_MAP: Record<ServiceIconName, LucideIcon> = {
 	Sparkles,
 	Lightbulb,
 	ShieldCheck,
@@ -28,5 +44,8 @@ const iconMap: Record<string, LucideIcon> = {
 };
 
 export const getIcon = (name: string): LucideIcon => {
-	return iconMap[name] ?? Sparkles; // Default to Sparkles if icon not found
+	if (Object.hasOwn(SERVICE_ICON_MAP, name)) {
+		return SERVICE_ICON_MAP[name as ServiceIconName];
+	}
+	return Sparkles; // Default to Sparkles if icon not found
 };

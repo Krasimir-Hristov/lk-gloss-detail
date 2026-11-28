@@ -1,28 +1,39 @@
+import { redirect } from "next/navigation";
 import { getTranslations } from "next-intl/server";
 import React from "react";
 
 import { getAdminServices } from "@/features/admin/actions/services";
 import { ServicesManager } from "@/features/admin/components/services/ServicesManager";
+import { getCachedAdminSession } from "@/lib/auth/requireAdmin";
 
 import type { Metadata } from "next";
 
 export const dynamic = "force-dynamic";
 
-export async function generateMetadata({
+export const generateMetadata = async ({
 	params,
 }: {
 	params: Promise<{ locale: string }>;
-}): Promise<Metadata> {
+}): Promise<Metadata> => {
 	const { locale } = await params;
 	const t = await getTranslations({ locale, namespace: "Metadata" });
 	const tAdmin = await getTranslations({ locale, namespace: "Admin.services" });
 	return { title: t("template").replace("%s", tAdmin("title")) };
+};
+
+interface AdminServicesPageProps {
+	params: Promise<{ locale: string }>;
 }
 
-export default async function AdminServicesPage() {
-	const t = await getTranslations("Admin.services");
+const AdminServicesPage: React.FC<AdminServicesPageProps> = async ({ params }) => {
+	const { locale } = await params;
+	const session = await getCachedAdminSession();
 
-	const res = await getAdminServices();
+	if (!session) {
+		redirect(`/${locale}/admin/login`);
+	}
+
+	const [t, res] = await Promise.all([getTranslations("Admin.services"), getAdminServices()]);
 
 	if (!res.success) {
 		return (
@@ -39,4 +50,6 @@ export default async function AdminServicesPage() {
 	}
 
 	return <ServicesManager initialServices={res.data} />;
-}
+};
+
+export default AdminServicesPage;

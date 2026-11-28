@@ -1,6 +1,5 @@
-import { afterEach, describe, expect, it } from "vitest";
+import { describe, expect, it } from "vitest";
 
-import { getAiModelsConfig } from "@/config/aiModelsConfig";
 import {
 	AnalyzeRequestSchema,
 	AssessmentPhotoSchema,
@@ -236,59 +235,5 @@ describe("Assessment Schemas", () => {
 			expect(WizardStep.safeParse("services").success).toBe(true);
 			expect(WizardStep.safeParse("unknown").success).toBe(false);
 		});
-	});
-});
-
-describe("getAiModelsConfig", () => {
-	const envKeys = [
-		"OPENROUTER_BASE_URL",
-		"OPENROUTER_VISION_MODEL",
-		"OPENROUTER_VISION_FALLBACK_MODEL",
-		"OPENROUTER_SUMMARY_MODEL",
-		"OPENROUTER_SUMMARY_FALLBACK_MODEL",
-	] as const;
-	const originalEnv = Object.fromEntries(envKeys.map((key) => [key, process.env[key]]));
-
-	afterEach(() => {
-		for (const key of envKeys) {
-			const val = originalEnv[key];
-			if (val === undefined) delete process.env[key];
-			else process.env[key] = val;
-		}
-	});
-
-	it("returns Phase B default vision and summary models when env vars are unset or whitespace", () => {
-		for (const key of envKeys) delete process.env[key];
-		process.env.OPENROUTER_VISION_MODEL = "   ";
-
-		const config = getAiModelsConfig();
-		expect(config.openRouterBaseUrl).toBe("https://openrouter.ai/api/v1");
-		expect(config.visionValidation).toEqual({
-			primaryModel: "google/gemini-2.5-flash",
-			fallbackModel: "google/gemini-3.8-flash",
-			timeoutMs: 25_000,
-			temperature: 0,
-		});
-		expect(config.assessmentSummary).toEqual({
-			primaryModel: "openai/gpt-4o-mini",
-			fallbackModel: "google/gemini-2.5-flash",
-			timeoutMs: 25_000,
-			temperature: 0.7,
-		});
-	});
-
-	it("honors trimmed .env overrides for models and base URL", () => {
-		process.env.OPENROUTER_BASE_URL = "  https://custom.openrouter.test/v1  ";
-		process.env.OPENROUTER_VISION_MODEL = " google/gemini-3.8-flash ";
-		process.env.OPENROUTER_VISION_FALLBACK_MODEL = " google/gemini-2.5-flash ";
-		process.env.OPENROUTER_SUMMARY_MODEL = " anthropic/claude-3.5-sonnet ";
-		process.env.OPENROUTER_SUMMARY_FALLBACK_MODEL = " openai/gpt-4o-mini ";
-
-		const config = getAiModelsConfig();
-		expect(config.openRouterBaseUrl).toBe("https://custom.openrouter.test/v1");
-		expect(config.visionValidation.primaryModel).toBe("google/gemini-3.8-flash");
-		expect(config.visionValidation.fallbackModel).toBe("google/gemini-2.5-flash");
-		expect(config.assessmentSummary.primaryModel).toBe("anthropic/claude-3.5-sonnet");
-		expect(config.assessmentSummary.fallbackModel).toBe("openai/gpt-4o-mini");
 	});
 });

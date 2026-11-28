@@ -9,6 +9,8 @@ export interface AiModelsConfig {
 	readonly openRouterBaseUrl: string;
 	readonly visionValidation: AiModelRouteConfig;
 	readonly assessmentSummary: AiModelRouteConfig;
+	readonly chatbot: AiModelRouteConfig;
+	readonly adminTranslation: AiModelRouteConfig;
 }
 
 const DEFAULT_OPENROUTER_BASE_URL = "https://openrouter.ai/api/v1";
@@ -24,7 +26,7 @@ export const getAiModelsConfig = (): AiModelsConfig => ({
 		primaryModel: readEnvOrDefault(process.env.OPENROUTER_VISION_MODEL, "google/gemini-2.5-flash"),
 		fallbackModel: readEnvOrDefault(
 			process.env.OPENROUTER_VISION_FALLBACK_MODEL,
-			"google/gemini-3.8-flash",
+			"openai/gpt-4o-mini",
 		),
 		timeoutMs: 25_000,
 		temperature: 0,
@@ -37,6 +39,30 @@ export const getAiModelsConfig = (): AiModelsConfig => ({
 		),
 		timeoutMs: 25_000,
 		temperature: 0.7,
+	},
+	chatbot: {
+		primaryModel: readEnvOrDefault(
+			process.env.OPENROUTER_CHATBOT_MODEL,
+			"google/gemini-2.5-flash-lite",
+		),
+		fallbackModel: readEnvOrDefault(
+			process.env.OPENROUTER_CHATBOT_FALLBACK_MODEL,
+			"google/gemini-2.5-flash",
+		),
+		timeoutMs: 25_000,
+		temperature: 0.2,
+	},
+	adminTranslation: {
+		primaryModel: readEnvOrDefault(
+			process.env.OPENROUTER_TRANSLATION_MODEL,
+			"google/gemini-2.5-flash-lite",
+		),
+		fallbackModel: readEnvOrDefault(
+			process.env.OPENROUTER_TRANSLATION_FALLBACK_MODEL,
+			"google/gemini-2.5-flash",
+		),
+		timeoutMs: 25_000,
+		temperature: 0.2,
 	},
 });
 

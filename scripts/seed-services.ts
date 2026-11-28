@@ -5,10 +5,12 @@ import { createClient } from "@supabase/supabase-js";
 loadEnvConfig(process.cwd());
 
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
-const supabaseKey = process.env.SUPABASE_SECRET_KEY; // Service role key
+const supabaseKey = process.env.SUPABASE_SECRET_KEY || process.env.SUPABASE_SERVICE_ROLE_KEY; // Service role key
 
 if (!supabaseUrl || !supabaseKey) {
-	console.error("❌ Missing NEXT_PUBLIC_SUPABASE_URL or SUPABASE_SECRET_KEY in environment");
+	console.error(
+		"❌ Missing NEXT_PUBLIC_SUPABASE_URL or SUPABASE_SERVICE_ROLE_KEY / SUPABASE_SECRET_KEY in environment",
+	);
 	process.exit(1);
 }
 

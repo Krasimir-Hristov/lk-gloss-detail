@@ -301,9 +301,18 @@
 	"LanguageSwitcher": {
 		"label": "Choose language",
 		"locales": {
-			"de": { "short": "DE", "full": "Deutsch" },
-			"en": { "short": "EN", "full": "English" },
-			"el": { "short": "ΕΛ", "full": "Ελληνικά" }
+			"de": {
+				"short": "DE",
+				"full": "Deutsch"
+			},
+			"en": {
+				"short": "EN",
+				"full": "English"
+			},
+			"el": {
+				"short": "ΕΛ",
+				"full": "Ελληνικά"
+			}
 		}
 	},
 	"Common": {
@@ -325,7 +334,13 @@
 		"typing": "Typing...",
 		"openChat": "Open chat",
 		"closeChat": "Close chat",
-		"errorFallback": "Sorry, something went wrong. Please try again."
+		"errorFallback": "Sorry, something went wrong. Please try again.",
+		"links": {
+			"services": "Services",
+			"booking": "Book Appointment",
+			"assessment": "AI Vehicle Assessment",
+			"contact": "Contact"
+		}
 	},
 	"Impressum": {
 		"title": "Impressum",
@@ -544,8 +559,16 @@
 			"title": "Services Management",
 			"subtitle": "Manage all available detailing services, pricing, and active status.",
 			"addService": "Add Service",
+			"syncBanner": "Changes to services automatically sync with the website, booking flow, AI assessment, and chatbot.",
 			"searchPlaceholder": "Search by name...",
 			"loadingError": "Error loading services",
+			"categories": {
+				"exterior": "Exterior",
+				"interior": "Interior",
+				"paint": "Paint & Polish",
+				"protection": "Protection & Coating",
+				"other": "Other"
+			},
 			"filters": {
 				"allCategories": "All Categories",
 				"allStatuses": "All Statuses",
@@ -588,8 +611,27 @@
 				"durationHours": "Duration (Hours)",
 				"uploadPrompt": "Click or drag to upload an image",
 				"uploading": "Uploading...",
+				"imageInvalidType": "Only JPG, PNG, or WebP images are allowed.",
+				"imageTooLarge": "Image size must not exceed 5 MB.",
+				"uploadFailed": "Image upload failed. Please try again.",
+				"removeImage": "Remove image",
+				"imageFormatHint": "Supported formats: JPG, PNG, WebP",
+				"imageRatioHint": "Recommended aspect ratio: 16:9",
+				"imageMaxSizeHint": "Maximum file size: 5 MB",
+				"translations": {
+					"toggle": "Customize Translations (DE / EN / EL)",
+					"hint": "Optional: Override automatic AI translations for specific languages.",
+					"nameLabel": "Name",
+					"descLabel": "Description"
+				},
 				"active": "Active (visible on website)",
-				"save": "Save Service"
+				"save": "Save Service",
+				"sizes": {
+					"small": "Small",
+					"medium": "Medium",
+					"large": "Large",
+					"suv": "SUV"
+				}
 			},
 			"toast": {
 				"createSuccess": "Service created successfully",
@@ -601,11 +643,16 @@
 		"chatbotKb": {
 			"pageTitle": "RAG Knowledge Base",
 			"pageSubtitle": "Manage the vector knowledge base for the AI Chatbot. Add text, services, or rules, and the AI Agent will structure and vectorize them.",
+			"servicesSyncBanner": "Your services & prices are read live from the services catalog automatically. Add company policies, business hours, B2B info, and FAQs here.",
 			"allLanguages": "All Languages",
 			"allCategories": "All Categories",
+			"refresh": "Refresh",
 			"testSearch": "Test Search (RAG)",
+			"addEntry": "Add Entry",
+			"editEntry": "Edit Entry",
 			"addAiKnowledge": "+ Add AI Knowledge",
 			"loading": "Loading...",
+			"loadError": "Failed to load knowledge entries.",
 			"empty": "No knowledge base entries found.",
 			"deleteConfirmTitle": "Delete Knowledge Entry?",
 			"deleteConfirmDesc": "Are you sure you want to delete this AI knowledge entry? This action cannot be undone.",
@@ -617,7 +664,27 @@
 				"paint_correction": "Paint Correction & Ceramic",
 				"headlights_special": "Headlights & Special",
 				"company_policy": "Company Policy & Info",
+				"booking_process": "Booking Process",
+				"mobile_service": "Mobile Service",
+				"b2b": "B2B & Fleets",
+				"faq": "FAQ",
 				"general": "General Knowledge"
+			},
+			"editor": {
+				"addTitle": "Add Knowledge Entry",
+				"editTitle": "Edit Knowledge Entry",
+				"autoReplyHint": "Write in any language you prefer — the AI chatbot automatically replies to customers in German, English, or Greek.",
+				"titleLabel": "Title",
+				"titlePlaceholder": "e.g. Travel Fees & Service Area",
+				"categoryLabel": "Category",
+				"contentLabel": "Content",
+				"contentPlaceholder": "Describe the policy, answer, or detail clearly...",
+				"keywordsLabel": "Keywords (comma-separated, optional)",
+				"keywordsPlaceholder": "e.g. hours, saturday, travel, water",
+				"saveButton": "Save",
+				"saving": "Saving...",
+				"cancel": "Cancel",
+				"saveError": "Failed to save knowledge entry."
 			},
 			"wizard": {
 				"title": "Hybrid AI Knowledge Agent",
@@ -659,6 +726,7 @@
 				"topMatches": "Top Vector Matches",
 				"noMatches": "No matching vectors found above threshold.",
 				"searchFailed": "Search failed",
+				"similarity": "Similarity",
 				"closeButton": "Close"
 			}
 		},
@@ -712,6 +780,10 @@
 					"title": "Pending",
 					"desc": "Awaiting confirmation"
 				},
+				"unreadMessages": {
+					"title": "Unread Messages",
+					"desc": "New contact inquiries"
+				},
 				"upcoming": {
 					"title": "Next 7 Days",
 					"desc": "Upcoming bookings"
@@ -739,10 +811,22 @@
 				"subtitle": "Bookings for the next week",
 				"empty": "No upcoming appointments in the next 7 days."
 			},
+			"recentMessages": {
+				"title": "Recent Unread Messages",
+				"subtitle": "Latest customer inquiries",
+				"viewAll": "View All",
+				"empty": "No unread messages at the moment.",
+				"openInbox": "Open Inbox"
+			},
+			"actions": {
+				"call": "Call",
+				"whatsapp": "WhatsApp"
+			},
 			"quickActions": {
 				"title": "Quick Actions",
 				"appointments": "Appointments",
 				"blockSlot": "Block Slot",
+				"newService": "New Service",
 				"addKnowledge": "Add Knowledge",
 				"services": "Manage Services"
 			},
@@ -756,8 +840,63 @@
 				"management": "Management",
 				"overview": "Overview",
 				"appointments": "Appointments",
+				"messages": "Messages",
 				"servicesCrud": "Services",
 				"chatbotKb": "Chatbot KB"
+			},
+			"loadingLabel": "Loading admin dashboard"
+		},
+		"messages": {
+			"title": "Messages & Inquiries",
+			"subtitle": "Manage incoming contact inquiries, call customers back directly, or reply via WhatsApp.",
+			"searchPlaceholder": "Search by name, email, phone, or message...",
+			"empty": "No messages found in this view.",
+			"tabs": {
+				"all": "All",
+				"unread": "Unread",
+				"read": "Read",
+				"archived": "Archived"
+			},
+			"status": {
+				"unread": "Unread",
+				"read": "Read",
+				"archived": "Archived"
+			},
+			"actions": {
+				"refresh": "Refresh",
+				"markAllRead": "Mark All Read",
+				"open": "Open message",
+				"call": "Call",
+				"email": "Email",
+				"copy": "Copy",
+				"copied": "Copied",
+				"copyPhone": "Copy phone number",
+				"copyEmail": "Copy email address",
+				"markRead": "Mark as Read",
+				"markUnread": "Mark as Unread",
+				"archive": "Archive",
+				"unarchive": "Unarchive",
+				"delete": "Delete"
+			},
+			"modal": {
+				"close": "Close",
+				"phone": "Phone",
+				"email": "Email",
+				"messageLabel": "Message"
+			},
+			"errors": {
+				"loadFailed": "Failed to load messages.",
+				"updateFailed": "Failed to update message status.",
+				"deleteFailed": "Failed to delete message."
+			},
+			"deleteConfirm": {
+				"title": "Delete Message?",
+				"description": "Are you sure you want to permanently delete this contact inquiry?"
+			},
+			"pagination": {
+				"showing": "Page {page} of {totalPages} ({total} total)",
+				"prev": "Previous",
+				"next": "Next"
 			}
 		},
 		"appointments": {
@@ -766,12 +905,25 @@
 			"refresh": "Refresh",
 			"blockDate": "Block Date",
 			"today": "Today",
+			"previousMonth": "Previous Month",
+			"nextMonth": "Next Month",
+			"blockDay": "Block Day",
+			"unblockDay": "Unblock Day",
+			"call": "Call",
 			"calendar": "Calendar",
 			"listView": "List View",
 			"searchPlaceholder": "Search by client name, email, phone, car, or date...",
 			"filterLabel": "Filter:",
 			"allStatuses": "All Statuses",
 			"noAppointments": "No appointments match the selected criteria.",
+			"errors": {
+				"statusUpdateFailed": "Failed to update appointment status.",
+				"blockToggleFailed": "Failed to toggle day availability.",
+				"refreshFailed": "Failed to refresh appointments.",
+				"deleteFailed": "Failed to delete appointment.",
+				"selectOneService": "Please select at least one service.",
+				"saveFailed": "Failed to save changes."
+			},
 			"table": {
 				"date": "Date",
 				"client": "Client",
@@ -816,10 +968,24 @@
 				"block": {
 					"title": "Blocked Dates",
 					"subtitle": "Prevent bookings on specific calendar days",
+					"modeSingle": "Single Day",
+					"modeRange": "Date Range",
 					"blockNew": "Block New Date",
+					"blockRangeTitle": "Block Date Range",
 					"selectDate": "Select Date",
+					"startDate": "Start Date",
+					"endDate": "End Date",
 					"reason": "Reason (Optional)",
+					"reasonPlaceholder": "e.g. Vacation, Holiday, Maintenance...",
 					"submit": "Block Date",
+					"submitRange": "Block Range",
+					"unblock": "Unblock",
+					"blockFailed": "Failed to block date.",
+					"unblockFailed": "Failed to unblock date.",
+					"conflictTitle": "{count} existing booking(s) in selected range",
+					"conflictDesc": "These dates already have active appointments. Do you still want to block this range?",
+					"confirmConflict": "Block Anyway",
+					"cancelConflict": "Cancel",
 					"currentlyBlocked": "Currently Blocked",
 					"noBlocked": "No dates are currently blocked.",
 					"done": "Done"

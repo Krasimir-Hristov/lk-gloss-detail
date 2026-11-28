@@ -36,18 +36,10 @@ const NEXT_RESERVED_TS = new Set([
 // Existing legacy files exceeding 300 lines prior to adopting the architecture gate.
 // Remove entries as each feature is refactored (e.g. assessmentAnalysisGraph.ts in Phase B).
 const LEGACY_LINE_LIMIT_ALLOWLIST = new Set([
-	"src/features/admin/actions/appointments.ts",
-	"src/features/admin/actions/knowledge.ts",
-	"src/features/admin/components/appointments/AppointmentDetailModal.tsx",
-	"src/features/admin/components/appointments/EditAppointmentModal.tsx",
-	"src/features/admin/components/knowledge/AiKnowledgeWizard.tsx",
-	"src/features/admin/components/services/ServiceModal.tsx",
 	"src/app/[locale]/privacy/page.tsx",
 ]);
 
-const LEGACY_ARROW_COMPONENT_ALLOWLIST = new Set([
-	"src/app/[locale]/admin/(dashboard)/services/page.tsx",
-]);
+const LEGACY_ARROW_COMPONENT_ALLOWLIST = new Set([]);
 
 const errors = [];
 

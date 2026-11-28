@@ -2,16 +2,12 @@
 
 import { motion } from "framer-motion";
 import { Calendar, List, CalendarOff, RefreshCw, AlertCircle } from "lucide-react";
-import { useSearchParams, usePathname } from "next/navigation";
+import { useSearchParams, usePathname, useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useCallback } from "react";
 
 import { ConfirmModal } from "@/components/shared/ConfirmModal";
-import {
-	deleteAppointment,
-	getAdminAppointments,
-	getAvailableServices,
-} from "@/features/admin/actions/appointments";
+import { deleteAppointment, getAdminAppointments } from "@/features/admin/actions/appointments";
 import { getBlockedDates } from "@/features/admin/actions/blockedDates";
 import { AppointmentDetailModal } from "@/features/admin/components/appointments/AppointmentDetailModal";
 import { AppointmentsCalendarView } from "@/features/admin/components/appointments/AppointmentsCalendarView";
@@ -29,27 +25,32 @@ import type {
 interface AppointmentsManagerProps {
 	initialAppointments: AdminAppointment[];
 	initialBlockedDates: BlockedDateItem[];
+	initialServices: AppointmentServiceItem[];
+	initialStatus?: AppointmentStatus | "all";
 }
 
 export const AppointmentsManager: React.FC<AppointmentsManagerProps> = ({
 	initialAppointments,
 	initialBlockedDates,
+	initialServices,
+	initialStatus = "all",
 }) => {
 	const t = useTranslations("Admin.appointments");
 	const tConfirm = useTranslations("ConfirmModal");
 
 	const searchParams = useSearchParams();
 	const pathname = usePathname();
+	const router = useRouter();
 
 	const [appointments, setAppointments] = useState<AdminAppointment[]>(initialAppointments);
 	const [blockedDates, setBlockedDates] = useState<BlockedDateItem[]>(initialBlockedDates);
-	const [availableServices, setAvailableServices] = useState<AppointmentServiceItem[]>([]);
 
-	const [viewMode, setViewMode] = useState<"calendar" | "list">("calendar");
+	const [viewMode, setViewMode] = useState<"calendar" | "list">(
+		initialStatus !== "all" ? "list" : "calendar",
+	);
 	const [isLoading, setIsLoading] = useState(false);
 	const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
-	// Modals state
 	const [detailAppointment, setDetailAppointment] = useState<AdminAppointment | null>(null);
 	const [editAppointment, setEditAppointment] = useState<AdminAppointment | null>(null);
 	const [isBlockModalOpen, setIsBlockModalOpen] = useState(
@@ -63,11 +64,9 @@ export const AppointmentsManager: React.FC<AppointmentsManagerProps> = ({
 		}
 	}, [searchParams, pathname]);
 
-	// Confirmation modal state for deletion
 	const [deletingId, setDeletingId] = useState<string | null>(null);
 	const [isDeleting, setIsDeleting] = useState(false);
 
-	// Refresh data function
 	const refreshData = useCallback(async () => {
 		setIsLoading(true);
 		setErrorMessage(null);
@@ -76,26 +75,15 @@ export const AppointmentsManager: React.FC<AppointmentsManagerProps> = ({
 
 			if (apptsRes.success) setAppointments(apptsRes.data);
 			if (blockedRes.success) setBlockedDates(blockedRes.data);
+			router.refresh();
 		} catch (err) {
 			console.error("[AppointmentsManager] Error refreshing data:", err);
-			setErrorMessage("Failed to refresh appointments");
+			setErrorMessage(t("errors.refreshFailed"));
 		} finally {
 			setIsLoading(false);
 		}
-	}, []);
+	}, [router, t]);
 
-	// Fetch available services for edit modal
-	useEffect(() => {
-		const loadServices = async () => {
-			const res = await getAvailableServices();
-			if (res.success) {
-				setAvailableServices(res.data);
-			}
-		};
-		loadServices();
-	}, []);
-
-	// Handle status update locally
 	const handleStatusChanged = (id: string, newStatus: AppointmentStatus) => {
 		setAppointments((prev) =>
 			prev.map((app) => (app.id === id ? { ...app, status: newStatus } : app)),
@@ -103,14 +91,13 @@ export const AppointmentsManager: React.FC<AppointmentsManagerProps> = ({
 		if (detailAppointment && detailAppointment.id === id) {
 			setDetailAppointment((prev) => (prev ? { ...prev, status: newStatus } : null));
 		}
+		router.refresh();
 	};
 
-	// Open delete confirmation modal
 	const onRequestDelete = (id: string) => {
 		setDeletingId(id);
 	};
 
-	// Confirm delete action
 	const handleConfirmDelete = async () => {
 		if (!deletingId || isDeleting) return;
 
@@ -122,12 +109,13 @@ export const AppointmentsManager: React.FC<AppointmentsManagerProps> = ({
 				setAppointments((prev) => prev.filter((a) => a.id !== deletingId));
 				if (detailAppointment?.id === deletingId) setDetailAppointment(null);
 				if (editAppointment?.id === deletingId) setEditAppointment(null);
+				router.refresh();
 			} else {
 				setErrorMessage(res.error);
 			}
 		} catch (err) {
 			console.error("[AppointmentsManager] Error deleting appointment:", err);
-			setErrorMessage("Failed to delete appointment");
+			setErrorMessage(t("errors.deleteFailed"));
 		} finally {
 			setIsDeleting(false);
 			setDeletingId(null);
@@ -146,31 +134,31 @@ export const AppointmentsManager: React.FC<AppointmentsManagerProps> = ({
 				</div>
 
 				<div className="flex flex-wrap items-center gap-3">
-					{/* Refresh Button */}
 					<button
 						type="button"
 						onClick={refreshData}
 						disabled={isLoading}
+						aria-label={t("refresh")}
 						className="flex cursor-pointer items-center gap-1.5 rounded-lg border border-neutral-800 bg-neutral-900 px-3 py-2 text-xs font-semibold text-neutral-300 transition-colors hover:border-purple-500/50 hover:text-white disabled:opacity-50"
 						title={t("refresh")}
 					>
 						<RefreshCw className={`size-3.5 ${isLoading ? "animate-spin" : ""}`} /> {t("refresh")}
 					</button>
 
-					{/* Block Date Button */}
 					<button
 						type="button"
 						onClick={() => setIsBlockModalOpen(true)}
+						aria-label={t("blockDate")}
 						className="flex cursor-pointer items-center gap-1.5 rounded-lg border border-purple-500/30 bg-purple-950/30 px-3.5 py-2 text-xs font-bold text-purple-300 transition-all hover:bg-purple-950/60"
 					>
 						<CalendarOff className="size-4" /> {t("blockDate")}
 					</button>
 
-					{/* View Mode Switcher Toggle */}
 					<div className="flex items-center rounded-lg border border-neutral-800 bg-neutral-950 p-1">
 						<button
 							type="button"
 							onClick={() => setViewMode("calendar")}
+							aria-label={t("calendar")}
 							className={`flex cursor-pointer items-center gap-1.5 rounded-md px-3 py-1.5 text-xs font-semibold transition-all ${
 								viewMode === "calendar"
 									? "bg-purple-600 text-white shadow-md"
@@ -182,6 +170,7 @@ export const AppointmentsManager: React.FC<AppointmentsManagerProps> = ({
 						<button
 							type="button"
 							onClick={() => setViewMode("list")}
+							aria-label={t("listView")}
 							className={`flex cursor-pointer items-center gap-1.5 rounded-md px-3 py-1.5 text-xs font-semibold transition-all ${
 								viewMode === "list"
 									? "bg-purple-600 text-white shadow-md"
@@ -203,14 +192,14 @@ export const AppointmentsManager: React.FC<AppointmentsManagerProps> = ({
 					<button
 						type="button"
 						onClick={() => setErrorMessage(null)}
+						aria-label={t("modals.details.close")}
 						className="cursor-pointer text-xs font-bold text-rose-400 hover:underline"
 					>
-						Dismiss
+						×
 					</button>
 				</div>
 			) : null}
 
-			{/* Render Selected View */}
 			<motion.div
 				key={viewMode}
 				initial={{ opacity: 0, y: 10 }}
@@ -222,10 +211,12 @@ export const AppointmentsManager: React.FC<AppointmentsManagerProps> = ({
 						appointments={appointments}
 						blockedDates={blockedDates}
 						onViewDetails={(appt) => setDetailAppointment(appt)}
+						onBlockedDatesUpdated={refreshData}
 					/>
 				) : (
 					<AppointmentsListView
 						appointments={appointments}
+						initialStatus={initialStatus}
 						onViewDetails={(appt) => setDetailAppointment(appt)}
 						onEdit={(appt) => setEditAppointment(appt)}
 						onDelete={onRequestDelete}
@@ -233,7 +224,6 @@ export const AppointmentsManager: React.FC<AppointmentsManagerProps> = ({
 				)}
 			</motion.div>
 
-			{/* Modals */}
 			<AppointmentDetailModal
 				appointment={detailAppointment}
 				onClose={() => setDetailAppointment(null)}
@@ -248,7 +238,7 @@ export const AppointmentsManager: React.FC<AppointmentsManagerProps> = ({
 			<EditAppointmentModal
 				key={editAppointment?.id}
 				appointment={editAppointment}
-				availableServices={availableServices}
+				availableServices={initialServices}
 				onClose={() => setEditAppointment(null)}
 				onSaved={() => {
 					setEditAppointment(null);
@@ -263,7 +253,6 @@ export const AppointmentsManager: React.FC<AppointmentsManagerProps> = ({
 				onBlockedDatesUpdated={refreshData}
 			/>
 
-			{/* Reusable Confirm Modal for Deletion */}
 			<ConfirmModal
 				isOpen={Boolean(deletingId)}
 				title={tConfirm("deleteTitle")}
